@@ -752,7 +752,8 @@ pre.log{white-space:pre-wrap;font-size:12px;background:var(--soft);border-radius
       var t = document.getElementById('than'); if (!t || S.tab !== 'tq') return;
       if (o.loi) { t.innerHTML = '<div class="empty">' + esc(o.loi) + '</div>'; return; }
       var mau = ['good', 'blue', 'good', 'gray', 'orange', 'orange'];
-      var ds = (o.thangDs && o.thangDs.length ? o.thangDs : [o.ky]).slice().reverse();
+      var hn = new Date(), max = hn.getFullYear() + '-T' + ('0' + (hn.getMonth() + 1)).slice(-2);   // chỉ các tháng đã tới
+      var ds = (o.thangDs && o.thangDs.length ? o.thangDs : [o.ky]).filter(function (x) { return x <= max || x === o.ky; }).reverse();
       t.innerHTML = '<div class="row sp"><select class="inp ky" id="tqKy">' + ds.map(function (x) { return '<option' + (x === o.ky ? ' selected' : '') + '>' + esc(x) + '</option>'; }).join('') + '</select>' +
         '<button class="btn sm ghost" id="tqMoi">⟳ Cập nhật mới nhất</button></div>' +
         '<div class="meta">' + esc(o.capNhat) + '</div>' +
