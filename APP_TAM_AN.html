@@ -390,7 +390,9 @@ details.mc[open] summary b::after{content:" ▴"}
       (p.cb ? '<div class="note warn">⚠ ' + esc(p.cb) + '</div>' : '') +
       (p.r ? '<div class="seg"><button data-k="TUAN" class="on">Phiếu tuần</button>' + (coThang ? '<button data-k="THANG">Phiếu tháng</button>' : '') + '</div>' +
         '<div class="wk" id="wk"><button id="wp">‹</button><b id="wt">Tuần trả gần nhất</b><button id="wn">›</button></div>' +
-        '<div id="pcb"></div><div class="slip" id="slip"><div class="sk" style="height:300px;border-radius:0"></div></div><div class="meta" style="text-align:center">Chạm vào phiếu để phóng to / thu nhỏ</div>' +
+        '<div id="pcb"></div><div class="slip" id="slip"><div class="sk" style="height:300px;border-radius:0"></div></div>' +
+        '<div class="acts" id="xuat"><button class="btn sm ghost" id="xCopy" disabled>📋 Sao chép ảnh</button><button class="btn sm" id="xLuu" disabled>⬇️ Lưu / Gửi ảnh</button></div>' +
+        '<div class="meta" style="text-align:center">Chạm vào phiếu để phóng to / thu nhỏ</div>' +
         '<div class="card" id="ut"><b>Ứng / trả lương trong kỳ</b><div class="meta">Đang tải…</div></div>'
         : '<div class="note warn">Người này mới có ở DANH_SACH, chưa lên bảng công (BCC). Sau lần CẬP NHẬT kế tiếp sẽ có bảng công và phiếu lương.</div>') +
       '<div class="card"><b>Thông tin</b><div class="kv" style="margin-top:8px">' +
@@ -430,10 +432,53 @@ details.mc[open] summary b::after{content:" ▴"}
     if (cb) x += '<div class="note warn"><b>Lưu ý cho sale (không in lên phiếu):</b>' + cb.split('\n').map(function (s) { return '<div>• ' + esc(s) + '</div>'; }).join('') + '</div>';
     document.getElementById('pcb').innerHTML = x;
     vePhieu(slip, o.css, o.html);
+    ganXuat(o);
     var ut = document.getElementById('ut');
     if (ut && o.ut) ut.innerHTML = '<b>Ứng / trả lương trong kỳ</b>' + (o.ut.length ? '<div class="ul">' + o.ut.map(function (z) {
       return '<div class="ur"><span class="d">' + esc(z.ngay) + '</span><span class="l ' + (/ứng/i.test(z.loai) ? 'u' : 't') + '">' + esc(z.loai) + '</span><b class="num">' + vnd(z.so) + '</b><span class="g">' + esc([z.nguoi, z.ghi].filter(String).join(' · ')) + '</span></div>';
     }).join('') + '</div>' : '<div class="meta">Chưa có khoản nào.</div>');
+  }
+  // ---------- xuất ảnh phiếu (giống nút trên Google Sheets): chụp bằng html2canvas trong khung ẩn ----------
+  function chupPhieu(o) {
+    if (o._blob) return Promise.resolve(o._blob);
+    if (o._dang) return o._dang;
+    o._dang = new Promise(function (ok, hong) {
+      var f = document.createElement('iframe');
+      f.style.cssText = 'position:fixed;left:-10000px;top:0;width:900px;height:2400px;border:0';
+      f.srcdoc = '<!doctype html><html><head><meta charset="utf-8"><style>' + o.css + '</style><style>html,body{margin:0;background:#fff}</style>' +
+        '<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"><\/script></head><body>' + o.html + '</body></html>';
+      f.onload = function () {
+        var w = f.contentWindow, el = w.document.getElementById('phieu');
+        if (!w.html2canvas || !el) { f.remove(); o._dang = null; hong(new Error('Không tạo được ảnh phiếu, kiểm tra mạng rồi thử lại.')); return; }
+        w.html2canvas(el, { scale: 2, backgroundColor: '#ffffff', logging: false }).then(function (cv) {
+          cv.toBlob(function (b) { f.remove(); o._dang = null; if (!b) { hong(new Error('Không tạo được ảnh phiếu.')); return; } o._blob = b; ok(b); }, 'image/png');
+        }, function (e) { f.remove(); o._dang = null; hong(e); });
+      };
+      document.body.appendChild(f);
+    });
+    return o._dang;
+  }
+  function tenAnh(o) { return o.tenFile || ('Phieu luong - ' + kd(o.ten).toUpperCase() + '.png'); }
+  function ganXuat(o) {
+    var bc = document.getElementById('xCopy'), bl = document.getElementById('xLuu');
+    if (!bc || !bl) return;
+    if (o.chan) { bc.disabled = bl.disabled = true; bl.textContent = 'Phiếu lệch – chưa xuất'; return; }
+    bc.disabled = bl.disabled = false;
+    setTimeout(function () { chupPhieu(o).catch(function () { }); }, 400);   // chụp sẵn để bấm là gửi được ngay (iPhone đòi bấm trực tiếp)
+    bc.onclick = function () {
+      if (!navigator.clipboard || !window.ClipboardItem) { toast('Máy này không cho sao chép ảnh, dùng nút Lưu / Gửi ảnh.'); return; }
+      navigator.clipboard.write([new ClipboardItem({ 'image/png': chupPhieu(o) })]).then(function () { toast('Đã sao chép ảnh phiếu – mở Zalo và dán vào.'); }, function (e) { toast('Không sao chép được: ' + (e && e.message ? e.message : e)); });
+    };
+    bl.onclick = function () {
+      function gui(b) {
+        var file = new File([b], tenAnh(o), { type: 'image/png' });
+        if (navigator.canShare && navigator.canShare({ files: [file] })) { navigator.share({ files: [file] }).catch(function () { }); return; }
+        var a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = tenAnh(o); document.body.appendChild(a); a.click(); setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 2000);
+      }
+      if (o._blob) { gui(o._blob); return; }
+      bl.disabled = true; bl.textContent = 'Đang tạo ảnh…';
+      chupPhieu(o).then(function () { bl.disabled = false; bl.textContent = '⬇️ Lưu / Gửi ảnh'; toast('Ảnh phiếu đã sẵn sàng – bấm lại nút Lưu / Gửi ảnh.'); }, function (e) { bl.disabled = false; bl.textContent = '⬇️ Lưu / Gửi ảnh'; toast(e.message); });
+    };
   }
   function vePhieu(slip, css, html) {
     slip.innerHTML = '';
