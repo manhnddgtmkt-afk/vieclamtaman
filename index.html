@@ -155,6 +155,9 @@ details.mc[open] summary b::after{content:" ▴"}
 .mr.nt{color:var(--muted);font-size:12.5px;display:block}
 .am{color:var(--bad)}
 .it.so{cursor:default}
+.kv.so{grid-template-columns:minmax(0,1fr) auto}
+.kv b.num{white-space:nowrap}
+#them{white-space:nowrap;flex:0 0 auto}
 .note:not(.warn):not(.bad){background:var(--soft);color:var(--muted)}
 </style>
 </head>
@@ -254,7 +257,7 @@ details.mc[open] summary b::after{content:" ▴"}
   }
   function dangXuat(het) {
     if (!het && S.t) api({ v: 'ra', t: S.t }).catch(function () { });
-    S.t = null; S.toi = null; S.data = {}; luu('vlta_t', null); luu('vlta_ds', null); luu('vlta_toi', null);
+    S.t = null; S.toi = null; S.data = {}; luu('vlta_t', null); luu('vlta_ds', null); luu('vlta_toi', null); QUY = null; TQ = null; TN = null; PC = {};
     veDangNhap(); if (het) setTimeout(function () { toast('Phiên đăng nhập đã hết, mời đăng nhập lại.'); }, 50);
   }
 
@@ -410,17 +413,17 @@ details.mc[open] summary b::after{content:" ▴"}
     document.getElementById('wn').onclick = function () { doiTuan(7); };
     taiPhieu();
   }
-  function doiTuan(n) { if (!S.hs || !S.hs.mon) return; S.hs.ngay = ddmm(serialDate(S.hs.mon + n), true); taiPhieu(); }
+  function doiTuan(n) { if (!S.hs || !S.hs.mon) return; S.hs.monDich = S.hs.mon + n; S.hs.ngay = ddmm(serialDate(S.hs.monDich), true); taiPhieu(); }
   var lanPhieu = 0, PC = {};
   function taiPhieu() {
     var h = S.hs, my = ++lanPhieu, slip = document.getElementById('slip'), d = S.data[S.cty] || {};
     document.getElementById('wk').classList.toggle('hidden', h.kieu === 'THANG');
     document.getElementById('pcb').innerHTML = '';
-    var key = S.cty + '|' + h.p.r + '|' + h.kieu + '|' + h.ngay + '|' + (d.ver || '');
+    var goc = S.cty + '|' + h.p.r + '|', key = goc + (h.kieu === 'THANG' ? 'THANG' : (h.ngay ? 'T' + h.monDich : 'cur'));
     if (PC[key]) { hienPhieu(h, PC[key]); return; }
     slip.innerHTML = '<div class="sk" style="height:300px;border-radius:0"></div>';
     apiT({ v: 'phieu', cty: S.cty, r: h.p.r, kieu: h.kieu, ngay: h.ngay }).then(function (o) {
-      if (!o.loi) PC[key] = o;
+      if (!o.loi) { PC[key] = o; if (o.mon && h.kieu !== 'THANG') PC[goc + 'T' + o.mon] = o; }
       if (my !== lanPhieu || S.hs !== h) return;
       hienPhieu(h, o);
     }, function (e) { if (my === lanPhieu) slip.innerHTML = '<div class="empty">' + esc(e.message) + '</div>'; });
@@ -546,7 +549,11 @@ details.mc[open] summary b::after{content:" ▴"}
   // ---------- thu nhập của tôi ----------
   function veThuNhap() {
     khung('Thu nhập của tôi', S.toi.ten + ' · ' + S.toi.chuc, '', '<div class="sk" style="height:140px"></div><div class="sk" style="height:220px"></div>');
-    apiT({ v: 'thuNhap' }).then(function (o) {
+    if (TN) hienTN(TN);
+    apiT({ v: 'thuNhap' }).then(function (o) { if (!o.loi) TN = o; hienTN(o); }, function (e) { var t = document.getElementById('than'); if (t && !TN) t.innerHTML = '<div class="empty">' + esc(e.message) + '</div>'; });
+  }
+  function hienTN(o) {
+    (function () {
       var t = document.getElementById('than'); if (!t || S.tab !== 'tn') return;
       if (o.loi) { t.innerHTML = '<div class="empty">' + esc(o.loi) + '</div>'; return; }
       if (!o.dong) { t.innerHTML = '<div class="empty">Kỳ ' + esc(o.ky) + ' chưa có giờ quản lý của bạn trong báo cáo.</div>'; return; }
@@ -555,18 +562,22 @@ details.mc[open] summary b::after{content:" ▴"}
       for (i = 1; i < d.length; i++) if (['Lương phải trả', 'Đã thanh toán', 'Chưa thanh toán', 'Tổng giờ', 'LĐ đi từ 3 công'].indexOf(d[i]) < 0) chi.push([d[i], r[i]]);
       t.innerHTML = '<div class="card hero"><div class="meta">Lương kinh doanh tạm tính · ' + esc(o.ky) + '</div><div class="big num">' + esc(gt('Lương phải trả')) + '</div>' +
         '<div class="g3"><div><span>Tổng giờ quản lý</span><b class="num">' + esc(gt('Tổng giờ')) + '</b></div><div><span>LĐ đi từ 3 công</span><b class="num">' + esc(gt('LĐ đi từ 3 công')) + '</b></div><div><span>Chưa thanh toán</span><b class="num">' + esc(gt('Chưa thanh toán')) + '</b></div></div></div>' +
-        '<div class="card"><b>Giờ theo khách hàng</b><div class="kv" style="margin-top:8px">' + chi.map(function (x) { return '<span>' + esc(x[0]) + '</span><b class="num">' + esc(x[1] || '–') + '</b>'; }).join('') +
+        '<div class="card"><b>Giờ theo khách hàng</b><div class="kv so" style="margin-top:8px">' + chi.map(function (x) { return '<span>' + esc(x[0]) + '</span><b class="num">' + esc(x[1] || '–') + '</b>'; }).join('') +
         '<span>Đã thanh toán</span><b class="num">' + esc(gt('Đã thanh toán')) + '</b></div></div>' +
         (o.ghiChu ? '<div class="note">' + esc(o.ghiChu) + '</div>' : '') +
         '<div class="meta" style="text-align:center">' + esc(o.capNhat) + '</div>';
-    }, function (e) { var t = document.getElementById('than'); if (t) t.innerHTML = '<div class="empty">' + esc(e.message) + '</div>'; });
+    })();
   }
 
   // ---------- thu chi + quỹ ----------
   var QUY = null;
   function veQuy() {
     khung('Thu chi', 'Quỹ công ty do thủ quỹ giữ', '', '<div class="sk" style="height:140px"></div><div class="sk" style="height:300px"></div>');
-    apiT({ v: 'quy' }).then(function (o) {
+    if (QUY) hienQuy(QUY);
+    apiT({ v: 'quy' }).then(hienQuy, function (e) { var t = document.getElementById('than'); if (t && !QUY) t.innerHTML = '<div class="empty">' + esc(e.message) + '</div>'; });
+  }
+  function hienQuy(o) {
+    (function () {
       var t = document.getElementById('than'); if (!t || S.tab !== 'quy') return;
       if (o.loi) { t.innerHTML = '<div class="empty">' + esc(o.loi) + '</div>'; return; }
       QUY = o;
@@ -579,12 +590,12 @@ details.mc[open] summary b::after{content:" ▴"}
         '<div class="row sp"><b>Sổ thu chi</b><button class="btn sm" id="gso">+ Ghi khoản</button></div>' +
         '<input class="inp" id="qso" type="search" placeholder="Tìm khoản, nội dung, người…" style="font-size:15px;padding:11px 14px">' +
         '<div class="list" id="lso"></div>' +
-        (m5 ? '<div class="card"><b>' + esc(m5.tieu.split('    ')[0]) + '</b><div class="kv" style="margin-top:8px">' + khac.map(function (x) { return '<span>' + esc(x[0]) + '<br><small class="meta">' + esc(x[2] || '') + '</small></span><b class="num">' + esc(x[1]) + '</b>'; }).join('') + '</div></div>' : '') +
+        (m5 ? '<div class="card"><b>' + esc(m5.tieu.split('    ')[0]) + '</b><div class="kv so" style="margin-top:8px">' + khac.map(function (x) { return '<span>' + esc(x[0]) + '<br><small class="meta">' + esc(x[2] || '') + '</small></span><b class="num">' + esc(x[1]) + '</b>'; }).join('') + '</div></div>' : '') +
         '<div class="meta" style="text-align:center">' + esc(o.capNhat) + '</div>';
       document.getElementById('gso').onclick = moGhiSo;
       var q = document.getElementById('qso'); q.oninput = function () { veSo(q.value); };
       veSo('');
-    }, function (e) { var t = document.getElementById('than'); if (t) t.innerHTML = '<div class="empty">' + esc(e.message) + '</div>'; });
+    })();
   }
   function veSo(q) {
     var l = document.getElementById('lso'); if (!l || !QUY) return;
@@ -631,9 +642,14 @@ details.mc[open] summary b::after{content:" ▴"}
   }
 
   // ---------- tổng quan (chủ) ----------
+  var TQ = null, TN = null;
   function veTQ() {
     khung('Tổng quan', 'Báo cáo tài chính và công nợ', '', '<div class="sk" style="height:200px"></div><div class="sk" style="height:300px"></div>');
-    apiT({ v: 'tq' }).then(function (o) {
+    if (TQ) hienTQ(TQ);
+    apiT({ v: 'tq' }).then(function (o) { if (!o.loi) TQ = o; hienTQ(o); }, function (e) { var t = document.getElementById('than'); if (t && !TQ) t.innerHTML = '<div class="empty">' + esc(e.message) + '</div>'; });
+  }
+  function hienTQ(o) {
+    (function () {
       var t = document.getElementById('than'); if (!t || S.tab !== 'tq') return;
       if (o.loi) { t.innerHTML = '<div class="empty">' + esc(o.loi) + '</div>'; return; }
       var mau = ['good', 'blue', 'good', 'gray', 'orange', 'orange'];
@@ -648,11 +664,11 @@ details.mc[open] summary b::after{content:" ▴"}
               if (!dau.length) return '<div class="mr"><span>' + esc(ten) + '</span><b class="num' + (/^-/.test(con[0] || '') ? ' am' : '') + '">' + esc(con.filter(String).join(' · ')) + '</b></div>';
               if (!co || (con.filter(String).length === 0)) return '<div class="mr nt">' + esc(ten) + '</div>';
               var tong = /^(Tổng|Giờ công toàn bộ)/.test(ten);
-              return '<div class="mb' + (tong ? ' tong' : '') + '"><div class="mt">' + esc(ten) + '</div><div class="kv">' +
+              return '<div class="mb' + (tong ? ' tong' : '') + '"><div class="mt">' + esc(ten) + '</div><div class="kv so">' +
                 con.map(function (v, i) { return v ? '<span>' + esc(dau[i + 1] || '') + '</span><b class="num' + (/^-\d/.test(v) ? ' am' : '') + '">' + esc(v) + '</b>' : ''; }).join('') + '</div></div>';
             }).join('') + '</details>';
         }).join('');
-    }, function (e) { var t = document.getElementById('than'); if (t) t.innerHTML = '<div class="empty">' + esc(e.message) + '</div>'; });
+    })();
   }
 
   // ---------- khởi động ----------
