@@ -324,7 +324,9 @@ details.mc[open] summary b::after{content:" ▴"}
     apiT({ v: 'ds', ver: ver }).then(function (o) {
       dangTaiDs = false;
       if (o.loi) { toast(o.loi); return; }
+      var doiVai = o.toi && S.toi && (o.toi.vai !== S.toi.vai || String(o.toi.phuTrach) !== String(S.toi.phuTrach));
       if (o.toi) S.toi = o.toi;
+      if (doiVai) { S.data = {}; QUY = TQ = TN = null; PC = {}; luuDs(); vaoApp(); return; }   // quyền vừa đổi: vẽ lại theo vai trò mới
       (o.cty || []).forEach(function (c) { if (c.giong) { if (S.data[c.cty]) S.data[c.cty].luc = o.luc; } else { c.luc = o.luc; S.data[c.cty] = c; } });
       luuDs();
       if (S.tab === 'ld' && !S.hs) veListe();
