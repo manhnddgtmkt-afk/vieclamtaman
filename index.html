@@ -456,8 +456,7 @@ details.mc[open] summary b::after{content:" ▴"}
       var f = document.createElement('iframe');
       f.style.cssText = 'position:fixed;left:-10000px;top:0;width:900px;height:2400px;border:0';
       f.srcdoc = '<!doctype html><html><head><meta charset="utf-8"><style>' + o.css + '</style><style>html,body{margin:0;background:#fff}</style>' +
-        '<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"><\/script></head><body>' + o.html + '<script>if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(function () { });</script>
-</body></html>';
+        '<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"><\/script><\/head><body>' + o.html + '<\/body><\/html>';
       f.onload = function () {
         var w = f.contentWindow, el = w.document.getElementById('phieu');
         if (!w.html2canvas || !el) { f.remove(); o._dang = null; hong(new Error('Không tạo được ảnh phiếu, kiểm tra mạng rồi thử lại.')); return; }
@@ -732,5 +731,6 @@ details.mc[open] summary b::after{content:" ▴"}
   } else veDangNhap();
 })();
 </script>
+<script>if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(function () { });</script>
 </body>
 </html>

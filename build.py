@@ -14,5 +14,6 @@ head = '''<title>Việc Làm Tâm An</title>
 <script src="config.js"></script>
 '''
 s = s.replace('<base target="_top">\n', head, 1)
-s = s.replace('</body>', "<script>if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(function () { });</script>\n</body>", 1)
+i = s.rindex('</body>')   # the cuoi trang (trong ma JS co the co chuoi '</body>')
+s = s[:i] + "<script>if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(function () { });</script>\n" + s[i:]
 open('index.html', 'w', encoding='utf-8').write(s)
