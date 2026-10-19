@@ -149,6 +149,15 @@ details.mc[open] summary b::after{content:" ▴"}
 .kv b.num{white-space:nowrap}
 #them{white-space:nowrap;flex:0 0 auto}
 .note:not(.warn):not(.bad){background:var(--soft);color:var(--muted)}
+
+html,body{overflow-x:hidden}
+main,.card{min-width:0}
+.card,.mb,.dg{overflow-wrap:anywhere}
+.mr1{display:flex;justify-content:space-between;align-items:baseline;gap:10px;font-weight:600}
+.mr1 b{white-space:nowrap}
+.dg{font-size:12.5px;color:var(--muted);margin-top:3px}
+.inp.ky{width:auto;font-size:15px;padding:9px 12px;font-weight:700;background:var(--warn-bg)}
+pre.log{white-space:pre-wrap;font-size:12px;background:var(--soft);border-radius:10px;padding:10px;max-height:220px;overflow:auto;margin:0}
 </style>
 </head>
 <body>
@@ -321,7 +330,7 @@ details.mc[open] summary b::after{content:" ▴"}
     if (dangTaiDs) return; dangTaiDs = true;
     var ver = {};
     if (!ep) Object.keys(S.data).forEach(function (k) { if (S.data[k] && S.data[k].ver) ver[k] = S.data[k].ver; });
-    apiT({ v: 'ds', ver: ver }).then(function (o) {
+    apiT({ v: 'ds', ver: ver, moi: ep ? 1 : 0 }).then(function (o) {
       dangTaiDs = false;
       if (o.loi) { toast(o.loi); return; }
       var doiVai = o.toi && S.toi && (o.toi.vai !== S.toi.vai || String(o.toi.phuTrach) !== String(S.toi.phuTrach));
@@ -343,12 +352,13 @@ details.mc[open] summary b::after{content:" ▴"}
       '<div class="chips">' + cs.map(function (c) { return '<button class="chip' + (c.ma === S.cty ? ' on' : '') + '" data-c="' + esc(c.ma) + '">' + esc(c.ten) + '</button>'; }).join('') + '</div>' +
       '<input class="search" id="q" type="search" placeholder="Tìm tên, mã NV hoặc SĐT…" value="' + esc(S.q) + '">',
       '<div class="fl" id="fl"><button data-f="all">Tất cả</button><button data-f="con">Còn phải trả</button><button data-f="cb">Có cảnh báo</button><button data-f="am">Âm / trả dư</button><button data-f="moi">Mới thêm</button></div>' +
-      '<div class="row sp"><div class="meta" id="meta">Đang tải…</div><button class="btn sm" id="them">+ Thêm người</button></div>' +
+      '<div class="row sp"><div class="meta" id="meta">Đang tải…</div><div class="row" style="gap:6px;flex:0 0 auto"><button class="btn sm ghost" id="capNhat">⟳ Cập nhật</button><button class="btn sm" id="them">+ Thêm</button></div></div>' +
       '<div class="list" id="list">' + '<div class="sk"></div>'.repeat(6) + '</div>');
     document.querySelectorAll('.chip').forEach(function (b) { b.onclick = function () { S.cty = b.getAttribute('data-c'); luu('vlta_cty', S.cty); veDs(); if (!S.data[S.cty]) taiDs(true); }; });
     document.querySelectorAll('#fl button').forEach(function (b) { b.classList.toggle('on', b.getAttribute('data-f') === S.loc); b.onclick = function () { S.loc = b.getAttribute('data-f'); document.querySelectorAll('#fl button').forEach(function (x) { x.classList.toggle('on', x === b); }); veListe(); }; });
     var q = document.getElementById('q'); q.oninput = function () { S.q = q.value; veListe(); };
     document.getElementById('them').onclick = moThemNguoi;
+    document.getElementById('capNhat').onclick = moCapNhat;
     if (S.data[S.cty]) veListe();
   }
   function veListe() {
@@ -550,6 +560,41 @@ details.mc[open] summary b::after{content:" ▴"}
     return false;
   }
 
+  // ---------- cập nhật vân tay / chấm công (= nút CẬP NHẬT trên file nhập liệu) ----------
+  function moCapNhat() {
+    var d = S.data[S.cty], best = S.cty === 'BEST', ten = best ? 'chấm công' : 'vân tay';
+    if (d && !d.het) { toast('Chỉ người phụ trách ' + S.cty + ', kế toán hoặc chủ mới cập nhật được.'); return; }
+    var sh = moSheet('<h3>Cập nhật ' + ten + ' · ' + esc(S.cty) + '</h3>' +
+      '<div class="meta">Chọn file ' + ten + ' vừa tải từ Zalo (Excel). Không chọn file thì hệ thống dùng file đang có trong thư mục ' + (best ? 'ChamCong' : 'VanTay') + '.</div>' +
+      '<input class="inp" id="cFile" type="file" accept=".xls,.xlsx,.xlsm,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet">' +
+      '<div class="msg" id="cm"></div><pre class="log hidden" id="cLog"></pre>' +
+      '<button class="btn" id="cOk">Cập nhật ngay</button><button class="btn ghost" id="cHuy">Đóng</button>');
+    var dang = false;
+    document.getElementById('cHuy').onclick = function () { if (!dang) sh.remove(); };
+    sh.onclick = function (e) { if (e.target === sh && !dang) sh.remove(); };
+    document.getElementById('cOk').onclick = function () {
+      var btn = this, f = document.getElementById('cFile').files[0], m = document.getElementById('cm'), lg = document.getElementById('cLog');
+      if (f && !/\.xls[xm]?$/i.test(f.name)) { m.textContent = 'File không phải Excel (.xls, .xlsx).'; return; }
+      dang = true; btn.disabled = true; m.style.color = 'var(--muted)';
+      var t0 = Date.now(), dem = setInterval(function () { btn.textContent = 'Đang cập nhật… ' + Math.round((Date.now() - t0) / 1000) + ' giây'; }, 1000);
+      btn.textContent = 'Đang cập nhật…';
+      function gui(b64) {
+        apiT({ v: 'capNhat', cty: S.cty, ten: f ? f.name : '', b64: b64 || '' }).then(function (o) {
+          clearInterval(dem); dang = false; btn.disabled = false; btn.textContent = 'Cập nhật lại';
+          if (o.loi) { m.style.color = ''; m.textContent = o.loi; return; }
+          m.style.color = 'var(--good)'; m.textContent = 'Xong sau ' + o.giay + ' giây.' + (o.bao ? ' ' + o.bao : '');
+          lg.textContent = o.log || ''; lg.classList.toggle('hidden', !o.log);
+          PC = {}; taiDs(true);
+        }, function (e) { clearInterval(dem); dang = false; btn.disabled = false; btn.textContent = 'Cập nhật ngay'; m.style.color = ''; m.textContent = e.message; });
+      }
+      if (!f) { gui(''); return; }
+      var r = new FileReader();
+      r.onload = function () { var x = String(r.result); gui(x.slice(x.indexOf(',') + 1)); };
+      r.onerror = function () { clearInterval(dem); dang = false; btn.disabled = false; m.textContent = 'Không đọc được file.'; };
+      r.readAsDataURL(f);
+    };
+  }
+
   // ---------- thêm người ----------
   function moThemNguoi() {
     var hn = new Date(), iso = hn.getFullYear() + '-' + ('0' + (hn.getMonth() + 1)).slice(-2) + '-' + ('0' + hn.getDate()).slice(-2);
@@ -587,7 +632,10 @@ details.mc[open] summary b::after{content:" ▴"}
   function veThuNhap() {
     khung('Thu nhập của tôi', S.toi.ten + ' · ' + S.toi.chuc, '', '<div class="sk" style="height:140px"></div><div class="sk" style="height:220px"></div>');
     if (TN) hienTN(TN);
-    apiT({ v: 'thuNhap' }).then(function (o) { if (!o.loi) TN = o; hienTN(o); }, function (e) { var t = document.getElementById('than'); if (t && !TN) t.innerHTML = '<div class="empty">' + esc(e.message) + '</div>'; });
+    taiTN(false);
+  }
+  function taiTN(moi) {
+    apiT({ v: 'thuNhap', moi: moi ? 1 : 0 }).then(function (o) { if (!o.loi) TN = o; hienTN(o); }, function (e) { var t = document.getElementById('than'); if (t && !TN) t.innerHTML = '<div class="empty">' + esc(e.message) + '</div>'; });
   }
   function hienTN(o) {
     (function () {
@@ -602,7 +650,8 @@ details.mc[open] summary b::after{content:" ▴"}
         '<div class="card"><b>Giờ theo khách hàng</b><div class="kv so" style="margin-top:8px">' + chi.map(function (x) { return '<span>' + esc(x[0]) + '</span><b class="num">' + esc(x[1] || '–') + '</b>'; }).join('') +
         '<span>Đã thanh toán</span><b class="num">' + esc(gt('Đã thanh toán')) + '</b></div></div>' +
         (o.ghiChu ? '<div class="note">' + esc(o.ghiChu) + '</div>' : '') +
-        '<div class="meta" style="text-align:center">' + esc(o.capNhat) + '</div>';
+        '<div class="meta" style="text-align:center">' + esc(o.capNhat) + ' · <a href="#" id="tnMoi" style="color:var(--blue)">làm mới</a></div>';
+      document.getElementById('tnMoi').onclick = function (e) { e.preventDefault(); this.textContent = 'đang tải…'; taiTN(true); };
     })();
   }
 
@@ -611,7 +660,10 @@ details.mc[open] summary b::after{content:" ▴"}
   function veQuy() {
     khung('Thu chi', 'Quỹ công ty do thủ quỹ giữ', '', '<div class="sk" style="height:140px"></div><div class="sk" style="height:300px"></div>');
     if (QUY) hienQuy(QUY);
-    apiT({ v: 'quy' }).then(hienQuy, function (e) { var t = document.getElementById('than'); if (t && !QUY) t.innerHTML = '<div class="empty">' + esc(e.message) + '</div>'; });
+    taiQuy(false);
+  }
+  function taiQuy(moi) {
+    apiT({ v: 'quy', moi: moi ? 1 : 0 }).then(hienQuy, function (e) { var t = document.getElementById('than'); if (t && !QUY) t.innerHTML = '<div class="empty">' + esc(e.message) + '</div>'; });
   }
   function hienQuy(o) {
     (function () {
@@ -628,7 +680,8 @@ details.mc[open] summary b::after{content:" ▴"}
         '<input class="inp" id="qso" type="search" placeholder="Tìm khoản, nội dung, người…" style="font-size:15px;padding:11px 14px">' +
         '<div class="list" id="lso"></div>' +
         (m5 ? '<div class="card"><b>' + esc(m5.tieu.split('    ')[0]) + '</b><div class="kv so" style="margin-top:8px">' + khac.map(function (x) { return '<span>' + esc(x[0]) + '<br><small class="meta">' + esc(x[2] || '') + '</small></span><b class="num">' + esc(x[1]) + '</b>'; }).join('') + '</div></div>' : '') +
-        '<div class="meta" style="text-align:center">' + esc(o.capNhat) + '</div>';
+        '<div class="meta" style="text-align:center">' + esc(o.capNhat) + ' · <a href="#" id="qMoi" style="color:var(--blue)">làm mới</a></div>';
+      document.getElementById('qMoi').onclick = function (e) { e.preventDefault(); this.textContent = 'đang tải…'; taiQuy(true); };
       document.getElementById('gso').onclick = moGhiSo;
       var q = document.getElementById('qso'); q.oninput = function () { veSo(q.value); };
       veSo('');
@@ -683,14 +736,26 @@ details.mc[open] summary b::after{content:" ▴"}
   function veTQ() {
     khung('Tổng quan', 'Báo cáo tài chính và công nợ', '', '<div class="sk" style="height:200px"></div><div class="sk" style="height:300px"></div>');
     if (TQ) hienTQ(TQ);
-    apiT({ v: 'tq' }).then(function (o) { if (!o.loi) TQ = o; hienTQ(o); }, function (e) { var t = document.getElementById('than'); if (t && !TQ) t.innerHTML = '<div class="empty">' + esc(e.message) + '</div>'; });
+    taiTQ({});
   }
+  var dangTQ = false;
+  function taiTQ(q) {
+    if (dangTQ) return; dangTQ = true;
+    q.v = 'tq';
+    apiT(q).then(function (o) { dangTQ = false; if (!o.loi) TQ = o; hienTQ(o); }, function (e) {
+      dangTQ = false; var t = document.getElementById('than'); if (t && !TQ) t.innerHTML = '<div class="empty">' + esc(e.message) + '</div>'; else toast(e.message); if (TQ) hienTQ(TQ);
+    });
+  }
+  function laSo(v) { return /^[-−]?[\d,.]+%?$/.test(String(v).trim()) || String(v).trim() === '-'; }
   function hienTQ(o) {
     (function () {
       var t = document.getElementById('than'); if (!t || S.tab !== 'tq') return;
       if (o.loi) { t.innerHTML = '<div class="empty">' + esc(o.loi) + '</div>'; return; }
       var mau = ['good', 'blue', 'good', 'gray', 'orange', 'orange'];
-      t.innerHTML = '<div class="meta">Kỳ ' + esc(o.ky) + ' · ' + esc(o.capNhat) + '</div>' +
+      var ds = (o.thangDs && o.thangDs.length ? o.thangDs : [o.ky]).slice().reverse();
+      t.innerHTML = '<div class="row sp"><select class="inp ky" id="tqKy">' + ds.map(function (x) { return '<option' + (x === o.ky ? ' selected' : '') + '>' + esc(x) + '</option>'; }).join('') + '</select>' +
+        '<button class="btn sm ghost" id="tqMoi">⟳ Cập nhật mới nhất</button></div>' +
+        '<div class="meta">' + esc(o.capNhat) + '</div>' +
         '<div class="tg">' + o.the.map(function (x, i) { var am = /^-/.test(x[1]); return '<div class="tc ' + (am ? 'bad' : mau[i] || 'blue') + '"><span>' + esc(x[0]) + '</span><b class="num">' + esc(x[1]) + '</b><small>' + esc(x[2]) + '</small></div>'; }).join('') + '</div>' +
         (o.viec.length ? '<div class="note warn"><b>Việc cần xử lý</b>' + o.viec.map(function (v) { return '<div>' + esc(v) + '</div>'; }).join('') + '</div>' : '') +
         o.muc.map(function (m, mi) {
@@ -698,13 +763,25 @@ details.mc[open] summary b::after{content:" ▴"}
           return '<details class="card mc"' + (mi < 1 ? ' open' : '') + '><summary><b>' + esc(tieu[0]) + '</b>' + (tieu[1] ? '<div class="meta">' + esc(tieu.slice(1).join(' ')) + '</div>' : '') + '</summary>' +
             m.dong.map(function (r) {
               var ten = r[0], con = r.slice(1), co = con.some(String);
-              if (!dau.length) return '<div class="mr"><span>' + esc(ten) + '</span><b class="num' + (/^-/.test(con[0] || '') ? ' am' : '') + '">' + esc(con.filter(String).join(' · ')) + '</b></div>';
-              if (!co || (con.filter(String).length === 0)) return '<div class="mr nt">' + esc(ten) + '</div>';
-              var tong = /^(Tổng|Giờ công toàn bộ)/.test(ten);
+              if (!co) return '<div class="mr nt">' + esc(ten) + '</div>';
+              var tong = /^(Tổng|Giờ công toàn bộ|Số dư)/.test(ten), so = [], chu = [];
+              con.forEach(function (v, i) { if (!v) return; (laSo(v) ? so : chu).push([dau[i + 1] || '', v]); });
+              if (!dau.length || so.length === 1) {   // dòng 1 số (không tiêu đề cột): tên — số, diễn giải bên dưới
+                return '<div class="mb' + (tong ? ' tong' : '') + '"><div class="mr1"><span>' + esc(ten) + '</span><b class="num' + (so[0] && /^[-−]\d/.test(so[0][1]) ? ' am' : '') + '">' + esc(so[0] ? so[0][1] : '') + '</b></div>' +
+                  chu.map(function (x) { return '<div class="dg">' + (x[0] ? esc(x[0]) + ': ' : '') + esc(x[1]) + '</div>'; }).join('') + '</div>';
+              }
               return '<div class="mb' + (tong ? ' tong' : '') + '"><div class="mt">' + esc(ten) + '</div><div class="kv so">' +
-                con.map(function (v, i) { return v ? '<span>' + esc(dau[i + 1] || '') + '</span><b class="num' + (/^-\d/.test(v) ? ' am' : '') + '">' + esc(v) + '</b>' : ''; }).join('') + '</div></div>';
+                so.map(function (x) { return '<span>' + esc(x[0]) + '</span><b class="num' + (/^[-−]\d/.test(x[1]) ? ' am' : '') + '">' + esc(x[1]) + '</b>'; }).join('') + '</div>' +
+                chu.map(function (x) { return '<div class="dg">' + (x[0] ? esc(x[0]) + ': ' : '') + esc(x[1]) + '</div>'; }).join('') + '</div>';
             }).join('') + '</details>';
         }).join('');
+      document.getElementById('tqKy').onchange = function () {
+        var k = this.value; toast('Đang đổi sang kỳ ' + k + '… (khoảng 10–30 giây)');
+        document.getElementById('tqMoi').disabled = this.disabled = true; taiTQ({ thang: k });
+      };
+      document.getElementById('tqMoi').onclick = function () {
+        this.disabled = true; this.textContent = 'Đang cập nhật…'; toast('Đang lấy số mới nhất từ Google Sheets… (có thể mất 1 phút)'); taiTQ({ moi: 1 });
+      };
     })();
   }
 
