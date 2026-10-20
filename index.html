@@ -1462,7 +1462,7 @@ textarea.inp{font-family:inherit}
       '<div class="meta" id="sThTd"></div>' +
       '<input class="inp" id="sNd" placeholder="Nội dung" value="' + (sua ? esc(x.nd || '') : '') + '">' +
       '<div class="msg" id="sm"></div><button class="btn" id="sok">' + (sua ? 'Lưu sửa' : 'Ghi') + '</button>' +
-      (sua ? '<button class="btn ghost xoa" id="sxoa">Xoá khoản này</button>' : '') + '<button class="btn ghost" id="shuy">Thôi</button>');
+      '<button class="btn ghost" id="shuy">Thôi</button>');
     var bp = banPhim('sSo'), lay = bp.lay, thTay = false;
     if (sua) bp.dat(String(x.so).replace(/\D/g, ''));
     var eK = document.getElementById('sK'), eNg = document.getElementById('sNg'), eTh = document.getElementById('sTh');
@@ -1490,15 +1490,6 @@ textarea.inp{font-family:inherit}
     veNgay(); capNhat(true);
     document.getElementById('shuy').onclick = function () { sh.remove(); };
     function xong(o, chu) { sh.remove(); toast(chu + (o.kiemTra ? ' · ' + o.kiemTra : '')); taiQuy(true, true); }
-    if (sua) document.getElementById('sxoa').onclick = function () {
-      var btn = this, m = document.getElementById('sm');
-      if (!confirmLan(btn, 'Xoá ' + x.khoan + ' ' + x.so + ' – bấm lần nữa để xoá')) return;
-      btn.disabled = true; btn.textContent = 'Đang xoá…';
-      apiT({ v: 'suaSo', r: x.r, xoa: 1, cu: { khoan: x.khoan, so: x.so, nd: x.nd } }).then(function (o) {
-        if (o.loi) { btn.disabled = false; btn.textContent = 'Xoá khoản này'; m.textContent = o.loi; return; }
-        xong(o, 'Đã xoá khoản (dòng ' + o.dong + ')');
-      }, function (e) { btn.disabled = false; btn.textContent = 'Xoá khoản này'; m.textContent = e.message; });
-    };
     document.getElementById('sok').onclick = function () {
       var k = (eK.value === '' ? null : so.khoan[Number(eK.value)]), m = document.getElementById('sm'), btn = this, tien = lay();
       if (!k) { m.textContent = 'Chọn khoản.'; return; }
