@@ -13,7 +13,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
 <script src="config.js"></script>
-<script>window.PB = { so: 29, luc: "20/10 19:56" };</script>
+<script>window.PB = { so: 30, luc: "20/10 20:01" };</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap">
 <style>
@@ -473,6 +473,8 @@ textarea.inp{font-family:inherit}
 .gcL b{color:var(--fg2)!important}
 .sheet>div>*{flex-shrink:0}   /* bảng trượt dài thì cuộn, không bóp nhỏ ô bên trong */
 .top{position:fixed;top:0;left:0;right:0;z-index:30}
+/* iOS 26 làm mờ dần dải sát thanh giờ/pin (khoảng 20px dưới tai thỏ) khi mở app từ màn hình chính: hạ hàng tiêu đề ra khỏi dải này */
+@media (display-mode: standalone){.top{padding-top:calc(env(safe-area-inset-top,0px) + 30px)}}
 .top+main{margin-top:var(--topH,0px)}
 .btn.xoa{color:var(--bad);border-color:var(--bad-bg)}
 .gcL{margin-top:12px;border-top:1px solid var(--soft);padding-top:10px}
