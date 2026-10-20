@@ -21,3 +21,10 @@ s = s.replace('<base target="_top">\n', head, 1)
 i = s.rindex('</body>')   # the cuoi trang (trong ma JS co the co chuoi '</body>')
 s = s[:i] + "<script>if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(function () { });</script>\n" + s[i:]
 open('index.html', 'w', encoding='utf-8').write(s)
+# ban thu hien thi (chi de so sanh chuyen mo o mep tren tren iPhone): A bo viewport-fit=cover, B thanh gio/pin trong suot
+nut = '<a href="index.html" style="position:fixed;left:50%;transform:translateX(-50%);bottom:calc(150px + env(safe-area-inset-bottom,0px));z-index:99;background:#C2410C;color:#fff;padding:8px 14px;border-radius:999px;font:600 14px sans-serif;text-decoration:none">BAN THU %s · ve ban thuong</a>'
+i = s.rindex('</body>')
+a_ = s.replace(', viewport-fit=cover', '', 1)
+open('index-a.html', 'w', encoding='utf-8').write(a_[:a_.rindex('</body>')] + nut.replace('BAN THU %s · ve ban thuong', 'Bản thử A · về bản thường') + a_[a_.rindex('</body>'):])
+b_ = s.replace('content="default"', 'content="black-translucent"', 1)
+open('index-b.html', 'w', encoding='utf-8').write(b_[:b_.rindex('</body>')] + nut.replace('BAN THU %s · ve ban thuong', 'Bản thử B · về bản thường') + b_[b_.rindex('</body>'):])
