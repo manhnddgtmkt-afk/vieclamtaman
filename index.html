@@ -428,10 +428,11 @@ details .tr summary b::after,.tr>summary b::after{content:none!important}
 .tqr b{font-weight:400}.tqr b.tot{color:var(--good)}.tqr.dam b{font-weight:600}
 .vk{display:flex;align-items:center;gap:10px;padding:12px 0;border-top:1px solid var(--soft);list-style:none;cursor:pointer}
 .vk::-webkit-details-marker{display:none}
-details:first-child>.vk{border-top:0}
+.sec+details>.vk,details:first-child>.vk{border-top:0}
 .vk span{flex:1;min-width:0;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .vk b{font-weight:600;white-space:nowrap}.vk i{font-style:normal;color:var(--faint);font-size:18px}
 details[open]>.vk i{transform:rotate(90deg)}
+.vang{background:var(--warn-bg)}.vang .vk{border-top-color:rgba(138,83,0,.12)}.vang .vk i{color:var(--warn)}
 .vkd{font-size:13.5px;color:var(--muted);padding:0 0 10px;white-space:pre-line}
 details.ct>summary{list-style:none}
 details.ct>summary::-webkit-details-marker{display:none}
@@ -663,7 +664,7 @@ details.mc>summary b{font-size:16px}
       '<div id="eTheme" class="hidden"><div class="seg" id="tTheme">' + THEMES.map(function (x) { return '<button data-t="' + x[0] + '"' + (x[0] === th ? ' class="on"' : '') + '>' + esc(x[1]) + '</button>'; }).join('') + '</div></div>' +
       '<button id="tdp"><span>Đổi mã PIN</span><span class="ch" style="margin-left:auto">›</span></button></div>' +
       (laChu ? '<div class="sec" style="margin:8px 4px -6px">Quản trị</div><div class="set"><button id="tdNv"><span>Quản lý nhân viên</span><span class="ch" style="margin-left:auto">›</span></button>' +
-        '<button id="tdMa"><span>Cập nhật mã ngay<small id="tdMaTt">Lấy bản mới nhất ngay</small></span><span class="v" style="color:var(--blue)">⟳</span></button></div>' : '') +
+        '<button id="tdMa"><span>Cập nhật ứng dụng<small id="tdMaTt">Lấy bản mới nhất</small></span><span class="v" style="color:var(--blue)">⟳</span></button></div>' : '') +
       '<div class="msg" id="tdm"></div><button class="dx" id="tdx">Đăng xuất</button>');
     function an(id, hien) { document.getElementById(id).classList.toggle('hidden', hien === undefined ? undefined : !hien); }
     document.getElementById('tdd').onclick = function () { sh.remove(); };
@@ -882,7 +883,7 @@ details.mc>summary b{font-size:16px}
     var cb = d.ds.filter(function (p) { return p.cb; }), am = d.ds.filter(function (p) { return p.con < 0; }), moi = d.ds.filter(function (p) { return p.moi; });
     var luc = '<button class="link" id="capNhat" style="padding:0;font-size:13px">Cập nhật ' + (S.cty === 'BEST' ? 'chấm công' : 'vân tay') + '</button>';
     hd.innerHTML = '<div class="card hero"><div class="meta">Còn phải trả</div><div class="row" style="align-items:baseline;gap:10px;flex-wrap:nowrap"><span class="big num">' + vnd(tong) + '</span>' + (tong > 0 ? '<span class="pill warn">Trả vào thứ Tư</span>' : '<span class="pill good">Đã trả đủ</span>') + '</div>' +
-      '<div class="meta ell">' + esc(canTra.length + ' người · ' + d.ds.length + ' người trong kỳ' + (d.luc ? ' · số lúc ' + d.luc : '')) + '</div>' +
+      '<div class="meta ell">' + esc(canTra.length + ' người' + (d.ky ? ' · kỳ ' + String(d.ky).replace(/\/\d{4}$/, '') : '') + ' · ' + d.ds.length + ' người trong kỳ') + '</div>' +
       (d.het ? '<div style="margin-top:8px">' + luc + '</div>' : '<div class="meta">Bạn thấy những người bạn tuyển ở công ty này.</div>') + '</div>' +
       [[cb, 'cb', 'người ' + String((cb[0] || {}).cb || 'cần xem').toLowerCase()], [am, 'am', 'người trả dư'], [moi, 'moi', 'người mới chưa lên bảng công']].filter(function (x) { return x[0].length; }).map(function (x) {
         return '<button class="ckt" data-f="' + x[1] + '"><span class="sec" style="color:var(--warn)">Cần kiểm tra</span><span class="ell" style="flex:1">' + x[0].length + ' ' + esc(x[2]) + '</span><i>›</i></button>';
@@ -1028,7 +1029,7 @@ details.mc>summary b{font-size:16px}
     var box = document.getElementById('tuans'); if (!box) return;
     if (!T.ds.length) { box.innerHTML = '<div class="meta">Chưa có tuần nào trong kỳ.</div>'; return; }
     if (!h.monChon || !T.ds.some(function (x) { return x.mon === h.monChon; })) h.monChon = T.mac && T.ds.some(function (x) { return x.mon === T.mac; }) ? T.mac : T.ds[T.ds.length - 1].mon;
-    box.innerHTML = T.ds.map(function (x) {
+    box.innerHTML = T.ds.slice().reverse().map(function (x) {
       var nh = x.tuanTxt.replace(/\/\d{4}$/, '').replace(' – ', '–');
       return '<button class="tch' + (T.mac && x.mon > T.mac ? ' cc' : '') + (x.mon === h.monChon ? ' on' : '') + (x.mon === T.mac ? ' tra' : '') + '" data-m="' + x.mon + '"><b>' + esc(nh) + '</b><small class="num">' + (T.mac && x.mon > T.mac ? 'Chưa chốt' : x.conNhan ? vnd(x.conNhan) : 'Đã trả') + '</small></button>';
     }).join('');
@@ -1162,7 +1163,7 @@ details.mc>summary b{font-size:16px}
   // ---------- ghi ứng / trả lương ----------
   function moGhiUT(p, loai) {
     var tra = loai === 'tra';
-    var sh = moSheet('<h3>' + (tra ? 'Ghi trả lương' : 'Ghi ứng tiền') + '</h3><div class="meta">' + esc(hoaDau(p.ten)) + ' · ' + esc(S.cty) + ' · còn phải trả <b>' + vnd(p.con) + '</b></div>' +
+    var sh = moSheet('<h3>' + (tra ? 'Ghi trả lương' : 'Ghi ứng tiền') + '</h3><div class="meta" style="display:flex;gap:6px"><span class="ell">' + esc(hoaDau(p.ten)) + '</span><span style="flex:0 0 auto">· còn <b>' + vnd(p.con) + '</b></span></div>' +
       '<div id="gs"></div>' +
       '<div class="fl">' + (tra && p.con > 0 ? '<button data-v="' + p.con + '">Trả hết ' + vnd(p.con) + '</button>' : '') + [100000, 200000, 500000, 1000000].map(function (v) { return '<button data-v="' + v + '">' + vnd(v) + '</button>'; }).join('') + '</div>' +
       '<label class="lb">Người trả tiền</label><select class="inp" id="gn"><option>Đang tải…</option></select>' +
@@ -1249,7 +1250,7 @@ details.mc>summary b{font-size:16px}
       '<div><label class="lb">Địa chỉ</label><input class="inp" id="tDc"></div>' +
       (laSale ? '' : '<div><label class="lb">Sale tuyển</label><select class="inp" id="tSale"><option value="">(chưa rõ)</option>' + Object.keys(sales).sort().map(function (s) { return '<option value="' + esc(s) + '">' + esc(hoaDau(s)) + '</option>'; }).join('') + '</select></div>') +
       '<div><label class="lb">Ghi chú</label><input class="inp" id="tGhi"></div>' +
-      '<div class="meta">Lần cập nhật chấm công tới sẽ đưa người này lên bảng công.</div>' +
+      '<div class="meta ell">Lên bảng công từ lần cập nhật tới</div>' +
       '<div class="msg" id="tm"></div><button class="btn" id="tok">Thêm</button><button class="btn ghost" id="thuy">Thôi</button>');
     document.getElementById('thuy').onclick = function () { sh.remove(); };
     function gv(id) { var e = document.getElementById(id); return e ? e.value.trim() : ''; }
@@ -1485,7 +1486,7 @@ details.mc>summary b{font-size:16px}
     return '<div class="tr' + (cls ? ' ' + cls : '') + '"><div class="tr1"><span class="tn">' + esc(ten) + '</span><b class="num">' + esc(so) + '</b></div>' +
       (phu || pill ? '<div class="tp tpp"><span>' + esc(phu || '') + '</span>' + (pill || '') + '</div>' : '') + '</div>';
   }
-  function tqDong2(ten, so, phu, cls, pill) { return tqDong(ten, so, phu, (cls ? cls + ' ' : '') + 'nhe', pill); }
+  function tqDong2(ten, so, phu, cls, pill) { return '<div class="tr nhe"><div class="tr1"><span class="tn">' + esc(ten) + '</span><b class="num">' + esc(so) + '</b></div><div class="tp" style="display:flex;align-items:center;gap:8px"><span class="ell">' + esc(phu || '') + '</span>' + (pill || '') + '</div></div>'; }
   function tqHero(nhan, so, phu, dong) {
     var am = /^[-−]/.test(so);
     return '<div class="card hero"><div class="meta">' + esc(nhan) + '</div><div class="row" style="align-items:baseline;flex-wrap:wrap;gap:10px"><span class="big num" style="color:' + (am ? 'var(--bad)' : 'inherit') + '">' + esc(dauTru(so || '–')) + '</span>' + (am ? '<span class="pill bad">Lỗ</span>' : '') + '</div>' +
@@ -1507,10 +1508,10 @@ details.mc>summary b{font-size:16px}
     var t = o.the, m1 = tqMuc(o, '1.'), m4 = tqMuc(o, '4.'), cp = tqMuc(o, 'CHI PHÍ CHUNG'), h = '';
     // số chính: lợi nhuận tháng; dưới là 3 dòng giải thích + lũy kế từ khi góp vốn
     var lk = /Lương kinh doanh\s+([\d,.]+)/i.exec(t[3] ? t[3][2] : ''), cc = /chi phí chung\s+([\d,.]+)/i.exec(t[3] ? t[3][2] : '');
-    var dong = (t[2] ? tqRow('Lãi từ các công ty', t[2][1], '', /^[-−]/.test(t[2][1]) ? 'am' : 'tot') : '') +
+    var dong = (t[2] ? tqRow('Lãi từ các công ty', (/^[-−]/.test(t[2][1]) ? '' : '+') + t[2][1], '', /^[-−]/.test(t[2][1]) ? 'am' : 'tot') : '') +
       (lk && cc ? tqRow('Lương kinh doanh', '−' + lk[1]) + tqRow('Chi phí chung', '−' + cc[1]) : (t[3] ? tqRow('Chi phí kinh doanh', '−' + String(t[3][1]).replace(/^[-−]/, '')) : ''));
     h += t[0] ? tqHero(t[0][0], t[0][1], String(t[0][2] || '').replace(/-(\d)/g, '−$1'), dong) : '';
-    if (o.viec.length) h += tqSec('Cần xử lý · ' + o.viec.length) + '<div class="card" style="padding-top:4px;padding-bottom:4px">' + o.viec.map(function (v) {
+    if (o.viec.length) h += '<div class="card vang" style="padding-top:10px;padding-bottom:4px"><div class="sec" style="color:var(--warn)">Cần xử lý · ' + o.viec.length + '</div>' + o.viec.map(function (v) {
       var x = tqViec(String(v).replace(/^\d+\.\s*/, ''));
       return '<details><summary class="vk"><span>' + esc(x[0]) + '</span><b class="num">' + esc(x[1]) + '</b><i>›</i></summary><div class="vkd">' + esc(x[2]) + '</div></details>';
     }).join('') + '</div>';
@@ -1563,7 +1564,7 @@ details.mc>summary b{font-size:16px}
       return '<button class="c6' + (i === 0 ? ' on' : '') + '" data-i="' + i + '" aria-label="' + (i === 0 ? 'Tuần này' : 'Tuần ' + dm(x.a)) + '"><i style="height:' + Math.max(4, 100 * x.thu / mx).toFixed(0) + '%"></i><span>' + (i === 0 ? 'Tuần này' : dm(x.a)) + '</span></button>';
     }).join('') + '</div><div id="c6ct"></div>' +
       (w.qua.thu || w.qua.chi ? '<div class="note bad" style="margin-top:10px">Đã quá hạn: khách chưa trả ' + vnd(w.qua.thu) + (w.qua.chi ? ' · vendor chưa trả ' + vnd(w.qua.chi) : '') + '</div>' : '') +
-      '<div class="note warn" style="margin-top:10px;font-size:13px">Chưa gồm lương công nhân và lương kinh doanh trả hằng tuần</div></div>';
+      '<div class="note warn" style="margin-top:10px;font-size:13px">Chưa gồm lương trả hằng tuần</div></div>';
     if (m6) {
       var rs = m6.dong.filter(function (r) { return tqCo(tqGt(m6, r, 'Thực nhận dự kiến')) && !/^Tổng/i.test(r[0]); });
       var tg = m6.dong.filter(function (r) { return /^Tổng/i.test(r[0]); })[0], ghi = m6.dong.filter(function (r) { return r[0] && !r.slice(1).some(tqCo); })[0];
@@ -1585,7 +1586,7 @@ details.mc>summary b{font-size:16px}
       h += tqHero('Lương kinh doanh ' + tqThang(o.ky), tg ? tqGt(m3, tg, 'Lương phải trả') : '–', nv.length + ' nhân viên' + (tg ? ' · ' + tqGt(m3, tg, 'Tổng giờ') + ' giờ quản lý' : ''));
       h += tqSec('Từng nhân viên') + '<div class="card">' + nv.map(function (r) {
         var gio = parseFloat(String(tqGt(m3, r, 'Tổng giờ')).replace(/,/g, '')) || 0, pc = Math.min(100, 100 * gio / 5000), luong = tqGt(m3, r, 'Lương phải trả'), no = tqGt(m3, r, 'Chưa thanh toán');
-        var pill = tqCo(no) ? '<span class="pill warn">chưa trả ' + esc(no) + '</span>' : '<span class="pill good">Đã trả</span>';
+        var pill = tqCo(no) ? '<span class="pill warn">' + (no === luong ? 'chưa trả' : 'chưa trả ' + esc(no)) + '</span>' : '<span class="pill good">Đã trả</span>';
         return '<details class="tr"><summary><div class="tr1"><span class="tn">' + esc(r[0]) + '</span><b class="num">' + esc(luong) + '</b></div><div class="bar"><i style="width:' + Math.max(2, pc).toFixed(1) + '%"></i></div>' +
           '<div class="tp tpp"><span>' + esc(tqGt(m3, r, 'Tổng giờ') + ' / 5,000 giờ') + '</span>' + pill + '</div></summary>' +
           '<div class="trd">' + m3.dau.map(function (d, i) { return i && tqCo(r[i]) ? '<span>' + esc(d) + '</span><b class="num">' + esc(r[i]) + '</b>' : ''; }).join('') + '</div></details>';
@@ -1597,7 +1598,7 @@ details.mc>summary b{font-size:16px}
       var ctv = vd.map(function (r) { return tqDong(r[0], tqGt(m2, r, 'Còn phải trả'), [tqGt(m2, r, 'Khách hàng'), tqCo(tqGt(m2, r, 'Hạn thanh toán')) ? 'hạn ' + tqGt(m2, r, 'Hạn thanh toán') : ''].filter(String).join(' · ')); }).join('') +
         cu.map(function (r, i) { return i === 0 ? tqRow(r[0], tqGt(m2, r, 'Còn phải trả'), '', 'dam') : tqDong(r[0], tqGt(m2, r, 'Còn phải trả'), [tqGt(m2, r, 'Khách hàng'), tqCo(tqGt(m2, r, 'Hạn thanh toán')) ? 'hạn ' + tqGt(m2, r, 'Hạn thanh toán') : ''].filter(String).join(' · '), 'nho'); }).join('');
       h += tqSec('Vendor cung ứng lại') + '<div class="card">' +
-        (tgv ? tqRow('Phải trả vendor ' + tqThang(o.ky), tqGt(m2, tgv, 'Còn phải trả'), '', 'dam') : '') +
+        (tgv ? tqRow('Phải trả vendor ' + String(tqThang(o.ky)).replace(/^tháng (\d+)\/\d{4}$/, 'T$1'), tqGt(m2, tgv, 'Còn phải trả'), '', 'dam') : '') +
         (cu[0] ? tqRow('Các kỳ trước còn nợ', tqGt(m2, cu[0], 'Còn phải trả'), '', 'dam') : '') +
         '<div class="meta" style="padding:10px 0 4px;border-top:1px solid var(--soft)">Trả vendor khi khách thanh toán</div></div>' + tqChiTiet('Xem từng vendor', ctv);
     }
