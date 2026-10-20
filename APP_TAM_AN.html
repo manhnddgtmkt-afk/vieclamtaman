@@ -439,6 +439,14 @@ details.mc>summary b{font-size:16px}
 .ckt.nghi{background:var(--card);margin-top:16px}.ckt.nghi i{color:var(--faint)}
 .it .nm{display:block}
 .ul>.ur:first-child{border-top:0}
+/* số không bao giờ bị bẻ dòng (Safari bẻ sau dấu phẩy); số chính quá dài thì tự thu nhỏ */
+.num,.big,b.num,.amt{white-space:nowrap}
+.big{display:inline-block;max-width:100%}
+.g3>div{min-width:0}.g3 b{display:block}.g3 span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block}
+#tqMoi,.tch b,.tch small,button,.btn,.link{white-space:nowrap}
+.tch b,.tch small{display:block;max-width:100%;overflow:hidden}
+#xuat .btn{min-width:0;overflow:hidden;text-overflow:ellipsis}
+.inp.ky{min-width:0;flex:0 1 auto}
 .icb{border:0;flex:0 0 auto}
 /* chữ dài: không xuống dòng, cắt … (chỉ phần mở rộng chi tiết mới được xuống dòng) */
 .tn,.tqr>span,.tp,.tpp>span,.hero>.meta,.sub,.nm,.vk span,.it .sub{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
@@ -872,7 +880,7 @@ details.mc>summary b{font-size:16px}
     var canTra = d.ds.filter(function (p) { return p.con > 0; }).sort(function (a, b) { return b.con - a.con; }), tong = canTra.reduce(function (a, p) { return a + p.con; }, 0);
     var cb = d.ds.filter(function (p) { return p.cb; }), am = d.ds.filter(function (p) { return p.con < 0; }), moi = d.ds.filter(function (p) { return p.moi; });
     var luc = '<button class="link" id="capNhat" style="padding:0;font-size:13px">Cập nhật ' + (S.cty === 'BEST' ? 'chấm công' : 'vân tay') + '</button>';
-    hd.innerHTML = '<div class="card hero"><div class="meta">Còn phải trả</div><div class="row" style="align-items:baseline;gap:10px;flex-wrap:nowrap"><span class="big num">' + vnd(tong) + '</span>' + (tong > 0 ? '<span class="pill warn">Trả vào thứ Tư</span>' : '<span class="pill good">Đã trả đủ</span>') + '</div>' +
+    hd.innerHTML = '<div class="card hero"><div class="meta">Còn phải trả</div><div class="row" style="align-items:baseline;gap:4px 10px;flex-wrap:wrap"><span class="big num">' + vnd(tong) + '</span>' + (tong > 0 ? '<span class="pill warn">Trả vào thứ Tư</span>' : '<span class="pill good">Đã trả đủ</span>') + '</div>' +
       '<div class="meta ell">' + esc(canTra.length + ' người' + (d.ky ? ' · kỳ ' + String(d.ky).replace(/\/\d{4}$/, '') : '') + ' · ' + d.ds.length + ' người trong kỳ') + '</div>' +
       (d.het ? '<div style="margin-top:8px">' + luc + '</div>' : '<div class="meta">Bạn thấy những người bạn tuyển ở công ty này.</div>') + '</div>' +
       [[cb, 'cb', 'người ' + String((cb[0] || {}).cb || 'cần xem').toLowerCase()], [am, 'am', 'người trả dư'], [moi, 'moi', 'người mới chưa lên bảng công']].filter(function (x) { return x[0].length; }).map(function (x) {
@@ -930,7 +938,7 @@ details.mc>summary b{font-size:16px}
         '<div id="lich" class="hidden"></div>' +
         '<div id="wk"><div class="sec hidden" id="wt" style="margin:0 4px 8px">Phiếu tuần</div><div class="tuans" id="tuans"><div class="sk" style="height:52px;flex:1"></div></div></div>' +
         '<div id="pcb"></div><div class="slip" id="slip"><div class="sk" style="height:300px;border-radius:0"></div></div>' +
-        '<div class="g2" id="xuat"><button class="btn lk" id="xCopy" disabled>Sao chép ảnh phiếu</button><button class="btn lk" id="xLuu" disabled>Lưu / Gửi phiếu</button></div>' +
+        '<div class="g2" id="xuat"><button class="btn lk" id="xCopy" disabled>Chép ảnh phiếu</button><button class="btn lk" id="xLuu" disabled>Lưu / Gửi phiếu</button></div>' +
         '<div class="sec" style="margin:6px 4px -6px">Ứng / trả lương trong kỳ</div><div class="card" id="ut"><div class="meta">Đang tải…</div></div>'
         : '<div class="note warn">Người mới, chưa có trên bảng công. Lần cập nhật chấm công tới sẽ có bảng công và phiếu lương.</div>') +
       '<div class="sec" style="margin:6px 4px -6px">Thông tin</div><div class="card"><div class="kv">' +
@@ -1020,7 +1028,7 @@ details.mc>summary b{font-size:16px}
     if (!T.ds.length) { box.innerHTML = '<div class="meta">Chưa có tuần nào trong kỳ.</div>'; return; }
     if (!h.monChon || !T.ds.some(function (x) { return x.mon === h.monChon; })) h.monChon = T.mac && T.ds.some(function (x) { return x.mon === T.mac; }) ? T.mac : T.ds[T.ds.length - 1].mon;
     box.innerHTML = T.ds.slice().reverse().map(function (x) {
-      var nh = x.tuanTxt.replace(/\/\d{4}$/, '').replace(' – ', '–');
+      var nh = x.tuanTxt.replace(/\/\d{4}$/, '').replace(' – ', '–').replace(/^(\d+)\/(\d+)–(\d+)\/\2$/, '$1–$3/$2');
       return '<button class="tch' + (T.mac && x.mon > T.mac ? ' cc' : '') + (x.mon === h.monChon ? ' on' : '') + (x.mon === T.mac ? ' tra' : '') + '" data-m="' + x.mon + '"><b>' + esc(nh) + '</b><small class="num">' + (T.mac && x.mon > T.mac ? 'Chưa chốt' : x.conNhan ? vnd(x.conNhan) : 'Đã trả') + '</small></button>';
     }).join('');
     box.querySelectorAll('.tch').forEach(function (b) { b.onclick = function () { h.monChon = Number(b.getAttribute('data-m')); veTuanChon(h, T); }; });
@@ -1158,7 +1166,7 @@ details.mc>summary b{font-size:16px}
       '<div class="fl">' + (tra && p.con > 0 ? '<button data-v="' + p.con + '">Trả hết ' + vnd(p.con) + '</button>' : '') + [100000, 200000, 500000, 1000000].map(function (v) { return '<button data-v="' + v + '">' + vnd(v) + '</button>'; }).join('') + '</div>' +
       '<label class="lb">Người trả tiền</label><select class="inp" id="gn"><option>Đang tải…</option></select>' +
       '<input class="inp" id="gg" placeholder="Ghi chú (không bắt buộc)">' +
-      '<div class="meta">Ghi ngày hôm nay. Ghi nhầm thì báo quản lý sửa.</div>' +
+      '<div class="meta">Ghi nhầm thì báo quản lý sửa.</div>' +
       '<div class="msg" id="gm"></div><button class="btn" id="gok">Ghi</button><button class="btn ghost" id="ghuy">Thôi</button>');
     var bp = banPhim('gs'), lay = bp.lay;
     sh.querySelectorAll('.fl button').forEach(function (b) { b.onclick = function () { bp.dat(b.getAttribute('data-v')); }; });
@@ -1317,7 +1325,7 @@ details.mc>summary b{font-size:16px}
       } else if (o.tinhLoi) trangThai = '<div class="note warn">⚠ Bảng tổng hợp chưa tính lại được (' + esc(o.tinhLoi.slice(0, 120)) + '). Số dư có thể chưa gồm khoản vừa ghi. <a href="#" id="qMoi" style="color:var(--blue)">Thử lại</a></div>';
       function o3(nhan, gt, mo) { gt = String(gt || '0'); return '<div><span>' + nhan + '</span><b class="num' + (mo || /^0$/.test(gt) ? ' mo' : '') + '" style="white-space:nowrap;font-size:' + (gt.length > 11 ? 13 : 15) + 'px">' + esc(gt) + '</b></div>'; }
       t.innerHTML = '<div class="card hero"><div class="meta">Số dư quỹ</div><div class="big num">' + esc(soDu) + '</div><div class="meta">' + esc([quy && quy[2] ? String(quy[2]).replace(/^Do\s+(\S+).*$/i, '$1 giữ') : '', o.capNhat ? 'cập nhật ' + ((/(\d{1,2}:\d{2})/.exec(o.capNhat) || [''])[0] || o.capNhat) : ''].filter(String).join(' · ')) + '</div>' + trangThai +
-        '<div class="g3">' + o3('Đã thu', String(so.tongThu || '').replace(/^Tổng thu:\s*/, '')) + o3('Đã chi', String(so.tongChi || '').replace(/^Tổng chi:\s*/, '')) + o3('Lương CN đã trả', String(luongCN ? luongCN[1] : '–').replace(/^[-−]/, '')) + '</div>' + (tqCo(so.noUng) ? '<div class="meta" style="margin-top:8px">Nợ người ứng ' + esc(so.noUng) + '</div>' : '') + '</div>' +
+        '<div class="g3">' + o3('Đã thu', String(so.tongThu || '').replace(/^Tổng thu:\s*/, '')) + o3('Đã chi', String(so.tongChi || '').replace(/^Tổng chi:\s*/, '')) + o3('Lương CN', String(luongCN ? luongCN[1] : '–').replace(/^[-−]/, '')) + '</div>' + (tqCo(so.noUng) ? '<div class="meta" style="margin-top:8px">Nợ người ứng ' + esc(so.noUng) + '</div>' : '') + '</div>' +
         (so.loi && !/Không có dòng lỗi/.test(so.loi) ? '<div class="note bad">' + esc(so.loi) + '</div>' : '') +
         '<div class="row sp" style="margin:6px 4px -6px"><span class="sec">Sổ thu chi' + (o.ky ? ' · ' + esc(tqThang(o.ky).replace(/\/\d{4}$/, '')) : '') + '</span><button class="icb" id="qTim" aria-label="Tìm khoản">' + ICON_TIM + '</button></div>' +
         '<input class="search hidden" id="qso" type="search" placeholder="Tìm khoản, nội dung, người…" style="margin:0">' +
@@ -1608,7 +1616,7 @@ details.mc>summary b{font-size:16px}
       var than = nhom === 'tien' ? tqNhomTien(o) : nhom === 'vs' ? tqNhomVS(o) : tqNhomLN(o);
       var cn = /(\d{1,2}:\d{2}) ngày (\d{1,2}\/\d{1,2})/.exec(o.capNhat || '');
       t.innerHTML = '<div class="row sp"><select class="inp ky" id="tqKy" aria-label="Chọn kỳ">' + ds.map(function (x) { return '<option value="' + esc(x) + '"' + (x === o.ky ? ' selected' : '') + '>Kỳ ' + esc(tqThang(x)) + '</option>'; }).join('') + '</select>' +
-        '<button class="link" id="tqMoi">⟳ Lấy số mới</button></div>' +
+        '<button class="link" id="tqMoi">⟳ Số mới</button></div>' +
         '<div class="meta" style="margin:-8px 4px 0">' + (cn ? 'Cập nhật ' + cn[1] + ' · ' + cn[2] : esc(o.capNhat)) + '</div>' +
         '<div class="seg" id="tqSeg"><button data-n="ln"' + (nhom === 'ln' ? ' class="on"' : '') + '>Lợi nhuận</button><button data-n="tien"' + (nhom === 'tien' ? ' class="on"' : '') + '>Tiền & công nợ</button><button data-n="vs"' + (nhom === 'vs' ? ' class="on"' : '') + '>Vendor & sale</button></div>' +
         than;
@@ -1629,13 +1637,26 @@ details.mc>summary b{font-size:16px}
           var x = w.tuan[i], net = x.thu - x.chi, ct = document.getElementById('c6ct');
           c6.forEach(function (b) { b.classList.toggle('on', Number(b.getAttribute('data-i')) === i); });
           ct.innerHTML = '<div class="tqr dam dau" style="font-size:16px"><span>' + (i === 0 ? 'Tuần này' : 'Tuần ' + ('0' + x.a.getDate()).slice(-2) + '/' + ('0' + (x.a.getMonth() + 1)).slice(-2)) + ' dự kiến</span><b class="num' + (net > 0 ? ' tot' : net < 0 ? ' am' : '') + '">' + (x.thu || x.chi ? (net > 0 ? '+' : '') + vnd(net) : '–') + '</b></div>' +
-            '<div class="meta">' + (x.ct.length ? esc(x.ct.map(function (c) { return c[0]; }).join(' · ')) : 'Không có khoản nào đến hạn') + '</div>';
+            '<div class="meta ell">' + (x.ct.length ? esc(x.ct.map(function (c) { return c[0]; }).join(' · ')) : 'Không có khoản nào đến hạn') + '</div>';
         }
         c6.forEach(function (b) { b.onclick = function () { veTuan(Number(b.getAttribute('data-i'))); }; });
         veTuan(0);
       }
     })();
   }
+
+  // số chính tự thu nhỏ cho vừa khung (máy chữ to / màn hẹp)
+  function vuaSo() {
+    document.querySelectorAll('.big,.g3 b,.tch small').forEach(function (e) {
+      e.style.fontSize = ''; var cha = e.parentElement; if (!cha) return;
+      var nho = e.classList.contains('big') ? 20 : 10, buoc = nho === 20 ? 2 : 0.5;
+      var w = nho === 20 ? cha.clientWidth : e.clientWidth, c = parseFloat(getComputedStyle(e).fontSize), lan = 0;
+      while (e.scrollWidth > (nho === 20 ? w : e.clientWidth) && c > nho && lan++ < 30) { c -= buoc; e.style.fontSize = c + 'px'; }
+    });
+  }
+  var _vsHen = 0;
+  new MutationObserver(function () { if (_vsHen) return; _vsHen = requestAnimationFrame(function () { _vsHen = 0; vuaSo(); }); }).observe(document.body, { childList: true, subtree: true });
+  window.addEventListener('resize', vuaSo);
 
   // ---------- khởi động ----------
   S.tqNhom = doc('vlta_tqn') || 'ln';
