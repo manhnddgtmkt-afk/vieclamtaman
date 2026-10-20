@@ -398,18 +398,26 @@ textarea.inp{font-size:15px;resize:vertical}
   function apTheme(t) { var r = document.documentElement; if (!t || t === 'auto') r.removeAttribute('data-theme'); else r.setAttribute('data-theme', t); }
   apTheme(doc('vlta_theme'));
   function avHTML(u, lop) { return u && u.anh ? '<img class="' + (lop || 'av') + ' img" src="' + esc(u.anh) + '" alt="">' : '<div class="' + (lop || 'av') + '">' + esc(chu(u ? u.ten : '?')) + '</div>'; }
+  var DONG_BO_MA = 'https://script.google.com/macros/s/AKfycbw9tVi3bcTDHCJ3fT_5dZxvwiGiyKHxGu0aLkGbBEPbve6tAWk_tYVTa9QY9GXDPQfwRg/exec';   // du an "Dong bo ma Tam An": chi keo ban ma moi tu GitHub
   function moTaiKhoan() {
     var u = S.toi, th = doc('vlta_theme') || 'auto';
     var sh = moSheet('<div class="lg-user"><label class="avw" title="Đổi ảnh">' + avHTML(u) + '<span>📷</span><input type="file" id="tAnh" accept="image/*" hidden></label><div style="min-width:0"><b>' + esc(u.ten) + '</b><div class="meta">' + esc(u.chuc) +
       (u.phuTrach.length ? ' · phụ trách ' + esc(u.phuTrach.join(', ')) : '') + '</div><div class="meta">' + esc(u.sdt) + '</div></div></div>' +
       '<label class="lb">Tên hiển thị</label><div class="row"><input class="inp" id="tTenMoi" value="' + esc(u.ten) + '" maxlength="40"><button class="btn sm" id="tTenOk">Lưu</button></div>' +
       '<label class="lb">Giao diện</label><div class="seg" id="tTheme">' + THEMES.map(function (x) { return '<button data-t="' + x[0] + '"' + (x[0] === th ? ' class="on"' : '') + '>' + esc(x[1]) + '</button>'; }).join('') + '</div>' +
-      (u.vai === 'chu' ? '<button class="btn ghost" id="tdNv">👥 Quản lý nhân viên</button>' : '') +
+      (u.vai === 'chu' ? '<button class="btn ghost" id="tdNv">👥 Quản lý nhân viên</button><button class="btn ghost" id="tdMa">⟳ Cập nhật mã ngay</button>' : '') +
       '<button class="btn ghost" id="tdp">Đổi mã PIN</button><button class="btn ghost" id="tdx" style="color:var(--bad)">Đăng xuất</button><button class="btn" id="tdd">Đóng</button><div class="msg" id="tdm"></div>');
     document.getElementById('tdd').onclick = function () { sh.remove(); };
     document.getElementById('tdp').onclick = function () { sh.remove(); moDoiPin(false); };
     document.getElementById('tdx').onclick = function () { sh.remove(); dangXuat(false); };
     if (u.vai === 'chu') document.getElementById('tdNv').onclick = function () { sh.remove(); moQLNV(); };
+    if (u.vai === 'chu') document.getElementById('tdMa').onclick = function () {   // keo ban ma moi nhat tu GitHub sang Drive ngay (khong cho lich 5 phut)
+      var b = this, m = document.getElementById('tdm'); b.disabled = true; b.textContent = 'Đang lấy bản mã mới nhất…'; m.textContent = '';
+      fetch(DONG_BO_MA).then(function (r) { return r.json(); }).then(function (o) {
+        b.disabled = false; b.textContent = '⟳ Cập nhật mã ngay';
+        m.textContent = (o.kq || '') + (o.luc ? ' · lần chép gần nhất: ' + o.luc : '') + (/Đã cập nhật/.test(o.kq || '') ? ' · Đóng hẳn app rồi mở lại nếu có đổi giao diện.' : '');
+      }, function (e) { b.disabled = false; b.textContent = '⟳ Cập nhật mã ngay'; m.textContent = 'Không gọi được: ' + e.message; });
+    };
     document.querySelectorAll('#tTheme button').forEach(function (b) { b.onclick = function () { var t = b.getAttribute('data-t'); luu('vlta_theme', t); apTheme(t); document.querySelectorAll('#tTheme button').forEach(function (x) { x.classList.toggle('on', x === b); }); }; });
     function capNhatToi(o) { if (o.loi) { document.getElementById('tdm').textContent = o.loi; return; } S.toi = o.toi; luuDs(); luu('vlta_ten', o.toi.ten); sh.remove(); moTab(S.tab); toast('Đã lưu.'); }
     document.getElementById('tTenOk').onclick = function () {
