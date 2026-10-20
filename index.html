@@ -457,6 +457,10 @@ select.inp.chon{-webkit-appearance:none;appearance:none;height:52px;line-height:
 .nph{justify-content:flex-start;gap:0}.nph .num{flex:0 1 auto;min-width:0;overflow:hidden;white-space:nowrap}.nph .link{margin-left:auto;flex:0 0 auto;padding-left:8px;font-size:14px}.nhay{flex:0 0 auto}
 .nhay{display:inline-block;width:2px;height:34px;background:var(--blue);margin-left:4px;animation:nhay 1s steps(1) infinite}
 @keyframes nhay{50%{opacity:0}}
+textarea.inp{font-family:inherit}
+.ngayO .lichIc{margin-left:auto;color:var(--muted)}
+#sThDoi{color:var(--blue);text-decoration:none;font-weight:600;padding:6px 2px}
+.ld.nghi b,.ld.ngoai b{font-weight:500}
 .btn.xoa{color:var(--bad);border-color:var(--bad-bg)}
 .gcL{margin-top:12px;border-top:1px solid var(--soft);padding-top:10px}
 .gcL div{display:flex;gap:10px;padding:6px 0;font-size:14px}.gcL b{flex:0 0 46px;font-weight:600;color:var(--warn)}.gcL span{white-space:pre-line;color:var(--fg2)}
@@ -1018,8 +1022,8 @@ select.inp.chon{-webkit-appearance:none;appearance:none;height:52px;line-height:
       }
       html += '</div>';
     });
-    html += '</div><div class="lgd"><span><i class="ngay"></i>ca ngày</span><span><i class="dem"></i>ca đêm</span><span><i class="nghi"></i>nghỉ</span><span><i class="loi"></i>có ghi chú</span></div>' +
-      '<div class="meta ell">Bấm vào ngày để xem giờ vào/ra, báo sai giờ</div>' +
+    html += '</div><div class="lgd"><span><i class="ngay"></i>ngày</span><span><i class="dem"></i>đêm</span><span><i class="nghi"></i>nghỉ</span><span><i class="loi"></i>có ghi chú</span></div>' +
+      '<div class="meta ell">Bấm ngày để xem giờ, báo sai giờ</div>' +
       ((T.gc || []).length ? '<div class="gcL"><div class="sec" style="padding:0 0 4px">Ghi chú trong kỳ</div>' + (T.gc || []).map(function (g) {
         return '<div><b>' + (g.s ? esc(ddmm(serialDate(g.s))) : 'Chung') + '</b><span>' + esc(g.nd) + '</span></div>';
       }).join('') + '</div>' : '') + '</div>';
@@ -1031,13 +1035,13 @@ select.inp.chon{-webkit-appearance:none;appearance:none;height:52px;line-height:
   }
   function moNgay(h, sv, n, gc) {
     var thu = ['CN', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7'][serialDate(sv).getUTCDay()];
-    var sh = moSheet('<h3>' + thu + ' ' + esc(ddmm(serialDate(sv), true)) + ' · ' + esc(h.p.ten) + '</h3>' +
+    var sh = moSheet('<div><h3 class="ell">' + esc(hoaDau(h.p.ten)) + '</h3><div class="meta">' + thu + ' ' + esc(ddmm(serialDate(sv), true)) + '</div></div>' +
       (n.co ? '<div class="kv so"><span>Ca</span><b>' + esc(n.ca || '') + '</b><span>Vào</span><b class="num">' + esc(n.vao || '–') + '</b><span>Ra</span><b class="num">' + esc(n.ra || '–') + '</b>' +
         '<span>Giờ hành chính</span><b class="num">' + esc(n.hc) + '</b><span>Tăng ca</span><b class="num">' + esc(n.tc) + '</b><span>Thành tiền</span><b class="num">' + vnd(n.tien) + '</b></div>'
         : '<div class="meta">Ngày này không có công.</div>') +
       (n.ghi ? '<div class="note warn">' + esc(n.ghi) + '</div>' : '') +
       (gc ? '<div class="note warn" style="white-space:pre-line"><b>Ghi chú trên bảng công:</b>\n' + esc(gc) + '</div>' : '') +
-      '<label class="lb">Báo sai giờ (ghi chú vào ô ngày này trên bảng công)</label>' +
+      '<label class="lb">Báo sai giờ</label>' +
       '<textarea class="inp" id="bsNd" rows="3" placeholder="Ví dụ: vào 7:30 ra 19:30, máy chấm công thiếu giờ ra"></textarea>' +
       '<div class="msg" id="bsM"></div><button class="btn" id="bsOk">Gửi báo sai giờ</button><button class="btn ghost" id="bsHuy">Đóng</button>');
     document.getElementById('bsHuy').onclick = function () { sh.remove(); };
@@ -1419,7 +1423,7 @@ select.inp.chon{-webkit-appearance:none;appearance:none;height:52px;line-height:
       '<div><label class="lb">Khoản</label><select class="inp chon" id="sK"><option value="">Chọn khoản…</option>' + nhom('Thu') + nhom('Chi') + '</select></div>' +
       '<div class="meta" id="sGy"></div>' +
       '<div id="sSo"></div>' +
-      '<div class="g2"><div><label class="lb">Ngày</label><div class="ngayO"><span id="sNgT"></span><input id="sNg" type="date" value="' + (sua ? soVeIso(x.ngay) || iso : iso) + '" aria-label="Ngày"></div></div>' +
+      '<div class="g2"><div><label class="lb">Ngày</label><div class="ngayO"><span id="sNgT"></span><svg class="lichIc" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg><input id="sNg" type="date" value="' + (sua ? soVeIso(x.ngay) || iso : iso) + '" aria-label="Ngày"></div></div>' +
       '<div><label class="lb">Người chi</label><select class="inp chon" id="sNc">' + so.nguoiChi.map(function (y) { return '<option' + (y === (sua ? x.nguoi : toi) ? ' selected' : '') + '>' + esc(y) + '</option>'; }).join('') + '</select></div></div>' +
       '<div id="sDtO" class="hidden"><label class="lb" id="sDtL">Người nhận</label><select class="inp chon" id="sDt"><option value="">Chọn…</option>' + so.doiTuong.map(function (y) { return '<option' + (sua && y === x.dt ? ' selected' : '') + '>' + esc(y) + '</option>'; }).join('') + '</select></div>' +
       '<div id="sThO" class="hidden"><label class="lb" id="sThL">Tháng</label><select class="inp chon" id="sTh"><option value="">Chọn tháng…</option>' + so.thang.map(function (y) { return '<option value="' + esc(y) + '">' + esc(y.replace(/^(\d{4})-T0?(\d+)$/, 'Tháng $2/$1')) + '</option>'; }).join('') + '</select></div>' +
@@ -1434,7 +1438,7 @@ select.inp.chon{-webkit-appearance:none;appearance:none;height:52px;line-height:
     function veNgay() { var v = eNg.value || iso; document.getElementById('sNgT').textContent = v.split('-').reverse().join('/'); }
     function capNhat(dau) {   // theo khoản: hiện / ẩn người nhận; tháng tự điền
       var k = (eK.value === '' ? null : so.khoan[Number(eK.value)]);
-      document.getElementById('sGy').textContent = k ? k.goiY || '' : '';
+      document.getElementById('sGy').textContent = k ? String(k.goiY || '').replace(/\s*\([^)]*\)/g, '').replace(/;\s*tháng\s*=.*$/i, '') : '';
       var can = canNguoiNhan(k); document.getElementById('sDtO').classList.toggle('hidden', !can);
       document.getElementById('sDtL').textContent = k && /khách trả|chi quản lý/i.test(k.ten) ? 'Công ty' : 'Người nhận';
       var buoc = !!(k && k.thangBuoc);
