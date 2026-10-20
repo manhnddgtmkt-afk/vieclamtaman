@@ -711,7 +711,6 @@ textarea.inp{font-family:inherit}
       '<button id="rTheme"><span>Giao diện</span><span class="v" id="vTheme">' + esc(tenTheme) + '</span><span class="ch">›</span></button>' +
       '<div id="eTheme" class="hidden"><div class="seg" id="tTheme">' + THEMES.map(function (x) { return '<button data-t="' + x[0] + '"' + (x[0] === th ? ' class="on"' : '') + '>' + esc(x[1]) + '</button>'; }).join('') + '</div></div>' +
       '<button id="tdp"><span>Đổi mã PIN</span><span class="ch" style="margin-left:auto">›</span></button>' +
-      (window.PB && laChu ? '<button id="tdThuA"><span>Thử hiển thị A<small>bỏ vẽ tràn lên thanh giờ/pin</small></span><span class="ch" style="margin-left:auto">›</span></button><button id="tdThuB"><span>Thử hiển thị B<small>đổi kiểu thanh giờ/pin</small></span><span class="ch" style="margin-left:auto">›</span></button>' : '') +
       (window.PB ? '<button id="tdPb"><span>Phiên bản ' + PB.so + '<small id="tdPbTt">ra lúc ' + esc(PB.luc) + ' · đang kiểm tra…</small></span><span class="v" id="tdPbV"></span></button>' : '') + '</div>' +
       (laChu ? '<div class="sec" style="margin:8px 4px -6px">Quản trị</div><div class="set"><button id="tdNv"><span>Quản lý nhân viên</span><span class="ch" style="margin-left:auto">›</span></button>' +
         '<button id="tdMa"><span>Cập nhật ứng dụng<small id="tdMaTt">Lấy bản mới nhất</small></span><span class="v" style="color:var(--blue)">⟳</span></button></div>' : '') +
@@ -733,7 +732,6 @@ textarea.inp{font-family:inherit}
         }, function (e) { b.disabled = false; tt.textContent = 'Không gọi được: ' + e.message; });
       };
     }
-    ['A', 'B'].forEach(function (k) { var b = document.getElementById('tdThu' + k); if (b) b.onclick = function () { location.href = 'index-' + k.toLowerCase() + '.html'; }; });
     if (window.PB) {
       var pbT = document.getElementById('tdPbTt'), pbV = document.getElementById('tdPbV'), pbB = document.getElementById('tdPb'), moiNhat = 0;
       fetch('sw.js?' + Date.now(), { cache: 'no-store' }).then(function (r) { return r.text(); }).then(function (t) {
