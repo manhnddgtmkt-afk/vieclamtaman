@@ -252,6 +252,7 @@ textarea.inp{font-size:15px;resize:vertical}
     var tg = VIEC_TG[q.v] || [4, ''], giay = tg[0], nhan = tg[1];
     if (q.v === 'tq' && q.moi) { giay = 60; nhan = 'Đang lấy số mới nhất'; }
     else if (q.v === 'tq' && q.thang) { giay = 25; nhan = 'Đang đổi sang kỳ ' + q.thang; }
+    else if (q.v === 'quy' && (q.tinhLai || q.moi)) { giay = 30; nhan = 'Đang tính lại số dư quỹ'; }
     else if (q.moi) giay += 4;
     if (q.v === 'capNhat') nhan = 'Đang cập nhật ' + (q.cty === 'BEST' ? 'chấm công' : 'vân tay');
     var v = { t0: Date.now(), giay: giay, nhan: nhan, xong: false };
@@ -962,9 +963,14 @@ textarea.inp{font-size:15px;resize:vertical}
     if (QUY) hienQuy(QUY);
     taiQuy(false);
   }
-  function taiQuy(moi) {
-    apiT({ v: 'quy', moi: moi ? 1 : 0 }).then(hienQuy, function (e) { var t = document.getElementById('than'); if (t && !QUY) t.innerHTML = '<div class="empty">' + esc(e.message) + '</div>'; });
+  var QUY_TAM = null;   // so du tam (vua ghi khoan, cho bang tong hop tinh lai)
+  function taiQuy(moi, tinhLai) {
+    apiT({ v: 'quy', moi: moi ? 1 : 0, tinhLai: tinhLai ? 1 : 0 }).then(function (o) { QUY_TAM = null; hienQuy(o); }, function (e) {
+      if (QUY_TAM) { QUY_TAM.loi = 'Chưa tính lại được: ' + e.message + '. Bấm "làm mới" để thử lại.'; if (QUY) hienQuy(QUY); return; }
+      var t = document.getElementById('than'); if (t && !QUY) t.innerHTML = '<div class="empty">' + esc(e.message) + '</div>';
+    });
   }
+  function soTien(x) { return Number(String(x || '').replace(/[^\d-]/g, '')) || 0; }
   function hienQuy(o) {
     (function () {
       var t = document.getElementById('than'); if (!t || S.tab !== 'quy') return;
@@ -972,9 +978,15 @@ textarea.inp{font-size:15px;resize:vertical}
       QUY = o;
       var m5 = o.muc5, quy = null, khac = [];
       if (m5) m5.dong.forEach(function (x) { if (/^Số dư quỹ/i.test(x[0])) quy = x; else khac.push(x); });
-      var so = o.so;
-      t.innerHTML = '<div class="card hero"><div class="meta">Số dư quỹ hiện tại</div><div class="big num">' + esc(quy ? quy[1] : '–') + '</div><div class="meta">' + esc(quy ? quy[2] || '' : '') + '</div>' +
-        '<div class="g3"><div><span>Tổng thu (sổ)</span><b class="num">' + esc(String(so.tongThu || '').replace(/^Tổng thu:\s*/, '')) + '</b></div><div><span>Tổng chi (sổ)</span><b class="num">' + esc(String(so.tongChi || '').replace(/^Tổng chi:\s*/, '')) + '</b></div><div><span>Nợ người ứng</span><b class="num">' + esc(so.noUng || '0') + '</b></div></div></div>' +
+      var so = o.so, soDu = quy ? quy[1] : '–', trangThai = '';
+      if (QUY_TAM && quy) {
+        soDu = vnd(soTien(quy[1]) + QUY_TAM.doi);
+        trangThai = QUY_TAM.loi ? '<div class="note warn">⚠ ' + esc(QUY_TAM.loi) + '</div>'
+          : '<div class="meta" style="color:var(--warn)">Số tạm tính (đã ' + (QUY_TAM.doi < 0 ? 'trừ ' : 'cộng ') + vnd(Math.abs(QUY_TAM.doi)) + ' vừa ghi) · đang tính lại…</div>';
+      } else if (o.tinhLoi) trangThai = '<div class="note warn">⚠ Bảng tổng hợp chưa tính lại được (' + esc(o.tinhLoi.slice(0, 120)) + '). Số dư có thể chưa gồm khoản vừa ghi – bấm "làm mới" để thử lại.</div>';
+      function o3(nhan, gt) { gt = String(gt || ''); return '<div><span>' + nhan + '</span><b class="num" style="white-space:nowrap;font-size:' + (gt.length > 11 ? 12 : gt.length > 9 ? 13 : 14) + 'px">' + esc(gt) + '</b></div>'; }
+      t.innerHTML = '<div class="card hero"><div class="meta">Số dư quỹ hiện tại</div><div class="big num">' + esc(soDu) + '</div><div class="meta">' + esc(quy ? quy[2] || '' : '') + '</div>' + trangThai +
+        '<div class="g3">' + o3('Tổng thu (sổ)', String(so.tongThu || '').replace(/^Tổng thu:\s*/, '')) + o3('Tổng chi (sổ)', String(so.tongChi || '').replace(/^Tổng chi:\s*/, '')) + o3('Nợ người ứng', so.noUng || '0') + '</div></div>' +
         (so.loi && !/Không có dòng lỗi/.test(so.loi) ? '<div class="note bad">' + esc(so.loi) + '</div>' : '') +
         '<div class="row sp"><b>Sổ thu chi</b><button class="btn sm" id="gso">+ Ghi khoản</button></div>' +
         '<input class="inp" id="qso" type="search" placeholder="Tìm khoản, nội dung, người…" style="font-size:15px;padding:11px 14px">' +
@@ -1026,7 +1038,11 @@ textarea.inp{font-size:15px;resize:vertical}
       btn.disabled = true; btn.textContent = 'Đang ghi…';
       apiT({ v: 'ghiSo', dong: { khoan: k.ten, so: tien, ngay: ngay, nguoi: document.getElementById('sNc').value, dt: document.getElementById('sDt').value, thang: document.getElementById('sTh').value, nd: document.getElementById('sNd').value } }).then(function (o) {
         if (o.loi) { btn.disabled = false; btn.textContent = 'Ghi'; m.textContent = o.loi; return; }
-        sh.remove(); toast('Đã ghi vào sổ (dòng ' + o.dong + ')' + (o.kiemTra ? ' · ' + o.kiemTra : '')); veQuy();
+        var nguoiC = document.getElementById('sNc').value, ndC = document.getElementById('sNd').value;
+        sh.remove(); toast('Đã ghi vào sổ (dòng ' + o.dong + ')' + (o.kiemTra ? ' · ' + o.kiemTra : ''));
+        QUY_TAM = { doi: (/^thu/i.test(k.loai) ? 1 : -1) * tien };
+        if (QUY) { QUY.so.dong.unshift({ khoan: k.ten, so: vnd(tien), ngay: ngay.slice(0, 6) + ngay.slice(-2), nguoi: nguoiC, dt: '', thang: '', nd: ndC, loai: k.loai }); hienQuy(QUY); }
+        taiQuy(false, true);
       }, function (e) { btn.disabled = false; btn.textContent = 'Ghi'; m.textContent = e.message; });
     };
   }
