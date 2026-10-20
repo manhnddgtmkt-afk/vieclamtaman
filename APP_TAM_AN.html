@@ -451,6 +451,7 @@ textarea.inp{font-family:inherit}
 .ngayO .lichIc{margin-left:auto;color:var(--muted)}
 #sThDoi{color:var(--blue);text-decoration:none;font-weight:600;padding:6px 2px}
 .ld.nghi b,.ld.ngoai b{font-weight:500}
+.it.so{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;touch-action:pan-y}.it.so.giu{background:var(--soft);transition:background .5s}
 .btn.xoa{color:var(--bad);border-color:var(--bad-bg)}
 .gcL{margin-top:12px;border-top:1px solid var(--soft);padding-top:10px}
 .gcL div{display:flex;gap:10px;padding:6px 0;font-size:14px}.gcL b{flex:0 0 46px;font-weight:600;color:var(--warn)}.gcL span{white-space:pre-line;color:var(--fg2)}
@@ -1396,9 +1397,40 @@ textarea.inp{font-family:inherit}
     l.innerHTML = out;
     l.querySelectorAll('.it.so[data-r]').forEach(function (e) {
       var r = Number(e.getAttribute('data-r')); if (!r) return;
-      e.style.cursor = 'pointer';
-      e.onclick = function () { var x = QUY.so.dong.filter(function (y) { return y.r === r; })[0]; if (x) moGhiSo(x); };
+      function lay() { return QUY.so.dong.filter(function (y) { return y.r === r; })[0]; }
+      var hen = 0, x0 = 0, y0 = 0, giu = false;
+      function huy() { clearTimeout(hen); hen = 0; e.classList.remove('giu'); }
+      e.addEventListener('pointerdown', function (ev) {
+        giu = false; x0 = ev.clientX; y0 = ev.clientY; e.classList.add('giu');
+        hen = setTimeout(function () { hen = 0; giu = true; e.classList.remove('giu'); try { navigator.vibrate && navigator.vibrate(15); } catch (er) { } var x = lay(); if (x) menuSo(x); }, 500);
+      });
+      e.addEventListener('pointermove', function (ev) { if (hen && (Math.abs(ev.clientX - x0) > 8 || Math.abs(ev.clientY - y0) > 8)) huy(); });
+      e.addEventListener('pointercancel', huy);
+      e.addEventListener('pointerleave', huy);
+      e.addEventListener('pointerup', function () { if (hen) { huy(); var x = lay(); if (x) xemSo(x); } });
+      e.addEventListener('contextmenu', function (ev) { ev.preventDefault(); });
     });
+  }
+  function xemSo(x) {   // chạm nhẹ: xem đủ nội dung, không sửa
+    var sh = moSheet('<h3 class="ell">' + esc(boCP(x.khoan)) + '</h3>' +
+      '<div class="kv so">' + [['Số tiền', (/^thu/i.test(x.loai) ? '+' : '−') + x.so], ['Ngày', x.ngay], ['Người chi', x.nguoi], ['Người nhận', x.dt], ['Tháng', String(x.thang || '').replace(/^(\d{4})-T0?(\d+)$/, 'Tháng $2/$1')]].filter(function (a) { return a[1]; }).map(function (a) { return '<span>' + a[0] + '</span><b class="num">' + esc(a[1]) + '</b>'; }).join('') + '</div>' +
+      (x.nd ? '<div class="note" style="white-space:pre-line">' + esc(x.nd) + '</div>' : '') +
+      '<button class="btn ghost" id="xsD">Đóng</button>');
+    document.getElementById('xsD').onclick = function () { sh.remove(); };
+  }
+  function menuSo(x) {   // giữ ngón tay: Sửa / Xoá / Thôi
+    var sh = moSheet('<button class="btn" id="msS">Sửa</button><button class="btn ghost xoa" id="msX">Xoá</button><button class="btn ghost" id="msT">Thôi</button>');
+    document.getElementById('msT').onclick = function () { sh.remove(); };
+    document.getElementById('msS').onclick = function () { sh.remove(); moGhiSo(x); };
+    document.getElementById('msX').onclick = function () {
+      var btn = this;
+      if (!confirmLan(btn, 'Bấm lần nữa để xoá')) return;
+      btn.disabled = true; btn.textContent = 'Đang xoá…';
+      apiT({ v: 'suaSo', r: x.r, xoa: 1, cu: { khoan: x.khoan, so: x.so, nd: x.nd } }).then(function (o) {
+        if (o.loi) { btn.disabled = false; btn.textContent = 'Xoá'; toast(o.loi); return; }
+        sh.remove(); toast('Đã xoá khoản (dòng ' + o.dong + ')'); taiQuy(true, true);
+      }, function (er) { btn.disabled = false; btn.textContent = 'Xoá'; toast(er.message); });
+    };
   }
   // ghi mới (x rỗng) hoặc sửa / xoá 1 khoản đã có (x = dòng trong sổ, có x.r)
   function soVeIso(ngay) { var m = /^(\d{1,2})\/(\d{1,2})\/(\d{2,4})$/.exec(String(ngay || '')); if (!m) return ''; var y = m[3].length === 2 ? '20' + m[3] : m[3]; return y + '-' + ('0' + m[2]).slice(-2) + '-' + ('0' + m[1]).slice(-2); }
