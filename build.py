@@ -13,6 +13,10 @@ head = '''<title>Việc Làm Tâm An</title>
 <link rel="icon" href="icon-192.png">
 <script src="config.js"></script>
 '''
+import re, datetime
+kho = re.search(r"vlta-v(\d+)", open('sw.js', encoding='utf-8').read()).group(1)
+luc = (datetime.datetime.utcnow() + datetime.timedelta(hours=7)).strftime('%d/%m %H:%M')
+head += '<script>window.PB = { so: %s, luc: "%s" };</script>\n' % (kho, luc)
 s = s.replace('<base target="_top">\n', head, 1)
 i = s.rindex('</body>')   # the cuoi trang (trong ma JS co the co chuoi '</body>')
 s = s[:i] + "<script>if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(function () { });</script>\n" + s[i:]

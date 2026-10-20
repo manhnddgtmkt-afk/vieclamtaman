@@ -13,6 +13,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
 <script src="config.js"></script>
+<script>window.PB = { so: 29, luc: "20/10 19:56" };</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap">
 <style>
@@ -471,6 +472,8 @@ textarea.inp{font-family:inherit}
 #list{padding-bottom:84px}
 .gcL b{color:var(--fg2)!important}
 .sheet>div>*{flex-shrink:0}   /* bảng trượt dài thì cuộn, không bóp nhỏ ô bên trong */
+.top{position:fixed;top:0;left:0;right:0;z-index:30}
+.top+main{margin-top:var(--topH,0px)}
 .btn.xoa{color:var(--bad);border-color:var(--bad-bg)}
 .gcL{margin-top:12px;border-top:1px solid var(--soft);padding-top:10px}
 .gcL div{display:flex;gap:10px;padding:6px 0;font-size:14px}.gcL b{flex:0 0 46px;font-weight:600;color:var(--warn)}.gcL span{white-space:pre-line;color:var(--fg2)}
@@ -700,6 +703,13 @@ textarea.inp{font-family:inherit}
   apTheme(doc('vlta_theme'));
   function avHTML(u, lop) { return u && u.anh ? '<img class="' + (lop || 'av') + ' img" src="' + esc(u.anh) + '" alt="">' : '<div class="' + (lop || 'av') + '">' + esc(chu(u ? u.ten : '?')) + '</div>'; }
   var DONG_BO_MA = 'https://script.google.com/macros/s/AKfycbw9tVi3bcTDHCJ3fT_5dZxvwiGiyKHxGu0aLkGbBEPbve6tAWk_tYVTa9QY9GXDPQfwRg/exec';   // du an "Dong bo ma Tam An": chi keo ban ma moi tu GitHub
+  function lenBanMoi(dongBoMa) {   // tải bản app mới nhất: (chủ) chép mã máy chủ mới nhất, xoá bộ nhớ đệm, mở lại app
+    toast('Đang cập nhật ứng dụng…');
+    var b1 = dongBoMa ? fetch(DONG_BO_MA).then(function () { }, function () { }) : Promise.resolve();
+    b1.then(function () { return navigator.serviceWorker && navigator.serviceWorker.getRegistration ? navigator.serviceWorker.getRegistration().then(function (r) { return r && r.update(); }) : null; })
+      .then(function () { return window.caches ? caches.keys().then(function (ks) { return Promise.all(ks.map(function (k) { return caches.delete(k); })); }) : null; }, function () { })
+      .then(function () { location.reload(); }, function () { location.reload(); });
+  }
   function moTaiKhoan() {
     var u = S.toi, th = doc('vlta_theme') || 'auto', laChu = u.vai === 'chu';
     var tenTheme = (THEMES.filter(function (x) { return x[0] === th; })[0] || THEMES[0])[1];
@@ -711,7 +721,8 @@ textarea.inp{font-family:inherit}
       '<div id="eTen" class="hidden" style="padding:0 16px 12px"><div class="row"><input class="inp" id="tTenMoi" value="' + esc(u.ten) + '" maxlength="40" style="font-size:16px;padding:11px 14px"><button class="btn sm" id="tTenOk">Lưu</button></div></div>' +
       '<button id="rTheme"><span>Giao diện</span><span class="v" id="vTheme">' + esc(tenTheme) + '</span><span class="ch">›</span></button>' +
       '<div id="eTheme" class="hidden"><div class="seg" id="tTheme">' + THEMES.map(function (x) { return '<button data-t="' + x[0] + '"' + (x[0] === th ? ' class="on"' : '') + '>' + esc(x[1]) + '</button>'; }).join('') + '</div></div>' +
-      '<button id="tdp"><span>Đổi mã PIN</span><span class="ch" style="margin-left:auto">›</span></button></div>' +
+      '<button id="tdp"><span>Đổi mã PIN</span><span class="ch" style="margin-left:auto">›</span></button>' +
+      (window.PB ? '<button id="tdPb"><span>Phiên bản ' + PB.so + '<small id="tdPbTt">ra lúc ' + esc(PB.luc) + ' · đang kiểm tra…</small></span><span class="v" id="tdPbV"></span></button>' : '') + '</div>' +
       (laChu ? '<div class="sec" style="margin:8px 4px -6px">Quản trị</div><div class="set"><button id="tdNv"><span>Quản lý nhân viên</span><span class="ch" style="margin-left:auto">›</span></button>' +
         '<button id="tdMa"><span>Cập nhật ứng dụng<small id="tdMaTt">Lấy bản mới nhất</small></span><span class="v" style="color:var(--blue)">⟳</span></button></div>' : '') +
       '<div class="msg" id="tdm"></div><button class="dx" id="tdx">Đăng xuất</button>');
@@ -723,13 +734,23 @@ textarea.inp{font-family:inherit}
     document.getElementById('rTheme').onclick = function () { an('eTheme'); };
     if (laChu) {
       document.getElementById('tdNv').onclick = function () { sh.remove(); moQLNV(); };
-      document.getElementById('tdMa').onclick = function () {   // kéo bản mã mới nhất từ GitHub sang Drive ngay (không chờ lịch 5 phút)
+      document.getElementById('tdMa').onclick = function () {
+        if (window.PB) { lenBanMoi(true); return; }   // kéo bản mã mới nhất từ GitHub sang Drive ngay (không chờ lịch 5 phút)
         var b = this, tt = document.getElementById('tdMaTt'); b.disabled = true; tt.textContent = 'Đang lấy bản mã mới nhất…';
         fetch(DONG_BO_MA).then(function (r) { return r.json(); }).then(function (o) {
           b.disabled = false;
           tt.textContent = (o.kq || '') + (o.luc ? ' · lần chép gần nhất ' + o.luc.split(' ').slice(0, 2).join(' ') : '') + (/Đã cập nhật/.test(o.kq || '') ? ' · tắt hẳn app rồi mở lại nếu có đổi giao diện' : '');
         }, function (e) { b.disabled = false; tt.textContent = 'Không gọi được: ' + e.message; });
       };
+    }
+    if (window.PB) {
+      var pbT = document.getElementById('tdPbTt'), pbV = document.getElementById('tdPbV'), pbB = document.getElementById('tdPb'), moiNhat = 0;
+      fetch('sw.js?' + Date.now(), { cache: 'no-store' }).then(function (r) { return r.text(); }).then(function (t) {
+        var m = /vlta-v(\d+)/.exec(t); moiNhat = m ? Number(m[1]) : 0;
+        if (moiNhat > PB.so) { pbT.innerHTML = 'ra lúc ' + esc(PB.luc) + ' · <b style="color:var(--cam)">có bản mới ' + moiNhat + '</b>'; pbV.innerHTML = '<span class="pill warn">Cập nhật</span>'; }
+        else { pbT.textContent = 'ra lúc ' + PB.luc; pbV.innerHTML = '<span class="pill good">Mới nhất</span>'; }
+      }, function () { pbT.textContent = 'ra lúc ' + PB.luc + ' · chưa kiểm tra được'; });
+      pbB.onclick = function () { lenBanMoi(false); };
     }
     document.querySelectorAll('#tTheme button').forEach(function (b) { b.onclick = function () { var t = b.getAttribute('data-t'); luu('vlta_theme', t); apTheme(t); document.querySelectorAll('#tTheme button').forEach(function (x) { x.classList.toggle('on', x === b); }); document.getElementById('vTheme').textContent = b.textContent; }; });
     function capNhatToi(o) { if (o.loi) { document.getElementById('tdm').textContent = o.loi; return; } S.toi = o.toi; luuDs(); luu('vlta_ten', o.toi.ten); sh.remove(); moTab(S.tab); toast('Đã lưu.'); }
@@ -1900,9 +1921,10 @@ textarea.inp{font-family:inherit}
       while (e.scrollWidth > (nho === 20 ? w : e.clientWidth) && c > nho && lan++ < 30) { c -= buoc; e.style.fontSize = c + 'px'; }
     });
   }
+  function doTop() { var t = document.querySelector('#app > .top, body > .top'); if (t) document.documentElement.style.setProperty('--topH', t.offsetHeight + 'px'); }
   var _vsHen = 0;
-  new MutationObserver(function () { if (_vsHen) return; _vsHen = requestAnimationFrame(function () { _vsHen = 0; vuaSo(); }); }).observe(document.body, { childList: true, subtree: true });
-  window.addEventListener('resize', vuaSo);
+  new MutationObserver(function () { if (_vsHen) return; _vsHen = requestAnimationFrame(function () { _vsHen = 0; doTop(); vuaSo(); }); }).observe(document.body, { childList: true, subtree: true });
+  window.addEventListener('resize', function () { doTop(); vuaSo(); });
 
   // ---------- khởi động ----------
   S.tqNhom = doc('vlta_tqn') || 'ln';
