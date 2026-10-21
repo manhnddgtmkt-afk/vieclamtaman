@@ -101,7 +101,8 @@ main{padding:14px 16px calc(40px + env(safe-area-inset-bottom,0px));display:flex
 .sk{height:62px;border-radius:14px;background:linear-gradient(90deg,var(--soft),var(--card),var(--soft));background-size:200% 100%;animation:sk 1s infinite linear}
 @keyframes sk{to{background-position:-200% 0}}
 .empty{text-align:center;color:var(--muted);padding:30px 10px}
-.sheet{position:fixed;inset:0;background:rgba(10,18,34,.45);z-index:50;display:flex;align-items:flex-end;justify-content:center}
+.sheet{position:fixed;inset:0;background:rgba(10,18,34,.45);z-index:50;display:flex;align-items:flex-end;justify-content:center;overscroll-behavior:contain}
+.sheet>div,.bmoi>div{overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
 .sheet>div{background:var(--bg);width:100%;max-width:480px;border-radius:22px 22px 0 0;padding:18px 18px calc(20px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;gap:12px;max-height:92vh;overflow:auto}
 .sheet h3{margin:0;font-size:18px}
 .toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:#16233A;color:#fff;padding:10px 16px;border-radius:12px;font-size:14px;z-index:60;max-width:90vw;text-align:center}
@@ -1541,6 +1542,19 @@ textarea.inp{font-family:inherit}
     i.oninput = function () { var v = i.value.replace(/\D/g, ''); i.value = v ? vnd(Number(v)) : ''; };
     return function () { return Number(i.value.replace(/\D/g, '')) || 0; };
   }
+  // 22/10: popup mở thì khoá trang bên dưới (iPhone vẫn cho vuốt xuyên popup), đóng thì trả đúng chỗ đang xem
+  (function () {
+    var khoa = false, y = 0;
+    function xet() {
+      var co = !!document.querySelector('body > .sheet, body > .bmoi, body > .crop');
+      if (co === khoa) return;
+      khoa = co; var b = document.body.style;
+      if (co) { y = window.scrollY || 0; b.position = 'fixed'; b.top = -y + 'px'; b.left = '0'; b.right = '0'; b.width = '100%'; }
+      else { b.position = b.top = b.left = b.right = b.width = ''; window.scrollTo(0, y); }
+    }
+    function bat() { new MutationObserver(xet).observe(document.body, { childList: true }); }
+    if (document.body) bat(); else document.addEventListener('DOMContentLoaded', bat);
+  })();
   function moSheet(html) {
     document.querySelectorAll('.toast:not(.loi)').forEach(function (t) { t.remove(); });   // không để thông báo che nút
     var sh = document.createElement('div'); sh.className = 'sheet';
@@ -2539,11 +2553,12 @@ textarea.inp{font-family:inherit}
     var k = CCS.kho, chon = !!(kt && k && k.chon[g.so]);
     var sh = moSheet('<div class="row sp"><div style="min-width:0"><h3 class="ell">' + esc(g.ten ? hoaDau(g.ten) : g.so) + '</h3><div class="meta ell">' + esc((g.ten ? g.so + ' · ' : '') + (g.duong || '')) + '</div></div><button class="link" id="xlD">Đóng</button></div>' +
       '<div class="ccxl"><img id="xlA" alt=""' + (g.nho && kt ? ' src="' + g.nho + '"' : '') + '><span class="meta" id="xlT">Đang tải ảnh…</span></div>' +
-      '<button class="btn" id="xlIn" disabled>In tờ này</button><button class="btn ghost" id="xlG" disabled>Chia sẻ PDF</button>' + (kt ? '<button class="btn ghost" id="xlC">' + (chon ? 'Bỏ chọn' : 'Chọn để in cùng người khác') + '</button>' : ''));
+      '<button class="btn" id="xlIn" disabled>In tờ này</button><button class="btn ghost" id="xlG" disabled>Chia sẻ PDF</button><button class="btn ghost" id="xlThe" disabled>Làm thẻ HOJEONG</button>' + (kt ? '<button class="btn ghost" id="xlC">' + (chon ? 'Bỏ chọn' : 'Chọn để in cùng người khác') + '</button>' : ''));
     var img = sh.querySelector('#xlA'), tt = sh.querySelector('#xlT'), nIn = sh.querySelector('#xlIn');
     sh.querySelector('#xlD').onclick = function () { sh.remove(); };
-    var nG = sh.querySelector('#xlG');
-    ccLayAnh(g).then(function (a) { img.src = a.anh; tt.remove(); nIn.disabled = nG.disabled = false; }, function (e) { tt.textContent = e.message; tt.style.color = 'var(--bad)'; });
+    var nG = sh.querySelector('#xlG'), nT = sh.querySelector('#xlThe');
+    nT.onclick = function () { sh.remove(); theTuKho([g]); };
+    ccLayAnh(g).then(function (a) { img.src = a.anh; tt.remove(); nIn.disabled = nG.disabled = nT.disabled = false; }, function (e) { tt.textContent = e.message; tt.style.color = 'var(--bad)'; });
     nIn.onclick = function () { sh.remove(); ccInDs([g]); };
     nG.onclick = function () { sh.remove(); ccGui(ccLayDs([g]), ccTenPdf([g])); };
     var c = sh.querySelector('#xlC');
@@ -2610,7 +2625,7 @@ textarea.inp{font-family:inherit}
     if (k.tong >= 0) {
       var het = k.ds.length && k.ds.every(function (x) { return k.chon[x.so]; });
       h += '<div class="row sp ckh"><span class="meta">' + (k.tong ? 'Tìm thấy <b>' + k.tong + '</b> người' + (k.tong > k.ds.length ? ' · đang hiện ' + k.ds.length : '') : 'Không có ai khớp. Thử nới khoảng năm sinh.') + '</span>' +
-        (k.ds.length ? '<button class="btn lk" id="ckHet">' + (het ? 'Bỏ chọn hết' : 'Chọn hết') + '</button>' : '') + '</div>';
+        (k.ds.length ? '<span class="row" style="gap:14px;flex:none"><button class="btn lk" id="ckThe">Làm thẻ</button><button class="btn lk" id="ckHet">' + (het ? 'Bỏ chọn hết' : 'Chọn hết') + '</button></span>' : '') + '</div>';
       h += '<div class="ckg">' + k.ds.map(function (x, i) {
         var c = !!k.chon[x.so];
         return '<div class="ckt' + (c ? ' on' : '') + '" data-ki="' + i + '"><button class="ckb" data-ck="' + i + '">' + (x.nho ? '<img src="' + x.nho + '" alt="">' : '<span class="ckno">Chưa có ảnh nhỏ</span>') + '<i class="ckv">' + (c ? '✓' : '') + '</i></button>' +
@@ -2639,6 +2654,7 @@ textarea.inp{font-family:inherit}
     };
     function daChon() { return Object.keys(k.chon).map(function (so) { return k.chon[so]; }).sort(function (a, b) { return a.nam - b.nam || (a.so < b.so ? -1 : 1); }); }
     document.getElementById('ckIn').onclick = function () { ccInDs(daChon()); };
+    if ((b = document.getElementById('ckThe'))) b.onclick = function () { var ds = daChon(); if (!ds.length) { toast('Chạm ảnh để chọn người cần làm thẻ.'); return; } theTuKho(ds); };
     document.getElementById('ckGui').onclick = function () { var ds = daChon(); if (ds.length) ccGui(ccLayDs(ds), ccTenPdf(ds)); };
     function bat(i) {
       var x = k.ds[i]; if (k.chon[x.so]) delete k.chon[x.so]; else k.chon[x.so] = x;
@@ -2657,6 +2673,7 @@ textarea.inp{font-family:inherit}
     var n = Object.keys(k.chon).length;
     b.disabled = !n; b.textContent = n ? 'In ' + n + ' tờ đã chọn' : 'Chưa chọn ai';
     var g = document.getElementById('ckGui'); if (g) g.disabled = !n;
+    var tb = document.getElementById('ckThe'); if (tb) tb.textContent = n ? 'Làm thẻ (' + n + ')' : 'Làm thẻ';
   }
   // ---- 22/10: thẻ ra vào HOJEONG (mẫu "Form thẻ.xlsx"): thẻ 8,1 × 5,3 cm, 8 thẻ / A4, in màu (PDF ra quán in) ----
   var THE_LOGO = 'data:image/png;base64,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', theLogo = null;
@@ -2672,7 +2689,7 @@ textarea.inp{font-family:inherit}
       e.p = p; if (!e.sua && p.ten) e.ten = String(p.ten).toUpperCase();
       out.push(e);
     });
-    Object.keys(CCS.the).forEach(function (k) { if (k[0] === 'm') out.push(CCS.the[k]); });
+    Object.keys(CCS.the).forEach(function (k) { if (k[0] === 'm' || k[0] === 'k') out.push(CCS.the[k]); });
     return out;
   }
   function theAnhNguon(e) {   // -> { cv, x, y, w, h } vùng ảnh chân dung
@@ -2793,8 +2810,8 @@ textarea.inp{font-family:inherit}
       var nh = n0 ? (function () { var c = document.createElement('canvas'); c.width = 60; c.height = 90; theVeAnh(c.getContext('2d'), n0, 0, 0, 60, 90); return c.toDataURL('image/jpeg', 0.8); })() : '';
       return '<div class="card tht' + (dd ? ' on' : '') + '"><div class="row thr"><button class="thc" data-tc="' + esc(e.k) + '" aria-label="Chọn">' + (dd ? '✓' : '') + '</button>' +
         (nh ? '<img class="tha" src="' + nh + '" alt="" data-ta="' + esc(e.k) + '">' : '<button class="tha thx" data-ta="' + esc(e.k) + '">+ Ảnh</button>') +
-        '<div style="min-width:0;flex:1" data-tc2="' + esc(e.k) + '"><b class="ell" style="display:block">' + esc(e.ten || (e.k[0] === 'm' ? 'Người thêm tay' : 'Chưa đọc được tên')) + '</b><span class="meta num">' + esc(e.p ? e.p.so || '' : '') + (e.ma ? ' · mã ' + esc(e.ma) : '') + '</span></div>' +
-        (e.k[0] === 'm' ? '<button class="ccx" data-tb="' + esc(e.k) + '" aria-label="Bỏ">×</button>' : '') + '</div>' +
+        '<div style="min-width:0;flex:1" data-tc2="' + esc(e.k) + '"><b class="ell" style="display:block">' + esc(e.ten || (e.k[0] === 'm' ? 'Người thêm tay' : 'Chưa đọc được tên')) + '</b><span class="meta num">' + esc(e.p ? e.p.so || '' : e.so || '') + (e.ma ? ' · mã ' + esc(e.ma) : '') + '</span></div>' +
+        (e.k[0] !== 'f' && e.k[0] !== 'b' ? '<button class="ccx" data-tb="' + esc(e.k) + '" aria-label="Bỏ">×</button>' : '') + '</div>' +
         (dd ? '<div class="thf"><input class="inp" data-tt="' + esc(e.k) + '" placeholder="Họ và tên" value="' + esc(e.ten) + '" autocapitalize="characters">' +
           '<div class="row" style="gap:8px"><input class="inp" data-tm="' + esc(e.k) + '" inputmode="numeric" placeholder="Mã thẻ" value="' + esc(e.ma) + '" style="flex:1;min-width:0">' +
           '<div class="seg" style="flex:1.4">' + ['P', 'Q'].map(function (b) { return '<button data-tp="' + esc(e.k) + ':' + b + '"' + (e.bp === b ? ' class="on"' : '') + '>' + (b === 'P' ? 'Production' : 'Quality') + '</button>'; }).join('') + '</div></div>' +
@@ -2817,11 +2834,47 @@ textarea.inp{font-family:inherit}
     document.getElementById('thGui').onclick = theGui;
     document.getElementById('thIn').onclick = theIn;
   }
+  function theMatTruoc(cv) {   // ảnh CCCD đã lưu (2 mặt ghép dọc) -> mặt trước 1400 × 883 đã đúng chiều
+    function cat(y) { var c = document.createElement('canvas'); c.width = CC.MW; c.height = CC.MH; c.getContext('2d').drawImage(cv, 0, y, cv.width, Math.round(cv.width * CC.MH / CC.MW), 0, 0, CC.MW, CC.MH); return c; }
+    function dung(c) { var pl = CC.phanLoai(c); return pl.mat === 'truoc' ? (pl.xoay ? CC.xoay(c, 180) : c) : null; }
+    if (cv.height >= cv.width * 1.15) {   // 2 mặt xếp dọc (app: 1400 × 1806; Tool_CCCD cũ: tỉ lệ khác)
+      var hm = Math.round(cv.width * CC.MH / CC.MW), a = dung(cat(0)); if (a) return a;
+      var b = dung(cat(cv.height - hm)); if (b) return b;
+      return cat(0);
+    }
+    var r = CC.xuLy(cv); return r.mat === 'truoc' ? r.the : null;
+  }
+  function theTuKho(ds) {   // ds: [{so, ten?, id}] -> thêm vào danh sách thẻ (tích sẵn) rồi mở mục Thẻ HOJEONG
+    var n = ds.length, xong = 0, i = 0, loi = 0;
+    if (!n) return;
+    ccTd('Đang lấy ảnh 0/' + n + '…');
+    function mot() {
+      if (i >= n) return Promise.resolve();
+      var g = ds[i++];
+      return ccLayAnh(g).then(function (a) {
+        return new Promise(function (ok) { var im = new Image(); im.onload = function () { var c = document.createElement('canvas'); c.width = im.naturalWidth; c.height = im.naturalHeight; c.getContext('2d').drawImage(im, 0, 0); ok(c); }; im.onerror = function () { ok(null); }; im.src = a.anh; });
+      }).then(function (cv) {
+        var m = cv ? theMatTruoc(cv) : null, k = 'k' + g.so;
+        if (!m) { loi++; } else {
+          var e = CCS.the[k] = { k: k, so: g.so, chon: true, ten: g.ten ? String(g.ten).toUpperCase() : '', ma: (CCS.the[k] || {}).ma || '', bp: (CCS.the[k] || {}).bp || 'P', sua: 1, anhThe: m };
+          if (!e.ten) { var an = ccAnhDoc({ the: m }), nhan = function (o) { var d = o && o.kq ? o.kq[0] : o; if (d && (d.ten || d.tenMrz) && !e.ten) { e.ten = String(d.ten || d.tenMrz).toUpperCase(); ccVe(); } };
+            apiT({ v: 'cccdDocNhieu', ds: [an], lang: 1 }).then(function (o) { if (o.drive) apiT({ v: 'cccdDoc', anh: an, lang: 1 }).then(nhan, function () { }); else nhan(o); }, function () { }); }
+        }
+        xong++; ccTd('Đang lấy ảnh ' + xong + '/' + n + '…'); return mot();
+      }, function () { loi++; xong++; return mot(); });
+    }
+    Promise.all([mot(), mot(), mot()]).then(function () {
+      ccTd(''); CCS.kho = null; CCS.theMo = true; var lg = theLogoNap(); if (!lg.complete) lg.onload = function () { ccVe(); };
+      ccVe(); setTimeout(function () { window.scrollTo(0, 0); }, 50);
+      if (loi) toastLoi(loi + ' người không lấy được ảnh mặt trước.'); else toast('Đã thêm ' + n + ' người vào Thẻ HOJEONG. Gõ mã thẻ rồi in.');
+    });
+  }
   function ccChe() {   // nút chuyển In CCCD | Thẻ HOJEONG
     return '<div class="seg" id="ccChe"><button data-che="0"' + (CCS.theMo ? '' : ' class="on"') + '>In CCCD</button><button data-che="1"' + (CCS.theMo ? ' class="on"' : '') + '>Thẻ HOJEONG</button></div>';
   }
   function ccCheNoi(t) { t.querySelectorAll('[data-che]').forEach(function (b) { b.onclick = function () { CCS.theMo = b.getAttribute('data-che') === '1'; var lg = theLogoNap(); if (!lg.complete) lg.onload = function () { ccVe(); }; ccVe(); window.scrollTo(0, 0); }; }); }
   var BAN_MOI = [
+    { so: 59, ds: [['Đã lưu gần đây và ảnh trong kho: khi xem to có nút Làm thẻ HOJEONG; trong Tìm trong kho có nút Làm thẻ cho những người đang chọn. App tự lấy mặt trước, cắt ảnh chân dung, điền họ tên.'], ['Sửa lỗi cả app: khi bảng chọn hoặc popup đang mở, vuốt không còn kéo trôi trang bên dưới.']] },
     { so: 58, ds: [['Thẻ HOJEONG: khi bấm Thêm người hoặc Chọn ảnh khác mà chọn trúng ảnh mặt trước CCCD, app tự nắn thẳng, cắt đúng phần chân dung và điền họ tên.'], ['Chọn trúng ảnh mặt sau CCCD thì app báo, không dán cả tấm thẻ vào khung ảnh.']] },
     { so: 57, ds: [['Trang CCCD có thêm mục Thẻ HOJEONG: tích người cần làm thẻ ra vào, app tự lấy ảnh chân dung trên CCCD và họ tên, sale gõ mã thẻ, chọn Production hoặc Quality.'], ['Mỗi thẻ đúng 8,1 × 5,3 cm, 8 thẻ một tờ A4; bấm nút chia sẻ để gửi PDF màu ra quán in (in 100%, không thu phóng).'], ['Ảnh chân dung chưa đẹp thì bấm Chọn ảnh khác; người chưa có CCCD trong lượt thì bấm Thêm người.']] },
     { so: 56, ds: [['Tab CCCD chuyển lên ngay cạnh tab Lao động.'], ['Trang CCCD có nút Chia sẻ (biểu tượng mũi tên lên, cạnh nút In): app tạo PDF mỗi người 1 trang A4 rồi gửi qua Zalo, email, Lưu vào Tệp… để mang ra quán in.'], ['Ảnh chọn trong kho và ảnh xem to cũng chia sẻ PDF được.']] },
