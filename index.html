@@ -13,7 +13,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
 <script src="config.js"></script>
-<script>window.PB = { so: 57, luc: "22/10 01:07" };</script>
+<script>window.PB = { so: 58, luc: "22/10 01:12" };</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap">
 <style>
@@ -2688,7 +2688,7 @@ textarea.inp{font-family:inherit}
   }
   function theAnhNguon(e) {   // -> { cv, x, y, w, h } vùng ảnh chân dung
     if (e.anh) return { cv: e.anh, x: 0, y: 0, w: e.anh.width, h: e.anh.height, tay: 1 };
-    var c = e.p && e.p.t ? e.p.t.the : null; if (!c) return null;
+    var c = e.anhThe || (e.p && e.p.t ? e.p.t.the : null); if (!c) return null;
     return { cv: c, x: THE_R[0] * c.width, y: THE_R[1] * c.height, w: (THE_R[2] - THE_R[0]) * c.width, h: (THE_R[3] - THE_R[1]) * c.height };
   }
   function theVeAnh(x, n, X, Y, W, H) {   // vẽ phủ kín khung (cắt bớt phần thừa; ảnh tự chọn ưu tiên giữ phần trên – mặt người)
@@ -2769,11 +2769,29 @@ textarea.inp{font-family:inherit}
   }
   function theChonAnh(e) {   // ảnh chân dung khác trong album
     var fi = document.createElement('input'); fi.type = 'file'; fi.accept = 'image/*';
-    fi.onchange = function () { var f = fi.files[0]; if (!f) return; ccMo(f).then(function (cv) { e.anh = cv; e.tb = ''; ccVe(); }, function (er) { toastLoi(er.message); }); };
+    fi.onchange = function () {
+      var f = fi.files[0]; if (!f) return;
+      ccMo(f).then(function (cv) {
+        var r = null; try { r = CC.xuLy(cv); } catch (er) { }
+        var chanDung = cv.height > cv.width * 1.15 && r && r.tim && r.tim.nguon === 'ca anh';   // ảnh dọc không tìm thấy khung thẻ: ảnh chân dung
+        if (r && r.ro && !chanDung && r.mat === 'sau') { toast('Đây là mặt sau CCCD. Hãy chọn ảnh mặt trước hoặc ảnh chân dung.'); return; }
+        if (r && r.ro && !chanDung && r.mat === 'truoc') {   // ảnh mặt trước CCCD: nắn thẳng rồi cắt phần chân dung, đọc luôn họ tên
+          e.anhThe = r.the; delete e.anh; e.tb = ''; ccVe();
+          toastNut('Đã cắt ảnh chân dung từ CCCD', 'Dùng nguyên ảnh', function () { e.anh = cv; delete e.anhThe; ccVe(); }, 6000);
+          if (!String(e.ten || '').trim()) {
+            var nhan = function (o) { var d = o && o.kq ? o.kq[0] : o; if (d && (d.ten || d.tenMrz) && !String(e.ten || '').trim()) { e.ten = String(d.ten || d.tenMrz).toUpperCase(); ccVe(); } };
+            var a = ccAnhDoc({ the: r.the });
+            apiT({ v: 'cccdDocNhieu', ds: [a], lang: 1 }).then(function (o) { if (o.drive) apiT({ v: 'cccdDoc', anh: a, lang: 1 }).then(nhan, function () { }); else nhan(o); }, function () { });
+          }
+          return;
+        }
+        e.anh = cv; delete e.anhThe; e.tb = ''; ccVe();
+      }, function (er) { toastLoi(er.message); });
+    };
     fi.click();
   }
   function theTb(e) {   // ảnh nhỏ thẻ (xem trước trong danh sách)
-    var kk = [theLogo && theLogo.complete ? 1 : 0, e.ten, e.ma, e.bp, e.anh ? 'a' : '', e.p && e.p.t ? e.p.t.id + '.' + e.p.t.v : ''].join('|');
+    var kk = [theLogo && theLogo.complete ? 1 : 0, e.ten, e.ma, e.bp, e.anh ? 'a' : e.anhThe ? 't' : '', e.p && e.p.t ? e.p.t.id + '.' + e.p.t.v : ''].join('|');
     if (e.tbk !== kk || !e.tb) { e.tb = theVe(e, 486).toDataURL('image/jpeg', 0.85); e.tbk = kk; }
     return e.tb;
   }
@@ -2792,14 +2810,14 @@ textarea.inp{font-family:inherit}
           '<div class="row" style="gap:8px"><input class="inp" data-tm="' + esc(e.k) + '" inputmode="numeric" placeholder="Mã thẻ" value="' + esc(e.ma) + '" style="flex:1;min-width:0">' +
           '<div class="seg" style="flex:1.4">' + ['P', 'Q'].map(function (b) { return '<button data-tp="' + esc(e.k) + ':' + b + '"' + (e.bp === b ? ' class="on"' : '') + '>' + (b === 'P' ? 'Production' : 'Quality') + '</button>'; }).join('') + '</div></div>' +
           '<img class="thv" data-tv="' + esc(e.k) + '" src="' + theTb(e) + '" alt="">' +
-          '<div class="row" style="justify-content:space-between"><button class="btn lk" data-ta="' + esc(e.k) + '" style="padding-left:0">Chọn ảnh khác</button>' + (e.anh && e.p && e.p.t ? '<button class="btn lk" data-tg="' + esc(e.k) + '">Dùng ảnh trên CCCD</button>' : '') + '</div></div>' : '') + '</div>';
+          '<div class="row" style="justify-content:space-between"><button class="btn lk" data-ta="' + esc(e.k) + '" style="padding-left:0">Chọn ảnh khác</button>' + ((e.anh || e.anhThe) && e.p && e.p.t ? '<button class="btn lk" data-tg="' + esc(e.k) + '">Dùng ảnh trên CCCD</button>' : '') + '</div></div>' : '') + '</div>';
     }).join('');
     h += '<div class="ccday"><button class="btn ghost" id="thThem">Thêm người</button><button class="btn ghost ccgui" id="thGui" aria-label="Chia sẻ PDF"' + (n ? '' : ' disabled') + '>' + ICON_GUI + '</button><button class="btn" id="thIn"' + (n ? '' : ' disabled') + '>' + (n ? 'In ' + n + ' thẻ' : 'Chưa chọn ai') + '</button></div><div class="ccdem"></div>';
     t.innerHTML = h; ccDayDat(t); ccCheNoi(t);
     function e_(k) { return CCS.the[k]; }
     t.querySelectorAll('[data-tc],[data-tc2]').forEach(function (b) { b.onclick = function () { var e = e_(b.getAttribute('data-tc') || b.getAttribute('data-tc2')); e.chon = !e.chon; ccVe(); }; });
     t.querySelectorAll('[data-ta]').forEach(function (b) { b.onclick = function () { theChonAnh(e_(b.getAttribute('data-ta'))); }; });
-    t.querySelectorAll('[data-tg]').forEach(function (b) { b.onclick = function () { var e = e_(b.getAttribute('data-tg')); delete e.anh; ccVe(); }; });
+    t.querySelectorAll('[data-tg]').forEach(function (b) { b.onclick = function () { var e = e_(b.getAttribute('data-tg')); delete e.anh; delete e.anhThe; ccVe(); }; });
     t.querySelectorAll('[data-tb]').forEach(function (b) { b.onclick = function () { delete CCS.the[b.getAttribute('data-tb')]; ccVe(); }; });
     t.querySelectorAll('[data-tp]').forEach(function (b) { b.onclick = function () { var a = b.getAttribute('data-tp').split(':'); e_(a[0]).bp = a[1]; ccVe(); }; });
     function xemLai(k) { var im = t.querySelector('[data-tv="' + k + '"]'); clearTimeout(xemLai.h); xemLai.h = setTimeout(function () { if (im) im.src = theTb(e_(k)); }, 250); }
@@ -2815,6 +2833,7 @@ textarea.inp{font-family:inherit}
   }
   function ccCheNoi(t) { t.querySelectorAll('[data-che]').forEach(function (b) { b.onclick = function () { CCS.theMo = b.getAttribute('data-che') === '1'; var lg = theLogoNap(); if (!lg.complete) lg.onload = function () { ccVe(); }; ccVe(); window.scrollTo(0, 0); }; }); }
   var BAN_MOI = [
+    { so: 58, ds: [['Thẻ HOJEONG: khi bấm Thêm người hoặc Chọn ảnh khác mà chọn trúng ảnh mặt trước CCCD, app tự nắn thẳng, cắt đúng phần chân dung và điền họ tên.'], ['Chọn trúng ảnh mặt sau CCCD thì app báo, không dán cả tấm thẻ vào khung ảnh.']] },
     { so: 57, ds: [['Trang CCCD có thêm mục Thẻ HOJEONG: tích người cần làm thẻ ra vào, app tự lấy ảnh chân dung trên CCCD và họ tên, sale gõ mã thẻ, chọn Production hoặc Quality.'], ['Mỗi thẻ đúng 8,1 × 5,3 cm, 8 thẻ một tờ A4; bấm nút chia sẻ để gửi PDF màu ra quán in (in 100%, không thu phóng).'], ['Ảnh chân dung chưa đẹp thì bấm Chọn ảnh khác; người chưa có CCCD trong lượt thì bấm Thêm người.']] },
     { so: 56, ds: [['Tab CCCD chuyển lên ngay cạnh tab Lao động.'], ['Trang CCCD có nút Chia sẻ (biểu tượng mũi tên lên, cạnh nút In): app tạo PDF mỗi người 1 trang A4 rồi gửi qua Zalo, email, Lưu vào Tệp… để mang ra quán in.'], ['Ảnh chọn trong kho và ảnh xem to cũng chia sẻ PDF được.']] },
     { so: 55, ds: [['Trang CCCD: nút Thêm ảnh, Làm lượt mới, In luôn nằm cố định dưới cùng, cuộn trang không bị trôi.'], ['Danh sách Đã lưu gần đây có ảnh nhỏ mặt CCCD; chạm vào để xem ảnh to rồi bấm In tờ này.'], ['Mới: Tìm ảnh trong kho theo Nam/Nữ, năm sinh từ–đến, số cuối CCCD; chạm ảnh để chọn nhiều người rồi in một lượt.'], ['Bỏ nút In bằng PDF (thừa): nếu máy không mở được hộp in, app tự đưa sang PDF.']] },
