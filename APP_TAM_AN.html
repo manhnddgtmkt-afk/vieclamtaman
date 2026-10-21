@@ -643,8 +643,9 @@ textarea.inp{font-family:inherit}
 .ccso .inp{flex:1;min-width:0;margin:0}
 .ccnut .btn{flex:1}
 .ccday{position:fixed;left:0;right:0;bottom:64px;z-index:29;display:flex;gap:8px;padding:10px max(16px,calc(50vw - 224px));background:var(--card);border-top:1px solid var(--line);box-shadow:0 -4px 14px rgba(16,24,40,.06)}
-.ccday .btn{flex:1;min-width:0;padding-left:8px;padding-right:8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.ccday .btn:last-child{flex:1.35}
+.ccday .btn{flex:1;min-width:0;padding-left:4px;padding-right:4px;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.ccday .btn:last-child{flex:1.15}
 .ccdem{height:56px;flex:none}
+.ccday .ccgui{flex:none;width:48px;padding:0;display:flex;align-items:center;justify-content:center}.ccday .ccgui svg{width:22px;height:22px}
 .ccw .it .ch{color:var(--faint);font-size:20px;flex:none}
 .ccg img,.ccg .ccg0{width:64px;height:40px;object-fit:cover;object-position:top;border-radius:6px;flex:none;background:var(--soft);display:block}
 .cckl{display:flex;flex-direction:column;gap:12px;padding:16px}
@@ -1044,9 +1045,9 @@ textarea.inp{font-family:inherit}
   // ---------- khung chính: thanh dưới theo vai trò ----------
   function cacTab() {
     var v = (S.toi || {}).vai;
-    if (v === 'chu') return [['ld', 'Lao động', 'ld'], ['quy', 'Thu chi', 'quy'], ['tq', 'Tổng quan', 'tq'], ['cc', 'CCCD', 'cc']];
-    if (v === 'ketoan') return [['ld', 'Lao động', 'ld'], ['quy', 'Thu chi', 'quy'], ['tn', 'Thu nhập', 'tn'], ['cc', 'CCCD', 'cc']];
-    return [['ld', 'Lao động', 'ld'], ['tn', 'Thu nhập', 'tn'], ['cc', 'CCCD', 'cc']];
+    if (v === 'chu') return [['ld', 'Lao động', 'ld'], ['cc', 'CCCD', 'cc'], ['quy', 'Thu chi', 'quy'], ['tq', 'Tổng quan', 'tq']];
+    if (v === 'ketoan') return [['ld', 'Lao động', 'ld'], ['cc', 'CCCD', 'cc'], ['quy', 'Thu chi', 'quy'], ['tn', 'Thu nhập', 'tn']];
+    return [['ld', 'Lao động', 'ld'], ['cc', 'CCCD', 'cc'], ['tn', 'Thu nhập', 'tn']];
   }
   var SVG0 = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">';
   var ICON = {
@@ -2205,7 +2206,7 @@ textarea.inp{font-family:inherit}
           '<div class="row ccpc"><button class="btn lk" data-chinh="' + esc(p.k) + '">Chỉnh ảnh người này</button>' + ((p.t && p.t.chinh) || (p.s && p.s.chinh) ? '<span class="tag moi">đã chỉnh riêng</span>' : '') + '</div></div>';
       }).join('');
       h += '<div class="meta" style="text-align:center">Chạm ảnh để xoay, đổi mặt, cắt lại, đổi chỗ.</div>' +
-        '<div class="ccday"><button class="btn ghost" id="ccThem">Thêm ảnh</button><button class="btn ghost" id="ccMoi">Lượt mới</button><button class="btn" id="ccIn"' + (dangDoc ? ' disabled' : '') + '>' + (dangDoc ? 'Đọc số… ' + dangDoc : 'In ' + cap.length + ' tờ') + '</button></div><div class="ccdem"></div>';
+        '<div class="ccday"><button class="btn ghost" id="ccThem">Thêm ảnh</button><button class="btn ghost" id="ccMoi">Lượt mới</button><button class="btn ghost ccgui" id="ccGui" aria-label="Chia sẻ PDF"' + (dangDoc ? ' disabled' : '') + '>' + ICON_GUI + '</button><button class="btn" id="ccIn"' + (dangDoc ? ' disabled' : '') + '>' + (dangDoc ? 'Đọc số… ' + dangDoc : 'In ' + cap.length + ' tờ') + '</button></div><div class="ccdem"></div>';
     }
     if (CCS.ds.length && !CCS.dang) h += '<div class="grp"><button class="it" id="ccKho"><div style="min-width:0;flex:1"><div class="nm">Tìm ảnh trong kho</div><div class="sub">Lọc nam/nữ, năm sinh rồi chọn người để in</div></div><span class="ch">›</span></button></div>';
     if (gan.length && !CCS.dang) h += '<div class="grp"><div class="gh">Đã lưu gần đây · chạm để xem và in lại</div>' + gan.slice(0, 12).map(function (g, i) {
@@ -2220,6 +2221,7 @@ textarea.inp{font-family:inherit}
     if ((b = document.getElementById('ccDoiThoi'))) b.onclick = function () { CCS.doi = null; ccVe(); };
     if ((b = document.getElementById('ccIn'))) b.onclick = function () { ccIn(false); };
     if ((b = document.getElementById('ccMoi'))) b.onclick = ccMoi;
+    if ((b = document.getElementById('ccGui'))) b.onclick = function () { ccIn('gui'); };
     if ((b = document.getElementById('ccKho'))) b.onclick = ccKhoMo;
     ccDayDat(t);
     t.querySelectorAll('.ccm[data-id]').forEach(function (e) { e.onclick = function () { ccCham(Number(e.getAttribute('data-id'))); }; });
@@ -2346,7 +2348,7 @@ textarea.inp{font-family:inherit}
     toast('Đang chuẩn bị ' + cap.length + ' tờ…');
     setTimeout(function () {
       var urls = cap.map(ccJpg);
-      if (pdf) ccPdfMo(urls); else ccTrang(urls);
+      if (pdf === 'gui') ccGui(Promise.resolve(urls), ccTenPdf(cap)); else if (pdf) ccPdfMo(urls); else ccTrang(urls);
       cap.forEach(function (p) {
         var st = CCS.tt[p.k] || {};
         if (!p.t || !p.s || st.ok || st.co || st.dang) return;
@@ -2469,26 +2471,71 @@ textarea.inp{font-family:inherit}
       im.src = a.anh;
     });
   }
-  function ccInDs(ds) {   // ds: [{id, so}] -> mỗi người 1 tờ A4
+  function ccLayDs(ds) {   // ds: [{id, so}] -> Promise [ảnh JPEG đã chỉnh, mỗi người 1 ảnh]
     var n = ds.length, xong = 0, out = new Array(n), i = 0;
-    if (!n) return;
     ccTd('Đang lấy ảnh 0/' + n + '…');
     function mot() {
       if (i >= n) return Promise.resolve();
       var j = i++;
       return ccLayAnh(ds[j]).then(ccChinhAnh).then(function (u) { out[j] = u; xong++; ccTd('Đang lấy ảnh ' + xong + '/' + n + '…'); return mot(); });
     }
-    Promise.all([mot(), mot(), mot()]).then(function () { ccTd(''); ccTrang(out); }, function (e) { ccTd(''); toastLoi(e.message || String(e)); });
+    return Promise.all([mot(), mot(), mot()]).then(function () { ccTd(''); return out; }, function (e) { ccTd(''); throw e; });
+  }
+  function ccInDs(ds) {   // mỗi người 1 tờ A4
+    if (!ds.length) return;
+    ccLayDs(ds).then(ccTrang, function (e) { toastLoi(e.message || String(e)); });
+  }
+  // ---- 22/10: chia sẻ PDF (Zalo, email, Lưu vào Tệp…) để mang ra quán in ----
+  var ICON_GUI = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15V3M7.5 7.5 12 3l4.5 4.5"/><path d="M8 10H6a2 2 0 0 0-2 2v7a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-7a2 2 0 0 0-2-2h-2"/></svg>';
+  function ccTenPdf(ds) {   // ds: [{ten, so}] -> tên file dễ nhận
+    var d = new Date(), ng = ('0' + d.getDate()).slice(-2) + '-' + ('0' + (d.getMonth() + 1)).slice(-2), x = ds[0] || {};
+    if (ds.length !== 1) return 'CCCD_' + ds.length + '_nguoi_' + ng + '.pdf';
+    var t = x.ten ? String(hoaDau(x.ten)).normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/đ/g, 'd').replace(/Đ/g, 'D').replace(/[^A-Za-z0-9]+/g, '_').replace(/^_|_$/g, '') : '';
+    return 'CCCD_' + (t || x.so || 'nguoi') + '_' + ng + '.pdf';
+  }
+  function ccPdfTao(urls) {   // ảnh JPEG -> Blob PDF (mỗi người 1 trang A4 như bản in)
+    return Promise.all(urls.map(function (u) {
+      return new Promise(function (ok, hong) {
+        var im = new Image(); im.onload = function () {
+          var b = atob(u.split(',')[1]), a = new Uint8Array(b.length); for (var i = 0; i < b.length; i++) a[i] = b.charCodeAt(i);
+          ok({ b: a, w: im.naturalWidth, h: im.naturalHeight });
+        }; im.onerror = function () { hong(new Error('Ảnh hỏng, không tạo được PDF.')); }; im.src = u;
+      });
+    })).then(ccPdf);
+  }
+  function ccGui(hua, ten) {   // tạo PDF xong mới hiện nút Gửi (iPhone chỉ mở bảng chia sẻ ngay sau 1 lần bấm tay)
+    ccTd('Đang tạo PDF…');
+    hua.then(function (urls) { ccTd('Đang tạo PDF…'); return ccPdfTao(urls).then(function (bl) { return { bl: bl, n: urls.length }; }); }).then(function (o) {
+      ccTd('');
+      var mb = o.bl.size / 1048576, f = null;
+      try { f = new File([o.bl], ten, { type: 'application/pdf' }); } catch (e) { }
+      var sh = moSheet('<h3>PDF sẵn sàng</h3><div class="meta">' + esc(ten) + ' · ' + o.n + ' trang · ' + (mb < 1 ? Math.max(1, Math.round(mb * 1024)) + ' KB' : mb.toFixed(1).replace('.', ',') + ' MB') + '</div>' +
+        (mb > 20 ? '<div class="note warn">File lớn, gửi email có thể bị chặn (thường giới hạn 25 MB). Nên chia làm nhiều lượt ít người hơn.</div>' : '') +
+        '<div class="meta">Mỗi người 1 trang A4, ảnh to gấp 1,5 lần thẻ thật. Ở quán in cứ in khổ A4 bình thường.</div>' +
+        '<button class="btn" id="gP">Gửi PDF (Zalo, email…)</button><button class="btn lk" id="gK">Thôi</button>');
+      function mo() {   // máy không có bảng chia sẻ: mở PDF để dùng nút chia sẻ của trình xem
+        var u = URL.createObjectURL(o.bl), a = document.createElement('a'); a.href = u; a.target = '_blank'; a.download = ten; document.body.appendChild(a); a.click(); a.remove();
+        setTimeout(function () { URL.revokeObjectURL(u); }, 120000);
+      }
+      sh.querySelector('#gK').onclick = function () { sh.remove(); };
+      sh.querySelector('#gP').onclick = function () {
+        sh.remove();
+        if (f && navigator.canShare && navigator.canShare({ files: [f] })) navigator.share({ files: [f], title: ten }).catch(function (e) { if (!e || e.name !== 'AbortError') mo(); });
+        else mo();
+      };
+    }, function (e) { ccTd(''); toastLoi(e && e.message ? e.message : 'Không tạo được PDF.'); });
   }
   function ccXemLon(g, kt) {   // g: {so, ten, id, duong}; kt: ô trong kho (để chọn / bỏ chọn)
     var k = CCS.kho, chon = !!(kt && k && k.chon[g.so]);
     var sh = moSheet('<div class="row sp"><div style="min-width:0"><h3 class="ell">' + esc(g.ten ? hoaDau(g.ten) : g.so) + '</h3><div class="meta ell">' + esc((g.ten ? g.so + ' · ' : '') + (g.duong || '')) + '</div></div><button class="link" id="xlD">Đóng</button></div>' +
       '<div class="ccxl"><img id="xlA" alt=""' + (g.nho && kt ? ' src="' + g.nho + '"' : '') + '><span class="meta" id="xlT">Đang tải ảnh…</span></div>' +
-      '<button class="btn" id="xlIn" disabled>In tờ này</button>' + (kt ? '<button class="btn ghost" id="xlC">' + (chon ? 'Bỏ chọn' : 'Chọn để in cùng người khác') + '</button>' : ''));
+      '<button class="btn" id="xlIn" disabled>In tờ này</button><button class="btn ghost" id="xlG" disabled>Chia sẻ PDF</button>' + (kt ? '<button class="btn ghost" id="xlC">' + (chon ? 'Bỏ chọn' : 'Chọn để in cùng người khác') + '</button>' : ''));
     var img = sh.querySelector('#xlA'), tt = sh.querySelector('#xlT'), nIn = sh.querySelector('#xlIn');
     sh.querySelector('#xlD').onclick = function () { sh.remove(); };
-    ccLayAnh(g).then(function (a) { img.src = a.anh; tt.remove(); nIn.disabled = false; }, function (e) { tt.textContent = e.message; tt.style.color = 'var(--bad)'; });
+    var nG = sh.querySelector('#xlG');
+    ccLayAnh(g).then(function (a) { img.src = a.anh; tt.remove(); nIn.disabled = nG.disabled = false; }, function (e) { tt.textContent = e.message; tt.style.color = 'var(--bad)'; });
     nIn.onclick = function () { sh.remove(); ccInDs([g]); };
+    nG.onclick = function () { sh.remove(); ccGui(ccLayDs([g]), ccTenPdf([g])); };
     var c = sh.querySelector('#xlC');
     if (c) c.onclick = function () { sh.remove(); kt(); };
   }
@@ -2561,7 +2608,7 @@ textarea.inp{font-family:inherit}
       }).join('') + '</div>';
       if (k.tong > k.ds.length) h += '<button class="btn ghost" id="ckThem"' + (k.dang ? ' disabled' : '') + '>' + (k.dang === 2 ? 'Đang tải…' : 'Xem thêm (còn ' + (k.tong - k.ds.length) + ' người)') + '</button>';
     } else if (k.dang !== 1) h += '<div class="meta" style="text-align:center">Chọn giới tính, gõ năm sinh rồi bấm Tìm. Chạm ảnh để chọn người cần in, bấm kính lúp để xem to.</div>';
-    h += '<div class="ccday"><button class="btn ghost" id="ckLai">Quay lại</button><button class="btn" id="ckIn"></button></div><div class="ccdem"></div>';
+    h += '<div class="ccday"><button class="btn ghost" id="ckLai">Quay lại</button><button class="btn ghost ccgui" id="ckGui" aria-label="Chia sẻ PDF">' + ICON_GUI + '</button><button class="btn" id="ckIn"></button></div><div class="ccdem"></div>';
     t.innerHTML = h;
     ccDayDat(t); ckBar();
     var b;
@@ -2580,10 +2627,9 @@ textarea.inp{font-family:inherit}
       t.querySelectorAll('[data-ki]').forEach(function (e) { ckO(e); });
       b.textContent = het ? 'Chọn hết' : 'Bỏ chọn hết'; ckBar();
     };
-    document.getElementById('ckIn').onclick = function () {
-      var ds = Object.keys(k.chon).map(function (so) { return k.chon[so]; }).sort(function (a, b) { return a.nam - b.nam || (a.so < b.so ? -1 : 1); });
-      ccInDs(ds);
-    };
+    function daChon() { return Object.keys(k.chon).map(function (so) { return k.chon[so]; }).sort(function (a, b) { return a.nam - b.nam || (a.so < b.so ? -1 : 1); }); }
+    document.getElementById('ckIn').onclick = function () { ccInDs(daChon()); };
+    document.getElementById('ckGui').onclick = function () { var ds = daChon(); if (ds.length) ccGui(ccLayDs(ds), ccTenPdf(ds)); };
     function bat(i) {
       var x = k.ds[i]; if (k.chon[x.so]) delete k.chon[x.so]; else k.chon[x.so] = x;
       ckO(t.querySelector('[data-ki="' + i + '"]')); ckBar();
@@ -2600,8 +2646,10 @@ textarea.inp{font-family:inherit}
     var k = CCS.kho, b = document.getElementById('ckIn'); if (!k || !b) return;
     var n = Object.keys(k.chon).length;
     b.disabled = !n; b.textContent = n ? 'In ' + n + ' tờ đã chọn' : 'Chưa chọn ai';
+    var g = document.getElementById('ckGui'); if (g) g.disabled = !n;
   }
   var BAN_MOI = [
+    { so: 56, ds: [['Tab CCCD chuyển lên ngay cạnh tab Lao động.'], ['Trang CCCD có nút Chia sẻ (biểu tượng mũi tên lên, cạnh nút In): app tạo PDF mỗi người 1 trang A4 rồi gửi qua Zalo, email, Lưu vào Tệp… để mang ra quán in.'], ['Ảnh chọn trong kho và ảnh xem to cũng chia sẻ PDF được.']] },
     { so: 55, ds: [['Trang CCCD: nút Thêm ảnh, Làm lượt mới, In luôn nằm cố định dưới cùng, cuộn trang không bị trôi.'], ['Danh sách Đã lưu gần đây có ảnh nhỏ mặt CCCD; chạm vào để xem ảnh to rồi bấm In tờ này.'], ['Mới: Tìm ảnh trong kho theo Nam/Nữ, năm sinh từ–đến, số cuối CCCD; chạm ảnh để chọn nhiều người rồi in một lượt.'], ['Bỏ nút In bằng PDF (thừa): nếu máy không mở được hộp in, app tự đưa sang PDF.']] },
     { so: 54, ds: [['Trang CCCD: ảnh in mặc định đậm hơn, chữ đen rõ trên máy in laser.'], ['Khối "Chỉnh ảnh in" có 3 thanh kéo Sáng tối, Tương phản, Độ nét, áp cho tất cả ảnh.'], ['Mỗi người có nút "Chỉnh ảnh người này" để chỉnh riêng cả mặt trước và mặt sau.']] },
     { so: 53, ds: [['Ảnh CCCD cắt sát mép thẻ hơn: không còn dính nền bàn, sàn, và không méo khi ảnh chụp nghiêng.'], ['Thẻ đặt trên nền đá mài, vân gỗ hoặc chụp xoay dọc cũng tự cắt đúng.']] },
