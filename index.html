@@ -13,7 +13,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
 <script src="config.js"></script>
-<script>window.PB = { so: 46, luc: "21/10 21:26" };</script>
+<script>window.PB = { so: 47, luc: "21/10 21:33" };</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap">
 <style>
@@ -630,6 +630,10 @@ textarea.inp{font-family:inherit}
 .q2dl{display:flex;gap:8px;flex-wrap:wrap}.q2dl span{display:flex;align-items:center;background:var(--soft);border-radius:10px;padding:6px 10px;font-size:13.5px;white-space:nowrap}.q2dl b{margin-left:4px}
 
 .bmds{margin:8px 0 0;padding-left:20px;font-size:15px;line-height:1.5}.bmds li{margin:4px 0}
+.bmoi>div.bmh{max-height:calc(100vh - 80px);max-height:calc(100dvh - 80px);padding:18px 18px 14px;position:relative}
+.bmh .bmx{position:absolute;top:8px;right:8px;width:36px;height:36px;border:0;background:none;font-size:24px;line-height:1;color:var(--muted)}
+.bmh .bmc{overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;flex:1;min-height:0;text-align:left}
+.bmh .btn{flex:none}
 </style>
 </head>
 <body>
@@ -1550,14 +1554,11 @@ textarea.inp{font-family:inherit}
   }
   // 21/10: "Bản X có gì mới" – hiện 1 lần sau khi cập nhật; mỗi dòng ngắn, dễ hiểu; vai '' = mọi người, 'chu' = chỉ chủ
   var BAN_MOI = [
-    { so: 46, ds: [['Phiếu lương BEST mở nhanh hơn (không còn chờ 10 giây lần đầu).'], ['Ghi 2 khoản thu chi liên tiếp: số dư tạm cộng dồn đúng, không mất giữa chừng.', 'chu,ketoan']] },
-    { so: 45, ds: [['Sửa lỗi: bấm làm mới hoặc chọn kỳ đúng lúc app đang tải ngầm thì lệnh không còn bị bỏ qua.'], ['Đầu tháng mới chưa có chấm công: danh sách vẫn chia theo tình trạng Làm / Nghỉ, không dồn hết vào Nghỉ.'],
-      ['Ghi ứng / trả xong mà mất mạng thì app báo rõ, không im lặng.']] },
-    { so: 44, ds: [['Thu chi: nếu số dư bảng tổng hợp tính ra khác số tạm vừa hiện, app nhắc 10 giây để bạn biết; khớp thì không báo gì.', 'chu,ketoan']] },
-    { so: 43, ds: [['Ghi sổ thu chi xong dùng tiếp được ngay; số dư quỹ tạm hiện liền, số chính xác tự thay vào khi bảng tổng hợp tính xong.', 'chu,ketoan'],
-      ['Tổng quan: đổi sang tháng khác nhanh hơn, và không làm đổi tháng đang xem trên máy tính.', 'chu'], ['Tổng quan và Thu chi không tự đọc lại vô ích nữa, chỉ đọc khi số thật sự đổi.', 'chu,ketoan']] },
-    { so: 42, ds: [['Mở app, xem danh sách lao động, phiếu lương và bảng công nhanh hơn nhiều.'], ['Số đã xem lần trước hiện ngay khi mở app; số mới tự cập nhật ngầm, không phải chờ vòng quay.'], ['App tự lấy số mới mỗi 3 phút và mỗi khi bạn quay lại app, không cần bấm cập nhật.'],
-      ['Các tab khác được tải sẵn, chuyển tab là có số ngay.']] },
+    { so: 46, ds: [['Phiếu lương BEST mở nhanh hơn.'], ['Ghi 2 khoản thu chi liền nhau: số dư tạm vẫn đúng.', 'chu,ketoan']] },
+    { so: 45, ds: [['Sửa lỗi bấm làm mới đôi khi không ăn.'], ['Đầu tháng chưa chấm công: không dồn hết vào Nghỉ.']] },
+    { so: 44, ds: [['Thu chi: số dư tính lại khác số tạm thì app nhắc.', 'chu,ketoan']] },
+    { so: 43, ds: [['Ghi sổ xong dùng tiếp ngay, không phải chờ.', 'chu,ketoan'], ['Tổng quan: đổi tháng nhanh, không đổi tháng trên máy tính.', 'chu']] },
+    { so: 42, ds: [['Mở app và phiếu lương nhanh hơn nhiều.'], ['Số cũ hiện ngay, số mới tự cập nhật ngầm.']] },
     { so: 41, ds: [['Tổng quan: tiền quỹ và công nợ vẽ thành thanh màu, nhìn là thấy tiền vào, tiền ra.', 'chu'], ['Tổng quan: bỏ bớt các bảng chữ dài khó đọc.', 'chu']] },
     { so: 40, ds: [['Mỗi lần cập nhật sẽ có hộp này giới thiệu điểm mới.'], ['Xem lại: Tài khoản → Có gì mới.']] },
     { so: 39, ds: [['Tab Lao động hiện số người đi làm hôm nay.'], ['Ai không đi làm tự vào mục "Nghỉ".'], ['Người cần kiểm tra hiện ngay đầu trang.'],
@@ -1569,13 +1570,22 @@ textarea.inp{font-family:inherit}
       return { so: b.so, ds: b.ds.filter(function (x) { return !x[1] || x[1].split(',').indexOf(vai) >= 0; }).map(function (x) { return x[0]; }) };
     }).filter(function (b) { return b.ds.length; });
   }
-  function hopMoi(ds, tieu) {
+  // 21/10: hộp luôn đóng được (nút ×, chạm nền tối, nút Đã hiểu luôn hiện); nội dung dài thì cuộn bên trong
+  function hopMoi(ds, tieu, gon) {
     var d = document.createElement('div'); d.className = 'bmoi';
-    d.innerHTML = '<div style="text-align:left"><h3 style="text-align:center">' + esc(tieu) + '</h3>' + ds.map(function (b) {
+    var them = 0;
+    if (gon) {   // tự hiện khi mở app: tối đa 4 dòng của bản mới nhất, còn lại xem ở Tài khoản → Có gì mới
+      var tat = []; ds.forEach(function (b) { tat = tat.concat(b.ds); });
+      them = Math.max(0, tat.length - 4); ds = [{ so: ds[0].so, ds: tat.slice(0, 4) }];
+    }
+    d.innerHTML = '<div class="bmh"><button class="bmx" aria-label="Đóng">×</button><h3>' + esc(tieu) + '</h3><div class="bmc">' + ds.map(function (b) {
       return (ds.length > 1 ? '<div class="meta" style="margin-top:10px;font-weight:700">Bản ' + b.so + '</div>' : '') + '<ul class="bmds">' + b.ds.map(function (t) { return '<li>' + esc(t) + '</li>'; }).join('') + '</ul>';
-    }).join('') + '<button class="btn" id="bmHieu" style="margin-top:12px">Đã hiểu</button></div>';
+    }).join('') + (them ? '<div class="meta" style="margin-top:8px">Còn ' + them + ' điểm khác: xem ở Tài khoản → Có gì mới.</div>' : '') + '</div><button class="btn" id="bmHieu">Đã hiểu</button></div>';
     document.body.appendChild(d);
-    document.getElementById('bmHieu').onclick = function () { d.remove(); };
+    function dong() { d.remove(); }
+    document.getElementById('bmHieu').onclick = dong;
+    d.querySelector('.bmx').onclick = dong;
+    d.onclick = function (e) { if (e.target === d) dong(); };
     return d;
   }
   function xemMoi() {   // gọi khi vào app
@@ -1585,7 +1595,7 @@ textarea.inp{font-family:inherit}
     var ds = moiCuaToi(da, PB.so);
     luu('vlta_moi', String(PB.so));
     if (!ds.length || document.querySelector('.bmoi')) return;
-    hopMoi(ds, ds.length > 1 ? 'Có gì mới' : 'Bản ' + PB.so + ' có gì mới');
+    hopMoi(ds, 'Bản ' + PB.so + ' có gì mới', true);
   }
   function hienBanMoi(so) {
     if (BM.mo) return;
