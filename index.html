@@ -13,7 +13,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
 <script src="config.js"></script>
-<script>window.PB = { so: 54, luc: "21/10 23:57" };</script>
+<script>window.PB = { so: 55, luc: "22/10 00:20" };</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap">
 <style>
@@ -653,6 +653,27 @@ textarea.inp{font-family:inherit}
 .cct{font-size:13px;color:var(--muted)}.cct.ok{color:var(--good)}.cct.warn{color:var(--warn)}.cct.bad{color:var(--bad)}.cct a{color:var(--blue)}
 .ccso .inp{flex:1;min-width:0;margin:0}
 .ccnut .btn{flex:1}
+.ccday{position:fixed;left:0;right:0;bottom:64px;z-index:29;display:flex;gap:8px;padding:10px max(16px,calc(50vw - 224px));background:var(--card);border-top:1px solid var(--line);box-shadow:0 -4px 14px rgba(16,24,40,.06)}
+.ccday .btn{flex:1;min-width:0;padding-left:8px;padding-right:8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.ccday .btn:last-child{flex:1.35}
+.ccdem{height:56px;flex:none}
+.ccw .it .ch{color:var(--faint);font-size:20px;flex:none}
+.ccg img,.ccg .ccg0{width:64px;height:40px;object-fit:cover;object-position:top;border-radius:6px;flex:none;background:var(--soft);display:block}
+.cckl{display:flex;flex-direction:column;gap:12px;padding:16px}
+.ckn{display:flex;align-items:center;gap:8px}.ckn label{flex:none;width:104px;font-size:14px;color:var(--muted)}.ckn .inp{flex:1;min-width:0;margin:0;text-align:center}.ckn span{color:var(--faint)}
+.ckh{align-items:center;padding:0 2px}.ckh .btn.lk{padding:4px 0;font-size:14px}
+.ckg{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+.ckt{background:var(--card);border-radius:12px;overflow:hidden;border:2px solid transparent;display:flex;flex-direction:column}
+.ckt.on{border-color:var(--cta);box-shadow:0 0 0 3px var(--tint)}
+.ckb{position:relative;border:0;padding:0;background:var(--soft);display:block;width:100%;aspect-ratio:1400/1806}
+.ckb img{width:100%;height:100%;object-fit:contain;display:block;background:#fff}
+.ckno{font-size:12px;color:var(--muted)}
+.ckv{position:absolute;top:6px;right:6px;width:26px;height:26px;border-radius:50%;background:rgba(255,255,255,.92);border:2px solid var(--edge);font-style:normal;color:#fff;font-weight:700;font-size:15px;line-height:22px;text-align:center}
+.ckt.on .ckv{background:var(--cta);border-color:var(--cta)}
+.ckc{display:flex;align-items:center;justify-content:space-between;gap:4px;padding:6px 4px 6px 10px;font-size:13px}
+.ckc span{min-width:0;display:flex;flex-direction:column}.ckc small{font-size:11.5px;color:var(--muted)}
+.ckz{flex:none;width:34px;height:34px;border:0;background:none;color:var(--muted);display:flex;align-items:center;justify-content:center;padding:0}.ckz svg{width:20px;height:20px}
+.ccxl{position:relative;min-height:200px;display:flex;align-items:center;justify-content:center;background:var(--soft);border-radius:10px;overflow:hidden}
+.ccxl img{width:100%;display:block;background:#fff}.ccxl .meta{position:absolute;bottom:8px;left:0;right:0;text-align:center}
 .ccx{flex:none;width:34px;height:34px;border:0;border-radius:50%;background:var(--soft);color:var(--muted);font-size:22px;line-height:1;display:flex;align-items:center;justify-content:center;padding:0}
 .ccp>.row{align-items:flex-start}
 .btn[disabled]{opacity:.55}
@@ -2058,7 +2079,7 @@ textarea.inp{font-family:inherit}
     return { CHINH_MD: CHINH_MD, xep: xep, lamDep: lamDep, timThe: timThe, xuLy: xuLy, ghep: ghep, xoay: xoay, phanLoai: phanLoai, MW: MW, MH: MH, GAP: GAP };
   })();
   // ---------- 21/10: tab CCCD – chọn ảnh 2 mặt trong album -> tự cắt, nắn, ghép từng cặp -> in mỗi người 1 tờ A4 -> lưu thư mục CCCD trên Drive ----------
-  var CCS = { ds: [], tt: {}, jpg: {}, dang: null, doi: null, hang: [], chay: 0, docHang: [], docChay: 0 }, ccId = 0;
+  var CCS = { ds: [], tt: {}, jpg: {}, dang: null, doi: null, hang: [], chay: 0, docHang: [], docChay: 0, kho: null, anh: {} }, ccId = 0;
   // mức chỉnh ảnh (sáng tối / tương phản / độ nét): mức chung nhớ trên máy; người nào chỉnh riêng thì lưu trên 2 mặt của người đó
   CCS.chinh = (function () { try { var o = JSON.parse(doc('vlta_cc_chinh') || 'null'); if (o && o.tp >= 0) return o; } catch (e) { } return { sang: CC.CHINH_MD.sang, tp: CC.CHINH_MD.tp, net: CC.CHINH_MD.net }; })();
   function ccOpt(p) { return (p.t && p.t.chinh) || (p.s && p.s.chinh) || CCS.chinh; }
@@ -2159,12 +2180,13 @@ textarea.inp{font-family:inherit}
   function ccGan() { try { return JSON.parse(doc('vlta_cccd') || '[]'); } catch (e) { return []; } }
   function ccVe() {
     var t = document.getElementById('ccThan'); if (!t || S.tab !== 'cc') return;
+    if (CCS.kho) { ccVeKho(t); return; }
     var cap = ccCap(), gan = ccGan(), h = '';
     if (CCS.dang) {
       h += '<div class="card"><b>Đang cắt và ghép ảnh ' + (CCS.dang.i + 1) + '/' + CCS.dang.n + '…</b><div class="ccbar0"><i style="width:' + Math.round(100 * CCS.dang.i / CCS.dang.n) + '%"></i></div></div>';
     } else if (!CCS.ds.length) {
       h += '<div class="card cch">' + ICON.cc + '<b>In CCCD người mới</b><div class="meta">Chọn cùng lúc ảnh mặt trước và mặt sau của từng người trong album. App tự cắt sát viền, nắn thẳng, ghép 2 mặt, in mỗi người 1 tờ A4 rồi lưu vào thư mục CCCD trên Drive.</div>' +
-        '<button class="btn" id="ccChon">Chọn ảnh trong album</button></div>';
+        '<button class="btn" id="ccChon">Chọn ảnh trong album</button><button class="btn ghost" id="ccKho">Tìm ảnh trong kho</button></div>';
     } else {
       if (CCS.doi) h += '<div class="note warn ccdoi"><span>Chạm vào ảnh muốn đổi chỗ</span><button class="btn sm ghost" id="ccDoiThoi">Thôi</button></div>';
       var dangDoc = CCS.ds.filter(function (x) { return x.doc === 'cho' || x.doc === 'dang'; }).length;
@@ -2194,11 +2216,11 @@ textarea.inp{font-family:inherit}
           '<div class="row ccpc"><button class="btn lk" data-chinh="' + esc(p.k) + '">Chỉnh ảnh người này</button>' + ((p.t && p.t.chinh) || (p.s && p.s.chinh) ? '<span class="tag moi">đã chỉnh riêng</span>' : '') + '</div></div>';
       }).join('');
       h += '<div class="meta" style="text-align:center">Chạm ảnh để xoay, đổi mặt, cắt lại, đổi chỗ.</div>' +
-        '<div class="row ccnut"><button class="btn ghost" id="ccThem">Thêm ảnh</button><button class="btn" id="ccIn"' + (dangDoc ? ' disabled' : '') + '>' + (dangDoc ? 'Đang đọc số… còn ' + dangDoc : 'In ' + cap.length + ' tờ') + '</button></div>' +
-        '<div class="row" style="justify-content:center;gap:4px"><button class="btn lk" id="ccPdf"' + (dangDoc ? ' disabled' : '') + '>In bằng PDF</button><span class="meta">·</span><button class="btn lk" id="ccMoi">Làm lượt mới</button></div>';
+        '<div class="ccday"><button class="btn ghost" id="ccThem">Thêm ảnh</button><button class="btn ghost" id="ccMoi">Lượt mới</button><button class="btn" id="ccIn"' + (dangDoc ? ' disabled' : '') + '>' + (dangDoc ? 'Đọc số… ' + dangDoc : 'In ' + cap.length + ' tờ') + '</button></div><div class="ccdem"></div>';
     }
-    if (gan.length && !CCS.dang) h += '<div class="grp"><div class="gh">Đã lưu gần đây · chạm để in lại</div>' + gan.slice(0, 12).map(function (g, i) {
-      return '<button class="it" data-g="' + i + '"><div style="min-width:0;flex:1"><div class="nm ell">' + esc(g.ten ? hoaDau(g.ten) : g.so) + '</div><div class="sub">' + esc(g.duong) + ' · ' + esc(g.luc) + '</div></div></button>';
+    if (CCS.ds.length && !CCS.dang) h += '<div class="grp"><button class="it" id="ccKho"><div style="min-width:0;flex:1"><div class="nm">Tìm ảnh trong kho</div><div class="sub">Lọc nam/nữ, năm sinh rồi chọn người để in</div></div><span class="ch">›</span></button></div>';
+    if (gan.length && !CCS.dang) h += '<div class="grp"><div class="gh">Đã lưu gần đây · chạm để xem và in lại</div>' + gan.slice(0, 12).map(function (g, i) {
+      return '<button class="it ccg" data-g="' + i + '">' + (g.nho ? '<img src="' + g.nho + '" alt="">' : '<i class="ccg0"></i>') + '<div style="min-width:0;flex:1"><div class="nm ell">' + esc(g.ten ? hoaDau(g.ten) : g.so) + '</div><div class="sub ell">' + esc(g.duong) + ' · ' + esc(g.luc) + '</div></div></button>';
     }).join('') + '</div>';
     h += '<input type="file" id="ccFile" accept="image/*" multiple hidden>';
     t.innerHTML = h;
@@ -2208,8 +2230,9 @@ textarea.inp{font-family:inherit}
     var b;
     if ((b = document.getElementById('ccDoiThoi'))) b.onclick = function () { CCS.doi = null; ccVe(); };
     if ((b = document.getElementById('ccIn'))) b.onclick = function () { ccIn(false); };
-    if ((b = document.getElementById('ccPdf'))) b.onclick = function () { ccIn(true); };
     if ((b = document.getElementById('ccMoi'))) b.onclick = ccMoi;
+    if ((b = document.getElementById('ccKho'))) b.onclick = ccKhoMo;
+    ccDayDat(t);
     t.querySelectorAll('.ccm[data-id]').forEach(function (e) { e.onclick = function () { ccCham(Number(e.getAttribute('data-id'))); }; });
     t.querySelectorAll('[data-luu]').forEach(function (e) {
       e.onclick = function () {
@@ -2230,7 +2253,8 @@ textarea.inp{font-family:inherit}
       img.onclick = function () { if (p0) ccXemTo(CC.ghep(p0.t ? p0.t.the : null, p0.s ? p0.s.the : null, ccOpt(p0)).toDataURL('image/jpeg', 0.9)); };
       var mdb = document.getElementById('ccMd'); if (mdb) mdb.onclick = function () { CCS.chinh = { sang: CC.CHINH_MD.sang, tp: CC.CHINH_MD.tp, net: CC.CHINH_MD.net }; luu('vlta_cc_chinh', JSON.stringify(CCS.chinh)); ccVe(); };
     }
-    t.querySelectorAll('[data-g]').forEach(function (e) { e.onclick = function () { ccInLai(gan[Number(e.getAttribute('data-g'))]); }; });
+    t.querySelectorAll('[data-g]').forEach(function (e) { e.onclick = function () { ccXemLon(gan[Number(e.getAttribute('data-g'))]); }; });
+    ccGanNho(gan);
   }
   function ccXoaCap(k) {   // bỏ cả cặp mặt trước + mặt sau, có Hoàn tác
     var p = ccCap().filter(function (x) { return x.k === k; })[0]; if (!p) return;
@@ -2337,7 +2361,7 @@ textarea.inp{font-family:inherit}
       cap.forEach(function (p) {
         var st = CCS.tt[p.k] || {};
         if (!p.t || !p.s || st.ok || st.co || st.dang) return;
-        if (p.co) { CCS.tt[p.k] = { co: 1, so: p.so, ten: p.ten, duong: p.co }; ccGanThem({ so: p.so, ten: p.ten, duong: p.co, id: p.coId }); return; }   // kho đã có: không lưu lại
+        if (p.co) { CCS.tt[p.k] = { co: 1, so: p.so, ten: p.ten, duong: p.co }; ccGanThem({ so: p.so, ten: p.ten, duong: p.co, id: p.coId }, p); return; }   // kho đã có: không lưu lại
         ccXep(p.k, p.so, p.so ? 'đọc từ ảnh' : '');
       });
       ccVe();
@@ -2412,20 +2436,184 @@ textarea.inp{font-family:inherit}
       CCS.chay = 0;
       if (o.loi) CCS.tt[h.k] = { loi: o.loi };
       else if (o.chuaSo) CCS.tt[h.k] = { chuaSo: 1, ten: o.ten };
-      else { CCS.tt[h.k] = o.co ? { co: 1, so: o.so, ten: o.ten, duong: o.duong } : { ok: 1, so: o.so, ten: o.ten, duong: o.duong }; ccGanThem(o); }
+      else { CCS.tt[h.k] = o.co ? { co: 1, so: o.so, ten: o.ten, duong: o.duong } : { ok: 1, so: o.so, ten: o.ten, duong: o.duong }; ccGanThem(o, p); }
       ccVe(); ccChay();
     }, function (e) { CCS.chay = 0; CCS.tt[h.k] = { loi: e.message }; ccVe(); ccChay(); });
   }
-  function ccGanThem(o) {
+  function ccGanThem(o, p) {   // p: cặp vừa in -> giữ ảnh nhỏ mặt trước để nhận mặt
     var g = ccGan().filter(function (x) { return x.so !== o.so; }), d = new Date();
-    g.unshift({ so: o.so, ten: o.ten, duong: o.duong, id: o.id || '', luc: ('0' + d.getDate()).slice(-2) + '/' + ('0' + (d.getMonth() + 1)).slice(-2) + ' ' + ('0' + d.getHours()).slice(-2) + ':' + ('0' + d.getMinutes()).slice(-2) });
+    g.unshift({ so: o.so, ten: o.ten, duong: o.duong, id: o.id || '', nho: p && p.t ? ccNho(p.t.the, 192) : '', luc: ('0' + d.getDate()).slice(-2) + '/' + ('0' + (d.getMonth() + 1)).slice(-2) + ' ' + ('0' + d.getHours()).slice(-2) + ':' + ('0' + d.getMinutes()).slice(-2) });
     luu('vlta_cccd', JSON.stringify(g.slice(0, 30)));
   }
-  function ccInLai(g) {
-    toast('Đang lấy ảnh ' + (g.ten ? hoaDau(g.ten) : g.so) + '…');
-    apiT({ v: 'cccdAnh', id: g.id, so: g.so }).then(function (o) { if (o.loi) { toastLoi(o.loi); return; } ccTrang([o.anh]); }, function (e) { toastLoi(e.message); });
+  // ---- 22/10: thanh nút cố định trên thanh tab; xem ảnh lớn; tìm ảnh trong kho rồi chọn in ----
+  function ccDayDat(t) {   // đặt thanh nút ngay trên thanh tab dưới cùng
+    var d = t.querySelector('.ccday'), nv = document.querySelector('.nav');
+    if (d && nv && nv.offsetHeight) d.style.bottom = nv.offsetHeight + 'px';
+  }
+  function ccTd(m) {   // 1 dòng báo tiến độ (không chồng nhiều thông báo)
+    var d = document.getElementById('ccTd');
+    if (!m) { if (d) d.remove(); return; }
+    if (!d) { d = document.createElement('div'); d.id = 'ccTd'; d.className = 'toast'; document.body.appendChild(d); }
+    d.textContent = m; clearTimeout(d.hen); d.hen = setTimeout(function () { d.remove(); }, 15000);
+  }
+  function ccLayAnh(g) {   // ảnh lớn đã lưu trên Drive (nhớ trong lượt dùng) -> { anh, app }
+    var k = g.id || g.so;
+    if (CCS.anh[k]) return Promise.resolve(CCS.anh[k]);
+    return apiT({ v: 'cccdAnh', id: g.id || '', so: g.so || '', lang: 1 }).then(function (o) {
+      if (o.loi) throw new Error(o.loi);
+      return (CCS.anh[k] = { anh: o.anh, app: o.app });
+    });
+  }
+  function ccChinhAnh(a) {   // ảnh do app lưu đã được chỉnh sẵn; ảnh cũ trong kho thì áp mức "Chỉnh ảnh in" hiện tại
+    if (a.app) return Promise.resolve(a.anh);
+    var c = CCS.chinh, kj = c.sang + ',' + c.tp + ',' + c.net;
+    if (a.in && a.in[kj]) return Promise.resolve(a.in[kj]);
+    return new Promise(function (ok) {
+      var im = new Image();
+      im.onload = function () {
+        var cv = document.createElement('canvas'); cv.width = im.naturalWidth; cv.height = im.naturalHeight;
+        cv.getContext('2d').drawImage(im, 0, 0);
+        try { CC.lamDep(cv, c); } catch (e) { }
+        a.in = {}; a.in[kj] = cv.toDataURL('image/jpeg', 0.92); ok(a.in[kj]);
+      };
+      im.onerror = function () { ok(a.anh); };
+      im.src = a.anh;
+    });
+  }
+  function ccInDs(ds) {   // ds: [{id, so}] -> mỗi người 1 tờ A4
+    var n = ds.length, xong = 0, out = new Array(n), i = 0;
+    if (!n) return;
+    ccTd('Đang lấy ảnh 0/' + n + '…');
+    function mot() {
+      if (i >= n) return Promise.resolve();
+      var j = i++;
+      return ccLayAnh(ds[j]).then(ccChinhAnh).then(function (u) { out[j] = u; xong++; ccTd('Đang lấy ảnh ' + xong + '/' + n + '…'); return mot(); });
+    }
+    Promise.all([mot(), mot(), mot()]).then(function () { ccTd(''); ccTrang(out); }, function (e) { ccTd(''); toastLoi(e.message || String(e)); });
+  }
+  function ccXemLon(g, kt) {   // g: {so, ten, id, duong}; kt: ô trong kho (để chọn / bỏ chọn)
+    var k = CCS.kho, chon = !!(kt && k && k.chon[g.so]);
+    var sh = moSheet('<div class="row sp"><div style="min-width:0"><h3 class="ell">' + esc(g.ten ? hoaDau(g.ten) : g.so) + '</h3><div class="meta ell">' + esc((g.ten ? g.so + ' · ' : '') + (g.duong || '')) + '</div></div><button class="link" id="xlD">Đóng</button></div>' +
+      '<div class="ccxl"><img id="xlA" alt=""' + (g.nho && kt ? ' src="' + g.nho + '"' : '') + '><span class="meta" id="xlT">Đang tải ảnh…</span></div>' +
+      '<button class="btn" id="xlIn" disabled>In tờ này</button>' + (kt ? '<button class="btn ghost" id="xlC">' + (chon ? 'Bỏ chọn' : 'Chọn để in cùng người khác') + '</button>' : ''));
+    var img = sh.querySelector('#xlA'), tt = sh.querySelector('#xlT'), nIn = sh.querySelector('#xlIn');
+    sh.querySelector('#xlD').onclick = function () { sh.remove(); };
+    ccLayAnh(g).then(function (a) { img.src = a.anh; tt.remove(); nIn.disabled = false; }, function (e) { tt.textContent = e.message; tt.style.color = 'var(--bad)'; });
+    nIn.onclick = function () { sh.remove(); ccInDs([g]); };
+    var c = sh.querySelector('#xlC');
+    if (c) c.onclick = function () { sh.remove(); kt(); };
+  }
+  function ccGanNho(gan) {   // người lưu từ bản cũ chưa có ảnh nhỏ: lấy 1 lần từ Drive, cắt lấy mặt trước
+    if (CCS.ganNap) return;
+    var thieu = gan.slice(0, 12).filter(function (g) { return !g.nho && g.id; });
+    if (!thieu.length) return;
+    CCS.ganNap = 1;
+    apiT({ v: 'cccdNho', ids: thieu.map(function (g) { return g.id; }), lang: 1 }).then(function (o) {
+      var ds = (o && o.ds) || {}, viec = thieu.filter(function (g) { return ds[g.id]; }).map(function (g) {
+        return new Promise(function (ok) {
+          var im = new Image();
+          im.onload = function () {
+            var c = document.createElement('canvas'); c.width = 192; c.height = 121;
+            c.getContext('2d').drawImage(im, 0, 0, im.naturalWidth, im.naturalWidth / 1.585, 0, 0, 192, 121);
+            ok({ so: g.so, nho: c.toDataURL('image/jpeg', 0.8) });
+          };
+          im.onerror = function () { ok(null); };
+          im.src = ds[g.id];
+        });
+      });
+      return Promise.all(viec).then(function (kq) {
+        var m = {}; kq.forEach(function (x) { if (x) m[x.so] = x.nho; });
+        if (!Object.keys(m).length) return;
+        var g2 = ccGan(); g2.forEach(function (x) { if (!x.nho && m[x.so]) x.nho = m[x.so]; });
+        luu('vlta_cccd', JSON.stringify(g2));
+        if (!CCS.kho) ccVe();
+      });
+    }, function () { });
+  }
+  // ---- tìm trong kho ----
+  function ccKhoMo() {
+    var l = {}; try { l = JSON.parse(doc('vlta_cc_kho') || '{}'); } catch (e) { }
+    CCS.kho = { gioi: l.gioi || '', tu: l.tu || '', den: l.den || '', duoi: '', ds: [], tong: -1, trang: -1, dang: 0, chon: {} };
+    ccVe(); window.scrollTo(0, 0);
+  }
+  function ccKhoTim(them) {
+    var k = CCS.kho; if (!k || k.dang) return;
+    if (!them) {
+      var tu = String(k.tu).trim(), den = String(k.den).trim();
+      if ((tu && !/^(19|20)\d\d$/.test(tu)) || (den && !/^(19|20)\d\d$/.test(den))) { toast('Năm sinh gõ đủ 4 số, ví dụ 1995.'); return; }
+      if (!tu && !den && !k.duoi) { toast('Gõ năm sinh hoặc số cuối CCCD để tìm.'); return; }
+      luu('vlta_cc_kho', JSON.stringify({ gioi: k.gioi, tu: tu, den: den }));
+      k.ds = []; k.trang = -1; k.tong = -1;
+    }
+    k.dang = them ? 2 : 1; ccVe();
+    apiT({ v: 'cccdTim', gioi: k.gioi, tu: k.tu || 1900, den: k.den || 2100, duoi: k.duoi, trang: k.trang + 1, lang: 1 }).then(function (o) {
+      k.dang = 0; if (CCS.kho !== k) return;
+      if (o.loi) { toastLoi(o.loi); ccVe(); return; }
+      var co = {}; k.ds.forEach(function (x) { co[x.so] = 1; });
+      k.tong = o.tong; k.trang = o.trang; k.ds = k.ds.concat((o.ds || []).filter(function (x) { return !co[x.so]; })); ccVe();
+    }, function (e) { k.dang = 0; toastLoi(e.message); ccVe(); });
+  }
+  var ICON_KINH = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5 21 21M10.5 7.5v6M7.5 10.5h6"/></svg>';
+  function ccVeKho(t) {
+    var k = CCS.kho, h = '';
+    h += '<div class="card cckl"><div class="row sp"><b style="font-size:17px">Tìm ảnh trong kho</b><button class="link" id="ckDong">Đóng</button></div>' +
+      '<div class="seg" id="ckGioi">' + [['', 'Tất cả'], ['NAM', 'Nam'], ['NỮ', 'Nữ']].map(function (x) { return '<button data-gi="' + x[0] + '"' + (k.gioi === x[0] ? ' class="on"' : '') + '>' + x[1] + '</button>'; }).join('') + '</div>' +
+      '<div class="ckn"><label>Năm sinh</label><input class="inp" id="ckTu" inputmode="numeric" maxlength="4" placeholder="từ năm" value="' + esc(k.tu) + '"><span>–</span><input class="inp" id="ckDen" inputmode="numeric" maxlength="4" placeholder="đến năm" value="' + esc(k.den) + '"></div>' +
+      '<div class="ckn"><label>Số cuối CCCD</label><input class="inp" id="ckDuoi" inputmode="numeric" maxlength="12" placeholder="không bắt buộc" value="' + esc(k.duoi) + '"></div>' +
+      '<button class="btn" id="ckTim"' + (k.dang ? ' disabled' : '') + '>' + (k.dang === 1 ? 'Đang tìm…' : 'Tìm') + '</button></div>';
+    if (k.tong >= 0) {
+      var het = k.ds.length && k.ds.every(function (x) { return k.chon[x.so]; });
+      h += '<div class="row sp ckh"><span class="meta">' + (k.tong ? 'Tìm thấy <b>' + k.tong + '</b> người' + (k.tong > k.ds.length ? ' · đang hiện ' + k.ds.length : '') : 'Không có ai khớp. Thử nới khoảng năm sinh.') + '</span>' +
+        (k.ds.length ? '<button class="btn lk" id="ckHet">' + (het ? 'Bỏ chọn hết' : 'Chọn hết') + '</button>' : '') + '</div>';
+      h += '<div class="ckg">' + k.ds.map(function (x, i) {
+        var c = !!k.chon[x.so];
+        return '<div class="ckt' + (c ? ' on' : '') + '" data-ki="' + i + '"><button class="ckb" data-ck="' + i + '">' + (x.nho ? '<img src="' + x.nho + '" alt="">' : '<span class="ckno">Chưa có ảnh nhỏ</span>') + '<i class="ckv">' + (c ? '✓' : '') + '</i></button>' +
+          '<div class="ckc"><span><b>' + x.nam + ' · ' + (x.gioi === 'NAM' ? 'Nam' : 'Nữ') + '</b><small class="num">' + x.so + '</small></span><button class="ckz" data-cz="' + i + '" aria-label="Xem lớn">' + ICON_KINH + '</button></div></div>';
+      }).join('') + '</div>';
+      if (k.tong > k.ds.length) h += '<button class="btn ghost" id="ckThem"' + (k.dang ? ' disabled' : '') + '>' + (k.dang === 2 ? 'Đang tải…' : 'Xem thêm (còn ' + (k.tong - k.ds.length) + ' người)') + '</button>';
+    } else if (k.dang !== 1) h += '<div class="meta" style="text-align:center">Chọn giới tính, gõ năm sinh rồi bấm Tìm. Chạm ảnh để chọn người cần in, bấm kính lúp để xem to.</div>';
+    h += '<div class="ccday"><button class="btn ghost" id="ckLai">Quay lại</button><button class="btn" id="ckIn"></button></div><div class="ccdem"></div>';
+    t.innerHTML = h;
+    ccDayDat(t); ckBar();
+    var b;
+    document.getElementById('ckDong').onclick = document.getElementById('ckLai').onclick = function () { CCS.kho = null; ccVe(); window.scrollTo(0, 0); };
+    t.querySelectorAll('[data-gi]').forEach(function (e) { e.onclick = function () { k.gioi = e.getAttribute('data-gi'); t.querySelectorAll('[data-gi]').forEach(function (x) { x.classList.toggle('on', x === e); }); }; });
+    [['ckTu', 'tu', 4], ['ckDen', 'den', 4], ['ckDuoi', 'duoi', 12]].forEach(function (x) {
+      var e = document.getElementById(x[0]);
+      e.oninput = function () { e.value = e.value.replace(/\D/g, '').slice(0, x[2]); k[x[1]] = e.value; };
+      e.onkeydown = function (ev) { if (ev.key === 'Enter') { e.blur(); ccKhoTim(false); } };
+    });
+    document.getElementById('ckTim').onclick = function () { ccKhoTim(false); };
+    if ((b = document.getElementById('ckThem'))) b.onclick = function () { ccKhoTim(true); };
+    if ((b = document.getElementById('ckHet'))) b.onclick = function () {
+      var het = k.ds.every(function (x) { return k.chon[x.so]; });
+      k.ds.forEach(function (x) { if (het) delete k.chon[x.so]; else k.chon[x.so] = x; });
+      t.querySelectorAll('[data-ki]').forEach(function (e) { ckO(e); });
+      b.textContent = het ? 'Chọn hết' : 'Bỏ chọn hết'; ckBar();
+    };
+    document.getElementById('ckIn').onclick = function () {
+      var ds = Object.keys(k.chon).map(function (so) { return k.chon[so]; }).sort(function (a, b) { return a.nam - b.nam || (a.so < b.so ? -1 : 1); });
+      ccInDs(ds);
+    };
+    function bat(i) {
+      var x = k.ds[i]; if (k.chon[x.so]) delete k.chon[x.so]; else k.chon[x.so] = x;
+      ckO(t.querySelector('[data-ki="' + i + '"]')); ckBar();
+      var hb = document.getElementById('ckHet'); if (hb) hb.textContent = k.ds.every(function (y) { return k.chon[y.so]; }) ? 'Bỏ chọn hết' : 'Chọn hết';
+    }
+    t.querySelectorAll('[data-ck]').forEach(function (e) { e.onclick = function () { bat(Number(e.getAttribute('data-ck'))); }; });
+    t.querySelectorAll('[data-cz]').forEach(function (e) { e.onclick = function () { var i = Number(e.getAttribute('data-cz')); ccXemLon(k.ds[i], function () { bat(i); }); }; });
+  }
+  function ckO(e) {   // vẽ lại dấu chọn của 1 ô
+    var k = CCS.kho, x = k && e ? k.ds[Number(e.getAttribute('data-ki'))] : null; if (!x) return;
+    var c = !!k.chon[x.so]; e.classList.toggle('on', c); e.querySelector('.ckv').textContent = c ? '✓' : '';
+  }
+  function ckBar() {
+    var k = CCS.kho, b = document.getElementById('ckIn'); if (!k || !b) return;
+    var n = Object.keys(k.chon).length;
+    b.disabled = !n; b.textContent = n ? 'In ' + n + ' tờ đã chọn' : 'Chưa chọn ai';
   }
   var BAN_MOI = [
+    { so: 55, ds: [['Trang CCCD: nút Thêm ảnh, Làm lượt mới, In luôn nằm cố định dưới cùng, cuộn trang không bị trôi.'], ['Danh sách Đã lưu gần đây có ảnh nhỏ mặt CCCD; chạm vào để xem ảnh to rồi bấm In tờ này.'], ['Mới: Tìm ảnh trong kho theo Nam/Nữ, năm sinh từ–đến, số cuối CCCD; chạm ảnh để chọn nhiều người rồi in một lượt.'], ['Bỏ nút In bằng PDF (thừa): nếu máy không mở được hộp in, app tự đưa sang PDF.']] },
     { so: 54, ds: [['Trang CCCD: ảnh in mặc định đậm hơn, chữ đen rõ trên máy in laser.'], ['Khối "Chỉnh ảnh in" có 3 thanh kéo Sáng tối, Tương phản, Độ nét, áp cho tất cả ảnh.'], ['Mỗi người có nút "Chỉnh ảnh người này" để chỉnh riêng cả mặt trước và mặt sau.']] },
     { so: 53, ds: [['Ảnh CCCD cắt sát mép thẻ hơn: không còn dính nền bàn, sàn, và không méo khi ảnh chụp nghiêng.'], ['Thẻ đặt trên nền đá mài, vân gỗ hoặc chụp xoay dọc cũng tự cắt đúng.']] },
     { so: 52, ds: [['Ảnh CCCD in ra và lưu lên Drive sắc nét hơn: app thêm bước tăng độ nét chữ, không chỉ chỉnh độ sáng.']] },
