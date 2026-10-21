@@ -13,7 +13,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
 <script src="config.js"></script>
-<script>window.PB = { so: 33, luc: "20/10 21:50" };</script>
+<script>window.PB = { so: 34, luc: "21/10 15:06" };</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap">
 <style>
@@ -1326,7 +1326,7 @@ textarea.inp{font-family:inherit}
       if (so < 1000) { m.textContent = 'Nhập số tiền.'; return; }
       if (!confirmLan(btn, (tra ? 'Trả ' : 'Ứng ') + vnd(so) + ' cho ' + p.ten + ' – bấm lần nữa để ghi')) return;
       btn.disabled = true; btn.textContent = 'Đang ghi…';
-      apiT({ v: 'ghiUT', cty: S.cty, r: p.r, loai: tra ? 'tra' : 'ung', so: so, nguoiTra: nt, ghiChu: document.getElementById('gg').value }).then(function (o) {
+      apiT({ v: 'ghiUT', cty: S.cty, r: p.r, loai: tra ? 'tra' : 'ung', so: so, nguoiTra: nt, ghiChu: [tra && pc && /^Tuần /.test(pc.tuan || '') ? 'Ghi từ phiếu lương ' + pc.tuan.replace(/^Tuần/, 'tuần') : '', document.getElementById('gg').value.trim()].filter(Boolean).join(' · ') }).then(function (o) {
         if (o.loi) { btn.disabled = false; btn.textContent = 'Ghi'; m.textContent = o.loi; return; }
         sh.remove(); toast('Đã ghi ' + (tra ? 'trả lương ' : 'ứng ') + vnd(so));
         PC = {}; var r = p.r;
@@ -1445,9 +1445,10 @@ textarea.inp{font-family:inherit}
     var q = { v: 'choGui', cty: cty, r: p.r, tuan: thang ? 'Phiếu tháng' : 'Tuần ' + String(o.tuanTxt || '').replace(/\/\d{4}$/, ''), so: Math.round(Number(o.conNhan) || 0), khoaTuan: thang ? 'THANG' : String(o.mon || o.tuanTxt || '') };
     apiT(q).then(function (k) {
       if (k.loi) { toastLoi('Chưa đưa được vào danh sách chờ: ' + k.loi); return; }
+      if (k.khong) { toast(k.ly); return; }   // phiếu không còn tiền phải chuyển
       var x = { ma: k.ma, luc: Date.now(), cty: cty, ten: p.ten, maNV: p.ma, tuan: q.tuan, so: q.so, nguoi: S.toi.ten, tu: 'App', toi: 1 };
       S.cho = S.cho || { ds: [], quaPhut: 120 };
-      S.cho.ds = S.cho.ds.filter(function (y) { return y.ma !== k.ma && !(y.cty === cty && kd(y.ten) === kd(p.ten) && y.tuan === q.tuan); }).concat([x]); datCho(S.cho); taiCho();
+      S.cho.ds = S.cho.ds.filter(function (y) { return y.ma !== k.ma && !(y.cty === cty && kd(y.ten) === kd(p.ten)); }).concat([x]); datCho(S.cho); taiCho();
       toastNut('Đã đưa ' + hoaDau(p.ten) + ' vào danh sách chờ chuyển', 'Hoàn tác', function () {
         apiT({ v: 'choHoan', ma: k.ma, cu: k.cu }).then(function (z) { if (z.loi) { toastLoi(z.loi); return; } toast('Đã hoàn tác'); taiCho(); }, function (e) { toastLoi(e.message); });
       }, 10000);
