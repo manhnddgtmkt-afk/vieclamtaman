@@ -1009,16 +1009,19 @@ textarea.inp{font-family:inherit}
 
   // ---------- danh sách lao động ----------
   var dangTaiDs = false;
+  var dsCho = null;   // lệnh gọi trong lúc đang tải: giữ lại, chạy ngay khi xong (nút làm mới không bị nuốt)
   function taiDs(ep, im) {   // im = tải ngầm (quay lại app / định kỳ): không thanh chờ, không báo lỗi, không vẽ lại nếu không có gì đổi
-    if (dangTaiDs) return; dangTaiDs = true;
+    if (dangTaiDs) { if (!im || !dsCho) dsCho = { ep: ep || (dsCho && dsCho.ep), im: im && (!dsCho || dsCho.im) }; return; }
+    dangTaiDs = true;
     var ver = {};
     if (!ep) Object.keys(S.data).forEach(function (k) { if (S.data[k] && S.data[k].ver && S.data[k].moc !== undefined) ver[k] = S.data[k].ver; });   // 21/10: bản cũ chưa có mốc vân tay -> lấy lại
+    function xongDs() { dangTaiDs = false; if (dsCho) { var c = dsCho; dsCho = null; setTimeout(function () { taiDs(c.ep, c.im); }, 50); } }
     apiT({ v: 'ds', ver: ver, moi: ep ? 1 : 0, anhH: anhKy(S.toi && S.toi.anh), im: im ? 1 : 0 }).then(function (o) {
-      dangTaiDs = false;
+      xongDs();
       if (o.loi) { if (!im) toast(o.loi); return; }
       S.lucDs = Date.now();
       if (o.toi && o.toi.anhGiu && S.toi) o.toi.anh = S.toi.anh;   // ảnh đại diện không đổi: máy chủ không gửi lại
-      var doiVai = o.toi && S.toi && (o.toi.vai !== S.toi.vai || String(o.toi.phuTrach) !== String(S.toi.phuTrach));
+      var doiVai = o.toi && S.toi && (o.toi.vai !== S.toi.vai || String(o.toi.phuTrach) !== String(S.toi.phuTrach) || (o.toi.saleTen && S.toi.saleTen && o.toi.saleTen !== S.toi.saleTen));
       if (o.toi) { delete o.toi.anhGiu; S.toi = o.toi; }
       if (doiVai) { S.data = {}; QUY = TQ = TN = null; PC = {}; luuSo('vlta_tq', null); luuSo('vlta_tn', null); luuSo('vlta_quy', null); luuDs(); vaoApp(); return; }   // quyền vừa đổi: vẽ lại theo vai trò mới
       var doi = false;
@@ -1030,13 +1033,13 @@ textarea.inp{font-family:inherit}
         c.luc = o.luc; S.data[c.cty] = c;
       });
       luuDs();
-      var choDoi = o.cho && !giongJ(o.cho.ds, S.cho && S.cho.ds);
-      if (o.cho) { if (!im || choDoi) datCho(o.cho); else S.cho = o.cho; }
+      var choDoi = o.cho && !o.cho.loi && !giongJ(o.cho.ds, S.cho && S.cho.ds);
+      if (o.cho && !o.cho.loi) { if (!im || choDoi) datCho(o.cho); else S.cho = o.cho; }
       if (S.tab === 'ld' && !S.hs && !S.utMo && (!im || doi)) veListe();
       if (S.tab === 'tq' && TQ && (S.tqNhom || 'ln') === 'ln' && (!im || doi)) hienTQ(TQ);   // 21/10: Tổng quan có dòng "Đang đi làm" theo danh sách vừa tải
       if (!S.daTaiTruoc) { S.daTaiTruoc = 1; setTimeout(taiTruoc, 800); }
     }, function (e) {
-      dangTaiDs = false; if (im) return; toast(e.message);
+      xongDs(); if (im) return; toast(e.message);
       var l = document.getElementById('list'); if (l && !S.data[S.cty]) l.innerHTML = '<div class="empty">' + esc(e.message) + '<br><br><button class="btn sm" id="thuLai">Thử lại</button></div>';
       var b = document.getElementById('thuLai'); if (b) b.onclick = function () { taiDs(true); };
     });
@@ -1065,7 +1068,8 @@ textarea.inp{font-family:inherit}
   function ngayDM(y) { var m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(y || '')); return m ? m[3] + '/' + m[2] : ''; }
   function dangLam(d, p) {
     if (!d || d.moc === undefined) return !/^NGHỈ$/i.test(p.ghi);   // dữ liệu cũ chưa có mốc vân tay
-    if (!d.moc || !p.vt) return false;
+    if (!d.moc) return !/^NGHỈ$/i.test(p.ghi);   // tháng mới chưa có chấm công: theo cột tình trạng
+    if (!p.vt) return false;
     if (p.vt === d.moc) return true;
     return !!(p.dem && p.vt === d.moc2 && d.moc === ymdNay() && new Date().getHours() < 20);
   }
@@ -1488,14 +1492,14 @@ textarea.inp{font-family:inherit}
         if (o.loi) { btn.disabled = false; btn.textContent = 'Ghi'; m.textContent = o.loi; return; }
         sh.remove(); toast('Đã ghi ' + (tra ? 'trả lương ' : 'ứng ') + vnd(so));
         PC = {}; var r = p.r;
-        if (tra && S.cho) S.cho.ds = S.cho.ds.filter(function (y) { return !(y.cty === S.cty && kd(y.ten) === kd(p.ten)); });
+        if (tra && S.cho && S.cho.ds) S.cho.ds = S.cho.ds.filter(function (y) { return !(y.cty === S.cty && kd(y.ten) === kd(p.ten)); });
         apiT({ v: 'ds', cty: S.cty }).then(function (x) {
           (x.cty || []).forEach(function (c) { if (!c.giong) { c.luc = x.luc; S.data[c.cty] = c; } }); luuDs();
           if (x.cho) datCho(x.cho);
           if (S.utMo) { delete UTG[S.cty]; taiUT(); }
           var np = (S.data[S.cty].ds || []).filter(function (z) { return z.r === r; })[0];
           if (S.hs && S.hs.p.r === r && np) moHs(np);
-        });
+        }, function (e) { toastLoi('Đã ghi vào sổ nhưng chưa tải lại được danh sách: ' + e.message + '. Kéo xuống hoặc bấm làm mới.'); });
       }, function (e) { btn.disabled = false; btn.textContent = 'Ghi'; m.textContent = e.message; });
     };
   }
@@ -1535,6 +1539,8 @@ textarea.inp{font-family:inherit}
   }
   // 21/10: "Bản X có gì mới" – hiện 1 lần sau khi cập nhật; mỗi dòng ngắn, dễ hiểu; vai '' = mọi người, 'chu' = chỉ chủ
   var BAN_MOI = [
+    { so: 45, ds: [['Sửa lỗi: bấm làm mới hoặc chọn kỳ đúng lúc app đang tải ngầm thì lệnh không còn bị bỏ qua.'], ['Đầu tháng mới chưa có chấm công: danh sách vẫn chia theo tình trạng Làm / Nghỉ, không dồn hết vào Nghỉ.'],
+      ['Ghi ứng / trả xong mà mất mạng thì app báo rõ, không im lặng.']] },
     { so: 44, ds: [['Thu chi: nếu số dư bảng tổng hợp tính ra khác số tạm vừa hiện, app nhắc 10 giây để bạn biết; khớp thì không báo gì.', 'chu,ketoan']] },
     { so: 43, ds: [['Ghi sổ thu chi xong dùng tiếp được ngay; số dư quỹ tạm hiện liền, số chính xác tự thay vào khi bảng tổng hợp tính xong.', 'chu,ketoan'],
       ['Tổng quan: đổi sang tháng khác nhanh hơn, và không làm đổi tháng đang xem trên máy tính.', 'chu'], ['Tổng quan và Thu chi không tự đọc lại vô ích nữa, chỉ đọc khi số thật sự đổi.', 'chu,ketoan']] },
@@ -1647,7 +1653,7 @@ textarea.inp{font-family:inherit}
         apiT({ v: 'choBo', ma: x.ma, ly: z[1] }).then(function (o) {
           if (o.loi) { btn.disabled = false; document.getElementById('cvM').textContent = o.loi; return; }
           sh.remove(); toast('Đã bỏ ' + hoaDau(x.ten) + ' khỏi danh sách chờ');
-          S.cho.ds = S.cho.ds.filter(function (y) { return y.ma !== x.ma; }); datCho(S.cho); taiCho();
+          S.cho.ds = choDs().filter(function (y) { return y.ma !== x.ma; }); datCho(S.cho); taiCho();
         }, function (e) { btn.disabled = false; document.getElementById('cvM').textContent = e.message; });
       };
     });
@@ -1671,7 +1677,7 @@ textarea.inp{font-family:inherit}
       if (k.khong) { toast(k.ly); return; }   // phiếu không còn tiền phải chuyển
       var x = { ma: k.ma, luc: Date.now(), cty: cty, ten: p.ten, maNV: p.ma, tuan: q.tuan, so: q.so, nguoi: S.toi.ten, tu: 'App', toi: 1 };
       S.cho = S.cho || { ds: [], quaPhut: 120 };
-      S.cho.ds = S.cho.ds.filter(function (y) { return y.ma !== k.ma && !(y.cty === cty && kd(y.ten) === kd(p.ten)); }).concat([x]); datCho(S.cho); taiCho();
+      S.cho = S.cho || { ds: [], quaPhut: 120 }; S.cho.ds = choDs().filter(function (y) { return y.ma !== k.ma && !(y.cty === cty && kd(y.ten) === kd(p.ten)); }).concat([x]); datCho(S.cho); taiCho();
       toastNut('Đã đưa ' + hoaDau(p.ten) + ' vào danh sách chờ chuyển', 'Hoàn tác', function () {
         apiT({ v: 'choHoan', ma: k.ma, cu: k.cu }).then(function (z) { if (z.loi) { toastLoi(z.loi); return; } toast('Đã hoàn tác'); taiCho(); }, function (e) { toastLoi(e.message); });
       }, 10000);
@@ -2077,16 +2083,19 @@ textarea.inp{font-family:inherit}
     taiTQ(TQ ? { im: 1 } : {});
   }
   var dangTQ = false;
+  var tqCho = null;
   function taiTQ(q) {
-    if (dangTQ) return; dangTQ = true;
+    if (dangTQ) { if (!q.im || !tqCho) tqCho = q; return; }   // đang tải: giữ lệnh (chọn kỳ / Số mới không bị nuốt)
+    dangTQ = true;
     q.v = 'tq'; var im = q.im;
+    function xongTQ() { dangTQ = false; if (tqCho) { var c = tqCho; tqCho = null; setTimeout(function () { taiTQ(c); }, 50); } }
     if (q.thang === undefined && S.tqThang) q.thang = S.tqThang;   // 21/10: đang xem kỳ khác -> tải lại đúng kỳ đó (kỳ trên máy tính không đổi theo app)
     apiT(q).then(function (o) {
-      dangTQ = false;
+      xongTQ();
       if (im && (o.loi || giongJ(o, TQ))) return;
       if (!o.loi) { TQ = o; luuSo('vlta_tq', o); } hienTQ(o);
     }, function (e) {
-      dangTQ = false; if (im) return; var t = document.getElementById('than'); if (t && !TQ) t.innerHTML = '<div class="empty">' + esc(e.message) + '</div>'; else toast(e.message); if (TQ) hienTQ(TQ);
+      xongTQ(); if (im) return; var t = document.getElementById('than'); if (t && !TQ) t.innerHTML = '<div class="empty">' + esc(e.message) + '</div>'; else toast(e.message); if (TQ) hienTQ(TQ);
     });
   }
   function laSo(v) { return /^[-−]?[\d,.]+%?$/.test(String(v).trim()) || String(v).trim() === '-'; }
