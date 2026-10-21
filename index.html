@@ -13,7 +13,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
 <script src="config.js"></script>
-<script>window.PB = { so: 59, luc: "22/10 01:24" };</script>
+<script>window.PB = { so: 60, luc: "22/10 01:30" };</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap">
 <style>
@@ -889,12 +889,17 @@ textarea.inp{font-family:inherit}
   apTheme(doc('vlta_theme'));
   function avHTML(u, lop) { return u && u.anh ? '<img class="' + (lop || 'av') + ' img" src="' + esc(u.anh) + '" alt="">' : '<div class="' + (lop || 'av') + '">' + esc(chu(u ? u.ten : '?')) + '</div>'; }
   var DONG_BO_MA = 'https://script.google.com/macros/s/AKfycbw9tVi3bcTDHCJ3fT_5dZxvwiGiyKHxGu0aLkGbBEPbve6tAWk_tYVTa9QY9GXDPQfwRg/exec';   // du an "Dong bo ma Tam An": chi keo ban ma moi tu GitHub
+  // 22/10: mọi bước cập nhật đều có giới hạn thời gian (iPhone đôi khi treo câm ở bước hỏi bộ khung app mới -> kẹt màn cập nhật)
+  function hanGio(p, ms) { return Promise.race([Promise.resolve(p).then(function () { }, function () { }), new Promise(function (ok) { setTimeout(ok, ms); })]); }
+  function lamMoiApp() {   // hỏi bộ khung app mới (tối đa 5 giây) rồi xoá bộ nhớ đệm (tối đa 3 giây); không bao giờ treo
+    function sw() { try { return navigator.serviceWorker && navigator.serviceWorker.getRegistration ? navigator.serviceWorker.getRegistration().then(function (r) { return r && r.update(); }) : null; } catch (e) { return null; } }
+    function xoa() { try { return window.caches ? caches.keys().then(function (ks) { return Promise.all(ks.map(function (k) { return caches.delete(k); })); }) : null; } catch (e) { return null; } }
+    return hanGio(sw(), 5000).then(function () { return hanGio(xoa(), 3000); });
+  }
   function lenBanMoi(dongBoMa) {   // tải bản app mới nhất: (chủ) chép mã máy chủ mới nhất, xoá bộ nhớ đệm, mở lại app
     toast('Đang cập nhật ứng dụng…');
-    var b1 = dongBoMa ? fetch(DONG_BO_MA).then(function () { }, function () { }) : Promise.resolve();
-    b1.then(function () { return navigator.serviceWorker && navigator.serviceWorker.getRegistration ? navigator.serviceWorker.getRegistration().then(function (r) { return r && r.update(); }) : null; })
-      .then(function () { return window.caches ? caches.keys().then(function (ks) { return Promise.all(ks.map(function (k) { return caches.delete(k); })); }) : null; }, function () { })
-      .then(function () { location.reload(); }, function () { location.reload(); });
+    var canh = setTimeout(function () { toastLoi('Mạng chậm, app chưa mở lại được. Tắt hẳn app rồi mở lại.'); }, 25000);
+    hanGio(dongBoMa ? fetch(DONG_BO_MA) : null, 12000).then(lamMoiApp).then(function () { location.reload(); });
   }
   function moTaiKhoan() {
     var u = S.toi, th = doc('vlta_theme') || 'auto', laChu = u.vai === 'chu';
@@ -1650,10 +1655,6 @@ textarea.inp{font-family:inherit}
     }, function () { });
   }
   // 21/10: "Bản X có gì mới" – hiện 1 lần sau khi cập nhật; mỗi dòng ngắn, dễ hiểu; vai '' = mọi người, 'chu' = chỉ chủ
-  // ===== CCCD: tìm khung thẻ, nắn thẳng, xác định mặt trước/sau + chiều, ghép 2 mặt (JS thuần, không thư viện) =====
-  // ===== CCCD: tìm khung thẻ, nắn thẳng, xác định mặt trước/sau + chiều, ghép 2 mặt (JS thuần, không thư viện) =====
-  // ===== CCCD: tìm khung thẻ, nắn thẳng, xác định mặt trước/sau + chiều, ghép 2 mặt (JS thuần, không thư viện) =====
-  // ===== CCCD: tìm khung thẻ, nắn thẳng, xác định mặt trước/sau + chiều, ghép 2 mặt (JS thuần, không thư viện) =====
   // ===== CCCD: tìm khung thẻ, nắn thẳng, xác định mặt trước/sau + chiều, ghép 2 mặt (JS thuần, không thư viện) =====
   var CC = (function () {
     var TL = 85.6 / 54, MW = 1400, MH = Math.round(1400 / TL), GAP = 40;   // giống Tool_CCCD: mỗi mặt 1400 px, cách 40 px
@@ -2885,6 +2886,7 @@ textarea.inp{font-family:inherit}
   }
   function ccCheNoi(t) { t.querySelectorAll('[data-che]').forEach(function (b) { b.onclick = function () { CCS.theMo = b.getAttribute('data-che') === '1'; var lg = theLogoNap(); if (!lg.complete) lg.onload = function () { ccVe(); }; ccVe(); window.scrollTo(0, 0); }; }); }
   var BAN_MOI = [
+    { so: 60, ds: [['Sửa lỗi bấm Cập nhật ngay đôi khi bị treo, nút mờ đi: giờ chậm nhất khoảng 10 giây app tự mở bản mới; mạng chậm thì nút sáng lại thành Thử lại.']] },
     { so: 59, ds: [['Đã lưu gần đây và ảnh trong kho: khi xem to có nút Làm thẻ HOJEONG; trong Tìm trong kho có nút Làm thẻ cho những người đang chọn. App tự lấy mặt trước, cắt ảnh chân dung, điền họ tên.'], ['Sửa lỗi cả app: khi bảng chọn hoặc popup đang mở, vuốt không còn kéo trôi trang bên dưới.']] },
     { so: 58, ds: [['Thẻ HOJEONG: khi bấm Thêm người hoặc Chọn ảnh khác mà chọn trúng ảnh mặt trước CCCD, app tự nắn thẳng, cắt đúng phần chân dung và điền họ tên.'], ['Chọn trúng ảnh mặt sau CCCD thì app báo, không dán cả tấm thẻ vào khung ảnh.']] },
     { so: 57, ds: [['Trang CCCD có thêm mục Thẻ HOJEONG: tích người cần làm thẻ ra vào, app tự lấy ảnh chân dung trên CCCD và họ tên, sale gõ mã thẻ, chọn Production hoặc Quality.'], ['Mỗi thẻ đúng 8,1 × 5,3 cm, 8 thẻ một tờ A4; bấm nút chia sẻ để gửi PDF màu ra quán in (in 100%, không thu phóng).'], ['Ảnh chân dung chưa đẹp thì bấm Chọn ảnh khác; người chưa có CCCD trong lượt thì bấm Thêm người.']] },
@@ -2943,13 +2945,17 @@ textarea.inp{font-family:inherit}
     document.body.appendChild(d);
     document.getElementById('bmOk').onclick = function () {
       var b = this, tt = document.getElementById('bmTt'), lan = Number(doc('vlta_bm_' + so) || 0);
-      b.disabled = true; b.textContent = 'Đang cập nhật…';
-      if (lan && Date.now() - lan < 90000) tt.textContent = 'Máy chủ đang đưa bản mới lên, chờ khoảng 1 phút…';
+      var cho = lan && Date.now() - lan < 90000 ? 15 : 0;   // vừa bấm mà vẫn bản cũ: chờ máy chủ đưa bản mới lên (có đếm ngược)
+      b.disabled = true; b.textContent = 'Đang cập nhật…'; tt.textContent = '';
       luu('vlta_bm_' + so, String(Date.now()));
-      var xong = function () { location.replace(location.pathname + '?v=' + so); };
-      (navigator.serviceWorker && navigator.serviceWorker.getRegistration ? navigator.serviceWorker.getRegistration().then(function (r) { return r && r.update(); }) : Promise.resolve())
-        .then(function () { return window.caches ? caches.keys().then(function (ks) { return Promise.all(ks.map(function (k) { return caches.delete(k); })); }) : null; }, function () { })
-        .then(function () { setTimeout(xong, lan && Date.now() - lan < 90000 ? 30000 : 0); }, xong);
+      var xong = function () { location.replace(location.pathname + '?v=' + so + '&t=' + Date.now()); };
+      clearTimeout(BM.canh); clearInterval(BM.dem);
+      BM.canh = setTimeout(function () { clearInterval(BM.dem); b.disabled = false; b.textContent = 'Thử lại'; tt.textContent = 'Mạng chậm – bấm Thử lại hoặc tắt hẳn app rồi mở lại.'; }, (cho + 15) * 1000);
+      lamMoiApp().then(function () {
+        if (!cho) { xong(); return; }
+        var con = cho; tt.textContent = 'Chờ máy chủ đưa bản mới lên… ' + con + ' giây';
+        BM.dem = setInterval(function () { con--; if (con > 0) tt.textContent = 'Chờ máy chủ đưa bản mới lên… ' + con + ' giây'; else { clearInterval(BM.dem); tt.textContent = 'Đang mở bản mới…'; xong(); } }, 1000);
+      });
     };
   }
   document.addEventListener('visibilitychange', function () { if (document.visibilityState === 'visible') kiemBanMoi(); });
