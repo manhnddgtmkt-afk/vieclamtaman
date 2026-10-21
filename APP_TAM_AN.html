@@ -953,13 +953,18 @@ textarea.inp{font-family:inherit}
     var k = kd(S.q).trim(), kso = S.q.replace(/\D/g, '');
     function khop(p) { return !k || kd(p.ten).indexOf(k) >= 0 || String(p.ma).toLowerCase().indexOf(k) >= 0 || (kso.length >= 4 && String(p.sdt || '').replace(/\D/g, '').indexOf(kso) >= 0); }
     var canTra = d.ds.filter(function (p) { return p.con > 0; }).sort(function (a, b) { return b.con - a.con; }), tong = canTra.reduce(function (a, p) { return a + p.con; }, 0);
-    var cb = d.ds.filter(function (p) { return p.cb; }), am = d.ds.filter(function (p) { return p.con < 0; }), moi = d.ds.filter(function (p) { return p.moi; });
+    // 21/10: lý do cần xem của từng người (số âm = nhận trước, đã có nhóm riêng nên bỏ câu "vượt lương")
+    var lyDo = function (p) { var t = String(p.cb || '').trim(); return /vượt lương/i.test(t) ? '' : t; };
+    var cb = d.ds.filter(lyDo), am = d.ds.filter(function (p) { return p.con < 0; }), moi = d.ds.filter(function (p) { return p.moi; });
+    var loaiCb = {}; cb.forEach(function (p) { var t = lyDo(p); loaiCb[t] = (loaiCb[t] || 0) + 1; });
+    var tenLoc = function (f) { return f === 'am' ? 'Nhận trước' : f === 'moi' ? 'Người mới' : /^cb:/.test(f) ? f.slice(3) : 'Cần kiểm tra'; };
     var luc = '<button class="link" id="capNhat" style="padding:0;font-size:13px">Cập nhật ' + (S.cty === 'BEST' ? 'chấm công' : 'vân tay') + '</button>';
     hd.innerHTML = '<div id="choBox"></div><div class="card hero"><div class="meta">Còn phải trả</div><div class="row" style="align-items:baseline;gap:4px 10px;flex-wrap:wrap"><span class="big num ' + (tong > 0 ? 'c-cam' : 'c-xanh') + '">' + vnd(tong) + '</span>' + (tong > 0 ? '<span class="pill warn">Trả vào thứ Tư</span>' : '<span class="pill good">Đã trả đủ</span>') + '</div>' +
       '<div class="meta ell">' + esc(canTra.length + ' người' + (d.ky ? ' · kỳ ' + String(d.ky).replace(/\/\d{4}$/, '') : '') + ' · ' + d.ds.length + ' người') + '</div>' +
       (d.het ? '<div style="margin-top:8px">' + luc + '</div>' : '<div class="meta">Bạn thấy những người bạn tuyển ở công ty này.</div>') + '</div>' +
-      [[cb, 'cb', 'người ' + String((cb[0] || {}).cb || 'cần xem').toLowerCase()], [am, 'am', 'người trả dư'], [moi, 'moi', 'người mới chưa lên bảng công']].filter(function (x) { return x[0].length; }).map(function (x) {
-        return '<button class="ckt" data-f="' + x[1] + '"><span class="sec" style="color:var(--warn)">Kiểm tra</span><span class="ell" style="flex:1">' + x[0].length + ' ' + esc(x[2]) + '</span><i>›</i></button>';
+      Object.keys(loaiCb).map(function (t) { return [loaiCb[t], 'cb:' + t, 'người ' + t.charAt(0).toLowerCase() + t.slice(1)]; })
+        .concat([[am.length, 'am', 'người nhận trước (trừ vào lương tuần sau)'], [moi.length, 'moi', 'người mới chưa lên bảng công']]).filter(function (x) { return x[0]; }).map(function (x) {
+        return '<button class="ckt" data-f="' + esc(x[1]) + '"><span class="sec" style="color:var(--warn)">Kiểm tra</span><span class="ell" style="flex:1">' + x[0] + ' ' + esc(x[2]) + '</span><i>›</i></button>';
       }).join('');
     hd.insertAdjacentHTML('beforeend', '<button class="ckt nghi" id="moUT"><span class="ell" style="flex:1">Ứng / trả gần đây</span><i>›</i></button>');
     document.getElementById('moUT').onclick = moUT;
@@ -976,9 +981,10 @@ textarea.inp{font-family:inherit}
     var caChung = Object.keys(demCa).sort(function (a, b) { return demCa[b] - demCa[a]; })[0];
     function dong(p) {
       var nghi = /^NGHỈ$/i.test(p.ghi);
-      return '<button class="it" data-i="' + d.ds.indexOf(p) + '"><div style="min-width:0;flex:1"><div class="nm ell">' + esc(hoaDau(p.ten)) + (p.cb ? '<span class="tag">cần xem</span>' : '') + (p.moi ? '<span class="tag moi">mới</span>' : '') + '</div>' +
-        '<div class="sub ell">' + esc([p.ma, p.sale ? tenSale(p.sale) : '', p.ca && p.ca !== caChung ? 'ca ' + String(p.ca).toLowerCase() : '', nghi && p.con ? 'đã nghỉ' : ''].filter(String).join(' · ')) + '</div></div>' +
-        (p.con ? '<div class="amt num ' + (p.con < 0 ? 'c-do' : 'c-cam') + '">' + vnd(p.con) + (p.con < 0 ? '<small>trả dư</small>' : '') + '</div>' : '') + '</button>';
+      var ld = lyDo(p);
+      return '<button class="it" data-i="' + d.ds.indexOf(p) + '"><div style="min-width:0;flex:1"><div class="nm ell">' + esc(hoaDau(p.ten)) + (p.moi ? '<span class="tag moi">mới</span>' : '') + '</div>' +
+        '<div class="sub ell">' + (ld ? '<span style="color:var(--warn)">' + esc(ld) + '</span>' + ' · ' : '') + esc([p.ma, p.sale ? tenSale(p.sale) : '', p.ca && p.ca !== caChung ? 'ca ' + String(p.ca).toLowerCase() : '', nghi && p.con ? 'đã nghỉ' : ''].filter(String).join(' · ')) + '</div></div>' +
+        (p.con ? '<div class="amt num c-cam">' + vnd(p.con) + (p.con < 0 ? '<small>nhận trước</small>' : '') + '</div>' : '') + '</button>';
     }
     function nhom(ten, ds, gioi, id) {
       if (!ds.length) return '';
@@ -988,8 +994,8 @@ textarea.inp{font-family:inherit}
     }
     var h;
     if (k || S.loc !== 'all') {   // đang tìm / đang lọc: 1 danh sách kết quả
-      var kq = d.ds.filter(function (p) { return khop(p) && (S.loc === 'cb' ? p.cb : S.loc === 'am' ? p.con < 0 : S.loc === 'moi' ? p.moi : true); });
-      h = '<div class="row sp" style="margin:18px 4px 8px"><span class="sec">' + (S.loc === 'all' ? 'Kết quả' : 'Cần kiểm tra') + ' · ' + kq.length + '</span>' + (S.loc !== 'all' ? '<button class="link" id="boLoc" style="padding:0;font-size:13px">Bỏ lọc</button>' : '') + '</div>' +
+      var kq = d.ds.filter(function (p) { return khop(p) && (/^cb:/.test(S.loc) ? lyDo(p) === S.loc.slice(3) : S.loc === 'cb' ? lyDo(p) : S.loc === 'am' ? p.con < 0 : S.loc === 'moi' ? p.moi : true); });
+      h = '<div class="row sp" style="margin:18px 4px 8px"><span class="sec ell">' + esc(S.loc === 'all' ? 'Kết quả' : tenLoc(S.loc)) + ' · ' + kq.length + '</span>' + (S.loc !== 'all' ? '<button class="link" id="boLoc" style="padding:0;font-size:13px">Bỏ lọc</button>' : '') + '</div>' +
         (kq.length ? '<div class="grp">' + kq.map(dong).join('') + '</div>' : '<div class="empty">Không có ai khớp.</div>');
     } else {
       var nghi = d.ds.filter(function (p) { return p.con <= 0 && /^NGHỈ$/i.test(p.ghi); }), lam = d.ds.filter(function (p) { return p.con <= 0 && !/^NGHỈ$/i.test(p.ghi); });
