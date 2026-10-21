@@ -1,6 +1,6 @@
 // Luôn hỏi máy chủ có bản mới chưa (bỏ qua bộ nhớ đệm 10 phút của GitHub Pages).
 // Giữ sẵn khung app để mở nhanh; luôn hỏi mạng trước (bản mới nhất), mất mạng mới dùng bản đã lưu. Số liệu không lưu ở đây.
-var KHO = 'vlta-v43', FILE = ['./', 'index.html', 'config.js', 'manifest.json', 'icon-192.png', 'icon-512.png', 'apple-touch-icon.png'];
+var KHO = 'vlta-v44', FILE = ['./', 'index.html', 'config.js', 'manifest.json', 'icon-192.png', 'icon-512.png', 'apple-touch-icon.png'];
 self.addEventListener('install', function (e) { e.waitUntil(caches.open(KHO).then(function (c) { return c.addAll(FILE); })); self.skipWaiting(); });
 self.addEventListener('activate', function (e) { e.waitUntil(caches.keys().then(function (ks) { return Promise.all(ks.filter(function (k) { return k !== KHO; }).map(function (k) { return caches.delete(k); })); })); self.clients.claim(); });
 self.addEventListener('fetch', function (e) {

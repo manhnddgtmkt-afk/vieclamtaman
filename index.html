@@ -13,7 +13,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
 <script src="config.js"></script>
-<script>window.PB = { so: 43, luc: "21/10 20:55" };</script>
+<script>window.PB = { so: 44, luc: "21/10 21:00" };</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap">
 <style>
@@ -1546,6 +1546,7 @@ textarea.inp{font-family:inherit}
   }
   // 21/10: "Bản X có gì mới" – hiện 1 lần sau khi cập nhật; mỗi dòng ngắn, dễ hiểu; vai '' = mọi người, 'chu' = chỉ chủ
   var BAN_MOI = [
+    { so: 44, ds: [['Thu chi: nếu số dư bảng tổng hợp tính ra khác số tạm vừa hiện, app nhắc 10 giây để bạn biết; khớp thì không báo gì.', 'chu,ketoan']] },
     { so: 43, ds: [['Ghi sổ thu chi xong dùng tiếp được ngay; số dư quỹ tạm hiện liền, số chính xác tự thay vào khi bảng tổng hợp tính xong.', 'chu,ketoan'],
       ['Tổng quan: đổi sang tháng khác nhanh hơn, và không làm đổi tháng đang xem trên máy tính.', 'chu'], ['Tổng quan và Thu chi không tự đọc lại vô ích nữa, chỉ đọc khi số thật sự đổi.', 'chu,ketoan']] },
     { so: 42, ds: [['Mở app, xem danh sách lao động, phiếu lương và bảng công nhanh hơn nhiều.'], ['Số đã xem lần trước hiện ngay khi mở app; số mới tự cập nhật ngầm, không phải chờ vòng quay.'], ['App tự lấy số mới mỗi 3 phút và mỗi khi bạn quay lại app, không cần bấm cập nhật.'],
@@ -1837,8 +1838,14 @@ textarea.inp{font-family:inherit}
   function taiQuy(moi, tinhLai, im) {
     apiT({ v: 'quy', moi: moi ? 1 : 0, tinhLai: tinhLai ? 1 : 0, im: im ? 1 : 0, lang: (moi || tinhLai) ? 1 : 0 }).then(function (o) {
       if (im && (o.loi || QUY_TAM || giongJ(o, QUY))) return;
+      // 21/10: số chính thức khác số tạm vừa hiện -> nhắc 10 giây (khớp thì đổi lặng lẽ)
+      if (QUY_TAM && !QUY_TAM.loi && !o.loi && !o.tinhLoi) {
+        var dc = quyDong(QUY), dm = quyDong(o);
+        if (dc && dm) { var tam = soTien(dc[1]) + QUY_TAM.doi, moi2 = soTien(dm[1]); if (tam !== moi2) QUY_LECH = { tam: tam, moi: moi2 }; }
+      }
       if (!o.loi) { QUY = o; luuSo('vlta_quy', o); }
       QUY_TAM = null; hienQuy(o);
+      if (QUY_LECH) setTimeout(function () { QUY_LECH = null; var e = document.getElementById('qLech'); if (e) e.remove(); }, 10000);
     }, function (e) {
       if (im) return;
       if (QUY_TAM) { QUY_TAM.loi = 'Chưa tính lại được: ' + e.message + '. Bấm "làm mới" để thử lại.'; if (QUY) hienQuy(QUY); return; }
@@ -1846,6 +1853,8 @@ textarea.inp{font-family:inherit}
     });
   }
   function soTien(x) { return Number(String(x || '').replace(/[^\d-]/g, '')) || 0; }
+  var QUY_LECH = null;
+  function quyDong(o) { var m5 = o && o.muc5; return m5 ? m5.dong.filter(function (x) { return /^Số dư quỹ/i.test(x[0]); })[0] || null : null; }
   function hienQuy(o) {
     (function () {
       var t = document.getElementById('than'); if (!t || S.tab !== 'quy') return;
@@ -1859,7 +1868,8 @@ textarea.inp{font-family:inherit}
         soDu = vnd(soTien(quy[1]) + QUY_TAM.doi);
         trangThai = QUY_TAM.loi ? '<div class="note warn">⚠ ' + esc(QUY_TAM.loi) + '</div>'
           : '<div class="meta" style="color:var(--warn)">Số tạm tính (đã ' + (QUY_TAM.doi < 0 ? 'trừ ' : 'cộng ') + vnd(Math.abs(QUY_TAM.doi)) + ' vừa ghi) · đang tính lại…</div>';
-      } else if (o.tinhLoi) trangThai = '<div class="note warn">⚠ Bảng tổng hợp chưa tính lại được (' + esc(o.tinhLoi.slice(0, 120)) + '). Số dư có thể chưa gồm khoản vừa ghi. <a href="#" id="qMoi" style="color:var(--blue)">Thử lại</a></div>';
+      } else if (QUY_LECH && quy) trangThai = '<div class="note warn" id="qLech">Số dư sau khi tính lại: <b class="num">' + vnd(QUY_LECH.moi) + '</b>, khác số tạm ' + vnd(QUY_LECH.tam) + ' (lệch ' + vnd(Math.abs(QUY_LECH.moi - QUY_LECH.tam)) + '). Có khoản khác vừa ghi cùng lúc, hoặc khoản này tính vào quỹ khác với dự kiến.</div>';
+      else if (o.tinhLoi) trangThai = '<div class="note warn">⚠ Bảng tổng hợp chưa tính lại được (' + esc(o.tinhLoi.slice(0, 120)) + '). Số dư có thể chưa gồm khoản vừa ghi. <a href="#" id="qMoi" style="color:var(--blue)">Thử lại</a></div>';
       function d3(ic, nhan, gt, mau) { return '<div><i class="ic ' + ic + '">' + ICON_TC[ic] + '</i><span>' + nhan + '</span><b class="num ' + mau + '">' + esc(gt) + '</b></div>'; }
       function o3(nhan, gt, mo) { gt = String(gt || '0'); return '<div><span>' + nhan + '</span><b class="num' + (mo || /^0$/.test(gt) ? ' mo' : '') + '" style="white-space:nowrap;font-size:' + (gt.length > 11 ? 13 : 15) + 'px">' + esc(gt) + '</b></div>'; }
       t.innerHTML = '<div class="card hero"><div class="meta">Số dư quỹ</div><div class="big num c-xd">' + esc(soDu) + '</div><div class="meta">' + esc([quy && quy[2] ? String(quy[2]).replace(/^Do\s+(\S+).*$/i, '$1 giữ') : '', o.capNhat ? 'cập nhật ' + ((/(\d{1,2}:\d{2})/.exec(o.capNhat) || [''])[0] || o.capNhat) : ''].filter(String).join(' · ')) + '</div>' + trangThai +
