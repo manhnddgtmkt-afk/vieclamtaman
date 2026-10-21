@@ -1589,6 +1589,7 @@ textarea.inp{font-family:inherit}
   // 21/10: "Bản X có gì mới" – hiện 1 lần sau khi cập nhật; mỗi dòng ngắn, dễ hiểu; vai '' = mọi người, 'chu' = chỉ chủ
   // ===== CCCD: tìm khung thẻ, nắn thẳng, xác định mặt trước/sau + chiều, ghép 2 mặt (JS thuần, không thư viện) =====
   // ===== CCCD: tìm khung thẻ, nắn thẳng, xác định mặt trước/sau + chiều, ghép 2 mặt (JS thuần, không thư viện) =====
+  // ===== CCCD: tìm khung thẻ, nắn thẳng, xác định mặt trước/sau + chiều, ghép 2 mặt (JS thuần, không thư viện) =====
   var CC = (function () {
     var TL = 85.6 / 54, MW = 1400, MH = Math.round(1400 / TL), GAP = 40;   // giống Tool_CCCD: mỗi mặt 1400 px, cách 40 px
 
@@ -1806,16 +1807,20 @@ textarea.inp{font-family:inherit}
       }
       var h = B.map(function (b, i) { return b / A[i][i]; }); h.push(1); return h;
     }
-    function nan(cv, q, W, H) {   // q: 4 góc trên ảnh gốc theo thứ tự trên-trái, trên-phải, dưới-phải, dưới-trái
+    function nan(cv, q, W, H) {   // q: 4 góc trên ảnh gốc theo thứ tự trên-trái, trên-phải, dưới-phải, dưới-trái; lấy mẫu bicubic (giữ nét khi phóng to)
       var sw = cv.width, sh = cv.height, sd = cv.getContext('2d').getImageData(0, 0, sw, sh).data;
-      var M = homo([[0, 0], [W, 0], [W, H], [0, H]], q), o = new ImageData(W, H), od = o.data;
+      var M = homo([[0, 0], [W, 0], [W, H], [0, H]], q), o = new ImageData(W, H), od = o.data, wx = [0, 0, 0, 0], wy = [0, 0, 0, 0];
+      function cr(t, w) { var t2 = t * t, t3 = t2 * t; w[0] = -0.5 * t3 + t2 - 0.5 * t; w[1] = 1.5 * t3 - 2.5 * t2 + 1; w[2] = -1.5 * t3 + 2 * t2 + 0.5 * t; w[3] = 0.5 * t3 - 0.5 * t2; }
       for (var y = 0; y < H; y++) for (var x = 0; x < W; x++) {
         var X = x + 0.5, Y = y + 0.5, z = M[6] * X + M[7] * Y + 1, u = (M[0] * X + M[1] * Y + M[2]) / z - 0.5, v = (M[3] * X + M[4] * Y + M[5]) / z - 0.5;
-        var x0 = Math.floor(u), y0 = Math.floor(v), fx = u - x0, fy = v - y0, di = (y * W + x) * 4;
-        if (x0 < 0) { x0 = 0; fx = 0; } if (y0 < 0) { y0 = 0; fy = 0; } if (x0 >= sw - 1) { x0 = sw - 2; fx = 1; } if (y0 >= sh - 1) { y0 = sh - 2; fy = 1; }
-        var i00 = (y0 * sw + x0) * 4, i10 = i00 + 4, i01 = i00 + sw * 4, i11 = i01 + 4;
-        for (var c = 0; c < 3; c++) od[di + c] = (sd[i00 + c] * (1 - fx) + sd[i10 + c] * fx) * (1 - fy) + (sd[i01 + c] * (1 - fx) + sd[i11 + c] * fx) * fy;
-        od[di + 3] = 255;
+        var x0 = Math.floor(u), y0 = Math.floor(v), di = (y * W + x) * 4; cr(u - x0, wx); cr(v - y0, wy);
+        var r = 0, g = 0, b = 0;
+        for (var j = 0; j < 4; j++) {
+          var yy = Math.min(sh - 1, Math.max(0, y0 - 1 + j)) * sw, ry = 0, gy = 0, by = 0;
+          for (var i = 0; i < 4; i++) { var p = (yy + Math.min(sw - 1, Math.max(0, x0 - 1 + i))) * 4, w = wx[i]; ry += sd[p] * w; gy += sd[p + 1] * w; by += sd[p + 2] * w; }
+          r += ry * wy[j]; g += gy * wy[j]; b += by * wy[j];
+        }
+        od[di] = r; od[di + 1] = g; od[di + 2] = b; od[di + 3] = 255;   // Uint8ClampedArray tự kẹp 0-255
       }
       var c2 = document.createElement('canvas'); c2.width = W; c2.height = H; c2.getContext('2d').putImageData(o, 0, 0); return c2;
     }
@@ -1854,11 +1859,16 @@ textarea.inp{font-family:inherit}
       var sc = 255 / Math.max(40, hi - lo);
       for (i = 0; i < n; i++) for (var ch = 0; ch < 3; ch++) d[i * 4 + ch] = Math.max(0, Math.min(255, (d[i * 4 + ch] * K[i] - lo) * sc));
       x.putImageData(im, 0, 0);
-      // làm nét nhẹ (unsharp trên độ sáng; không dùng ctx.filter vì Safari iPhone không hỗ trợ)
+      // tăng độ nét (unsharp 2 tầng trên độ sáng, bỏ qua dao động nhỏ để không làm hạt nhiễu nổi lên)
       var im2 = x.getImageData(0, 0, W, H), e = im2.data, Y = new Float32Array(n);
       for (i = 0; i < n; i++) Y[i] = 0.299 * e[i * 4] + 0.587 * e[i * 4 + 1] + 0.114 * e[i * 4 + 2];
-      var Yb = mo(Y, W, H, 1);
-      for (i = 0; i < n; i++) { var dl = 0.7 * (Y[i] - Yb[i]); for (ch = 0; ch < 3; ch++) e[i * 4 + ch] = Math.max(0, Math.min(255, e[i * 4 + ch] + dl)); }
+      var B1 = mo(Y, W, H, 1), B2 = mo(Y, W, H, 3);
+      for (i = 0; i < n; i++) {
+        var d1 = Y[i] - B1[i], d2 = Y[i] - B2[i];
+        if (Math.abs(d1) < 2) d1 = 0; if (Math.abs(d2) < 3) d2 = 0;
+        var dl = 1.1 * d1 + 0.5 * d2;
+        for (ch = 0; ch < 3; ch++) e[i * 4 + ch] = Math.max(0, Math.min(255, e[i * 4 + ch] + dl));
+      }
       x.putImageData(im2, 0, 0); return cv;
     }
     // ---- 1 ảnh -> 1 mặt thẻ ----
@@ -2203,6 +2213,7 @@ textarea.inp{font-family:inherit}
     apiT({ v: 'cccdAnh', id: g.id, so: g.so }).then(function (o) { if (o.loi) { toastLoi(o.loi); return; } ccTrang([o.anh]); }, function (e) { toastLoi(e.message); });
   }
   var BAN_MOI = [
+    { so: 52, ds: [['Ảnh CCCD in ra và lưu lên Drive sắc nét hơn: app thêm bước tăng độ nét chữ, không chỉ chỉnh độ sáng.']] },
     { so: 51, ds: [['Trang CCCD đọc số trên ảnh nhanh hơn nhiều: cả lượt ảnh chỉ mất vài giây.'], ['Tài khoản → Khoá đọc ảnh CCCD: chỗ dán khoá Cloud Vision và xem số lượt đã dùng trong tháng.', 'chu']] },
     { so: 50, ds: [['Trang CCCD tự đọc số trên từng ảnh để ghép đúng mặt trước với mặt sau của cùng một người, chọn ảnh theo thứ tự nào cũng được.'], ['Người đã có ảnh CCCD trong thư mục trên Drive thì app vẫn in nhưng không lưu thêm.'], ['Bấm dấu × trên mỗi người để bỏ cả 2 mặt, lỡ tay thì bấm Hoàn tác.'], ['Ảnh thẻ chụp dựng đứng trên nền tối nay đã tự cắt được.']] },
     { so: 49, ds: [['Thêm trang CCCD ở thanh dưới: chọn ảnh mặt trước và mặt sau trong album, app tự cắt, ghép và in mỗi người 1 tờ A4.'], ['Ảnh ghép tự lưu vào thư mục CCCD trên Drive, đúng giới tính và năm sinh.'], ['Ảnh nào app nhận nhầm mặt hoặc lộn đầu thì chạm vào ảnh để sửa.']] },
