@@ -13,7 +13,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
 <script src="config.js"></script>
-<script>window.PB = { so: 47, luc: "21/10 21:33" };</script>
+<script>window.PB = { so: 48, luc: "21/10 21:35" };</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap">
 <style>
@@ -630,7 +630,7 @@ textarea.inp{font-family:inherit}
 .q2dl{display:flex;gap:8px;flex-wrap:wrap}.q2dl span{display:flex;align-items:center;background:var(--soft);border-radius:10px;padding:6px 10px;font-size:13.5px;white-space:nowrap}.q2dl b{margin-left:4px}
 
 .bmds{margin:8px 0 0;padding-left:20px;font-size:15px;line-height:1.5}.bmds li{margin:4px 0}
-.bmoi>div.bmh{max-height:calc(100vh - 80px);max-height:calc(100dvh - 80px);padding:18px 18px 14px;position:relative}
+.bmoi>div.bmh{max-height:68vh;max-height:68dvh;padding:18px 18px 14px;position:relative}
 .bmh .bmx{position:absolute;top:8px;right:8px;width:36px;height:36px;border:0;background:none;font-size:24px;line-height:1;color:var(--muted)}
 .bmh .bmc{overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;flex:1;min-height:0;text-align:left}
 .bmh .btn{flex:none}
@@ -1571,16 +1571,11 @@ textarea.inp{font-family:inherit}
     }).filter(function (b) { return b.ds.length; });
   }
   // 21/10: hộp luôn đóng được (nút ×, chạm nền tối, nút Đã hiểu luôn hiện); nội dung dài thì cuộn bên trong
-  function hopMoi(ds, tieu, gon) {
+  function hopMoi(ds, tieu) {   // ghi đủ mọi điểm mới; dài thì cuộn bên trong hộp
     var d = document.createElement('div'); d.className = 'bmoi';
-    var them = 0;
-    if (gon) {   // tự hiện khi mở app: tối đa 4 dòng của bản mới nhất, còn lại xem ở Tài khoản → Có gì mới
-      var tat = []; ds.forEach(function (b) { tat = tat.concat(b.ds); });
-      them = Math.max(0, tat.length - 4); ds = [{ so: ds[0].so, ds: tat.slice(0, 4) }];
-    }
     d.innerHTML = '<div class="bmh"><button class="bmx" aria-label="Đóng">×</button><h3>' + esc(tieu) + '</h3><div class="bmc">' + ds.map(function (b) {
       return (ds.length > 1 ? '<div class="meta" style="margin-top:10px;font-weight:700">Bản ' + b.so + '</div>' : '') + '<ul class="bmds">' + b.ds.map(function (t) { return '<li>' + esc(t) + '</li>'; }).join('') + '</ul>';
-    }).join('') + (them ? '<div class="meta" style="margin-top:8px">Còn ' + them + ' điểm khác: xem ở Tài khoản → Có gì mới.</div>' : '') + '</div><button class="btn" id="bmHieu">Đã hiểu</button></div>';
+    }).join('') + '</div><button class="btn" id="bmHieu">Đã hiểu</button></div>';
     document.body.appendChild(d);
     function dong() { d.remove(); }
     document.getElementById('bmHieu').onclick = dong;
@@ -1595,7 +1590,7 @@ textarea.inp{font-family:inherit}
     var ds = moiCuaToi(da, PB.so);
     luu('vlta_moi', String(PB.so));
     if (!ds.length || document.querySelector('.bmoi')) return;
-    hopMoi(ds, 'Bản ' + PB.so + ' có gì mới', true);
+    hopMoi(ds, ds.length > 1 ? 'Có gì mới' : 'Bản ' + PB.so + ' có gì mới');
   }
   function hienBanMoi(so) {
     if (BM.mo) return;
