@@ -645,6 +645,15 @@ textarea.inp{font-family:inherit}
 .ccday{position:fixed;left:0;right:0;bottom:64px;z-index:29;display:flex;gap:8px;padding:10px max(16px,calc(50vw - 224px));background:var(--card);border-top:1px solid var(--line);box-shadow:0 -4px 14px rgba(16,24,40,.06)}
 .ccday .btn{flex:1;min-width:0;padding-left:4px;padding-right:4px;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.ccday .btn:last-child{flex:1.15}
 .ccdem{height:56px;flex:none}
+#ccChe{margin-bottom:-2px}
+.tht{padding:12px 14px;display:flex;flex-direction:column;gap:10px}.tht.on{box-shadow:0 0 0 2px var(--cta)}
+.thr{align-items:center;gap:12px}
+.thc{flex:none;width:28px;height:28px;border-radius:8px;border:2px solid var(--edge);background:var(--card);color:#fff;font-weight:700;font-size:16px;line-height:1;padding:0}
+.tht.on .thc{background:var(--cta);border-color:var(--cta)}
+.tha{flex:none;width:40px;height:60px;border-radius:6px;object-fit:cover;background:var(--soft)}
+.thx{border:1px dashed var(--edge);font-size:11px;color:var(--muted);padding:0}
+.thf{display:flex;flex-direction:column;gap:8px}.thf .inp{margin:0}.thf .seg button{padding:7px 4px;font-size:13.5px}
+.thv{width:100%;max-width:420px;align-self:center;border-radius:6px;box-shadow:0 1px 4px rgba(0,0,0,.15)}
 .ccday .ccgui{flex:none;width:48px;padding:0;display:flex;align-items:center;justify-content:center}.ccday .ccgui svg{width:22px;height:22px}
 .ccw .it .ch{color:var(--faint);font-size:20px;flex:none}
 .ccg img,.ccg .ccg0{width:64px;height:40px;object-fit:cover;object-position:top;border-radius:6px;flex:none;background:var(--soft);display:block}
@@ -683,7 +692,7 @@ textarea.inp{font-family:inherit}
 .cck i{position:absolute;width:30px;height:30px;margin:-15px 0 0 -15px;border-radius:50%;background:rgba(47,107,255,.25);border:3px solid #2F6BFF;touch-action:none}
 #inCC{display:none}
 @media print{@page{size:A4 portrait;margin:0}html,body{background:#fff!important}body.dangIn>*:not(#inCC){display:none!important}body.dangIn #inCC{display:block!important}
-.inTr{width:210mm;height:296mm;box-sizing:border-box;padding-top:20mm;display:flex;justify-content:center;align-items:flex-start;break-after:page;page-break-after:always}.inTr:last-child{break-after:auto;page-break-after:auto}.inTr img{width:128.4mm;height:auto;max-height:256mm}}
+.inTr{width:210mm;height:296mm;box-sizing:border-box;padding-top:20mm;display:flex;justify-content:center;align-items:flex-start;break-after:page;page-break-after:always}.inTr:last-child{break-after:auto;page-break-after:auto}.inTr img{width:128.4mm;height:auto;max-height:256mm}.inTr.the{padding-top:30.5mm}.inTr.the img{width:170mm;max-height:none}}
 </style>
 </head>
 <body>
@@ -2171,7 +2180,8 @@ textarea.inp{font-family:inherit}
   function ccVe() {
     var t = document.getElementById('ccThan'); if (!t || S.tab !== 'cc') return;
     if (CCS.kho) { ccVeKho(t); return; }
-    var cap = ccCap(), gan = ccGan(), h = '';
+    if (CCS.theMo && !CCS.dang) { ccVeThe(t); return; }
+    var cap = ccCap(), gan = ccGan(), h = CCS.dang ? '' : ccChe();
     if (CCS.dang) {
       h += '<div class="card"><b>Đang cắt và ghép ảnh ' + (CCS.dang.i + 1) + '/' + CCS.dang.n + '…</b><div class="ccbar0"><i style="width:' + Math.round(100 * CCS.dang.i / CCS.dang.n) + '%"></i></div></div>';
     } else if (!CCS.ds.length) {
@@ -2223,7 +2233,7 @@ textarea.inp{font-family:inherit}
     if ((b = document.getElementById('ccMoi'))) b.onclick = ccMoi;
     if ((b = document.getElementById('ccGui'))) b.onclick = function () { ccIn('gui'); };
     if ((b = document.getElementById('ccKho'))) b.onclick = ccKhoMo;
-    ccDayDat(t);
+    ccDayDat(t); ccCheNoi(t);
     t.querySelectorAll('.ccm[data-id]').forEach(function (e) { e.onclick = function () { ccCham(Number(e.getAttribute('data-id'))); }; });
     t.querySelectorAll('[data-luu]').forEach(function (e) {
       e.onclick = function () {
@@ -2358,10 +2368,10 @@ textarea.inp{font-family:inherit}
       ccVe();
     }, 60);
   }
-  function ccTrang(urls) {
+  function ccTrang(urls, kieu) {   // kieu 'the': mỗi ảnh là 1 khối thẻ 170 mm đặt cách trái 20 mm, cách trên 30,5 mm
     var d = document.getElementById('inCC');
     if (!d) { d = document.createElement('div'); d.id = 'inCC'; document.body.appendChild(d); }
-    d.innerHTML = urls.map(function (u) { return '<div class="inTr"><img src="' + u + '" alt=""></div>'; }).join('');
+    d.innerHTML = urls.map(function (u) { return '<div class="inTr' + (kieu ? ' ' + kieu : '') + '"><img src="' + u + '" alt=""></div>'; }).join('');
     var ims = [].slice.call(d.querySelectorAll('img'));
     Promise.all(ims.map(function (im) { return im.decode ? im.decode().catch(function () { }) : null; })).then(function () {
       var mo = false;
@@ -2374,12 +2384,12 @@ textarea.inp{font-family:inherit}
         if (mo) return;
         sau();   // máy không mở hộp in (app cài trên màn hình chính): in qua PDF
         var sh = moSheet('<h3>In bằng PDF</h3><div class="meta">Máy chưa mở hộp in. Bấm nút dưới, chọn <b>In</b> rồi chọn máy in Brother.</div><button class="btn" id="ccP">Mở PDF để in</button><button class="btn lk" id="ccPk">Thôi</button>');
-        sh.querySelector('#ccP').onclick = function () { sh.remove(); ccPdfMo(urls); };
+        sh.querySelector('#ccP').onclick = function () { sh.remove(); if (kieu === 'the') ccGui(Promise.resolve(urls), 'The_HOJEONG.pdf', { rong: 170, tren: 30.5 }); else ccPdfMo(urls); };
         sh.querySelector('#ccPk').onclick = function () { sh.remove(); };
       }, 1500);
     });
   }
-  function ccPdf(ds) {   // ds: [{b: Uint8Array JPEG, w, h}] -> PDF A4, mỗi ảnh 1 trang, rộng 128,4 mm, cách mép trên 20 mm
+  function ccPdf(ds, bo) {   // bo: { rong, tren } mm (mặc định 128,4 / 20 như bản in CCCD)   // ds: [{b: Uint8Array JPEG, w, h}] -> PDF A4, mỗi ảnh 1 trang, rộng 128,4 mm, cách mép trên 20 mm
     var enc = new TextEncoder(), parts = [], off = [], len = 0, n = 2 + ds.length * 3;
     function them(x) { var b = typeof x === 'string' ? enc.encode(x) : x; parts.push(b); len += b.length; }
     function obj(i, s) { off[i] = len; them(i + ' 0 obj\n' + s + '\nendobj\n'); }
@@ -2387,7 +2397,7 @@ textarea.inp{font-family:inherit}
     obj(1, '<< /Type /Catalog /Pages 2 0 R >>');
     obj(2, '<< /Type /Pages /Count ' + ds.length + ' /Kids [' + ds.map(function (x, i) { return (3 + i * 3) + ' 0 R'; }).join(' ') + '] >>');
     ds.forEach(function (x, i) {
-      var p = 3 + i * 3, W = 128.4 * 72 / 25.4, H = W * x.h / x.w, X = (595.28 - W) / 2, Y = 841.89 - 20 * 72 / 25.4 - H;
+      var p = 3 + i * 3, W = ((bo && bo.rong) || 128.4) * 72 / 25.4, H = W * x.h / x.w, X = (595.28 - W) / 2, Y = 841.89 - ((bo && bo.tren) || 20) * 72 / 25.4 - H;
       if (Y < 20) { H = 841.89 - 40; W = H * x.w / x.h; X = (595.28 - W) / 2; Y = 20; }
       obj(p, '<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595.28 841.89] /Resources << /XObject << /I0 ' + (p + 2) + ' 0 R >> >> /Contents ' + (p + 1) + ' 0 R >>');
       var c = 'q ' + W.toFixed(2) + ' 0 0 ' + H.toFixed(2) + ' ' + X.toFixed(2) + ' ' + Y.toFixed(2) + ' cm /I0 Do Q';
@@ -2493,7 +2503,7 @@ textarea.inp{font-family:inherit}
     var t = x.ten ? String(hoaDau(x.ten)).normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/đ/g, 'd').replace(/Đ/g, 'D').replace(/[^A-Za-z0-9]+/g, '_').replace(/^_|_$/g, '') : '';
     return 'CCCD_' + (t || x.so || 'nguoi') + '_' + ng + '.pdf';
   }
-  function ccPdfTao(urls) {   // ảnh JPEG -> Blob PDF (mỗi người 1 trang A4 như bản in)
+  function ccPdfTao(urls, bo) {   // ảnh JPEG -> Blob PDF (mỗi người 1 trang A4 như bản in)
     return Promise.all(urls.map(function (u) {
       return new Promise(function (ok, hong) {
         var im = new Image(); im.onload = function () {
@@ -2501,17 +2511,17 @@ textarea.inp{font-family:inherit}
           ok({ b: a, w: im.naturalWidth, h: im.naturalHeight });
         }; im.onerror = function () { hong(new Error('Ảnh hỏng, không tạo được PDF.')); }; im.src = u;
       });
-    })).then(ccPdf);
+    })).then(function (ds) { return ccPdf(ds, bo); });
   }
-  function ccGui(hua, ten) {   // tạo PDF xong mới hiện nút Gửi (iPhone chỉ mở bảng chia sẻ ngay sau 1 lần bấm tay)
+  function ccGui(hua, ten, bo) {   // tạo PDF xong mới hiện nút Gửi (iPhone chỉ mở bảng chia sẻ ngay sau 1 lần bấm tay)
     ccTd('Đang tạo PDF…');
-    hua.then(function (urls) { ccTd('Đang tạo PDF…'); return ccPdfTao(urls).then(function (bl) { return { bl: bl, n: urls.length }; }); }).then(function (o) {
+    hua.then(function (urls) { ccTd('Đang tạo PDF…'); return ccPdfTao(urls, bo).then(function (bl) { return { bl: bl, n: urls.length }; }); }).then(function (o) {
       ccTd('');
       var mb = o.bl.size / 1048576, f = null;
       try { f = new File([o.bl], ten, { type: 'application/pdf' }); } catch (e) { }
       var sh = moSheet('<h3>PDF sẵn sàng</h3><div class="meta">' + esc(ten) + ' · ' + o.n + ' trang · ' + (mb < 1 ? Math.max(1, Math.round(mb * 1024)) + ' KB' : mb.toFixed(1).replace('.', ',') + ' MB') + '</div>' +
         (mb > 20 ? '<div class="note warn">File lớn, gửi email có thể bị chặn (thường giới hạn 25 MB). Nên chia làm nhiều lượt ít người hơn.</div>' : '') +
-        '<div class="meta">Mỗi người 1 trang A4, ảnh to gấp 1,5 lần thẻ thật. Ở quán in cứ in khổ A4 bình thường.</div>' +
+        '<div class="meta">' + (bo ? 'Khổ A4, 8 thẻ một tờ, mỗi thẻ 8,1 × 5,3 cm. Dặn quán in màu, in 100% (đúng kích thước), không chọn vừa trang.' : 'Mỗi người 1 trang A4, ảnh to gấp 1,5 lần thẻ thật. Ở quán in cứ in khổ A4 bình thường.') + '</div>' +
         '<button class="btn" id="gP">Gửi PDF (Zalo, email…)</button><button class="btn lk" id="gK">Thôi</button>');
       function mo() {   // máy không có bảng chia sẻ: mở PDF để dùng nút chia sẻ của trình xem
         var u = URL.createObjectURL(o.bl), a = document.createElement('a'); a.href = u; a.target = '_blank'; a.download = ten; document.body.appendChild(a); a.click(); a.remove();
@@ -2648,7 +2658,153 @@ textarea.inp{font-family:inherit}
     b.disabled = !n; b.textContent = n ? 'In ' + n + ' tờ đã chọn' : 'Chưa chọn ai';
     var g = document.getElementById('ckGui'); if (g) g.disabled = !n;
   }
+  // ---- 22/10: thẻ ra vào HOJEONG (mẫu "Form thẻ.xlsx"): thẻ 8,1 × 5,3 cm, 8 thẻ / A4, in màu (PDF ra quán in) ----
+  var THE_LOGO = 'data:image/png;base64,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', theLogo = null;
+  var THE_R = [0.025, 0.30, 0.265, 0.86];   // vùng ảnh chân dung trên mặt trước CCCD đã nắn thẳng (cả thẻ chip cũ và mẫu 2024)
+  var THE_BP = { P: 'PRODUCTION TEAM', Q: 'QUALITY MANAGEMENT' };
+  CCS.the = {}; CCS.theMo = false; CCS.theThem = 0;
+  function theLogoNap() { if (!theLogo) { theLogo = new Image(); theLogo.src = THE_LOGO; } return theLogo; }
+  function theDs() {   // người trong lượt (theo cặp) + người thêm tay; giữ lại tích / tên / mã đã gõ
+    var out = [];
+    ccCap().forEach(function (p) {
+      var k = p.t ? 'f' + p.t.id : 'b' + p.s.id, e = CCS.the[k];
+      if (!e) e = CCS.the[k] = { k: k, chon: false, ten: '', ma: '', bp: 'P' };
+      e.p = p; if (!e.sua && p.ten) e.ten = String(p.ten).toUpperCase();
+      out.push(e);
+    });
+    Object.keys(CCS.the).forEach(function (k) { if (k[0] === 'm') out.push(CCS.the[k]); });
+    return out;
+  }
+  function theAnhNguon(e) {   // -> { cv, x, y, w, h } vùng ảnh chân dung
+    if (e.anh) return { cv: e.anh, x: 0, y: 0, w: e.anh.width, h: e.anh.height, tay: 1 };
+    var c = e.p && e.p.t ? e.p.t.the : null; if (!c) return null;
+    return { cv: c, x: THE_R[0] * c.width, y: THE_R[1] * c.height, w: (THE_R[2] - THE_R[0]) * c.width, h: (THE_R[3] - THE_R[1]) * c.height };
+  }
+  function theVeAnh(x, n, X, Y, W, H) {   // vẽ phủ kín khung (cắt bớt phần thừa; ảnh tự chọn ưu tiên giữ phần trên – mặt người)
+    var sx = n.x, sy = n.y, sw = n.w, sh = n.h, r = W / H;
+    if (sw / sh > r) { var w2 = sh * r; sx += (sw - w2) / 2; sw = w2; } else { var h2 = sw / r; sy += (sh - h2) * (n.tay ? 0.3 : 0.5); sh = h2; }
+    x.imageSmoothingQuality = 'high'; x.drawImage(n.cv, sx, sy, sw, sh, X, Y, W, H);
+  }
+  function theVe(e, rong) {   // 1 thẻ -> canvas; rong = bề rộng px (957 = 300 dpi)
+    var W = rong || 957, k = W / 81, c = document.createElement('canvas'); c.width = W; c.height = Math.round(53 * k);
+    var x = c.getContext('2d'), F = '"Times New Roman", Times, serif';
+    function mm(v) { return v * k; }
+    function pt(v) { return v * 25.4 / 72 * k; }
+    x.fillStyle = '#fff'; x.fillRect(0, 0, c.width, c.height);
+    // ảnh chân dung trong khung viền mảnh
+    var n = theAnhNguon(e), bx = mm(1.6), by = mm(6.4), bw = mm(29.6), bh = mm(44.6);
+    if (n) theVeAnh(x, n, bx, by, bw, bh); else { x.fillStyle = '#EEF1F5'; x.fillRect(bx, by, bw, bh); x.fillStyle = '#98A2B3'; x.font = pt(7) + 'px sans-serif'; x.textAlign = 'center'; x.fillText('Ảnh 3×4', bx + bw / 2, by + bh / 2); }
+    x.strokeStyle = '#555'; x.lineWidth = mm(0.25); x.strokeRect(bx, by, bw, bh);
+    // logo + bộ phận
+    var lg = theLogoNap(); if (lg.complete && lg.naturalWidth) x.drawImage(lg, mm(36), mm(2.2), mm(25), mm(25 * lg.naturalHeight / lg.naturalWidth));
+    x.fillStyle = '#000'; x.textAlign = 'left'; x.textBaseline = 'alphabetic';
+    x.font = 'bold ' + pt(7.5) + 'px ' + F; x.fillText(THE_BP[e.bp] || THE_BP.P, mm(36.6), mm(18.6));
+    x.font = pt(6.5) + 'px ' + F; x.fillText('WORKER', mm(36.6), mm(21.6));
+    // họ tên (tự thu nhỏ, quá dài thì 2 dòng) + mã thẻ
+    var cx = mm(56.2), rongMax = mm(46), ten = String(e.ten || '').trim().toUpperCase(), s = 10.5;
+    x.textAlign = 'center';
+    for (; s >= 7.5; s -= 0.5) { x.font = 'bold ' + pt(s) + 'px ' + F; if (x.measureText(ten).width <= rongMax) break; }
+    if (s >= 7.5) x.fillText(ten, cx, mm(33.6));
+    else {
+      var tu = ten.split(/\s+/), a = tu.slice(0, Math.ceil(tu.length / 2)).join(' '), b = tu.slice(Math.ceil(tu.length / 2)).join(' ');
+      s = 9; do { x.font = 'bold ' + pt(s) + 'px ' + F; s -= 0.5; } while (s > 6 && Math.max(x.measureText(a).width, x.measureText(b).width) > rongMax);
+      x.fillText(a, cx, mm(31.6)); x.fillText(b, cx, mm(35.6));
+    }
+    x.font = 'bold ' + pt(12.5) + 'px ' + F; x.fillText(String(e.ma || ''), cx, mm(44.2));
+    x.textAlign = 'right'; x.font = 'bold ' + pt(4.5) + 'px Arial, Helvetica, sans-serif'; x.fillText('HOJEONG Co.LTD', mm(78.6), mm(50.4));
+    // viền: trên đỏ, phải xám đậm, dưới xanh; ngoài cùng viền xám nhạt làm đường cắt
+    x.fillStyle = '#E3262C'; x.fillRect(0, 0, c.width, mm(0.8));
+    x.fillStyle = '#404040'; x.fillRect(c.width - mm(0.8), 0, mm(0.8), c.height);
+    x.fillStyle = '#2F5597'; x.fillRect(bx + bw, c.height - mm(0.8), c.width - bx - bw, mm(0.8));
+    x.strokeStyle = '#B8BEC8'; x.lineWidth = Math.max(1, mm(0.15)); x.strokeRect(x.lineWidth / 2, x.lineWidth / 2, c.width - x.lineWidth, c.height - x.lineWidth);
+    return c;
+  }
+  // trang A4: 2 cột × 4 hàng, khe 8 mm; khối 170 × 244 mm (gồm dòng nhắc) đặt cách trái 20 mm, cách trên 30,5 mm
+  var THE_TR = { trai: 20, tren: 30.5, rong: 170, cao: 244 };
+  function theTrang(ds) {   // -> [dataURL JPEG] mỗi trang 1 ảnh
+    var k = 300 / 25.4, out = [];
+    for (var i = 0; i < ds.length; i += 8) {
+      var c = document.createElement('canvas'); c.width = Math.round(THE_TR.rong * k); c.height = Math.round(THE_TR.cao * k);
+      var x = c.getContext('2d'); x.fillStyle = '#fff'; x.fillRect(0, 0, c.width, c.height);
+      ds.slice(i, i + 8).forEach(function (e, j) { x.drawImage(theVe(e, Math.round(81 * k)), Math.round((j % 2) * 89 * k), Math.round(Math.floor(j / 2) * 61 * k)); });
+      x.fillStyle = '#9AA1AC'; x.textAlign = 'center'; x.font = (7 * 25.4 / 72 * k) + 'px Arial, Helvetica, sans-serif';
+      x.fillText('In 100% (đúng kích thước, không thu phóng) · mỗi thẻ 8,1 × 5,3 cm', c.width / 2, (236 + 6) * k);
+      out.push(c.toDataURL('image/jpeg', 0.92));
+    }
+    return out;
+  }
+  function theNgay() { var d = new Date(); return ('0' + d.getDate()).slice(-2) + '-' + ('0' + (d.getMonth() + 1)).slice(-2); }
+  function theChon() { return theDs().filter(function (e) { return e.chon; }); }
+  function theKiem(ds, tiep) {   // thiếu tên / mã thì báo; mã dài ngắn khác nhau thì hỏi lại
+    if (!ds.length) { toast('Tích chọn người cần làm thẻ.'); return; }
+    var thieu = ds.filter(function (e) { return !String(e.ten || '').trim() || !String(e.ma || '').trim() || !theAnhNguon(e); });
+    if (thieu.length) { toast(thieu.length + ' người còn thiếu ' + (thieu.some(function (e) { return !theAnhNguon(e); }) ? 'ảnh, ' : '') + 'họ tên hoặc mã thẻ.'); ccVe(); return; }
+    var dem = {}; ds.forEach(function (e) { var l = String(e.ma).length; dem[l] = (dem[l] || 0) + 1; });
+    var hay = Object.keys(dem).sort(function (a, b) { return dem[b] - dem[a]; })[0], la = ds.filter(function (e) { return String(e.ma).length !== Number(hay); });
+    if (!la.length) { tiep(); return; }
+    var sh = moSheet('<h3>Kiểm tra mã thẻ</h3><div class="meta">' + la.map(function (e) { return '<b>' + esc(e.ma) + '</b> (' + esc(e.ten) + ') có ' + String(e.ma).length + ' số'; }).join('<br>') + '<br>Các mã khác có ' + hay + ' số. Có gõ nhầm không?</div><button class="btn" id="tkS">Sửa lại</button><button class="btn ghost" id="tkV">Vẫn làm thẻ</button>');
+    sh.querySelector('#tkS').onclick = function () { sh.remove(); };
+    sh.querySelector('#tkV').onclick = function () { sh.remove(); tiep(); };
+  }
+  function theGui() { var ds = theChon(); theKiem(ds, function () { ccTd('Đang dựng thẻ…'); setTimeout(function () { ccGui(Promise.resolve(theTrang(ds)), 'The_HOJEONG_' + ds.length + '_nguoi_' + theNgay() + '.pdf', { rong: THE_TR.rong, tren: THE_TR.tren }); }, 30); }); }
+  function theIn() {
+    var ds = theChon();
+    theKiem(ds, function () {
+      var sh = moSheet('<h3>In ' + ds.length + ' thẻ</h3><div class="note warn">Thẻ HOJEONG cần in màu. Máy in ở nhà (Brother) in đen trắng.</div><button class="btn" id="tiG">Gửi PDF ra quán in màu</button><button class="btn ghost" id="tiI">Vẫn in ở máy này</button><button class="btn lk" id="tiK">Thôi</button>');
+      sh.querySelector('#tiK').onclick = function () { sh.remove(); };
+      sh.querySelector('#tiG').onclick = function () { sh.remove(); theGui(); };
+      sh.querySelector('#tiI').onclick = function () { sh.remove(); ccTd('Đang dựng thẻ…'); setTimeout(function () { var u = theTrang(ds); ccTd(''); ccTrang(u, 'the'); }, 30); };
+    });
+  }
+  function theChonAnh(e) {   // ảnh chân dung khác trong album
+    var fi = document.createElement('input'); fi.type = 'file'; fi.accept = 'image/*';
+    fi.onchange = function () { var f = fi.files[0]; if (!f) return; ccMo(f).then(function (cv) { e.anh = cv; e.tb = ''; ccVe(); }, function (er) { toastLoi(er.message); }); };
+    fi.click();
+  }
+  function theTb(e) {   // ảnh nhỏ thẻ (xem trước trong danh sách)
+    var kk = [theLogo && theLogo.complete ? 1 : 0, e.ten, e.ma, e.bp, e.anh ? 'a' : '', e.p && e.p.t ? e.p.t.id + '.' + e.p.t.v : ''].join('|');
+    if (e.tbk !== kk || !e.tb) { e.tb = theVe(e, 486).toDataURL('image/jpeg', 0.85); e.tbk = kk; }
+    return e.tb;
+  }
+  function ccVeThe(t) {
+    var ds = theDs(), n = ds.filter(function (e) { return e.chon; }).length, h = ccChe();
+    if (!ds.length) h += '<div class="card cch">' + ICON.cc + '<b>Thẻ ra vào HOJEONG</b><div class="meta">Chọn ảnh CCCD ở mục In CCCD, rồi quay lại đây tích người cần làm thẻ. Người chưa có CCCD trong lượt thì bấm Thêm người.</div></div>';
+    else h += '<div class="meta" style="padding:0 2px">Tích người cần làm thẻ, gõ mã thẻ. Mỗi thẻ 8,1 × 5,3 cm, 8 thẻ một tờ A4, cần in màu.</div>';
+    h += ds.map(function (e) {
+      var n0 = theAnhNguon(e), dd = e.chon;
+      var nh = n0 ? (function () { var c = document.createElement('canvas'); c.width = 60; c.height = 90; theVeAnh(c.getContext('2d'), n0, 0, 0, 60, 90); return c.toDataURL('image/jpeg', 0.8); })() : '';
+      return '<div class="card tht' + (dd ? ' on' : '') + '"><div class="row thr"><button class="thc" data-tc="' + esc(e.k) + '" aria-label="Chọn">' + (dd ? '✓' : '') + '</button>' +
+        (nh ? '<img class="tha" src="' + nh + '" alt="" data-ta="' + esc(e.k) + '">' : '<button class="tha thx" data-ta="' + esc(e.k) + '">+ Ảnh</button>') +
+        '<div style="min-width:0;flex:1" data-tc2="' + esc(e.k) + '"><b class="ell" style="display:block">' + esc(e.ten || (e.k[0] === 'm' ? 'Người thêm tay' : 'Chưa đọc được tên')) + '</b><span class="meta num">' + esc(e.p ? e.p.so || '' : '') + (e.ma ? ' · mã ' + esc(e.ma) : '') + '</span></div>' +
+        (e.k[0] === 'm' ? '<button class="ccx" data-tb="' + esc(e.k) + '" aria-label="Bỏ">×</button>' : '') + '</div>' +
+        (dd ? '<div class="thf"><input class="inp" data-tt="' + esc(e.k) + '" placeholder="Họ và tên" value="' + esc(e.ten) + '" autocapitalize="characters">' +
+          '<div class="row" style="gap:8px"><input class="inp" data-tm="' + esc(e.k) + '" inputmode="numeric" placeholder="Mã thẻ" value="' + esc(e.ma) + '" style="flex:1;min-width:0">' +
+          '<div class="seg" style="flex:1.4">' + ['P', 'Q'].map(function (b) { return '<button data-tp="' + esc(e.k) + ':' + b + '"' + (e.bp === b ? ' class="on"' : '') + '>' + (b === 'P' ? 'Production' : 'Quality') + '</button>'; }).join('') + '</div></div>' +
+          '<img class="thv" data-tv="' + esc(e.k) + '" src="' + theTb(e) + '" alt="">' +
+          '<div class="row" style="justify-content:space-between"><button class="btn lk" data-ta="' + esc(e.k) + '" style="padding-left:0">Chọn ảnh khác</button>' + (e.anh && e.p && e.p.t ? '<button class="btn lk" data-tg="' + esc(e.k) + '">Dùng ảnh trên CCCD</button>' : '') + '</div></div>' : '') + '</div>';
+    }).join('');
+    h += '<div class="ccday"><button class="btn ghost" id="thThem">Thêm người</button><button class="btn ghost ccgui" id="thGui" aria-label="Chia sẻ PDF"' + (n ? '' : ' disabled') + '>' + ICON_GUI + '</button><button class="btn" id="thIn"' + (n ? '' : ' disabled') + '>' + (n ? 'In ' + n + ' thẻ' : 'Chưa chọn ai') + '</button></div><div class="ccdem"></div>';
+    t.innerHTML = h; ccDayDat(t); ccCheNoi(t);
+    function e_(k) { return CCS.the[k]; }
+    t.querySelectorAll('[data-tc],[data-tc2]').forEach(function (b) { b.onclick = function () { var e = e_(b.getAttribute('data-tc') || b.getAttribute('data-tc2')); e.chon = !e.chon; ccVe(); }; });
+    t.querySelectorAll('[data-ta]').forEach(function (b) { b.onclick = function () { theChonAnh(e_(b.getAttribute('data-ta'))); }; });
+    t.querySelectorAll('[data-tg]').forEach(function (b) { b.onclick = function () { var e = e_(b.getAttribute('data-tg')); delete e.anh; ccVe(); }; });
+    t.querySelectorAll('[data-tb]').forEach(function (b) { b.onclick = function () { delete CCS.the[b.getAttribute('data-tb')]; ccVe(); }; });
+    t.querySelectorAll('[data-tp]').forEach(function (b) { b.onclick = function () { var a = b.getAttribute('data-tp').split(':'); e_(a[0]).bp = a[1]; ccVe(); }; });
+    function xemLai(k) { var im = t.querySelector('[data-tv="' + k + '"]'); clearTimeout(xemLai.h); xemLai.h = setTimeout(function () { if (im) im.src = theTb(e_(k)); }, 250); }
+    t.querySelectorAll('[data-tt]').forEach(function (i) { i.oninput = function () { var e = e_(i.getAttribute('data-tt')); e.ten = i.value.toUpperCase(); e.sua = 1; xemLai(e.k); var hd = t.querySelector('[data-tc2="' + e.k + '"] b'); if (hd) hd.textContent = e.ten || 'Người thêm tay'; }; i.onblur = function () { i.value = e_(i.getAttribute('data-tt')).ten; }; });
+    t.querySelectorAll('[data-tm]').forEach(function (i) { i.oninput = function () { i.value = i.value.replace(/\D/g, '').slice(0, 10); var e = e_(i.getAttribute('data-tm')); e.ma = i.value; xemLai(e.k); }; });
+    t.querySelectorAll('[data-tv]').forEach(function (im) { im.onclick = function () { ccXemTo(theVe(e_(im.getAttribute('data-tv')), 957).toDataURL('image/jpeg', 0.9)); }; });
+    document.getElementById('thThem').onclick = function () { var k = 'm' + (++CCS.theThem); CCS.the[k] = { k: k, chon: true, ten: '', ma: '', bp: 'P', sua: 1 }; theChonAnh(CCS.the[k]); ccVe(); };
+    document.getElementById('thGui').onclick = theGui;
+    document.getElementById('thIn').onclick = theIn;
+  }
+  function ccChe() {   // nút chuyển In CCCD | Thẻ HOJEONG
+    return '<div class="seg" id="ccChe"><button data-che="0"' + (CCS.theMo ? '' : ' class="on"') + '>In CCCD</button><button data-che="1"' + (CCS.theMo ? ' class="on"' : '') + '>Thẻ HOJEONG</button></div>';
+  }
+  function ccCheNoi(t) { t.querySelectorAll('[data-che]').forEach(function (b) { b.onclick = function () { CCS.theMo = b.getAttribute('data-che') === '1'; var lg = theLogoNap(); if (!lg.complete) lg.onload = function () { ccVe(); }; ccVe(); window.scrollTo(0, 0); }; }); }
   var BAN_MOI = [
+    { so: 57, ds: [['Trang CCCD có thêm mục Thẻ HOJEONG: tích người cần làm thẻ ra vào, app tự lấy ảnh chân dung trên CCCD và họ tên, sale gõ mã thẻ, chọn Production hoặc Quality.'], ['Mỗi thẻ đúng 8,1 × 5,3 cm, 8 thẻ một tờ A4; bấm nút chia sẻ để gửi PDF màu ra quán in (in 100%, không thu phóng).'], ['Ảnh chân dung chưa đẹp thì bấm Chọn ảnh khác; người chưa có CCCD trong lượt thì bấm Thêm người.']] },
     { so: 56, ds: [['Tab CCCD chuyển lên ngay cạnh tab Lao động.'], ['Trang CCCD có nút Chia sẻ (biểu tượng mũi tên lên, cạnh nút In): app tạo PDF mỗi người 1 trang A4 rồi gửi qua Zalo, email, Lưu vào Tệp… để mang ra quán in.'], ['Ảnh chọn trong kho và ảnh xem to cũng chia sẻ PDF được.']] },
     { so: 55, ds: [['Trang CCCD: nút Thêm ảnh, Làm lượt mới, In luôn nằm cố định dưới cùng, cuộn trang không bị trôi.'], ['Danh sách Đã lưu gần đây có ảnh nhỏ mặt CCCD; chạm vào để xem ảnh to rồi bấm In tờ này.'], ['Mới: Tìm ảnh trong kho theo Nam/Nữ, năm sinh từ–đến, số cuối CCCD; chạm ảnh để chọn nhiều người rồi in một lượt.'], ['Bỏ nút In bằng PDF (thừa): nếu máy không mở được hộp in, app tự đưa sang PDF.']] },
     { so: 54, ds: [['Trang CCCD: ảnh in mặc định đậm hơn, chữ đen rõ trên máy in laser.'], ['Khối "Chỉnh ảnh in" có 3 thanh kéo Sáng tối, Tương phản, Độ nét, áp cho tất cả ảnh.'], ['Mỗi người có nút "Chỉnh ảnh người này" để chỉnh riêng cả mặt trước và mặt sau.']] },
