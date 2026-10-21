@@ -13,7 +13,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
 <script src="config.js"></script>
-<script>window.PB = { so: 50, luc: "21/10 22:50" };</script>
+<script>window.PB = { so: 51, luc: "21/10 23:09" };</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap">
 <style>
@@ -871,6 +871,8 @@ textarea.inp{font-family:inherit}
       '<button id="tdp"><span>Đổi mã PIN</span><span class="ch" style="margin-left:auto">›</span></button>' +
       (window.PB ? '<button id="tdPb"><span>Phiên bản ' + PB.so + '<small id="tdPbTt">ra lúc ' + esc(PB.luc) + ' · đang kiểm tra…</small></span><span class="v" id="tdPbV"></span></button><button id="tdMoi"><span>Có gì mới</span><span class="ch" style="margin-left:auto">›</span></button>' : '') + '</div>' +
       (laChu ? '<div class="sec" style="margin:8px 4px -6px">Quản trị</div><div class="set"><button id="tdNv"><span>Quản lý nhân viên</span><span class="ch" style="margin-left:auto">›</span></button>' +
+        '<button id="tdVi"><span>Khoá đọc ảnh CCCD<small id="tdViTt">Đang kiểm tra…</small></span><span class="ch" style="margin-left:auto">›</span></button>' +
+        '<div id="eVi" class="hidden" style="padding:0 16px 12px"><div class="meta" style="margin-bottom:8px">Dán khoá Cloud Vision (bắt đầu bằng AIza…). Khoá chỉ lưu trên máy chủ, không gửi xuống điện thoại của nhân viên.</div><div class="row"><input class="inp" id="tVi" placeholder="AIza…" autocomplete="off" autocapitalize="off" spellcheck="false" style="font-size:16px;padding:11px 14px"><button class="btn sm" id="tViOk">Lưu</button></div><button class="btn lk" id="tViXoa" style="padding-left:0">Bỏ khoá, quay về đọc bằng Drive</button></div>' +
         '<button id="tdMa"><span>Cập nhật ứng dụng<small id="tdMaTt">Lấy bản mới nhất</small></span><span class="v" style="color:var(--blue)">⟳</span></button></div>' : '') +
       '<div class="msg" id="tdm"></div><button class="dx" id="tdx">Đăng xuất</button>');
     function an(id, hien) { document.getElementById(id).classList.toggle('hidden', hien === undefined ? undefined : !hien); }
@@ -882,6 +884,16 @@ textarea.inp{font-family:inherit}
     document.getElementById('rTheme').onclick = function () { an('eTheme'); };
     if (laChu) {
       document.getElementById('tdNv').onclick = function () { sh.remove(); moQLNV(); };
+      var viTt = document.getElementById('tdViTt');
+      function viHien(o) { viTt.textContent = o.loi ? o.loi : o.co ? 'Đang dùng Cloud Vision · tháng này ' + o.dem + '/' + o.toiDa + ' lượt' : 'Chưa có khoá · đang đọc bằng Drive (chậm hơn)'; }
+      apiT({ v: 'visionTT', im: 1 }).then(viHien, function () { viTt.textContent = 'Chưa kiểm tra được'; });
+      document.getElementById('tdVi').onclick = function () { an('eVi'); };
+      document.getElementById('tViOk').onclick = function () {
+        var b = this, k = document.getElementById('tVi').value.trim(); if (!k) return;
+        b.disabled = true; viTt.textContent = 'Đang thử khoá với Google…';
+        apiT({ v: 'visionKhoa', khoa: k }).then(function (o) { b.disabled = false; viHien(o); if (!o.loi) { document.getElementById('tVi').value = ''; an('eVi', false); toast('Đã lưu khoá, từ giờ đọc ảnh bằng Cloud Vision.'); } }, function (e) { b.disabled = false; viTt.textContent = e.message; });
+      };
+      document.getElementById('tViXoa').onclick = function () { apiT({ v: 'visionKhoa', khoa: '' }).then(function (o) { viHien(o); an('eVi', false); }, function (e) { viTt.textContent = e.message; }); };
       document.getElementById('tdMa').onclick = function () {
         if (window.PB) { lenBanMoi(true); return; }   // kéo bản mã mới nhất từ GitHub sang Drive ngay (không chờ lịch 5 phút)
         var b = this, tt = document.getElementById('tdMaTt'); b.disabled = true; tt.textContent = 'Đang lấy bản mã mới nhất…';
@@ -1912,26 +1924,33 @@ textarea.inp{font-family:inherit}
     });
     return out.sort(function (a, b) { return a.vt - b.vt; });
   }
-  // máy chủ đọc số từng mặt ngay khi chọn ảnh (4 ảnh cùng lúc): để ghép đúng người + biết kho đã có chưa
-  function ccDocThem(x) { x.doc = 'cho'; CCS.docHang.push(x); ccDocChay(); }
-  function ccDocChay() {
-    while (CCS.docChay < 4 && CCS.docHang.length) {
-      (function (x) {
-        if (ccTim(x.id) < 0) { ccDocChay(); return; }
-        CCS.docChay++; x.doc = 'dang';
-        var c = document.createElement('canvas'); c.width = x.the.width; c.height = x.the.height; c.getContext('2d').drawImage(x.the, 0, 0);
-        apiT({ v: 'cccdDoc', anh: c.toDataURL('image/jpeg', 0.85), lang: 1 }).then(function (o) {
-          CCS.docChay--;
-          if (o.loi) x.doc = 'loi';
-          else {
-            x.doc = 'xong'; x.so = o.so || ''; x.ten = o.ten || o.tenMrz || ''; x.co = o.co || ''; x.coId = o.id || '';
-            if (o.so && !x.tay) { var m = o.sau ? 'sau' : 'truoc'; if (m !== x.mat) { x.mat = m; x.v++; } }   // có dòng mã IDVNM = chắc chắn mặt sau
-          }
-          ccVe(); ccDocChay();
-        }, function () { CCS.docChay--; x.doc = 'loi'; ccVe(); ccDocChay(); });
-      })(CCS.docHang.shift());
-    }
+  // máy chủ đọc số các mặt thẻ ngay khi chọn xong (Cloud Vision: 16 ảnh 1 lần; chưa có khoá / hết lượt: Drive, mọi ảnh cùng lúc)
+  function ccAnhDoc(x) {   // ảnh nhẹ chỉ để đọc chữ: rộng 1000 px, đen trắng
+    var w = 1000, h = Math.round(w * x.the.height / x.the.width), c = document.createElement('canvas'); c.width = w; c.height = h;
+    var g = c.getContext('2d'); g.drawImage(x.the, 0, 0, w, h);
+    var im = g.getImageData(0, 0, w, h), d = im.data;
+    for (var i = 0; i < d.length; i += 4) { var y = 0.299 * d[i] + 0.587 * d[i + 1] + 0.114 * d[i + 2]; d[i] = d[i + 1] = d[i + 2] = y; }
+    g.putImageData(im, 0, 0); return c.toDataURL('image/jpeg', 0.8);
   }
+  function ccNhanSo(x, o) {
+    if (!o || o.loi) { x.doc = 'loi'; return; }
+    x.doc = 'xong'; x.so = o.so || ''; x.ten = o.ten || o.tenMrz || ''; x.co = o.co || ''; x.coId = o.id || '';
+    if (o.so && !x.tay) { var m = o.sau ? 'sau' : 'truoc'; if (m !== x.mat) { x.mat = m; x.v++; } }   // có dòng mã IDVNM = chắc chắn mặt sau
+  }
+  function ccDocLo(ds) {
+    ds = ds.filter(function (x) { return ccTim(x.id) >= 0; }); if (!ds.length) return;
+    ds.forEach(function (x) { x.doc = 'dang'; }); ccVe();
+    for (var i = 0; i < ds.length; i += 16) (function (lo) {
+      apiT({ v: 'cccdDocNhieu', ds: lo.map(ccAnhDoc), lang: 1 }).then(function (o) {
+        if (o.drive) { lo.forEach(ccDocMot); return; }
+        lo.forEach(function (x, j) { ccNhanSo(x, o.loi ? o : (o.kq || [])[j]); }); ccVe();
+      }, function () { lo.forEach(function (x) { x.doc = 'loi'; }); ccVe(); });
+    })(ds.slice(i, i + 16));
+  }
+  function ccDocMot(x) {   // đọc bằng Drive (chậm hơn): mọi ảnh gửi cùng lúc
+    apiT({ v: 'cccdDoc', anh: ccAnhDoc(x), lang: 1 }).then(function (o) { ccNhanSo(x, o); ccVe(); }, function () { x.doc = 'loi'; ccVe(); });
+  }
+  function ccDocThem(x) { ccDocLo([x]); }
   function ccMo(file) {   // mở ảnh (Safari tự xoay theo EXIF), thu về tối đa 2200 px
     return new Promise(function (ok, hong) {
       var u = URL.createObjectURL(file), im = new Image();
@@ -1950,13 +1969,13 @@ textarea.inp{font-family:inherit}
     files = [].slice.call(files || []).filter(function (f) { return !f.type || /^image\//.test(f.type); });
     if (!files.length) return;
     CCS.dang = { i: 0, n: files.length }; ccVe();
-    var loi = 0;
+    var loi = 0, moi = [];
     (function buoc(i) {
-      if (i >= files.length) { CCS.dang = null; ccVe(); if (loi) toastLoi(loi + ' ảnh không mở được.'); return; }
+      if (i >= files.length) { CCS.dang = null; ccDocLo(moi); if (loi) toastLoi(loi + ' ảnh không mở được.'); return; }
       CCS.dang.i = i; ccVe();
       setTimeout(function () {
         ccMo(files[i]).then(function (cv) {
-          var x = { id: ++ccId, v: 0, file: files[i] }; ccDat(x, CC.xuLy(cv)); CCS.ds.push(x); ccDocThem(x); buoc(i + 1);
+          var x = { id: ++ccId, v: 0, file: files[i], doc: 'cho' }; ccDat(x, CC.xuLy(cv)); CCS.ds.push(x); moi.push(x); buoc(i + 1);
         }, function () { loi++; buoc(i + 1); });
       }, 30);
     })(0);
@@ -2195,6 +2214,7 @@ textarea.inp{font-family:inherit}
     apiT({ v: 'cccdAnh', id: g.id, so: g.so }).then(function (o) { if (o.loi) { toastLoi(o.loi); return; } ccTrang([o.anh]); }, function (e) { toastLoi(e.message); });
   }
   var BAN_MOI = [
+    { so: 51, ds: [['Trang CCCD đọc số trên ảnh nhanh hơn nhiều: cả lượt ảnh chỉ mất vài giây.'], ['Tài khoản → Khoá đọc ảnh CCCD: chỗ dán khoá Cloud Vision và xem số lượt đã dùng trong tháng.', 'chu']] },
     { so: 50, ds: [['Trang CCCD tự đọc số trên từng ảnh để ghép đúng mặt trước với mặt sau của cùng một người, chọn ảnh theo thứ tự nào cũng được.'], ['Người đã có ảnh CCCD trong thư mục trên Drive thì app vẫn in nhưng không lưu thêm.'], ['Bấm dấu × trên mỗi người để bỏ cả 2 mặt, lỡ tay thì bấm Hoàn tác.'], ['Ảnh thẻ chụp dựng đứng trên nền tối nay đã tự cắt được.']] },
     { so: 49, ds: [['Thêm trang CCCD ở thanh dưới: chọn ảnh mặt trước và mặt sau trong album, app tự cắt, ghép và in mỗi người 1 tờ A4.'], ['Ảnh ghép tự lưu vào thư mục CCCD trên Drive, đúng giới tính và năm sinh.'], ['Ảnh nào app nhận nhầm mặt hoặc lộn đầu thì chạm vào ảnh để sửa.']] },
     { so: 46, ds: [['Phiếu lương BEST mở nhanh hơn.'], ['Ghi 2 khoản thu chi liền nhau: số dư tạm vẫn đúng.', 'chu,ketoan']] },
