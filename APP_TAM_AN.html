@@ -686,7 +686,7 @@ textarea.inp{font-family:inherit}
     }
   }
   function api(q) {
-    var tt = q.im ? null : ttBat(q);   // 21/10: q.im = tải ngầm (không hiện thanh chờ)
+    var tt = (q.im || q.lang) ? null : ttBat(q);   // 21/10: q.im = tải ngầm; q.lang = việc lâu chạy nền (nút tự báo đang làm) -> không hiện thanh chờ
     return api0(q).then(function (o) { if (tt) ttTat(tt); return o; }, function (e) { if (tt) ttTat(tt); throw e; });
   }
   function api0(q) {
@@ -1535,6 +1535,8 @@ textarea.inp{font-family:inherit}
   }
   // 21/10: "Bản X có gì mới" – hiện 1 lần sau khi cập nhật; mỗi dòng ngắn, dễ hiểu; vai '' = mọi người, 'chu' = chỉ chủ
   var BAN_MOI = [
+    { so: 43, ds: [['Ghi sổ thu chi xong dùng tiếp được ngay; số dư quỹ tạm hiện liền, số chính xác tự thay vào khi bảng tổng hợp tính xong.', 'chu,ketoan'],
+      ['Tổng quan: đổi sang tháng khác nhanh hơn, và không làm đổi tháng đang xem trên máy tính.', 'chu'], ['Tổng quan và Thu chi không tự đọc lại vô ích nữa, chỉ đọc khi số thật sự đổi.', 'chu,ketoan']] },
     { so: 42, ds: [['Mở app, xem danh sách lao động, phiếu lương và bảng công nhanh hơn nhiều.'], ['Số đã xem lần trước hiện ngay khi mở app; số mới tự cập nhật ngầm, không phải chờ vòng quay.'], ['App tự lấy số mới mỗi 3 phút và mỗi khi bạn quay lại app, không cần bấm cập nhật.'],
       ['Các tab khác được tải sẵn, chuyển tab là có số ngay.']] },
     { so: 41, ds: [['Tổng quan: tiền quỹ và công nợ vẽ thành thanh màu, nhìn là thấy tiền vào, tiền ra.', 'chu'], ['Tổng quan: bỏ bớt các bảng chữ dài khó đọc.', 'chu']] },
@@ -1822,7 +1824,7 @@ textarea.inp{font-family:inherit}
   }
   var QUY_TAM = null;   // so du tam (vua ghi khoan, cho bang tong hop tinh lai)
   function taiQuy(moi, tinhLai, im) {
-    apiT({ v: 'quy', moi: moi ? 1 : 0, tinhLai: tinhLai ? 1 : 0, im: im ? 1 : 0 }).then(function (o) {
+    apiT({ v: 'quy', moi: moi ? 1 : 0, tinhLai: tinhLai ? 1 : 0, im: im ? 1 : 0, lang: (moi || tinhLai) ? 1 : 0 }).then(function (o) {
       if (im && (o.loi || QUY_TAM || giongJ(o, QUY))) return;
       if (!o.loi) { QUY = o; luuSo('vlta_quy', o); }
       QUY_TAM = null; hienQuy(o);
@@ -2068,6 +2070,7 @@ textarea.inp{font-family:inherit}
   function taiTQ(q) {
     if (dangTQ) return; dangTQ = true;
     q.v = 'tq'; var im = q.im;
+    if (q.thang === undefined && S.tqThang) q.thang = S.tqThang;   // 21/10: đang xem kỳ khác -> tải lại đúng kỳ đó (kỳ trên máy tính không đổi theo app)
     apiT(q).then(function (o) {
       dangTQ = false;
       if (im && (o.loi || giongJ(o, TQ))) return;
@@ -2378,10 +2381,11 @@ textarea.inp{font-family:inherit}
       document.querySelectorAll('#tqSeg button').forEach(function (b) { b.onclick = function () { S.tqNhom = b.getAttribute('data-n'); luu('vlta_tqn', S.tqNhom); hienTQ(o); }; });
       document.getElementById('tqKy').onchange = function () {
         var k = this.value;
-        document.getElementById('tqMoi').disabled = this.disabled = true; taiTQ({ thang: k });
+        var bm = document.getElementById('tqMoi'); bm.disabled = this.disabled = true; bm.textContent = 'Đang tải kỳ…';
+        S.tqThang = k; taiTQ({ thang: k, lang: 1 });
       };
       document.getElementById('tqMoi').onclick = function () {
-        this.disabled = true; this.textContent = 'Đang lấy số…'; taiTQ({ moi: 1 });
+        this.disabled = true; this.textContent = 'Đang lấy số…'; taiTQ({ moi: 1, lang: 1 });
       };
       var het = document.getElementById('cpHet');
       if (het) het.onclick = function (e) { e.preventDefault(); var du = document.getElementById('cpDu'), mo = du.classList.contains('hidden'); du.classList.toggle('hidden', !mo); document.getElementById('cpGon').classList.toggle('hidden', mo); this.textContent = mo ? 'Thu gọn' : 'Xem hết'; };
