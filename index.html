@@ -13,7 +13,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
 <script src="config.js"></script>
-<script>window.PB = { so: 53, luc: "21/10 23:39" };</script>
+<script>window.PB = { so: 54, luc: "21/10 23:57" };</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap">
 <style>
@@ -656,6 +656,13 @@ textarea.inp{font-family:inherit}
 .ccx{flex:none;width:34px;height:34px;border:0;border-radius:50%;background:var(--soft);color:var(--muted);font-size:22px;line-height:1;display:flex;align-items:center;justify-content:center;padding:0}
 .ccp>.row{align-items:flex-start}
 .btn[disabled]{opacity:.55}
+.ccc{display:flex;flex-direction:column;gap:12px;padding:14px 16px}
+.ccch{display:flex;align-items:center;justify-content:space-between;gap:10px;border:0;background:none;padding:0;text-align:left;color:inherit;width:100%}
+.ccch span:first-child{display:flex;flex-direction:column;min-width:0}.ccch b{font-size:16px;font-weight:600}.ccch small{font-size:13px;color:var(--muted)}.ccch .ch{color:var(--faint);font-size:18px}
+.ccxt img{width:100%;border-radius:8px;border:1px solid var(--line);display:block;min-height:120px;background:var(--soft)}
+.ccsl{display:grid;grid-template-columns:86px 1fr 34px;align-items:center;gap:10px;font-size:14px}
+.ccsl input{width:100%;accent-color:var(--cta);height:28px}.ccsl b{text-align:right;font-weight:600;font-variant-numeric:tabular-nums}
+.ccpc{justify-content:space-between;margin-top:-4px}.ccpc .tag{white-space:nowrap;flex:none}.ccpc .btn.lk{padding:6px 0;font-size:14px}
 .ccdoi{display:flex;align-items:center;justify-content:space-between;gap:10px}
 .ccxem{width:100%;border-radius:10px}
 .cck{position:relative;align-self:center;touch-action:none;-webkit-user-select:none;user-select:none}
@@ -1602,6 +1609,7 @@ textarea.inp{font-family:inherit}
   // ===== CCCD: tìm khung thẻ, nắn thẳng, xác định mặt trước/sau + chiều, ghép 2 mặt (JS thuần, không thư viện) =====
   // ===== CCCD: tìm khung thẻ, nắn thẳng, xác định mặt trước/sau + chiều, ghép 2 mặt (JS thuần, không thư viện) =====
   // ===== CCCD: tìm khung thẻ, nắn thẳng, xác định mặt trước/sau + chiều, ghép 2 mặt (JS thuần, không thư viện) =====
+  // ===== CCCD: tìm khung thẻ, nắn thẳng, xác định mặt trước/sau + chiều, ghép 2 mặt (JS thuần, không thư viện) =====
   var CC = (function () {
     var TL = 85.6 / 54, MW = 1400, MH = Math.round(1400 / TL), GAP = 40;   // giống Tool_CCCD: mỗi mặt 1400 px, cách 40 px
 
@@ -1978,29 +1986,42 @@ textarea.inp{font-family:inherit}
       return { mat: E > 0.01 ? 'truoc' : 'sau', xoay: 0, chac: false, ro: false, f: f };   // không nhận ra: để nguyên, đánh dấu xem lại
     }
     // ---- làm đẹp cho máy in laser: cân sáng (khử bóng nhẹ) + kéo giãn mức xám + làm nét nhẹ ----
-    function lamDep(cv) {
-      var W = cv.width, H = cv.height, x = cv.getContext('2d'), im = x.getImageData(0, 0, W, H), d = im.data, n = W * H, L = new Float32Array(n), i;
+    var CHINH_MD = { sang: 50, tp: 60, net: 60 };   // mặc định: 0..100 (sáng 50 = giữ nguyên)
+    function lamDep(cv, o) {   // o = { sang, tp, net }; ảnh nhỏ (xem trước) tự thu bán kính làm nét
+      o = o || CHINH_MD;
+      var W = cv.width, H = cv.height, x = cv.getContext('2d'), im = x.getImageData(0, 0, W, H), d = im.data, n = W * H, L = new Float32Array(n), i, ch;
       for (i = 0; i < n; i++) L[i] = 0.299 * d[i * 4] + 0.587 * d[i * 4 + 1] + 0.114 * d[i * 4 + 2];
+      // 1) khử bóng: cân độ sáng nền
       var s = 8, w2 = Math.ceil(W / s), h2 = Math.ceil(H / s), Ls = new Float32Array(w2 * h2);
       for (var y = 0; y < h2; y++) for (var xx = 0; xx < w2; xx++) Ls[y * w2 + xx] = L[Math.min(H - 1, y * s) * W + Math.min(W - 1, xx * s)];
       var nen = mo(Ls, w2, h2, Math.round(Math.max(w2, h2) / 6)), arr = Array.prototype.slice.call(nen).sort(function (a, b) { return a - b; }), p90 = arr[Math.floor(arr.length * 0.9)];
       var hs = new Uint32Array(256), K = new Float32Array(n);
       for (y = 0; y < H; y++) for (xx = 0; xx < W; xx++) { var p = y * W + xx, k = 0.5 + 0.5 * p90 / Math.max(1, nen[Math.min(h2 - 1, (y / s) | 0) * w2 + Math.min(w2 - 1, (xx / s) | 0)]); K[p] = k; hs[Math.min(255, Math.max(0, Math.round(L[p] * k)))]++; }
-      var c = 0, lo = 0, hi = 255; for (i = 0; i < 256; i++) { c += hs[i]; if (c < n * 0.01) lo = i; if (c < n * 0.995) hi = i; }
-      var sc = 255 / Math.max(40, hi - lo);
-      for (i = 0; i < n; i++) for (var ch = 0; ch < 3; ch++) d[i * 4 + ch] = Math.max(0, Math.min(255, (d[i * 4 + ch] * K[i] - lo) * sc));
-      x.putImageData(im, 0, 0);
-      // tăng độ nét (unsharp 2 tầng trên độ sáng, bỏ qua dao động nhỏ để không làm hạt nhiễu nổi lên)
-      var im2 = x.getImageData(0, 0, W, H), e = im2.data, Y = new Float32Array(n);
-      for (i = 0; i < n; i++) Y[i] = 0.299 * e[i * 4] + 0.587 * e[i * 4 + 1] + 0.114 * e[i * 4 + 2];
-      var B1 = mo(Y, W, H, 1), B2 = mo(Y, W, H, 3);
-      for (i = 0; i < n; i++) {
-        var d1 = Y[i] - B1[i], d2 = Y[i] - B2[i];
-        if (Math.abs(d1) < 2) d1 = 0; if (Math.abs(d2) < 3) d2 = 0;
-        var dl = 1.1 * d1 + 0.5 * d2;
-        for (ch = 0; ch < 3; ch++) e[i * 4 + ch] = Math.max(0, Math.min(255, e[i * 4 + ch] + dl));
+      // 2) tương phản: kéo điểm đen / điểm trắng (tp cao: chữ đen hơn, nền hoa văn trắng hơn) + đường cong chữ S
+      var t = o.tp / 100, qLo = 0.01 + 0.07 * t, qHi = 0.995 - 0.25 * t, c = 0, lo = 0, hi = 255;
+      for (i = 0; i < 256; i++) { c += hs[i]; if (c < n * qLo) lo = i; if (c < n * qHi) hi = i; }
+      var sc = 255 / Math.max(40, hi - lo), cong = Math.max(0, t - 0.2) * 1.6, gm = Math.pow(2, -(o.sang - 50) / 40), LUT = new Float32Array(256);
+      for (i = 0; i < 256; i++) {   // đường cong áp sau khi kéo mức: chữ S theo tương phản, mũ (gamma) theo sáng tối
+        var v = i / 255; if (cong > 0) { var sg = 0.5 + 0.5 * Math.tanh(cong * 2.2 * (v - 0.5)) / Math.tanh(cong * 1.1); v = v + (sg - v) * Math.min(1, cong); }
+        LUT[i] = 255 * Math.pow(Math.max(0, Math.min(1, v)), gm);
       }
-      x.putImageData(im2, 0, 0); return cv;
+      for (i = 0; i < n; i++) for (ch = 0; ch < 3; ch++) { var v0 = Math.max(0, Math.min(255, (d[i * 4 + ch] * K[i] - lo) * sc)); d[i * 4 + ch] = LUT[v0 | 0]; }
+      x.putImageData(im, 0, 0);
+      // 3) độ nét: unsharp 2 tầng trên độ sáng, bỏ qua dao động nhỏ để không làm hạt nhiễu nổi lên
+      var a = o.net / 50, r1 = Math.max(1, Math.round(W / 1400)), r3 = Math.max(2, Math.round(3 * W / 1400));
+      if (a > 0) {
+        var im2 = x.getImageData(0, 0, W, H), e = im2.data, Y = new Float32Array(n);
+        for (i = 0; i < n; i++) Y[i] = 0.299 * e[i * 4] + 0.587 * e[i * 4 + 1] + 0.114 * e[i * 4 + 2];
+        var B1 = mo(Y, W, H, r1), B2 = mo(Y, W, H, r3);
+        for (i = 0; i < n; i++) {
+          var d1 = Y[i] - B1[i], d2 = Y[i] - B2[i];
+          if (Math.abs(d1) < 2) d1 = 0; if (Math.abs(d2) < 3) d2 = 0;
+          var dl = a * (1.1 * d1 + 0.5 * d2);
+          for (ch = 0; ch < 3; ch++) e[i * 4 + ch] = Math.max(0, Math.min(255, e[i * 4 + ch] + dl));
+        }
+        x.putImageData(im2, 0, 0);
+      }
+      return cv;
     }
     // ---- 1 ảnh -> 1 mặt thẻ ----
     function xuLy(cv, q) {
@@ -2017,26 +2038,30 @@ textarea.inp{font-family:inherit}
       if (pl.xoay) mat = xoay(mat, 180);
       return { the: mat, q: g, tim: t, mat: pl.mat, chac: pl.chac, f: pl.f, ro: pl.ro !== false };
     }
-    function ghep(truoc, sau) {
-      var c = document.createElement('canvas'); c.width = MW; c.height = MH * 2 + GAP;
+    function ghep(truoc, sau, o, rong) {   // rong: bề rộng ảnh (mặc định 1400 = bản in / lưu; nhỏ hơn để xem trước khi kéo thanh chỉnh)
+      var W = rong || MW, Hm = Math.round(W / TL), G = Math.round(GAP * W / MW), c = document.createElement('canvas'); c.width = W; c.height = Hm * 2 + G;
       var x = c.getContext('2d'); x.fillStyle = '#fff'; x.fillRect(0, 0, c.width, c.height);
-      [[truoc, 0], [sau, MH + GAP]].forEach(function (p) {
+      [[truoc, 0], [sau, Hm + G]].forEach(function (p) {
         if (p[0]) {
-          x.drawImage(lamDep(copy(p[0])), 0, p[1], MW, MH);
-          var r = Math.round(MW * 3.18 / 85.6);   // bo góc thẻ thật: phần nền lọt ở 4 góc tô trắng
-          x.save(); x.beginPath(); x.rect(0, p[1], MW, MH);
-          x.moveTo(r, p[1]); x.arcTo(MW, p[1], MW, p[1] + MH, r); x.arcTo(MW, p[1] + MH, 0, p[1] + MH, r); x.arcTo(0, p[1] + MH, 0, p[1], r); x.arcTo(0, p[1], MW, p[1], r); x.closePath();
+          var m = document.createElement('canvas'); m.width = W; m.height = Hm; var mx = m.getContext('2d'); mx.imageSmoothingQuality = 'high'; mx.drawImage(p[0], 0, 0, W, Hm);
+          x.drawImage(lamDep(m, o), 0, p[1]);
+          var r = Math.round(W * 3.18 / 85.6);   // bo góc thẻ thật: phần nền lọt ở 4 góc tô trắng
+          x.save(); x.beginPath(); x.rect(0, p[1], W, Hm);
+          x.moveTo(r, p[1]); x.arcTo(W, p[1], W, p[1] + Hm, r); x.arcTo(W, p[1] + Hm, 0, p[1] + Hm, r); x.arcTo(0, p[1] + Hm, 0, p[1], r); x.arcTo(0, p[1], W, p[1], r); x.closePath();
           x.fillStyle = '#fff'; x.fill('evenodd'); x.restore();
         }
-        else { x.strokeStyle = '#aaa'; x.setLineDash([15, 15]); x.lineWidth = 3; x.strokeRect(2, p[1] + 2, MW - 4, MH - 4); }
+        else { x.strokeStyle = '#aaa'; x.setLineDash([15, 15]); x.lineWidth = 3; x.strokeRect(2, p[1] + 2, W - 4, Hm - 4); }
       });
       return c;
     }
     function copy(cv) { var c = document.createElement('canvas'); c.width = cv.width; c.height = cv.height; c.getContext('2d').drawImage(cv, 0, 0); return c; }
-    return { xep: xep, lamDep: lamDep, timThe: timThe, xuLy: xuLy, ghep: ghep, xoay: xoay, phanLoai: phanLoai, MW: MW, MH: MH, GAP: GAP };
+    return { CHINH_MD: CHINH_MD, xep: xep, lamDep: lamDep, timThe: timThe, xuLy: xuLy, ghep: ghep, xoay: xoay, phanLoai: phanLoai, MW: MW, MH: MH, GAP: GAP };
   })();
   // ---------- 21/10: tab CCCD – chọn ảnh 2 mặt trong album -> tự cắt, nắn, ghép từng cặp -> in mỗi người 1 tờ A4 -> lưu thư mục CCCD trên Drive ----------
   var CCS = { ds: [], tt: {}, jpg: {}, dang: null, doi: null, hang: [], chay: 0, docHang: [], docChay: 0 }, ccId = 0;
+  // mức chỉnh ảnh (sáng tối / tương phản / độ nét): mức chung nhớ trên máy; người nào chỉnh riêng thì lưu trên 2 mặt của người đó
+  CCS.chinh = (function () { try { var o = JSON.parse(doc('vlta_cc_chinh') || 'null'); if (o && o.tp >= 0) return o; } catch (e) { } return { sang: CC.CHINH_MD.sang, tp: CC.CHINH_MD.tp, net: CC.CHINH_MD.net }; })();
+  function ccOpt(p) { return (p.t && p.t.chinh) || (p.s && p.s.chinh) || CCS.chinh; }
   function veCCCD() {
     khung('In CCCD', 'Ghép 2 mặt · in A4 · lưu Drive', '', '<div id="ccThan" class="ccw"></div>');
     ccVe();
@@ -2123,12 +2148,13 @@ textarea.inp{font-family:inherit}
     })(0);
   }
   function ccJpg(p) {   // ảnh ghép 1 người (1400 px, dpi 277 = in đúng 1,5 lần thẻ thật như Tool_CCCD)
-    if (CCS.jpg[p.k]) return CCS.jpg[p.k];
-    var u = CC.ghep(p.t ? p.t.the : null, p.s ? p.s.the : null).toDataURL('image/jpeg', 0.9), b = atob(u.slice(23)), a = new Uint8Array(b.length), i;
+    var o = ccOpt(p), kj = p.k + '|' + o.sang + ',' + o.tp + ',' + o.net;
+    if (CCS.jpg[kj]) return CCS.jpg[kj];
+    var u = CC.ghep(p.t ? p.t.the : null, p.s ? p.s.the : null, o).toDataURL('image/jpeg', 0.9), b = atob(u.slice(23)), a = new Uint8Array(b.length), i;
     for (i = 0; i < b.length; i++) a[i] = b.charCodeAt(i);
     if (a[2] === 0xFF && a[3] === 0xE0 && a[6] === 0x4A && a[7] === 0x46) { a[13] = 1; a[14] = 1; a[15] = 21; a[16] = 1; a[17] = 21; }   // 277 dpi
     var s = ''; for (i = 0; i < a.length; i += 8192) s += String.fromCharCode.apply(null, a.subarray(i, i + 8192));
-    return (CCS.jpg[p.k] = 'data:image/jpeg;base64,' + btoa(s));
+    return (CCS.jpg[kj] = 'data:image/jpeg;base64,' + btoa(s));
   }
   function ccGan() { try { return JSON.parse(doc('vlta_cccd') || '[]'); } catch (e) { return []; } }
   function ccVe() {
@@ -2142,6 +2168,10 @@ textarea.inp{font-family:inherit}
     } else {
       if (CCS.doi) h += '<div class="note warn ccdoi"><span>Chạm vào ảnh muốn đổi chỗ</span><button class="btn sm ghost" id="ccDoiThoi">Thôi</button></div>';
       var dangDoc = CCS.ds.filter(function (x) { return x.doc === 'cho' || x.doc === 'dang'; }).length;
+      var cg = CCS.chinh, md = CC.CHINH_MD;
+      h += '<div class="card ccc"><button class="ccch" id="ccChinhMo"><span><b>Chỉnh ảnh in</b><small>Sáng ' + cg.sang + ' · Tương phản ' + cg.tp + ' · Nét ' + cg.net + ' · áp cho tất cả</small></span><span class="ch">' + (CCS.moChinh ? '▾' : '›') + '</span></button>' +
+        (CCS.moChinh ? '<div class="ccxt"><img id="ccXemChung" alt=""><div class="meta" id="ccXemTen"></div></div>' + ccThanh('g', cg) +
+          '<div class="row" style="justify-content:space-between"><button class="btn lk" id="ccMd" style="padding-left:0">Về mặc định (' + md.sang + ' · ' + md.tp + ' · ' + md.net + ')</button></div>' : '') + '</div>';
       h += cap.map(function (p, n) {
         var st = CCS.tt[p.k] || {}, du = p.t && p.s, ln = '';
         if (!du) ln = '<div class="cct warn">' + (p.t ? 'Thiếu mặt sau' : 'Thiếu mặt trước') + (p.so && cap.some(function (q) { return q !== p && q.so === p.so; }) ? ' – ảnh trùng người khác ở trên, bấm × để bỏ.' : ' – chọn thêm ảnh hoặc đổi mặt. Chưa lưu Drive.') + '</div>';
@@ -2160,7 +2190,8 @@ textarea.inp{font-family:inherit}
         }
         return '<div class="card ccp"><div class="row sp"><div style="min-width:0"><b class="ell" style="display:block">' + esc(ten) + '</b>' + (so ? '<span class="meta num">' + esc(so) + '</span>' : '') + '</div>' +
           '<button class="ccx" data-xoa="' + esc(p.k) + '" aria-label="Bỏ người này">×</button></div>' +
-          '<div class="ccf">' + o(p.t, 'Mặt trước') + o(p.s, 'Mặt sau') + '</div>' + ln + '</div>';
+          '<div class="ccf">' + o(p.t, 'Mặt trước') + o(p.s, 'Mặt sau') + '</div>' + ln +
+          '<div class="row ccpc"><button class="btn lk" data-chinh="' + esc(p.k) + '">Chỉnh ảnh người này</button>' + ((p.t && p.t.chinh) || (p.s && p.s.chinh) ? '<span class="tag moi">đã chỉnh riêng</span>' : '') + '</div></div>';
       }).join('');
       h += '<div class="meta" style="text-align:center">Chạm ảnh để xoay, đổi mặt, cắt lại, đổi chỗ.</div>' +
         '<div class="row ccnut"><button class="btn ghost" id="ccThem">Thêm ảnh</button><button class="btn" id="ccIn"' + (dangDoc ? ' disabled' : '') + '>' + (dangDoc ? 'Đang đọc số… còn ' + dangDoc : 'In ' + cap.length + ' tờ') + '</button></div>' +
@@ -2189,6 +2220,16 @@ textarea.inp{font-family:inherit}
     });
     t.querySelectorAll('[data-thu]').forEach(function (e) { e.onclick = function (ev) { ev.preventDefault(); ccXep(e.getAttribute('data-thu')); }; });
     t.querySelectorAll('[data-xoa]').forEach(function (e) { e.onclick = function () { ccXoaCap(e.getAttribute('data-xoa')); }; });
+    t.querySelectorAll('[data-chinh]').forEach(function (e) { e.onclick = function () { ccChinhRieng(e.getAttribute('data-chinh')); }; });
+    if ((b = document.getElementById('ccChinhMo'))) b.onclick = function () { CCS.moChinh = !CCS.moChinh; ccVe(); };
+    if (CCS.moChinh && document.getElementById('ccXemChung')) {
+      var p0 = cap.filter(function (p) { return p.t && p.s && !(p.t.chinh || p.s.chinh); })[0] || cap.filter(function (p) { return p.t && p.s; })[0] || cap[0];
+      var img = document.getElementById('ccXemChung');
+      document.getElementById('ccXemTen').textContent = p0 ? 'Xem trước: ' + (p0.ten ? hoaDau(p0.ten) : 'người đầu tiên') : '';
+      ccNoiThanh(t, 'g', CCS.chinh, function (o) { CCS.chinh = o; luu('vlta_cc_chinh', JSON.stringify(o)); var sm = document.querySelector('#ccChinhMo small'); if (sm) sm.textContent = 'Sáng ' + o.sang + ' · Tương phản ' + o.tp + ' · Nét ' + o.net + ' · áp cho tất cả'; }, img, p0);
+      img.onclick = function () { if (p0) ccXemTo(CC.ghep(p0.t ? p0.t.the : null, p0.s ? p0.s.the : null, ccOpt(p0)).toDataURL('image/jpeg', 0.9)); };
+      var mdb = document.getElementById('ccMd'); if (mdb) mdb.onclick = function () { CCS.chinh = { sang: CC.CHINH_MD.sang, tp: CC.CHINH_MD.tp, net: CC.CHINH_MD.net }; luu('vlta_cc_chinh', JSON.stringify(CCS.chinh)); ccVe(); };
+    }
     t.querySelectorAll('[data-g]').forEach(function (e) { e.onclick = function () { ccInLai(gan[Number(e.getAttribute('data-g'))]); }; });
   }
   function ccXoaCap(k) {   // bỏ cả cặp mặt trước + mặt sau, có Hoàn tác
@@ -2197,6 +2238,35 @@ textarea.inp{font-family:inherit}
     bo.slice().reverse().forEach(function (b) { CCS.ds.splice(b.i, 1); });
     ccVe();
     toastNut('Đã bỏ ' + (p.ten ? hoaDau(p.ten) : 'người này'), 'Hoàn tác', function () { bo.forEach(function (b) { CCS.ds.splice(Math.min(b.i, CCS.ds.length), 0, b.x); }); ccVe(); }, 5000);
+  }
+  function ccThanh(k, o) {   // 3 thanh kéo
+    return [['sang', 'Sáng tối'], ['tp', 'Tương phản'], ['net', 'Độ nét']].map(function (x) {
+      return '<label class="ccsl"><span>' + x[1] + '</span><input type="range" min="0" max="100" step="1" value="' + o[x[0]] + '" data-sl="' + k + ':' + x[0] + '"><b data-slv="' + k + ':' + x[0] + '">' + o[x[0]] + '</b></label>';
+    }).join('');
+  }
+  function ccNoiThanh(goc, k, o0, doi, img, p) {   // kéo thanh: cập nhật số + ảnh xem trước (ảnh nhỏ 700 px, chờ tay dừng 150 ms)
+    var o = { sang: o0.sang, tp: o0.tp, net: o0.net }, hen = 0;
+    function ve() { if (!img || !p) return; img.src = CC.ghep(p.t ? p.t.the : null, p.s ? p.s.the : null, o, 700).toDataURL('image/jpeg', 0.85); }
+    goc.querySelectorAll('[data-sl^="' + k + ':"]').forEach(function (e) {
+      var ten = e.getAttribute('data-sl').split(':')[1], v = goc.querySelector('[data-slv="' + k + ':' + ten + '"]');
+      e.oninput = function () { o[ten] = Number(e.value); v.textContent = e.value; doi({ sang: o.sang, tp: o.tp, net: o.net }); clearTimeout(hen); hen = setTimeout(ve, 150); };
+    });
+    ve();
+    return o;
+  }
+  function ccXemTo(u) { var sh = moSheet('<div class="row sp"><h3>Xem trước bản in</h3><button class="link" id="ccXtD">Đóng</button></div><img src="' + u + '" alt="" style="width:100%;border-radius:8px;border:1px solid var(--line)">'); sh.querySelector('#ccXtD').onclick = function () { sh.remove(); }; }
+  function ccChinhRieng(k) {
+    var p = ccCap().filter(function (x) { return x.k === k; })[0]; if (!p) return;
+    var rieng = !!((p.t && p.t.chinh) || (p.s && p.s.chinh)), o = ccOpt(p), moi = { sang: o.sang, tp: o.tp, net: o.net };
+    var sh = moSheet('<div class="row sp"><h3 class="ell">' + esc(p.ten ? hoaDau(p.ten) : 'Chỉnh ảnh người này') + '</h3><button class="link" id="crD">Thôi</button></div>' +
+      '<img id="crXem" alt="" style="width:100%;border-radius:8px;border:1px solid var(--line)"><div class="meta">Chỉ áp cho người này, cả mặt trước và mặt sau.</div>' + ccThanh('r', moi) +
+      '<button class="btn" id="crOk">Áp cho người này</button>' + (rieng ? '<button class="btn ghost" id="crChung">Theo mức chung</button>' : ''));
+    var img = sh.querySelector('#crXem');
+    ccNoiThanh(sh, 'r', moi, function (x) { moi = x; }, img, p);
+    img.onclick = function () { ccXemTo(CC.ghep(p.t ? p.t.the : null, p.s ? p.s.the : null, moi).toDataURL('image/jpeg', 0.9)); };
+    sh.querySelector('#crD').onclick = function () { sh.remove(); };
+    sh.querySelector('#crOk').onclick = function () { [p.t, p.s].forEach(function (x) { if (x) x.chinh = { sang: moi.sang, tp: moi.tp, net: moi.net }; }); sh.remove(); ccVe(); toast('Đã áp mức chỉnh riêng cho người này.'); };
+    var c2 = sh.querySelector('#crChung'); if (c2) c2.onclick = function () { [p.t, p.s].forEach(function (x) { if (x) delete x.chinh; }); sh.remove(); ccVe(); };
   }
   function ccMoi() {
     var con = ccCap().filter(function (p) { var st = CCS.tt[p.k] || {}; return p.t && p.s && !st.ok; }).length;
@@ -2356,6 +2426,7 @@ textarea.inp{font-family:inherit}
     apiT({ v: 'cccdAnh', id: g.id, so: g.so }).then(function (o) { if (o.loi) { toastLoi(o.loi); return; } ccTrang([o.anh]); }, function (e) { toastLoi(e.message); });
   }
   var BAN_MOI = [
+    { so: 54, ds: [['Trang CCCD: ảnh in mặc định đậm hơn, chữ đen rõ trên máy in laser.'], ['Khối "Chỉnh ảnh in" có 3 thanh kéo Sáng tối, Tương phản, Độ nét, áp cho tất cả ảnh.'], ['Mỗi người có nút "Chỉnh ảnh người này" để chỉnh riêng cả mặt trước và mặt sau.']] },
     { so: 53, ds: [['Ảnh CCCD cắt sát mép thẻ hơn: không còn dính nền bàn, sàn, và không méo khi ảnh chụp nghiêng.'], ['Thẻ đặt trên nền đá mài, vân gỗ hoặc chụp xoay dọc cũng tự cắt đúng.']] },
     { so: 52, ds: [['Ảnh CCCD in ra và lưu lên Drive sắc nét hơn: app thêm bước tăng độ nét chữ, không chỉ chỉnh độ sáng.']] },
     { so: 51, ds: [['Trang CCCD đọc số trên ảnh nhanh hơn nhiều: cả lượt ảnh chỉ mất vài giây.'], ['Tài khoản → Khoá đọc ảnh CCCD: chỗ dán khoá Cloud Vision và xem số lượt đã dùng trong tháng.', 'chu']] },
