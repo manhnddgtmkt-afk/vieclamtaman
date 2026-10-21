@@ -13,7 +13,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
 <script src="config.js"></script>
-<script>window.PB = { so: 45, luc: "21/10 21:15" };</script>
+<script>window.PB = { so: 46, luc: "21/10 21:26" };</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap">
 <style>
@@ -1550,6 +1550,7 @@ textarea.inp{font-family:inherit}
   }
   // 21/10: "Bản X có gì mới" – hiện 1 lần sau khi cập nhật; mỗi dòng ngắn, dễ hiểu; vai '' = mọi người, 'chu' = chỉ chủ
   var BAN_MOI = [
+    { so: 46, ds: [['Phiếu lương BEST mở nhanh hơn (không còn chờ 10 giây lần đầu).'], ['Ghi 2 khoản thu chi liên tiếp: số dư tạm cộng dồn đúng, không mất giữa chừng.', 'chu,ketoan']] },
     { so: 45, ds: [['Sửa lỗi: bấm làm mới hoặc chọn kỳ đúng lúc app đang tải ngầm thì lệnh không còn bị bỏ qua.'], ['Đầu tháng mới chưa có chấm công: danh sách vẫn chia theo tình trạng Làm / Nghỉ, không dồn hết vào Nghỉ.'],
       ['Ghi ứng / trả xong mà mất mạng thì app báo rõ, không im lặng.']] },
     { so: 44, ds: [['Thu chi: nếu số dư bảng tổng hợp tính ra khác số tạm vừa hiện, app nhắc 10 giây để bạn biết; khớp thì không báo gì.', 'chu,ketoan']] },
@@ -1840,9 +1841,12 @@ textarea.inp{font-family:inherit}
     if (QUY) hienQuy(QUY);
     taiQuy(false, false, !!QUY);
   }
-  var QUY_TAM = null;   // so du tam (vua ghi khoan, cho bang tong hop tinh lai)
+  var QUY_TAM = null, QUY_SEQ = 0;   // so du tam (vua ghi khoan, cho bang tong hop tinh lai); SEQ: chi luot tinh lai moi nhat duoc xoa so tam
+  function datQuyTam(doi) { QUY_TAM = { doi: (QUY_TAM && !QUY_TAM.loi ? QUY_TAM.doi : 0) + doi }; QUY_SEQ++; }   // ghi 2 khoan lien tiep: cong don, khong mat so tam
   function taiQuy(moi, tinhLai, im) {
+    var seq = QUY_SEQ;
     apiT({ v: 'quy', moi: moi ? 1 : 0, tinhLai: tinhLai ? 1 : 0, im: im ? 1 : 0, lang: (moi || tinhLai) ? 1 : 0 }).then(function (o) {
+      if (tinhLai && seq !== QUY_SEQ) return;   // da co khoan moi ghi sau -> doi luot tinh lai cua khoan do
       if (im && (o.loi || QUY_TAM || giongJ(o, QUY))) return;
       // 21/10: số chính thức khác số tạm vừa hiện -> nhắc 10 giây (khớp thì đổi lặng lẽ)
       if (QUY_TAM && !QUY_TAM.loi && !o.loi && !o.tinhLoi) {
@@ -1854,6 +1858,7 @@ textarea.inp{font-family:inherit}
       if (QUY_LECH) setTimeout(function () { QUY_LECH = null; var e = document.getElementById('qLech'); if (e) e.remove(); }, 10000);
     }, function (e) {
       if (im) return;
+      if (tinhLai && seq !== QUY_SEQ) return;
       if (QUY_TAM) { QUY_TAM.loi = 'Chưa tính lại được: ' + e.message + '. Bấm "làm mới" để thử lại.'; if (QUY) hienQuy(QUY); return; }
       var t = document.getElementById('than'); if (t && !QUY) t.innerHTML = '<div class="empty">' + esc(e.message) + '</div>';
     });
@@ -2079,7 +2084,7 @@ textarea.inp{font-family:inherit}
         if (o.loi) { btn.disabled = false; btn.textContent = goc; m.textContent = o.loi; return; }
         if (sua) { xong(o, 'Đã sửa khoản (dòng ' + o.dong + ')'); return; }
         sh.remove(); toast('Đã ghi vào sổ (dòng ' + o.dong + ')' + (o.kiemTra ? ' · ' + o.kiemTra : ''));
-        QUY_TAM = { doi: (/^thu/i.test(k.loai) ? 1 : -1) * tien };
+        datQuyTam((/^thu/i.test(k.loai) ? 1 : -1) * tien);
         if (QUY) { QUY.so.dong.unshift({ khoan: k.ten, so: vnd(tien), ngay: ngay.slice(0, 6) + ngay.slice(-2), nguoi: dong.nguoi, dt: dt, thang: dong.thang, nd: dong.nd, loai: k.loai }); hienQuy(QUY); }
         taiQuy(false, true);
       }, function (e) { btn.disabled = false; btn.textContent = goc; m.textContent = e.message; });
