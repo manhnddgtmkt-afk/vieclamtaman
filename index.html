@@ -13,7 +13,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
 <script src="config.js"></script>
-<script>window.PB = { so: 52, luc: "21/10 23:19" };</script>
+<script>window.PB = { so: 53, luc: "21/10 23:39" };</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap">
 <style>
@@ -1601,6 +1601,7 @@ textarea.inp{font-family:inherit}
   // ===== CCCD: tìm khung thẻ, nắn thẳng, xác định mặt trước/sau + chiều, ghép 2 mặt (JS thuần, không thư viện) =====
   // ===== CCCD: tìm khung thẻ, nắn thẳng, xác định mặt trước/sau + chiều, ghép 2 mặt (JS thuần, không thư viện) =====
   // ===== CCCD: tìm khung thẻ, nắn thẳng, xác định mặt trước/sau + chiều, ghép 2 mặt (JS thuần, không thư viện) =====
+  // ===== CCCD: tìm khung thẻ, nắn thẳng, xác định mặt trước/sau + chiều, ghép 2 mặt (JS thuần, không thư viện) =====
   var CC = (function () {
     var TL = 85.6 / 54, MW = 1400, MH = Math.round(1400 / TL), GAP = 40;   // giống Tool_CCCD: mỗi mặt 1400 px, cách 40 px
 
@@ -1654,6 +1655,8 @@ textarea.inp{font-family:inherit}
         else { a1 = M[p - w + 1]; a2 = M[p + w - 1]; }
         if (m >= a1 && m >= a2) E[p] = 1;
       }
+      var GA = new Float32Array(n); for (i = 0; i < n; i++) if (E[i]) { var g = Math.atan2(GY[i], GX[i]); if (g < 0) g += Math.PI; GA[i] = g; }
+      E.ga = GA;
       return E;
     }
     function gian(E, w, h, r) {   // nới cạnh r px (để chấm điểm)
@@ -1666,8 +1669,12 @@ textarea.inp{font-family:inherit}
     function hough(E, w, h) {
       var NT = 180, D = Math.ceil(Math.hypot(w, h)), NR = 2 * D + 1, A = new Uint32Array(NT * NR), cs = [], sn = [], t, x, y;
       for (t = 0; t < NT; t++) { cs.push(Math.cos(t * Math.PI / NT)); sn.push(Math.sin(t * Math.PI / NT)); }
-      for (y = 0; y < h; y++) for (x = 0; x < w; x++) if (E[y * w + x]) for (t = 0; t < NT; t++) A[t * NR + Math.round(x * cs[t] + y * sn[t]) + D]++;
-      var pk = [], mn = Math.min(w, h) * 0.12;
+      var GA = E.ga;   // mỗi điểm cạnh chỉ bỏ phiếu cho đường thẳng vuông góc với hướng gradient của nó (±8°): bớt nhiễu nền vân gỗ, đá mài
+      for (y = 0; y < h; y++) for (x = 0; x < w; x++) if (E[y * w + x]) {
+        var t0 = Math.round(GA[y * w + x] / Math.PI * NT);
+        for (var dt0 = -8; dt0 <= 8; dt0++) { t = ((t0 + dt0) % NT + NT) % NT; A[t * NR + Math.round(x * cs[t] + y * sn[t]) + D]++; }
+      }
+      var pk = [], mn = Math.min(w, h) * 0.08;
       for (t = 0; t < NT; t++) for (var r = 1; r < NR - 1; r++) {
         var v = A[t * NR + r]; if (v < mn) continue;
         var ok = true;
@@ -1681,7 +1688,7 @@ textarea.inp{font-family:inherit}
       }
       pk.sort(function (a, b) { return b.v - a.v; });
       var out = [];
-      pk.forEach(function (p) { if (out.length < 40 && out.every(function (q) { return Math.abs(q.r - p.r) > 6 || Math.abs(Math.sin(q.th - p.th)) > 0.05; })) out.push(p); });
+      pk.forEach(function (p) { if (out.length < 60 && out.every(function (q) { return Math.abs(q.r - p.r) > 6 || Math.abs(Math.sin(q.th - p.th)) > 0.05; })) out.push(p); });
       return out;
     }
     function giao(a, b) {
@@ -1697,7 +1704,7 @@ textarea.inp{font-family:inherit}
     }
     function dienTich(q) { var a = 0; for (var i = 0; i < 4; i++) { var p = q[i], r = q[(i + 1) % 4]; a += p[0] * r[1] - r[0] * p[1]; } return Math.abs(a) / 2; }
     function loi(q) { var s = 0; for (var i = 0; i < 4; i++) { var a = q[i], b = q[(i + 1) % 4], c = q[(i + 2) % 4], z = (b[0] - a[0]) * (c[1] - b[1]) - (b[1] - a[1]) * (c[0] - b[0]); if (!s) s = Math.sign(z); else if (Math.sign(z) !== s) return false; } return true; }
-    function cham(q, G, w, h, long, bv) {
+    function cham(q, G, w, h, long, bv, I) {
       q = xep(q); if (!loi(q)) return null;
       var dt = dienTich(q); if (dt < 0.08 * w * h) return null;
       var d = []; for (var i = 0; i < 4; i++) d.push(Math.hypot(q[i][0] - q[(i + 1) % 4][0], q[i][1] - q[(i + 1) % 4][1]));
@@ -1712,9 +1719,26 @@ textarea.inp{font-family:inherit}
         }
         ht.push(s / 80);
       }
-      var mn = Math.min.apply(null, ht), tb = (ht[0] + ht[1] + ht[2] + ht[3]) / 4;
+      var mn = Math.min.apply(null, ht), tb = (ht[0] + ht[1] + ht[2] + ht[3]) / 4, tp = 1;
+      if (I) {   // mép thật của thẻ: 2 bên khác màu rõ (thẻ / nền); đường kẻ bên trong thẻ: 2 bên cùng màu
+        var cx = (q[0][0] + q[1][0] + q[2][0] + q[3][0]) / 4, cy = (q[0][1] + q[1][1] + q[2][1] + q[3][1]) / 4, dd = I.d, cs = [];
+        for (i = 0; i < 4; i++) {
+          var A0 = q[i], B0 = q[(i + 1) % 4], L0 = Math.hypot(B0[0] - A0[0], B0[1] - A0[1]) || 1, nx = -(B0[1] - A0[1]) / L0, ny = (B0[0] - A0[0]) / L0;
+          var mx = (A0[0] + B0[0]) / 2, my = (A0[1] + B0[1]) / 2; if (nx * (mx - cx) + ny * (my - cy) < 0) { nx = -nx; ny = -ny; }
+          var tong = 0, dem = 0;
+          for (k = 0; k < 30; k++) {
+            var t2 = 0.1 + 0.8 * k / 29, px = A0[0] + (B0[0] - A0[0]) * t2, py = A0[1] + (B0[1] - A0[1]) * t2;
+            var ox = Math.round(px + nx * 5), oy = Math.round(py + ny * 5), ix = Math.round(px - nx * 5), iy = Math.round(py - ny * 5);
+            if (ox < 0 || oy < 0 || ox >= w || oy >= h || ix < 0 || iy < 0 || ix >= w || iy >= h) continue;
+            var po = (oy * w + ox) * 4, pi = (iy * w + ix) * 4;
+            tong += (Math.abs(dd[po] - dd[pi]) + Math.abs(dd[po + 1] - dd[pi + 1]) + Math.abs(dd[po + 2] - dd[pi + 2])) / 3; dem++;
+          }
+          cs.push(dem >= 6 ? Math.min(1, tong / dem / 35) : 0.7);   // sát mép ảnh: không đo được
+        }
+        tp = 0.35 + 0.65 * (cs[0] + cs[1] + cs[2] + cs[3]) / 4;
+      }
       if (mn < 0.3 && !long) return null;
-      return { q: q, diem: tb * Math.sqrt(dt / (w * h)) * (1 - 0.5 * Math.abs(tl - TL)), mn: mn, ht: ht };
+      return { q: q, diem: tb * tp * Math.sqrt(dt / (w * h)) * (1 - 0.5 * Math.abs(tl - TL)), mn: mn, ht: ht };
     }
     // ---- tách thẻ theo màu (khác màu nền ở viền ảnh) -> hình chữ nhật nhỏ nhất bao vùng thẻ ----
     function otsu(v, n) { var hs = new Float64Array(256), i, sum = 0; for (i = 0; i < n; i++) { hs[v[i]]++; sum += v[i]; } var sB = 0, wB = 0, best = 0, t = 128; for (i = 0; i < 256; i++) { wB += hs[i]; if (!wB) continue; var wF = n - wB; if (!wF) break; sB += i * hs[i]; var mB = sB / wB, mF = (sum - sB) / wF, b = wB * wF * (mB - mF) * (mB - mF); if (b > best) { best = b; t = i; } } return t; }
@@ -1736,6 +1760,13 @@ textarea.inp{font-family:inherit}
       if (best) best.hull = Math.abs(hA) / 2;
       return best;
     }
+    function boXam(M, w, h, r, max) {   // giãn (max) / co (min) ảnh nhị phân theo hình vuông 2r+1
+      var T = new Uint8Array(w * h), O = new Uint8Array(w * h), x, y, k, v;
+      for (y = 0; y < h; y++) for (x = 0; x < w; x++) { v = max ? 0 : 1; for (k = -r; k <= r && (max ? !v : v); k++) { var xx = Math.min(w - 1, Math.max(0, x + k)); v = M[y * w + xx]; } T[y * w + x] = v; }
+      for (y = 0; y < h; y++) for (x = 0; x < w; x++) { v = max ? 0 : 1; for (k = -r; k <= r && (max ? !v : v); k++) { var yy = Math.min(h - 1, Math.max(0, y + k)); v = T[yy * w + x]; } O[y * w + x] = v; }
+      return O;
+    }
+    function dongLo(M, w, h, r) { return boXam(boXam(M, w, h, r, true), w, h, r, false); }
     function tachMau(I) {
       var w = I.w, h = I.h, n = w * h, d = I.d, F = [new Float32Array(n), new Float32Array(n), new Float32Array(n)], i, x, y;
       for (i = 0; i < n; i++) { var r = d[i * 4], g = d[i * 4 + 1], b = d[i * 4 + 2]; F[0][i] = (0.299 * r + 0.587 * g + 0.114 * b) * 0.6; F[1][i] = r - g; F[2][i] = (r + g) / 2 - b; }
@@ -1749,6 +1780,7 @@ textarea.inp{font-family:inherit}
         if (mx < 15) return;
         var V = new Uint8Array(n); for (i = 0; i < n; i++) V[i] = Math.round(D[i] / mx * 255);
         var t = otsu(V, n), M = new Uint8Array(n); for (i = 0; i < n; i++) M[i] = V[i] > t ? 1 : 0;
+        M = dongLo(M, w, h, Math.max(2, Math.round(Math.min(w, h) * 0.015)));   // lấp lỗ nhỏ, nối các mảng của cùng 1 thẻ
         // tìm vùng liền lớn nhất
         var lab = new Int32Array(n), st = [], bestN = 0, bestL = 0, L = 0;
         for (i = 0; i < n; i++) if (M[i] && !lab[i]) {
@@ -1768,12 +1800,100 @@ textarea.inp{font-family:inherit}
       });
       return out;
     }
+    // ---- tinh chỉnh sát viền: từ khung thô, dò mép thẻ thật dọc từng cạnh (chỗ đổi màu rõ nhất, ngoài cùng), khớp lại đường thẳng ----
+    function lamSat(cv, q, xa) {   // xa: khung thô là cả ảnh -> cho dò sâu hơn vào trong
+      var R = nho(cv, 1000), w = R.w, h = R.h, d = R.d, s = R.s, Q = xep(q).map(function (p) { return [p[0] * s, p[1] * s]; });
+      var S = Math.min(Math.hypot(Q[1][0] - Q[0][0], Q[1][1] - Q[0][1]), Math.hypot(Q[2][0] - Q[1][0], Q[2][1] - Q[1][1]));
+      var cx = (Q[0][0] + Q[1][0] + Q[2][0] + Q[3][0]) / 4, cy = (Q[0][1] + Q[1][1] + Q[2][1] + Q[3][1]) / 4;
+      function mau(x, y) { x = Math.round(x); y = Math.round(y); if (x < 0 || y < 0 || x >= w || y >= h) return null; var p = (y * w + x) * 4; return [d[p], d[p + 1], d[p + 2]]; }
+      function khac(a, b) { return (Math.abs(a[0] - b[0]) + Math.abs(a[1] - b[1]) + Math.abs(a[2] - b[2])) / 3; }
+      var ngoai = Math.round(0.04 * S), trong = Math.round((xa ? 0.07 : 0.04) * S), dg = [];
+      // màu nền thẻ: trung vị vùng giữa khung thô
+      var mr = [], mg = [], mb = [];
+      for (var yy = 0.3; yy <= 0.7; yy += 0.05) for (var xx = 0.3; xx <= 0.7; xx += 0.05) {
+        var px0 = Q[0][0] + (Q[1][0] - Q[0][0]) * xx + (Q[3][0] - Q[0][0]) * yy, py0 = Q[0][1] + (Q[1][1] - Q[0][1]) * xx + (Q[3][1] - Q[0][1]) * yy, c0 = mau(px0, py0);
+        if (c0) { mr.push(c0[0]); mg.push(c0[1]); mb.push(c0[2]); }
+      }
+      function tv(a) { a.sort(function (x, y) { return x - y; }); return a[a.length >> 1] || 0; }
+      var the0 = [tv(mr), tv(mg), tv(mb)];
+      function tb3(px, py, nx, ny, a, b) { var c = [0, 0, 0], k = 0; for (var e = a; e <= b; e++) { var m = mau(px - nx * e, py - ny * e); if (m) { c[0] += m[0]; c[1] += m[1]; c[2] += m[2]; k++; } } return k ? [c[0] / k, c[1] / k, c[2] / k] : null; }
+      for (var i = 0; i < 4; i++) {
+        var A = Q[i], B = Q[(i + 1) % 4], L = Math.hypot(B[0] - A[0], B[1] - A[1]) || 1, ux = (B[0] - A[0]) / L, uy = (B[1] - A[1]) / L, nx = -uy, ny = ux;
+        var mx = (A[0] + B[0]) / 2, my = (A[1] + B[1]) / 2; if (nx * (mx - cx) + ny * (my - cy) < 0) { nx = -nx; ny = -ny; }   // n hướng ra ngoài
+        var pts = [];
+        for (var k = 0; k < 48; k++) {
+          var t = 0.1 + 0.8 * k / 47, px = A[0] + (B[0] - A[0]) * t, py = A[1] + (B[1] - A[1]) * t, rs = [], mxr = 0;
+          for (var dd = -ngoai; dd <= trong; dd++) {   // dd > 0: vào trong thẻ
+            var c1 = mau(px - nx * (dd - 2), py - ny * (dd - 2)), c2 = mau(px - nx * (dd + 2), py - ny * (dd + 2));
+            var r = c1 && c2 ? khac(c1, c2) : 0; rs.push(r); if (r > mxr) mxr = r;
+          }
+          if (mxr < 22) continue;
+          for (var j = 0; j < rs.length; j++) if (rs[j] >= 0.6 * mxr && rs[j] >= 22) {   // chỗ đổi màu mạnh ngoài cùng mà phía ngoài KHÔNG giống màu thẻ (loại dòng chữ sát mép)
+            while (j + 1 < rs.length && rs[j + 1] >= rs[j]) j++;   // leo tới đỉnh
+            var de = j - ngoai, co = tb3(px, py, nx, ny, de - 7, de - 3), ci = tb3(px, py, nx, ny, de + 3, de + 7);
+            if (co && ci && (khac(co, the0) < 22 || khac(co, the0) <= khac(ci, the0))) continue;
+            pts.push([px - nx * de, py - ny * de]); break;
+          }
+        }
+        // khớp đường thẳng bền (bỏ điểm lệch), cần ≥ 35% số mẫu thẳng hàng
+        var ln = null;
+        if (pts.length >= 12) {
+          var ds = pts.slice();
+          for (var lap = 0; lap < 3; lap++) {
+            var sx = 0, sy = 0; ds.forEach(function (p) { sx += p[0]; sy += p[1]; }); sx /= ds.length; sy /= ds.length;
+            var xx = 0, xy = 0, yy = 0; ds.forEach(function (p) { var a = p[0] - sx, b = p[1] - sy; xx += a * a; xy += a * b; yy += b * b; });
+            var th = 0.5 * Math.atan2(2 * xy, xx - yy), vx = Math.cos(th), vy = Math.sin(th);
+            var ec = ds.map(function (p) { return Math.abs(-(p[0] - sx) * vy + (p[1] - sy) * vx); }), es = ec.slice().sort(function (a, b) { return a - b; }), md = es[es.length >> 1];
+            var nguong = Math.max(1.5, 2.5 * md); ds = ds.filter(function (p, z) { return ec[z] <= nguong; });
+            ln = { p: [sx, sy], v: [vx, vy] };
+            if (ds.length < 0.35 * 48) { ln = null; break; }
+          }
+          if (ln && Math.abs(ln.v[0] * ux + ln.v[1] * uy) < 0.97) ln = null;   // lệch góc quá ~14° so với cạnh thô: bỏ
+        }
+        // chỉ nhận đường mới nếu nó "giống mép thẻ" hơn đường cũ: phía ngoài khác màu thẻ, phía trong giống màu thẻ
+        function giongMep(P, V) {
+          var tong = 0, dem = 0;
+          for (var k3 = 0; k3 < 24; k3++) {
+            var t3 = (k3 + 0.5) / 24, ax = A[0] + (B[0] - A[0]) * t3, ay = A[1] + (B[1] - A[1]) * t3;
+            var u3 = (ax - P[0]) * V[0] + (ay - P[1]) * V[1], qx = P[0] + V[0] * u3, qy = P[1] + V[1] * u3;
+            var co3 = tb3(qx, qy, nx, ny, -7, -3), ci3 = tb3(qx, qy, nx, ny, 3, 7);
+            if (!co3 || !ci3) continue;
+            tong += Math.max(-40, Math.min(60, khac(co3, the0) - khac(ci3, the0))); dem++;
+          }
+          return dem >= 6 ? tong / dem : null;
+        }
+        if (ln) {
+          var lech = [0, 1].map(function (e) {   // > 0: đường mới nằm trong khung cũ (đo ở 2 đầu cạnh)
+            var mx2 = A[0] + (B[0] - A[0]) * e, my2 = A[1] + (B[1] - A[1]) * e, u4 = (mx2 - ln.p[0]) * ln.v[0] + (my2 - ln.p[1]) * ln.v[1];
+            return -((ln.p[0] + ln.v[0] * u4 - mx2) * nx + (ln.p[1] + ln.v[1] * u4 - my2) * ny);
+          }), vao = Math.max(lech[0], lech[1]), ra = -Math.min(lech[0], lech[1]);
+          // khung thô là cả ảnh (ảnh Zalo cắt sẵn): cho dò sâu tìm mép; khung thô đã bám mép (tìm theo cạnh / màu): chỉ cho nhích ra ngoài một chút, không cắt vào thẻ
+          if (xa ? vao > 0.07 * S : (vao > 2 || ra > 0.025 * S)) ln = null;
+        }
+        if (ln) { var gm = giongMep(ln.p, ln.v), gc = giongMep(A, [ux, uy]); if (gm === null || gm < 12 || (gc !== null && gm < gc)) ln = null; }
+        dg.push(ln ? { p: ln.p, v: ln.v } : { p: A, v: [ux, uy] });
+      }
+      function giaoHet() {
+        var o = [];
+        for (var i2 = 0; i2 < 4; i2++) {
+          var l1 = dg[(i2 + 3) % 4], l2 = dg[i2], det = l1.v[0] * -l2.v[1] - l1.v[1] * -l2.v[0];
+          if (Math.abs(det) < 1e-6) return null;
+          var bx = l2.p[0] - l1.p[0], by = l2.p[1] - l1.p[1], t1 = (bx * -l2.v[1] - by * -l2.v[0]) / det;
+          o.push([l1.p[0] + l1.v[0] * t1, l1.p[1] + l1.v[1] * t1]);
+        }
+        return o;
+      }
+      var moi = giaoHet(); if (!moi) return q;
+      for (i = 0; i < 4; i++) if (Math.hypot(moi[i][0] - Q[i][0], moi[i][1] - Q[i][1]) > 0.2 * S) return q;   // lệch quá xa: giữ khung cũ
+      var a0 = dienTich(Q), a1 = dienTich(moi); if (a1 < 0.6 * a0 || a1 > 1.25 * a0) return q;
+      return moi.map(function (p) { return [p[0] / s, p[1] / s]; });
+    }
     function timThe(cv) {
       var I = nho(cv, 520), w = I.w, h = I.h, E = canh(I), G = gian(E, w, h, 2), L = hough(E, w, h);
       // thêm 4 mép ảnh làm đường ứng viên (ảnh Zalo thường đã cắt sát thẻ)
       var ar = Math.max(w, h) / Math.min(w, h), khit = Math.abs(ar / TL - 1) < 0.1, bv = khit ? 0.6 : 0.15;   // ảnh có tỉ lệ thẻ: nhiều khả năng đã cắt sát
       L = L.concat([{ th: 0, r: 0, v: 0, b: 1 }, { th: 0, r: w - 1, v: 0, b: 1 }, { th: Math.PI / 2, r: 0, v: 0, b: 1 }, { th: Math.PI / 2, r: h - 1, v: 0, b: 1 }]);
-      var ngang = L.filter(function (l) { return Math.abs(Math.sin(l.th)) > 0.7; }).slice(0, 18), doc = L.filter(function (l) { return Math.abs(Math.sin(l.th)) <= 0.7; }).slice(0, 18);
+      var ngang = L.filter(function (l) { return Math.abs(Math.sin(l.th)) > 0.7; }).slice(0, 24), doc = L.filter(function (l) { return Math.abs(Math.sin(l.th)) <= 0.7; }).slice(0, 24);
       var bien = function (l) { return l.b; };
       ngang = ngang.concat(L.filter(function (l) { return l.b && Math.abs(Math.sin(l.th)) > 0.7 && ngang.indexOf(l) < 0; }));
       doc = doc.concat(L.filter(function (l) { return l.b && Math.abs(Math.sin(l.th)) <= 0.7 && doc.indexOf(l) < 0; }));
@@ -1784,7 +1904,7 @@ textarea.inp{font-family:inherit}
           var c = doc[k], e = doc[m]; if (Math.abs(Math.sin(c.th - e.th)) > 0.25) continue;
           var p = [giao(a, c), giao(a, e), giao(b, e), giao(b, c)]; if (p.some(function (z) { return !z; })) continue;
           if (p.some(function (z) { return z[0] < -0.05 * w || z[0] > 1.05 * w || z[1] < -0.05 * h || z[1] > 1.05 * h; })) continue;
-          var sc = cham(p, G, w, h, false, bv); if (sc) ds.push(sc);
+          var sc = cham(p, G, w, h, false, bv, I); if (sc) ds.push(sc);
         }
       }
       ds.sort(function (a, b) { return b.diem - a.diem; });
@@ -1793,7 +1913,7 @@ textarea.inp{font-family:inherit}
       if (tm) {
         var qm = xep(tm.q), dg = Math.hypot(w, h);
         var khop = ds.filter(function (c) { return c.q.every(function (p, i) { return Math.min.apply(null, qm.map(function (z) { return Math.hypot(z[0] - p[0], z[1] - p[1]); })) < 0.05 * dg; }); });
-        var scm = cham(qm, G, w, h, true, bv);
+        var scm = cham(qm, G, w, h, true, bv, I);
         if (khop.length) { khop.forEach(function (c) { c.mau = 1; }); ds = khop.concat(ds.filter(function (c) { return khop.indexOf(c) < 0; })); }
         if (scm && (!khop.length || scm.diem >= 0.9 * khop[0].diem)) { scm.mau = 1; ds.unshift(scm); }
         else if (!scm) ds.unshift({ q: qm, diem: 0.5, mau: 1 });
@@ -1884,7 +2004,13 @@ textarea.inp{font-family:inherit}
     }
     // ---- 1 ảnh -> 1 mặt thẻ ----
     function xuLy(cv, q) {
-      var t = q ? { q: xep(q), nguon: 'tay' } : timThe(cv), g = t.q;
+      var t = q ? { q: xep(q), nguon: 'tay' } : timThe(cv);
+      if (!q) {
+        t.q = xep(lamSat(cv, t.q, t.nguon === 'ca anh'));
+        var ccx = (t.q[0][0] + t.q[1][0] + t.q[2][0] + t.q[3][0]) / 4, ccy = (t.q[0][1] + t.q[1][1] + t.q[2][1] + t.q[3][1]) / 4;
+        t.q = t.q.map(function (p) { return [ccx + (p[0] - ccx) * 0.988, ccy + (p[1] - ccy) * 0.985]; });   // lẹm vào 0,6–0,8 % cho sạch vệt nền sát mép (lề thẻ trống, không có chữ)
+      }
+      var g = t.q;
       var d01 = Math.hypot(g[1][0] - g[0][0], g[1][1] - g[0][1]), d12 = Math.hypot(g[2][0] - g[1][0], g[2][1] - g[1][1]);
       var gn = d01 >= d12 ? g : [g[3], g[0], g[1], g[2]];   // cạnh dài nằm ngang
       var mat = nan(cv, gn, MW, MH), pl = phanLoai(mat);
@@ -1895,7 +2021,13 @@ textarea.inp{font-family:inherit}
       var c = document.createElement('canvas'); c.width = MW; c.height = MH * 2 + GAP;
       var x = c.getContext('2d'); x.fillStyle = '#fff'; x.fillRect(0, 0, c.width, c.height);
       [[truoc, 0], [sau, MH + GAP]].forEach(function (p) {
-        if (p[0]) x.drawImage(lamDep(copy(p[0])), 0, p[1], MW, MH);
+        if (p[0]) {
+          x.drawImage(lamDep(copy(p[0])), 0, p[1], MW, MH);
+          var r = Math.round(MW * 3.18 / 85.6);   // bo góc thẻ thật: phần nền lọt ở 4 góc tô trắng
+          x.save(); x.beginPath(); x.rect(0, p[1], MW, MH);
+          x.moveTo(r, p[1]); x.arcTo(MW, p[1], MW, p[1] + MH, r); x.arcTo(MW, p[1] + MH, 0, p[1] + MH, r); x.arcTo(0, p[1] + MH, 0, p[1], r); x.arcTo(0, p[1], MW, p[1], r); x.closePath();
+          x.fillStyle = '#fff'; x.fill('evenodd'); x.restore();
+        }
         else { x.strokeStyle = '#aaa'; x.setLineDash([15, 15]); x.lineWidth = 3; x.strokeRect(2, p[1] + 2, MW - 4, MH - 4); }
       });
       return c;
@@ -2224,6 +2356,7 @@ textarea.inp{font-family:inherit}
     apiT({ v: 'cccdAnh', id: g.id, so: g.so }).then(function (o) { if (o.loi) { toastLoi(o.loi); return; } ccTrang([o.anh]); }, function (e) { toastLoi(e.message); });
   }
   var BAN_MOI = [
+    { so: 53, ds: [['Ảnh CCCD cắt sát mép thẻ hơn: không còn dính nền bàn, sàn, và không méo khi ảnh chụp nghiêng.'], ['Thẻ đặt trên nền đá mài, vân gỗ hoặc chụp xoay dọc cũng tự cắt đúng.']] },
     { so: 52, ds: [['Ảnh CCCD in ra và lưu lên Drive sắc nét hơn: app thêm bước tăng độ nét chữ, không chỉ chỉnh độ sáng.']] },
     { so: 51, ds: [['Trang CCCD đọc số trên ảnh nhanh hơn nhiều: cả lượt ảnh chỉ mất vài giây.'], ['Tài khoản → Khoá đọc ảnh CCCD: chỗ dán khoá Cloud Vision và xem số lượt đã dùng trong tháng.', 'chu']] },
     { so: 50, ds: [['Trang CCCD tự đọc số trên từng ảnh để ghép đúng mặt trước với mặt sau của cùng một người, chọn ảnh theo thứ tự nào cũng được.'], ['Người đã có ảnh CCCD trong thư mục trên Drive thì app vẫn in nhưng không lưu thêm.'], ['Bấm dấu × trên mỗi người để bỏ cả 2 mặt, lỡ tay thì bấm Hoàn tác.'], ['Ảnh thẻ chụp dựng đứng trên nền tối nay đã tự cắt được.']] },
