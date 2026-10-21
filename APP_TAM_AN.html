@@ -623,6 +623,35 @@ textarea.inp{font-family:inherit}
 .bmh .bmx{position:absolute;top:8px;right:8px;width:36px;height:36px;border:0;background:none;font-size:24px;line-height:1;color:var(--muted)}
 .bmh .bmc{overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;flex:1;min-height:0;text-align:left}
 .bmh .btn{flex:none}
+/* 21/10: tab CCCD */
+.ccw{display:flex;flex-direction:column;gap:14px}
+.cch{display:flex;flex-direction:column;align-items:center;text-align:center;gap:10px;padding:28px 20px}
+.cch svg{width:56px;height:56px;color:var(--blue)}
+.cch>b{font-size:18px}
+.cch .btn{margin-top:8px}
+.ccbar0{height:6px;border-radius:3px;background:var(--soft);margin-top:12px;overflow:hidden}.ccbar0 i{display:block;height:100%;background:var(--cta);transition:width .2s}
+.ccp{display:flex;flex-direction:column;gap:10px;padding:14px 16px}
+.ccp>.row b{font-size:16px;font-weight:600}
+.ccf{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.ccm{border:0;padding:0;background:none;display:flex;flex-direction:column;gap:4px;text-align:left;min-width:0;color:inherit}
+.ccm img{width:100%;aspect-ratio:1.585;object-fit:cover;border-radius:8px;display:block;border:2px solid transparent}
+.ccm span{font-size:12px;color:var(--muted)}
+.ccm.xem img{border-color:var(--warn)}.ccm.xem span{color:var(--warn);font-weight:600}
+.ccm.chon img{border-color:var(--blue);box-shadow:0 0 0 3px var(--tint)}
+.ccm.trong{aspect-ratio:1.585;border:2px dashed var(--edge);border-radius:8px;align-items:center;justify-content:center}
+.cct{font-size:13px;color:var(--muted)}.cct.ok{color:var(--good)}.cct.warn{color:var(--warn)}.cct.bad{color:var(--bad)}.cct a{color:var(--blue)}
+.ccso .inp{flex:1;min-width:0;margin:0}
+.ccnut .btn{flex:1}
+.ccdoi{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.ccxem{width:100%;border-radius:10px}
+.cck{position:relative;align-self:center;touch-action:none;-webkit-user-select:none;user-select:none}
+.cck img{width:100%;height:100%;display:block;border-radius:6px}
+.cck svg{position:absolute;left:0;top:0;pointer-events:none}
+.cck polygon{fill:rgba(47,107,255,.12);stroke:#2F6BFF;stroke-width:2}
+.cck i{position:absolute;width:30px;height:30px;margin:-15px 0 0 -15px;border-radius:50%;background:rgba(47,107,255,.25);border:3px solid #2F6BFF;touch-action:none}
+#inCC{display:none}
+@media print{@page{size:A4 portrait;margin:0}html,body{background:#fff!important}body.dangIn>*:not(#inCC){display:none!important}body.dangIn #inCC{display:block!important}
+.inTr{width:210mm;height:296mm;box-sizing:border-box;padding-top:20mm;display:flex;justify-content:center;align-items:flex-start;break-after:page;page-break-after:always}.inTr:last-child{break-after:auto;page-break-after:auto}.inTr img{width:128.4mm;height:auto;max-height:256mm}}
 </style>
 </head>
 <body>
@@ -972,9 +1001,9 @@ textarea.inp{font-family:inherit}
   // ---------- khung chính: thanh dưới theo vai trò ----------
   function cacTab() {
     var v = (S.toi || {}).vai;
-    if (v === 'chu') return [['ld', 'Lao động', 'ld'], ['quy', 'Thu chi', 'quy'], ['tq', 'Tổng quan', 'tq']];
-    if (v === 'ketoan') return [['ld', 'Lao động', 'ld'], ['quy', 'Thu chi', 'quy'], ['tn', 'Thu nhập', 'tn']];
-    return [['ld', 'Lao động', 'ld'], ['tn', 'Thu nhập', 'tn']];
+    if (v === 'chu') return [['ld', 'Lao động', 'ld'], ['quy', 'Thu chi', 'quy'], ['tq', 'Tổng quan', 'tq'], ['cc', 'CCCD', 'cc']];
+    if (v === 'ketoan') return [['ld', 'Lao động', 'ld'], ['quy', 'Thu chi', 'quy'], ['tn', 'Thu nhập', 'tn'], ['cc', 'CCCD', 'cc']];
+    return [['ld', 'Lao động', 'ld'], ['tn', 'Thu nhập', 'tn'], ['cc', 'CCCD', 'cc']];
   }
   var SVG0 = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">';
   var ICON = {
@@ -982,6 +1011,7 @@ textarea.inp{font-family:inherit}
     quy: SVG0 + '<rect x="3" y="6" width="18" height="13" rx="2.5"/><path d="M3 10h18M16 15h2"/></svg>',
     tq: SVG0 + '<path d="M5 20V11M12 20V5M19 20v-6"/></svg>',
     tn: SVG0 + '<path d="M12 3l2.6 5.4 5.9.8-4.3 4.1 1 5.8L12 16.4 6.8 19.1l1-5.8L3.5 9.2l5.9-.8z"/></svg>',
+    cc: SVG0 + '<rect x="3" y="5" width="18" height="14" rx="2.5"/><circle cx="8.5" cy="11" r="2"/><path d="M5.5 16c.6-1.5 1.7-2.2 3-2.2s2.4.7 3 2.2M14 10h4M14 13.5h4"/></svg>',
     goi: SVG0 + '<path d="M5 4h3.5l1.8 4.5-2.3 1.4a11 11 0 0 0 6.1 6.1l1.4-2.3L20 15.5V19a1.5 1.5 0 0 1-1.6 1.5A16 16 0 0 1 3.5 5.6 1.5 1.5 0 0 1 5 4z"/></svg>',
     zalo: SVG0 + '<path d="M4 5h16v11H9l-5 4z"/></svg>',
     tim: SVG0 + '<circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>',
@@ -999,7 +1029,7 @@ textarea.inp{font-family:inherit}
   }
   function moTab(t) {
     S.tab = t; S.hs = null; S.utMo = 0; luu('vlta_tab', t); window.scrollTo(0, 0);
-    if (t === 'tn') veThuNhap(); else if (t === 'quy') veQuy(); else if (t === 'tq') veTQ(); else { veDs(); taiDs(false, !!S.data[S.cty]); }   // đã có danh sách trong máy: tải ngầm
+    if (t === 'tn') veThuNhap(); else if (t === 'quy') veQuy(); else if (t === 'tq') veTQ(); else if (t === 'cc') veCCCD(); else { veDs(); taiDs(false, !!S.data[S.cty]); }   // đã có danh sách trong máy: tải ngầm
   }
   function vaoApp() {
     var cs = S.toi.cty || [];
@@ -1542,7 +1572,555 @@ textarea.inp{font-family:inherit}
     }, function () { });
   }
   // 21/10: "Bản X có gì mới" – hiện 1 lần sau khi cập nhật; mỗi dòng ngắn, dễ hiểu; vai '' = mọi người, 'chu' = chỉ chủ
+  // ===== CCCD: tìm khung thẻ, nắn thẳng, xác định mặt trước/sau + chiều, ghép 2 mặt (JS thuần, không thư viện) =====
+  var CC = (function () {
+    var TL = 85.6 / 54, MW = 1400, MH = Math.round(1400 / TL), GAP = 40;   // giống Tool_CCCD: mỗi mặt 1400 px, cách 40 px
+
+    // ---- ảnh nhỏ để phân tích ----
+    function nho(cv, max) {
+      var s = Math.min(1, max / Math.max(cv.width, cv.height)), w = Math.max(1, Math.round(cv.width * s)), h = Math.max(1, Math.round(cv.height * s));
+      var c = document.createElement('canvas'); c.width = w; c.height = h;
+      var x = c.getContext('2d'); x.imageSmoothingQuality = 'high'; x.drawImage(cv, 0, 0, w, h);
+      return { w: w, h: h, d: x.getImageData(0, 0, w, h).data, s: s };
+    }
+    function mo(src, w, h, r) {   // làm mờ hộp (2 lượt ~ gauss), mảng Float32
+      var t = new Float32Array(w * h), o = new Float32Array(w * h), x, y, k, a;
+      for (var it = 0; it < 2; it++) {
+        var inp = it ? o : src;
+        for (y = 0; y < h; y++) { a = 0; for (x = -r; x <= r; x++) a += inp[y * w + Math.min(w - 1, Math.max(0, x))];
+          for (x = 0; x < w; x++) { t[y * w + x] = a / (2 * r + 1); a += inp[y * w + Math.min(w - 1, x + r + 1)] - inp[y * w + Math.max(0, x - r)]; } }
+        var o2 = new Float32Array(w * h);
+        for (x = 0; x < w; x++) { a = 0; for (y = -r; y <= r; y++) a += t[Math.min(h - 1, Math.max(0, y)) * w + x];
+          for (y = 0; y < h; y++) { o2[y * w + x] = a / (2 * r + 1); a += t[Math.min(h - 1, y + r + 1) * w + x] - t[Math.max(0, y - r) * w + x]; } }
+        o = o2;
+      }
+      return o;
+    }
+    // ---- bản đồ cạnh: gradient lớn nhất trên 3 kênh (sáng, đỏ-lục, vàng-lam), lọc đỉnh ----
+    function canh(I) {
+      var w = I.w, h = I.h, n = w * h, d = I.d, ch = [new Float32Array(n), new Float32Array(n), new Float32Array(n)], i;
+      for (i = 0; i < n; i++) { var r = d[i * 4], g = d[i * 4 + 1], b = d[i * 4 + 2]; ch[0][i] = 0.299 * r + 0.587 * g + 0.114 * b; ch[1][i] = (r - g) * 0.8; ch[2][i] = ((r + g) / 2 - b) * 0.8; }
+      ch = ch.map(function (c) { return mo(c, w, h, 1); });
+      var M = new Float32Array(n), GX = new Float32Array(n), GY = new Float32Array(n), x, y;
+      for (y = 1; y < h - 1; y++) for (x = 1; x < w - 1; x++) {
+        var p = y * w + x, best = 0, bx = 0, by = 0;
+        for (var k = 0; k < 3; k++) {
+          var c = ch[k];
+          var gx = (c[p - w + 1] + 2 * c[p + 1] + c[p + w + 1]) - (c[p - w - 1] + 2 * c[p - 1] + c[p + w - 1]);
+          var gy = (c[p + w - 1] + 2 * c[p + w] + c[p + w + 1]) - (c[p - w - 1] + 2 * c[p - w] + c[p - w + 1]);
+          var m = gx * gx + gy * gy; if (m > best) { best = m; bx = gx; by = gy; }
+        }
+        M[p] = Math.sqrt(best); GX[p] = bx; GY[p] = by;
+      }
+      // ngưỡng theo phân vị
+      var hs = new Uint32Array(1025), mx = 0; for (i = 0; i < n; i++) if (M[i] > mx) mx = M[i];
+      for (i = 0; i < n; i++) hs[Math.min(1024, Math.floor(M[i] / (mx || 1) * 1024))]++;
+      function pv(q) { var c = 0; for (var j = 0; j <= 1024; j++) { c += hs[j]; if (c >= q * n) return j / 1024 * mx; } return mx; }
+      var th = Math.max(pv(0.88), 20), E = new Uint8Array(n);
+      for (y = 1; y < h - 1; y++) for (x = 1; x < w - 1; x++) {   // lọc không cực đại theo hướng gradient
+        var p = y * w + x, m = M[p]; if (m < th) continue;
+        var ax = Math.abs(GX[p]), ay = Math.abs(GY[p]), a1, a2;
+        if (ay < ax * 0.414) { a1 = M[p - 1]; a2 = M[p + 1]; }
+        else if (ax < ay * 0.414) { a1 = M[p - w]; a2 = M[p + w]; }
+        else if (GX[p] * GY[p] > 0) { a1 = M[p - w - 1]; a2 = M[p + w + 1]; }
+        else { a1 = M[p - w + 1]; a2 = M[p + w - 1]; }
+        if (m >= a1 && m >= a2) E[p] = 1;
+      }
+      return E;
+    }
+    function gian(E, w, h, r) {   // nới cạnh r px (để chấm điểm)
+      var T = new Uint8Array(w * h), O = new Uint8Array(w * h), x, y, k;
+      for (y = 0; y < h; y++) for (x = 0; x < w; x++) if (E[y * w + x]) for (k = -r; k <= r; k++) { var xx = x + k; if (xx >= 0 && xx < w) T[y * w + xx] = 1; }
+      for (y = 0; y < h; y++) for (x = 0; x < w; x++) if (T[y * w + x]) for (k = -r; k <= r; k++) { var yy = y + k; if (yy >= 0 && yy < h) O[yy * w + x] = 1; }
+      return O;
+    }
+    // ---- Hough ----
+    function hough(E, w, h) {
+      var NT = 180, D = Math.ceil(Math.hypot(w, h)), NR = 2 * D + 1, A = new Uint32Array(NT * NR), cs = [], sn = [], t, x, y;
+      for (t = 0; t < NT; t++) { cs.push(Math.cos(t * Math.PI / NT)); sn.push(Math.sin(t * Math.PI / NT)); }
+      for (y = 0; y < h; y++) for (x = 0; x < w; x++) if (E[y * w + x]) for (t = 0; t < NT; t++) A[t * NR + Math.round(x * cs[t] + y * sn[t]) + D]++;
+      var pk = [], mn = Math.min(w, h) * 0.12;
+      for (t = 0; t < NT; t++) for (var r = 1; r < NR - 1; r++) {
+        var v = A[t * NR + r]; if (v < mn) continue;
+        var ok = true;
+        for (var dt = -3; dt <= 3 && ok; dt++) for (var dr = -4; dr <= 4; dr++) {
+          if (!dt && !dr) continue;
+          var tt = t + dt, rr = r + dr; if (tt < 0) { tt += NT; rr = NR - 1 - rr; } else if (tt >= NT) { tt -= NT; rr = NR - 1 - rr; }
+          if (rr < 0 || rr >= NR) continue;
+          var u = A[tt * NR + rr]; if (u > v || (u === v && (dt < 0 || (dt === 0 && dr < 0)))) { ok = false; break; }
+        }
+        if (ok) pk.push({ th: t * Math.PI / NT, r: r - D, v: v });
+      }
+      pk.sort(function (a, b) { return b.v - a.v; });
+      var out = [];
+      pk.forEach(function (p) { if (out.length < 40 && out.every(function (q) { return Math.abs(q.r - p.r) > 6 || Math.abs(Math.sin(q.th - p.th)) > 0.05; })) out.push(p); });
+      return out;
+    }
+    function giao(a, b) {
+      var c1 = Math.cos(a.th), s1 = Math.sin(a.th), c2 = Math.cos(b.th), s2 = Math.sin(b.th), dt = c1 * s2 - s1 * c2;
+      if (Math.abs(dt) < 1e-6) return null;
+      return [(a.r * s2 - s1 * b.r) / dt, (c1 * b.r - a.r * c2) / dt];
+    }
+    function xep(q) {   // 4 điểm theo chiều kim đồng hồ quanh tâm, bắt đầu điểm trên-trái
+      var cx = 0, cy = 0; q.forEach(function (p) { cx += p[0] / 4; cy += p[1] / 4; });
+      q = q.slice().sort(function (a, b) { return Math.atan2(a[1] - cy, a[0] - cx) - Math.atan2(b[1] - cy, b[0] - cx); });
+      var k = 0, m = 1e18; q.forEach(function (p, i) { if (p[0] + p[1] < m) { m = p[0] + p[1]; k = i; } });
+      return q.slice(k).concat(q.slice(0, k));
+    }
+    function dienTich(q) { var a = 0; for (var i = 0; i < 4; i++) { var p = q[i], r = q[(i + 1) % 4]; a += p[0] * r[1] - r[0] * p[1]; } return Math.abs(a) / 2; }
+    function loi(q) { var s = 0; for (var i = 0; i < 4; i++) { var a = q[i], b = q[(i + 1) % 4], c = q[(i + 2) % 4], z = (b[0] - a[0]) * (c[1] - b[1]) - (b[1] - a[1]) * (c[0] - b[0]); if (!s) s = Math.sign(z); else if (Math.sign(z) !== s) return false; } return true; }
+    function cham(q, G, w, h, long, bv) {
+      q = xep(q); if (!loi(q)) return null;
+      var dt = dienTich(q); if (dt < 0.08 * w * h) return null;
+      var d = []; for (var i = 0; i < 4; i++) d.push(Math.hypot(q[i][0] - q[(i + 1) % 4][0], q[i][1] - q[(i + 1) % 4][1]));
+      var r = (d[0] + d[2]) / Math.max(1, d[1] + d[3]), tl = Math.max(r, 1 / r);
+      if (tl < 1.3 || tl > 1.95) return null;
+      var ht = [];
+      for (i = 0; i < 4; i++) {
+        var a = q[i], b = q[(i + 1) % 4], s = 0;
+        for (var k = 0; k < 80; k++) {
+          var t = 0.03 + 0.94 * k / 79, x = Math.round(a[0] + (b[0] - a[0]) * t), y = Math.round(a[1] + (b[1] - a[1]) * t);
+          if (x < 2 || y < 2 || x >= w - 2 || y >= h - 2) s += bv || 0; else s += G[y * w + x] ? 1 : 0;   // sát mép ảnh: thẻ bị cắt khít
+        }
+        ht.push(s / 80);
+      }
+      var mn = Math.min.apply(null, ht), tb = (ht[0] + ht[1] + ht[2] + ht[3]) / 4;
+      if (mn < 0.3 && !long) return null;
+      return { q: q, diem: tb * Math.sqrt(dt / (w * h)) * (1 - 0.5 * Math.abs(tl - TL)), mn: mn, ht: ht };
+    }
+    // ---- tách thẻ theo màu (khác màu nền ở viền ảnh) -> hình chữ nhật nhỏ nhất bao vùng thẻ ----
+    function otsu(v, n) { var hs = new Float64Array(256), i, sum = 0; for (i = 0; i < n; i++) { hs[v[i]]++; sum += v[i]; } var sB = 0, wB = 0, best = 0, t = 128; for (i = 0; i < 256; i++) { wB += hs[i]; if (!wB) continue; var wF = n - wB; if (!wF) break; sB += i * hs[i]; var mB = sB / wB, mF = (sum - sB) / wF, b = wB * wF * (mB - mF) * (mB - mF); if (b > best) { best = b; t = i; } } return t; }
+    function hinhChuNhat(pts) {   // pts: điểm biên -> bao lồi -> hình chữ nhật diện tích nhỏ nhất
+      pts.sort(function (a, b) { return a[0] - b[0] || a[1] - b[1]; });
+      function cr(o, a, b) { return (a[0] - o[0]) * (b[1] - o[1]) - (a[1] - o[1]) * (b[0] - o[0]); }
+      var lo = [], up = [], i;
+      for (i = 0; i < pts.length; i++) { while (lo.length >= 2 && cr(lo[lo.length - 2], lo[lo.length - 1], pts[i]) <= 0) lo.pop(); lo.push(pts[i]); }
+      for (i = pts.length - 1; i >= 0; i--) { while (up.length >= 2 && cr(up[up.length - 2], up[up.length - 1], pts[i]) <= 0) up.pop(); up.push(pts[i]); }
+      var hu = lo.slice(0, -1).concat(up.slice(0, -1)), best = null;
+      for (i = 0; i < hu.length; i++) {
+        var a = hu[i], b = hu[(i + 1) % hu.length], L = Math.hypot(b[0] - a[0], b[1] - a[1]); if (L < 1e-6) continue;
+        var ux = (b[0] - a[0]) / L, uy = (b[1] - a[1]) / L, x0 = 1e9, x1 = -1e9, y0 = 1e9, y1 = -1e9;
+        hu.forEach(function (p) { var u = p[0] * ux + p[1] * uy, v = -p[0] * uy + p[1] * ux; if (u < x0) x0 = u; if (u > x1) x1 = u; if (v < y0) y0 = v; if (v > y1) y1 = v; });
+        var ar = (x1 - x0) * (y1 - y0);
+        if (!best || ar < best.ar) best = { ar: ar, q: [[x0, y0], [x1, y0], [x1, y1], [x0, y1]].map(function (p) { return [p[0] * ux - p[1] * uy, p[0] * uy + p[1] * ux]; }) };
+      }
+      var hA = 0; for (i = 0; i < hu.length; i++) hA += hu[i][0] * hu[(i + 1) % hu.length][1] - hu[(i + 1) % hu.length][0] * hu[i][1];
+      if (best) best.hull = Math.abs(hA) / 2;
+      return best;
+    }
+    function tachMau(I) {
+      var w = I.w, h = I.h, n = w * h, d = I.d, F = [new Float32Array(n), new Float32Array(n), new Float32Array(n)], i, x, y;
+      for (i = 0; i < n; i++) { var r = d[i * 4], g = d[i * 4 + 1], b = d[i * 4 + 2]; F[0][i] = (0.299 * r + 0.587 * g + 0.114 * b) * 0.6; F[1][i] = r - g; F[2][i] = (r + g) / 2 - b; }
+      F = F.map(function (c) { return mo(c, w, h, 2); });
+      var bw = Math.max(3, Math.round(Math.min(w, h) * 0.04)), vi = [[], [], []];
+      for (y = 0; y < h; y++) for (x = 0; x < w; x++) if (x < bw || y < bw || x >= w - bw || y >= h - bw) for (var k = 0; k < 3; k++) vi[k].push(F[k][y * w + x]);
+      var nen = vi.map(function (a) { a.sort(function (p, q) { return p - q; }); return a[a.length >> 1]; });
+      var out = [];
+      [[1, 1, 1], [0, 1, 1]].forEach(function (wt) {
+        var D = new Float32Array(n), mx = 0; for (i = 0; i < n; i++) { var s = 0; for (k = 0; k < 3; k++) { var e = F[k][i] - nen[k]; s += wt[k] * e * e; } D[i] = Math.sqrt(s); if (D[i] > mx) mx = D[i]; }
+        if (mx < 15) return;
+        var V = new Uint8Array(n); for (i = 0; i < n; i++) V[i] = Math.round(D[i] / mx * 255);
+        var t = otsu(V, n), M = new Uint8Array(n); for (i = 0; i < n; i++) M[i] = V[i] > t ? 1 : 0;
+        // tìm vùng liền lớn nhất
+        var lab = new Int32Array(n), st = [], bestN = 0, bestL = 0, L = 0;
+        for (i = 0; i < n; i++) if (M[i] && !lab[i]) {
+          L++; var cnt = 0; st.push(i); lab[i] = L;
+          while (st.length) { var p = st.pop(); cnt++; var px = p % w, py = (p - px) / w;
+            if (px > 0 && M[p - 1] && !lab[p - 1]) { lab[p - 1] = L; st.push(p - 1); } if (px < w - 1 && M[p + 1] && !lab[p + 1]) { lab[p + 1] = L; st.push(p + 1); }
+            if (py > 0 && M[p - w] && !lab[p - w]) { lab[p - w] = L; st.push(p - w); } if (py < h - 1 && M[p + w] && !lab[p + w]) { lab[p + w] = L; st.push(p + w); } }
+          if (cnt > bestN) { bestN = cnt; bestL = L; }
+        }
+        if (bestN < 0.06 * n || bestN > 0.95 * n) return;
+        var pts = [];
+        for (y = 0; y < h; y++) { var a = -1, b = -1; for (x = 0; x < w; x++) if (lab[y * w + x] === bestL) { if (a < 0) a = x; b = x; } if (a >= 0) { pts.push([a, y]); pts.push([b + 1, y]); } }
+        var R = hinhChuNhat(pts); if (!R) return;
+        var e1 = Math.hypot(R.q[1][0] - R.q[0][0], R.q[1][1] - R.q[0][1]), e2 = Math.hypot(R.q[2][0] - R.q[1][0], R.q[2][1] - R.q[1][1]), tl = Math.max(e1, e2) / Math.max(1, Math.min(e1, e2));
+        if (tl < 1.35 || tl > 1.85 || R.hull / R.ar < 0.84) return;
+        out.push({ q: R.q, fill: R.hull / R.ar });
+      });
+      return out;
+    }
+    function timThe(cv) {
+      var I = nho(cv, 520), w = I.w, h = I.h, E = canh(I), G = gian(E, w, h, 2), L = hough(E, w, h);
+      // thêm 4 mép ảnh làm đường ứng viên (ảnh Zalo thường đã cắt sát thẻ)
+      var ar = Math.max(w, h) / Math.min(w, h), khit = Math.abs(ar / TL - 1) < 0.1, bv = khit ? 0.6 : 0.15;   // ảnh có tỉ lệ thẻ: nhiều khả năng đã cắt sát
+      L = L.concat([{ th: 0, r: 0, v: 0, b: 1 }, { th: 0, r: w - 1, v: 0, b: 1 }, { th: Math.PI / 2, r: 0, v: 0, b: 1 }, { th: Math.PI / 2, r: h - 1, v: 0, b: 1 }]);
+      var ngang = L.filter(function (l) { return Math.abs(Math.sin(l.th)) > 0.7; }).slice(0, 18), doc = L.filter(function (l) { return Math.abs(Math.sin(l.th)) <= 0.7; }).slice(0, 18);
+      var bien = function (l) { return l.b; };
+      ngang = ngang.concat(L.filter(function (l) { return l.b && Math.abs(Math.sin(l.th)) > 0.7 && ngang.indexOf(l) < 0; }));
+      doc = doc.concat(L.filter(function (l) { return l.b && Math.abs(Math.sin(l.th)) <= 0.7 && doc.indexOf(l) < 0; }));
+      var ds = [], mnc = 0.2 * Math.min(w, h);
+      for (var i = 0; i < ngang.length; i++) for (var j = i + 1; j < ngang.length; j++) {
+        var a = ngang[i], b = ngang[j]; if (Math.abs(Math.sin(a.th - b.th)) > 0.25) continue;
+        for (var k = 0; k < doc.length; k++) for (var m = k + 1; m < doc.length; m++) {
+          var c = doc[k], e = doc[m]; if (Math.abs(Math.sin(c.th - e.th)) > 0.25) continue;
+          var p = [giao(a, c), giao(a, e), giao(b, e), giao(b, c)]; if (p.some(function (z) { return !z; })) continue;
+          if (p.some(function (z) { return z[0] < -0.05 * w || z[0] > 1.05 * w || z[1] < -0.05 * h || z[1] > 1.05 * h; })) continue;
+          var sc = cham(p, G, w, h, false, bv); if (sc) ds.push(sc);
+        }
+      }
+      ds.sort(function (a, b) { return b.diem - a.diem; });
+      // vùng thẻ tách theo màu rõ ràng (đặt trên bàn, sàn...): chọn khung cạnh khớp vùng đó, không có thì lấy chính vùng đó
+      var tm = tachMau(I).filter(function (r) { return r.fill >= 0.92; }).sort(function (a, b) { return b.fill - a.fill; })[0];
+      if (tm) {
+        var qm = xep(tm.q), dg = Math.hypot(w, h);
+        var khop = ds.filter(function (c) { return c.q.every(function (p, i) { return Math.min.apply(null, qm.map(function (z) { return Math.hypot(z[0] - p[0], z[1] - p[1]); })) < 0.05 * dg; }); });
+        if (khop.length) ds = khop.concat(ds.filter(function (c) { return khop.indexOf(c) < 0; }));
+        else { var sc = cham(qm, G, w, h, true, bv) || { q: qm, diem: 0.5 }; sc.mau = 1; ds.unshift(sc); }
+      }
+      var best = ds[0], s = I.s, nguon = 'canh';
+      if (!best || (khit && best.diem < 0.6 && !best.mau)) { nguon = 'ca anh'; best = { q: [[0, 0], [w - 1, 0], [w - 1, h - 1], [0, h - 1]] }; }
+      var q = best.q.map(function (p) { return [Math.min(w, Math.max(0, p[0])) / s, Math.min(h, Math.max(0, p[1])) / s]; });
+      return { q: xep(q), nguon: best.mau ? 'mau' : nguon, diem: best.diem || 0, ht: best.ht, nUv: ds.length };
+    }
+    // ---- nắn thẳng (phép chiếu phối cảnh) ----
+    function homo(src, dst) {   // ma trận 3x3 đưa src -> dst (giải 8 ẩn)
+      var A = [], B = [];
+      for (var i = 0; i < 4; i++) {
+        var x = src[i][0], y = src[i][1], u = dst[i][0], v = dst[i][1];
+        A.push([x, y, 1, 0, 0, 0, -u * x, -u * y]); B.push(u);
+        A.push([0, 0, 0, x, y, 1, -v * x, -v * y]); B.push(v);
+      }
+      for (var c = 0; c < 8; c++) {   // Gauss
+        var p = c; for (var r = c + 1; r < 8; r++) if (Math.abs(A[r][c]) > Math.abs(A[p][c])) p = r;
+        var t = A[c]; A[c] = A[p]; A[p] = t; t = B[c]; B[c] = B[p]; B[p] = t;
+        for (r = 0; r < 8; r++) if (r !== c) { var f = A[r][c] / A[c][c]; for (var k = c; k < 8; k++) A[r][k] -= f * A[c][k]; B[r] -= f * B[c]; }
+      }
+      var h = B.map(function (b, i) { return b / A[i][i]; }); h.push(1); return h;
+    }
+    function nan(cv, q, W, H) {   // q: 4 góc trên ảnh gốc theo thứ tự trên-trái, trên-phải, dưới-phải, dưới-trái
+      var sw = cv.width, sh = cv.height, sd = cv.getContext('2d').getImageData(0, 0, sw, sh).data;
+      var M = homo([[0, 0], [W, 0], [W, H], [0, H]], q), o = new ImageData(W, H), od = o.data;
+      for (var y = 0; y < H; y++) for (var x = 0; x < W; x++) {
+        var X = x + 0.5, Y = y + 0.5, z = M[6] * X + M[7] * Y + 1, u = (M[0] * X + M[1] * Y + M[2]) / z - 0.5, v = (M[3] * X + M[4] * Y + M[5]) / z - 0.5;
+        var x0 = Math.floor(u), y0 = Math.floor(v), fx = u - x0, fy = v - y0, di = (y * W + x) * 4;
+        if (x0 < 0) { x0 = 0; fx = 0; } if (y0 < 0) { y0 = 0; fy = 0; } if (x0 >= sw - 1) { x0 = sw - 2; fx = 1; } if (y0 >= sh - 1) { y0 = sh - 2; fy = 1; }
+        var i00 = (y0 * sw + x0) * 4, i10 = i00 + 4, i01 = i00 + sw * 4, i11 = i01 + 4;
+        for (var c = 0; c < 3; c++) od[di + c] = (sd[i00 + c] * (1 - fx) + sd[i10 + c] * fx) * (1 - fy) + (sd[i01 + c] * (1 - fx) + sd[i11 + c] * fx) * fy;
+        od[di + 3] = 255;
+      }
+      var c2 = document.createElement('canvas'); c2.width = W; c2.height = H; c2.getContext('2d').putImageData(o, 0, 0); return c2;
+    }
+    function xoay(cv, goc) {   // 90 | 180 | 270
+      var c = document.createElement('canvas'), x = c.getContext('2d');
+      c.width = goc === 180 ? cv.width : cv.height; c.height = goc === 180 ? cv.height : cv.width;
+      x.translate(c.width / 2, c.height / 2); x.rotate(goc * Math.PI / 180); x.drawImage(cv, -cv.width / 2, -cv.height / 2); return c;
+    }
+    // ---- mặt trước / mặt sau + chiều ----
+    function dacTrung(cv) {   // trên thẻ đã nắn (ngang): điểm "dòng mã" (MRZ) ở dải dưới / dải trên, điểm quốc huy (đỏ) góc trên-trái / dưới-phải
+      var W = 600, H = Math.round(W / TL), c = document.createElement('canvas'); c.width = W; c.height = H;
+      var x = c.getContext('2d'); x.drawImage(cv, 0, 0, W, H); var d = x.getImageData(0, 0, W, H).data;
+          function do_(x0, y0, x1, y1) { var s = 0, t = 0; for (var y = Math.round(y0 * H); y < y1 * H; y++) for (var xx = Math.round(x0 * W); xx < x1 * W; xx++) { var p = (y * W + xx) * 4, r = d[p], gg = d[p + 1], b = d[p + 2]; t++; if (r > 120 && r - gg > 50 && r - b > 50) s++; } return s / t; }
+      function den(x0, y0, x1, y1) { var s = 0, t = 0; for (var y = Math.round(y0 * H); y < y1 * H; y++) for (var xx = Math.round(x0 * W); xx < x1 * W; xx++) { var p = (y * W + xx) * 4; t++; if (d[p] + d[p + 1] + d[p + 2] < 240) s++; } return s / t; }
+      function vang(x0, y0, x1, y1) { var s = 0, t = 0; for (var y = Math.round(y0 * H); y < y1 * H; y++) for (var xx = Math.round(x0 * W); xx < x1 * W; xx++) { var p = (y * W + xx) * 4, r = d[p], gg = d[p + 1], b = d[p + 2]; t++; if (r > 120 && gg > 90 && r - b > 60 && gg - b > 35 && Math.abs(r - gg) < 70) s++; } return s / t; }
+      return { dTT: do_(0, 0, 0.25, 0.38), dDP: do_(0.75, 0.62, 1, 1), cT: vang(0.04, 0.28, 0.26, 0.68), cP: vang(0.74, 0.32, 0.96, 0.72), qT: den(0.7, 0.03, 0.97, 0.45), qD: den(0.03, 0.55, 0.3, 0.97) };
+    }
+    function phanLoai(cv) {   // -> { mat: 'sau'|'truoc', xoay: 0|180, chac: bool, f: đặc trưng }
+      // mặt trước: quốc huy đỏ ở góc trên-trái; mặt sau: chip vàng ở giữa bên trái (cả thẻ gắn chip 2021 và thẻ Căn cước 2024)
+      var f = dacTrung(cv), E = Math.max(f.dTT, f.dDP), C = Math.max(f.cT, f.cP);
+      if (E >= 0.03 && E > C) return { mat: 'truoc', xoay: f.dTT >= f.dDP ? 0 : 180, chac: Math.min(f.dTT, f.dDP) < E / 4, f: f };
+      if (C >= 0.02 && E < C) return { mat: 'sau', xoay: f.cT >= f.cP ? 0 : 180, chac: Math.min(f.cT, f.cP) < C / 3, f: f };
+      if (E < 0.01 && Math.abs(f.qT - f.qD) > 0.04) return { mat: 'sau', xoay: f.qT >= f.qD ? 0 : 180, chac: Math.max(f.qT, f.qD) > 3 * Math.min(f.qT, f.qD), f: f };   // thẻ 2024 chip bạc: mã QR ở góc trên-phải
+      return { mat: E > 0.01 ? 'truoc' : 'sau', xoay: 0, chac: false, ro: false, f: f };   // không nhận ra: để nguyên, đánh dấu xem lại
+    }
+    // ---- làm đẹp cho máy in laser: cân sáng (khử bóng nhẹ) + kéo giãn mức xám + làm nét nhẹ ----
+    function lamDep(cv) {
+      var W = cv.width, H = cv.height, x = cv.getContext('2d'), im = x.getImageData(0, 0, W, H), d = im.data, n = W * H, L = new Float32Array(n), i;
+      for (i = 0; i < n; i++) L[i] = 0.299 * d[i * 4] + 0.587 * d[i * 4 + 1] + 0.114 * d[i * 4 + 2];
+      var s = 8, w2 = Math.ceil(W / s), h2 = Math.ceil(H / s), Ls = new Float32Array(w2 * h2);
+      for (var y = 0; y < h2; y++) for (var xx = 0; xx < w2; xx++) Ls[y * w2 + xx] = L[Math.min(H - 1, y * s) * W + Math.min(W - 1, xx * s)];
+      var nen = mo(Ls, w2, h2, Math.round(Math.max(w2, h2) / 6)), arr = Array.prototype.slice.call(nen).sort(function (a, b) { return a - b; }), p90 = arr[Math.floor(arr.length * 0.9)];
+      var hs = new Uint32Array(256), K = new Float32Array(n);
+      for (y = 0; y < H; y++) for (xx = 0; xx < W; xx++) { var p = y * W + xx, k = 0.5 + 0.5 * p90 / Math.max(1, nen[Math.min(h2 - 1, (y / s) | 0) * w2 + Math.min(w2 - 1, (xx / s) | 0)]); K[p] = k; hs[Math.min(255, Math.max(0, Math.round(L[p] * k)))]++; }
+      var c = 0, lo = 0, hi = 255; for (i = 0; i < 256; i++) { c += hs[i]; if (c < n * 0.01) lo = i; if (c < n * 0.995) hi = i; }
+      var sc = 255 / Math.max(40, hi - lo);
+      for (i = 0; i < n; i++) for (var ch = 0; ch < 3; ch++) d[i * 4 + ch] = Math.max(0, Math.min(255, (d[i * 4 + ch] * K[i] - lo) * sc));
+      x.putImageData(im, 0, 0);
+      // làm nét nhẹ (unsharp trên độ sáng; không dùng ctx.filter vì Safari iPhone không hỗ trợ)
+      var im2 = x.getImageData(0, 0, W, H), e = im2.data, Y = new Float32Array(n);
+      for (i = 0; i < n; i++) Y[i] = 0.299 * e[i * 4] + 0.587 * e[i * 4 + 1] + 0.114 * e[i * 4 + 2];
+      var Yb = mo(Y, W, H, 1);
+      for (i = 0; i < n; i++) { var dl = 0.7 * (Y[i] - Yb[i]); for (ch = 0; ch < 3; ch++) e[i * 4 + ch] = Math.max(0, Math.min(255, e[i * 4 + ch] + dl)); }
+      x.putImageData(im2, 0, 0); return cv;
+    }
+    // ---- 1 ảnh -> 1 mặt thẻ ----
+    function xuLy(cv, q) {
+      var t = q ? { q: xep(q), nguon: 'tay' } : timThe(cv), g = t.q;
+      var d01 = Math.hypot(g[1][0] - g[0][0], g[1][1] - g[0][1]), d12 = Math.hypot(g[2][0] - g[1][0], g[2][1] - g[1][1]);
+      var gn = d01 >= d12 ? g : [g[3], g[0], g[1], g[2]];   // cạnh dài nằm ngang
+      var mat = nan(cv, gn, MW, MH), pl = phanLoai(mat);
+      if (pl.xoay) mat = xoay(mat, 180);
+      return { the: mat, q: g, tim: t, mat: pl.mat, chac: pl.chac, f: pl.f, ro: pl.ro !== false };
+    }
+    function ghep(truoc, sau) {
+      var c = document.createElement('canvas'); c.width = MW; c.height = MH * 2 + GAP;
+      var x = c.getContext('2d'); x.fillStyle = '#fff'; x.fillRect(0, 0, c.width, c.height);
+      [[truoc, 0], [sau, MH + GAP]].forEach(function (p) {
+        if (p[0]) x.drawImage(lamDep(copy(p[0])), 0, p[1], MW, MH);
+        else { x.strokeStyle = '#aaa'; x.setLineDash([15, 15]); x.lineWidth = 3; x.strokeRect(2, p[1] + 2, MW - 4, MH - 4); }
+      });
+      return c;
+    }
+    function copy(cv) { var c = document.createElement('canvas'); c.width = cv.width; c.height = cv.height; c.getContext('2d').drawImage(cv, 0, 0); return c; }
+    return { xep: xep, lamDep: lamDep, timThe: timThe, xuLy: xuLy, ghep: ghep, xoay: xoay, phanLoai: phanLoai, MW: MW, MH: MH, GAP: GAP };
+  })();
+  // ---------- 21/10: tab CCCD – chọn ảnh 2 mặt trong album -> tự cắt, nắn, ghép từng cặp -> in mỗi người 1 tờ A4 -> lưu thư mục CCCD trên Drive ----------
+  var CCS = { ds: [], tt: {}, jpg: {}, dang: null, doi: null, hang: [], chay: 0 }, ccId = 0;
+  function veCCCD() {
+    khung('In CCCD', 'Ghép 2 mặt · in A4 · lưu Drive', '', '<div id="ccThan" class="ccw"></div>');
+    ccVe();
+  }
+  function ccCap() {   // ghép cặp theo thứ tự ảnh đã chọn: mặt trước gặp mặt sau thì thành 1 người
+    var T = [], B = [], out = [];
+    CCS.ds.forEach(function (x) { (x.mat === 'truoc' ? T : B).push(x); if (T.length && B.length) out.push({ t: T.shift(), s: B.shift() }); });
+    T.forEach(function (x) { out.push({ t: x, s: null }); }); B.forEach(function (x) { out.push({ t: null, s: x }); });
+    out.forEach(function (p) { p.k = (p.t ? p.t.id + '.' + p.t.v : '-') + '|' + (p.s ? p.s.id + '.' + p.s.v : '-'); });
+    return out;
+  }
+  function ccMo(file) {   // mở ảnh (Safari tự xoay theo EXIF), thu về tối đa 2200 px
+    return new Promise(function (ok, hong) {
+      var u = URL.createObjectURL(file), im = new Image();
+      im.onload = function () {
+        var s = Math.min(1, 2200 / Math.max(im.naturalWidth, im.naturalHeight)), c = document.createElement('canvas');
+        c.width = Math.max(1, Math.round(im.naturalWidth * s)); c.height = Math.max(1, Math.round(im.naturalHeight * s));
+        c.getContext('2d').drawImage(im, 0, 0, c.width, c.height); URL.revokeObjectURL(u); ok(c);
+      };
+      im.onerror = function () { URL.revokeObjectURL(u); hong(new Error('Không mở được ảnh ' + (file.name || ''))); };
+      im.src = u;
+    });
+  }
+  function ccNho(cv, w) { var c = document.createElement('canvas'); c.width = w; c.height = Math.round(w * cv.height / cv.width); c.getContext('2d').drawImage(cv, 0, 0, c.width, c.height); return c.toDataURL('image/jpeg', 0.8); }
+  function ccDat(x, r) { x.the = r.the; x.mat = r.mat; x.ro = r.ro; x.q = r.q; x.v++; x.tb = ccNho(r.the, 420); }
+  function ccNap(files) {
+    files = [].slice.call(files || []).filter(function (f) { return !f.type || /^image\//.test(f.type); });
+    if (!files.length) return;
+    CCS.dang = { i: 0, n: files.length }; ccVe();
+    var loi = 0;
+    (function buoc(i) {
+      if (i >= files.length) { CCS.dang = null; ccVe(); if (loi) toastLoi(loi + ' ảnh không mở được.'); return; }
+      CCS.dang.i = i; ccVe();
+      setTimeout(function () {
+        ccMo(files[i]).then(function (cv) {
+          var x = { id: ++ccId, v: 0, file: files[i] }; ccDat(x, CC.xuLy(cv)); CCS.ds.push(x); buoc(i + 1);
+        }, function () { loi++; buoc(i + 1); });
+      }, 30);
+    })(0);
+  }
+  function ccJpg(p) {   // ảnh ghép 1 người (1400 px, dpi 277 = in đúng 1,5 lần thẻ thật như Tool_CCCD)
+    if (CCS.jpg[p.k]) return CCS.jpg[p.k];
+    var u = CC.ghep(p.t ? p.t.the : null, p.s ? p.s.the : null).toDataURL('image/jpeg', 0.9), b = atob(u.slice(23)), a = new Uint8Array(b.length), i;
+    for (i = 0; i < b.length; i++) a[i] = b.charCodeAt(i);
+    if (a[2] === 0xFF && a[3] === 0xE0 && a[6] === 0x4A && a[7] === 0x46) { a[13] = 1; a[14] = 1; a[15] = 21; a[16] = 1; a[17] = 21; }   // 277 dpi
+    var s = ''; for (i = 0; i < a.length; i += 8192) s += String.fromCharCode.apply(null, a.subarray(i, i + 8192));
+    return (CCS.jpg[p.k] = 'data:image/jpeg;base64,' + btoa(s));
+  }
+  function ccGan() { try { return JSON.parse(doc('vlta_cccd') || '[]'); } catch (e) { return []; } }
+  function ccVe() {
+    var t = document.getElementById('ccThan'); if (!t || S.tab !== 'cc') return;
+    var cap = ccCap(), gan = ccGan(), h = '';
+    if (CCS.dang) {
+      h += '<div class="card"><b>Đang cắt và ghép ảnh ' + (CCS.dang.i + 1) + '/' + CCS.dang.n + '…</b><div class="ccbar0"><i style="width:' + Math.round(100 * CCS.dang.i / CCS.dang.n) + '%"></i></div></div>';
+    } else if (!CCS.ds.length) {
+      h += '<div class="card cch">' + ICON.cc + '<b>In CCCD người mới</b><div class="meta">Chọn cùng lúc ảnh mặt trước và mặt sau của từng người trong album. App tự cắt sát viền, nắn thẳng, ghép 2 mặt, in mỗi người 1 tờ A4 rồi lưu vào thư mục CCCD trên Drive.</div>' +
+        '<button class="btn" id="ccChon">Chọn ảnh trong album</button></div>';
+    } else {
+      if (CCS.doi) h += '<div class="note warn ccdoi"><span>Chạm vào ảnh muốn đổi chỗ</span><button class="btn sm ghost" id="ccDoiThoi">Thôi</button></div>';
+      h += cap.map(function (p, n) {
+        var st = CCS.tt[p.k] || {}, du = p.t && p.s, ln = '';
+        if (!du) ln = '<div class="cct warn">' + (p.t ? 'Thiếu mặt sau' : 'Thiếu mặt trước') + ' – chọn thêm ảnh hoặc đổi mặt. Tờ in để trống, chưa lưu Drive.</div>';
+        else if (st.dang) ln = '<div class="cct">Đang đọc số và lưu Drive…</div>';
+        else if (st.ok) ln = '<div class="cct ok">✓ Đã lưu · ' + esc(st.duong) + '</div>';
+        else if (st.chuaSo) ln = '<div class="cct warn">Drive chưa đọc được số CCCD. Gõ số để lưu:</div><div class="row ccso"><input class="inp" inputmode="numeric" maxlength="12" placeholder="12 chữ số" data-k="' + esc(p.k) + '"><button class="btn sm" data-luu="' + esc(p.k) + '">Lưu</button></div>';
+        else if (st.loi) ln = '<div class="cct bad">' + esc(st.loi) + ' <a href="#" data-thu="' + esc(p.k) + '">Thử lại</a></div>';
+        else ln = '<div class="cct">Chưa lưu · tự lưu khi bấm In</div>';
+        var ten = st.ten ? hoaDau(st.ten) : 'Người ' + (n + 1);
+        function o(x, nh) {
+          if (!x) return '<div class="ccm trong"><span>' + nh + '</span></div>';
+          return '<button class="ccm' + (x.ro ? '' : ' xem') + (CCS.doi === x.id ? ' chon' : '') + '" data-id="' + x.id + '"><img src="' + x.tb + '" alt=""><span>' + nh + (x.ro ? '' : ' · xem lại') + '</span></button>';
+        }
+        return '<div class="card ccp"><div class="row sp"><b class="ell">' + esc(ten) + '</b>' + (st.so ? '<span class="meta num">' + esc(st.so) + '</span>' : '') + '</div>' +
+          '<div class="ccf">' + o(p.t, 'Mặt trước') + o(p.s, 'Mặt sau') + '</div>' + ln + '</div>';
+      }).join('');
+      h += '<div class="meta" style="text-align:center">Chạm ảnh để xoay, đổi mặt, cắt lại, đổi chỗ.</div>' +
+        '<div class="row ccnut"><button class="btn ghost" id="ccThem">Thêm ảnh</button><button class="btn" id="ccIn">In ' + cap.length + ' tờ</button></div>' +
+        '<div class="row" style="justify-content:center;gap:4px"><button class="btn lk" id="ccPdf">In bằng PDF</button><span class="meta">·</span><button class="btn lk" id="ccMoi">Làm lượt mới</button></div>';
+    }
+    if (gan.length && !CCS.dang) h += '<div class="grp"><div class="gh">Đã lưu gần đây · chạm để in lại</div>' + gan.slice(0, 12).map(function (g, i) {
+      return '<button class="it" data-g="' + i + '"><div style="min-width:0;flex:1"><div class="nm ell">' + esc(g.ten ? hoaDau(g.ten) : g.so) + '</div><div class="sub">' + esc(g.duong) + ' · ' + esc(g.luc) + '</div></div></button>';
+    }).join('') + '</div>';
+    h += '<input type="file" id="ccFile" accept="image/*" multiple hidden>';
+    t.innerHTML = h;
+    var fi = document.getElementById('ccFile');
+    fi.onchange = function () { var f = fi.files; ccNap(f); fi.value = ''; };
+    [['ccChon'], ['ccThem']].forEach(function (k) { var b = document.getElementById(k[0]); if (b) b.onclick = function () { fi.click(); }; });
+    var b;
+    if ((b = document.getElementById('ccDoiThoi'))) b.onclick = function () { CCS.doi = null; ccVe(); };
+    if ((b = document.getElementById('ccIn'))) b.onclick = function () { ccIn(false); };
+    if ((b = document.getElementById('ccPdf'))) b.onclick = function () { ccIn(true); };
+    if ((b = document.getElementById('ccMoi'))) b.onclick = ccMoi;
+    t.querySelectorAll('.ccm[data-id]').forEach(function (e) { e.onclick = function () { ccCham(Number(e.getAttribute('data-id'))); }; });
+    t.querySelectorAll('[data-luu]').forEach(function (e) {
+      e.onclick = function () {
+        var k = e.getAttribute('data-luu'), i = t.querySelector('input[data-k="' + k + '"]'), so = (i.value || '').replace(/\D/g, '');
+        if (so.length !== 12) { toast('Số CCCD phải đủ 12 chữ số.'); return; }
+        ccXep(k, so);
+      };
+    });
+    t.querySelectorAll('[data-thu]').forEach(function (e) { e.onclick = function (ev) { ev.preventDefault(); ccXep(e.getAttribute('data-thu')); }; });
+    t.querySelectorAll('[data-g]').forEach(function (e) { e.onclick = function () { ccInLai(gan[Number(e.getAttribute('data-g'))]); }; });
+  }
+  function ccMoi() {
+    var con = ccCap().filter(function (p) { var st = CCS.tt[p.k] || {}; return p.t && p.s && !st.ok; }).length;
+    function xoa() { CCS.ds = []; CCS.tt = {}; CCS.jpg = {}; CCS.doi = null; ccVe(); }
+    if (!con) { xoa(); return; }
+    var sh = moSheet('<h3>Làm lượt mới?</h3><div class="meta">Còn ' + con + ' người chưa lưu lên Drive. Ảnh gốc trong album vẫn còn.</div><button class="btn xn" id="ccX">Bỏ lượt này</button><button class="btn lk" id="ccK">Thôi</button>');
+    sh.querySelector('#ccX').onclick = function () { sh.remove(); xoa(); };
+    sh.querySelector('#ccK').onclick = function () { sh.remove(); };
+  }
+  function ccTim(id) { for (var i = 0; i < CCS.ds.length; i++) if (CCS.ds[i].id === id) return i; return -1; }
+  function ccCham(id) {
+    var i = ccTim(id), x = CCS.ds[i]; if (!x) return;
+    if (CCS.doi && CCS.doi !== id) { var j = ccTim(CCS.doi); if (j >= 0) { var y = CCS.ds[j]; CCS.ds[j] = x; CCS.ds[i] = y; } CCS.doi = null; ccVe(); return; }
+    if (CCS.doi === id) { CCS.doi = null; ccVe(); return; }
+    var sh = moSheet('<h3>' + (x.mat === 'truoc' ? 'Mặt trước' : 'Mặt sau') + '</h3><img class="ccxem" src="' + x.tb + '" alt="">' +
+      '<button class="btn ghost" data-a="xoay">Xoay ngược (lộn đầu)</button>' +
+      '<button class="btn ghost" data-a="mat">Đây là ' + (x.mat === 'truoc' ? 'mặt sau' : 'mặt trước') + '</button>' +
+      '<button class="btn ghost" data-a="khung">Chỉnh khung cắt</button>' +
+      '<button class="btn ghost" data-a="doi">Đổi chỗ với ảnh khác</button>' +
+      '<button class="btn ghost xoa" data-a="bo">Bỏ ảnh này</button><button class="btn lk" data-a="thoi">Thôi</button>');
+    sh.querySelectorAll('[data-a]').forEach(function (e) {
+      e.onclick = function () {
+        var a = e.getAttribute('data-a'); sh.remove();
+        if (a === 'xoay') { x.the = CC.xoay(x.the, 180); x.v++; x.ro = true; x.tb = ccNho(x.the, 420); }
+        else if (a === 'mat') { x.mat = x.mat === 'truoc' ? 'sau' : 'truoc'; x.v++; x.ro = true; }
+        else if (a === 'khung') { ccKhung(x); return; }
+        else if (a === 'doi') CCS.doi = x.id;
+        else if (a === 'bo') CCS.ds.splice(ccTim(x.id), 1);
+        ccVe();
+      };
+    });
+  }
+  function ccKhung(x) {   // kéo 4 góc vào 4 góc thẻ
+    ccMo(x.file).then(function (cv) {
+      var W = Math.min(440, window.innerWidth - 40), k = W / cv.width, H = Math.round(cv.height * k);
+      if (H > window.innerHeight * 0.55) { H = Math.round(window.innerHeight * 0.55); k = H / cv.height; W = Math.round(cv.width * k); }
+      var q = (x.q || [[0, 0], [cv.width, 0], [cv.width, cv.height], [0, cv.height]]).map(function (p) { return [p[0] * k, p[1] * k]; });
+      var sh = moSheet('<h3>Chỉnh khung cắt</h3><div class="meta">Kéo 4 chấm vào 4 góc thẻ.</div><div class="cck" style="width:' + W + 'px;height:' + H + 'px"><img src="' + cv.toDataURL('image/jpeg', 0.85) + '" alt=""><svg width="' + W + '" height="' + H + '"><polygon/></svg>' +
+        [0, 1, 2, 3].map(function (i) { return '<i data-g="' + i + '"></i>'; }).join('') + '</div>' +
+        '<div class="row"><button class="btn ghost" id="kCa">Cả ảnh</button><button class="btn" id="kOk">Xong</button></div><button class="btn lk" id="kThoi">Thôi</button>');
+      var box = sh.querySelector('.cck'), pg = sh.querySelector('polygon'), g = sh.querySelectorAll('.cck i');
+      function ve() { g.forEach(function (e, i) { e.style.left = q[i][0] + 'px'; e.style.top = q[i][1] + 'px'; }); pg.setAttribute('points', q.map(function (p) { return p.join(','); }).join(' ')); }
+      ve();
+      g.forEach(function (e, i) {
+        e.onpointerdown = function (ev) {
+          ev.preventDefault(); e.setPointerCapture(ev.pointerId); var r = box.getBoundingClientRect();
+          e.onpointermove = function (m) { q[i] = [Math.max(0, Math.min(W, m.clientX - r.left)), Math.max(0, Math.min(H, m.clientY - r.top))]; ve(); };
+          e.onpointerup = e.onpointercancel = function () { e.onpointermove = null; };
+        };
+      });
+      sh.querySelector('#kCa').onclick = function () { q = [[0, 0], [W, 0], [W, H], [0, H]]; ve(); };
+      sh.querySelector('#kThoi').onclick = function () { sh.remove(); };
+      sh.querySelector('#kOk').onclick = function () {
+        sh.remove();
+        var r = CC.xuLy(cv, q.map(function (p) { return [p[0] / k, p[1] / k]; })); r.ro = true;
+        ccDat(x, r); ccVe();
+      };
+    }, function (e) { toastLoi(e.message); });
+  }
+  // ---- in: mỗi người 1 tờ A4, mỗi mặt rộng 12,84 cm (1,5 lần thẻ thật) ----
+  function ccIn(pdf) {
+    var cap = ccCap(); if (!cap.length) return;
+    toast('Đang chuẩn bị ' + cap.length + ' tờ…');
+    setTimeout(function () {
+      var urls = cap.map(ccJpg);
+      if (pdf) ccPdfMo(urls); else ccTrang(urls);
+      cap.forEach(function (p) { if (p.t && p.s && !(CCS.tt[p.k] || {}).ok && !(CCS.tt[p.k] || {}).dang) ccXep(p.k); });
+    }, 60);
+  }
+  function ccTrang(urls) {
+    var d = document.getElementById('inCC');
+    if (!d) { d = document.createElement('div'); d.id = 'inCC'; document.body.appendChild(d); }
+    d.innerHTML = urls.map(function (u) { return '<div class="inTr"><img src="' + u + '" alt=""></div>'; }).join('');
+    var ims = [].slice.call(d.querySelectorAll('img'));
+    Promise.all(ims.map(function (im) { return im.decode ? im.decode().catch(function () { }) : null; })).then(function () {
+      var mo = false;
+      function truoc() { mo = true; }
+      function sau() { document.body.classList.remove('dangIn'); window.removeEventListener('beforeprint', truoc); window.removeEventListener('afterprint', sau); }
+      window.addEventListener('beforeprint', truoc); window.addEventListener('afterprint', sau);
+      document.body.classList.add('dangIn');
+      try { window.print(); } catch (e) { }
+      setTimeout(function () {
+        if (mo) return;
+        sau();   // máy không mở hộp in (app cài trên màn hình chính): in qua PDF
+        var sh = moSheet('<h3>In bằng PDF</h3><div class="meta">Máy chưa mở hộp in. Bấm nút dưới, chọn <b>In</b> rồi chọn máy in Brother.</div><button class="btn" id="ccP">Mở PDF để in</button><button class="btn lk" id="ccPk">Thôi</button>');
+        sh.querySelector('#ccP').onclick = function () { sh.remove(); ccPdfMo(urls); };
+        sh.querySelector('#ccPk').onclick = function () { sh.remove(); };
+      }, 1500);
+    });
+  }
+  function ccPdf(ds) {   // ds: [{b: Uint8Array JPEG, w, h}] -> PDF A4, mỗi ảnh 1 trang, rộng 128,4 mm, cách mép trên 20 mm
+    var enc = new TextEncoder(), parts = [], off = [], len = 0, n = 2 + ds.length * 3;
+    function them(x) { var b = typeof x === 'string' ? enc.encode(x) : x; parts.push(b); len += b.length; }
+    function obj(i, s) { off[i] = len; them(i + ' 0 obj\n' + s + '\nendobj\n'); }
+    them('%PDF-1.4\n%\xC2\xB5\xC2\xB6\n');
+    obj(1, '<< /Type /Catalog /Pages 2 0 R >>');
+    obj(2, '<< /Type /Pages /Count ' + ds.length + ' /Kids [' + ds.map(function (x, i) { return (3 + i * 3) + ' 0 R'; }).join(' ') + '] >>');
+    ds.forEach(function (x, i) {
+      var p = 3 + i * 3, W = 128.4 * 72 / 25.4, H = W * x.h / x.w, X = (595.28 - W) / 2, Y = 841.89 - 20 * 72 / 25.4 - H;
+      if (Y < 20) { H = 841.89 - 40; W = H * x.w / x.h; X = (595.28 - W) / 2; Y = 20; }
+      obj(p, '<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595.28 841.89] /Resources << /XObject << /I0 ' + (p + 2) + ' 0 R >> >> /Contents ' + (p + 1) + ' 0 R >>');
+      var c = 'q ' + W.toFixed(2) + ' 0 0 ' + H.toFixed(2) + ' ' + X.toFixed(2) + ' ' + Y.toFixed(2) + ' cm /I0 Do Q';
+      obj(p + 1, '<< /Length ' + c.length + ' >>\nstream\n' + c + '\nendstream');
+      off[p + 2] = len; them((p + 2) + ' 0 obj\n<< /Type /XObject /Subtype /Image /Width ' + x.w + ' /Height ' + x.h + ' /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length ' + x.b.length + ' >>\nstream\n');
+      them(x.b); them('\nendstream\nendobj\n');
+    });
+    var xr = len, s = 'xref\n0 ' + (n + 1) + '\n0000000000 65535 f \n';
+    for (var i = 1; i <= n; i++) s += String(off[i]).padStart(10, '0') + ' 00000 n \n';
+    them(s + 'trailer\n<< /Size ' + (n + 1) + ' /Root 1 0 R >>\nstartxref\n' + xr + '\n%%EOF');
+    return new Blob(parts, { type: 'application/pdf' });
+  }
+  function ccPdfMo(urls) {
+    Promise.all(urls.map(function (u) {
+      return new Promise(function (ok) {
+        var im = new Image(); im.onload = function () {
+          var b = atob(u.split(',')[1]), a = new Uint8Array(b.length); for (var i = 0; i < b.length; i++) a[i] = b.charCodeAt(i);
+          ok({ b: a, w: im.naturalWidth, h: im.naturalHeight });
+        }; im.src = u;
+      });
+    })).then(function (ds) {
+      var bl = ccPdf(ds), ten = 'CCCD_' + new Date().toISOString().slice(0, 10) + '.pdf', f = null;
+      try { f = new File([bl], ten, { type: 'application/pdf' }); } catch (e) { }
+      if (f && navigator.canShare && navigator.canShare({ files: [f] })) { navigator.share({ files: [f], title: ten }).catch(function () { }); return; }
+      var u = URL.createObjectURL(bl), a = document.createElement('a'); a.href = u; a.target = '_blank'; a.download = ten; document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(function () { URL.revokeObjectURL(u); }, 60000);
+    });
+  }
+  // ---- lưu Drive: lần lượt từng người (máy chủ đọc số bằng Drive rồi xếp vào NAM|NỮ/<khoảng năm sinh>) ----
+  function ccXep(k, so) { CCS.hang = CCS.hang.filter(function (h) { return h.k !== k; }); CCS.hang.push({ k: k, so: so }); CCS.tt[k] = { dang: 1 }; ccVe(); ccChay(); }
+  function ccChay() {
+    if (CCS.chay || !CCS.hang.length) return;
+    var h = CCS.hang.shift(), p = ccCap().filter(function (x) { return x.k === h.k; })[0];
+    if (!p || !p.t || !p.s) { delete CCS.tt[h.k]; ccChay(); return; }
+    CCS.chay = 1;
+    apiT({ v: 'cccdLuu', anh: ccJpg(p), so: h.so || '', lang: 1 }).then(function (o) {
+      CCS.chay = 0;
+      if (o.loi) CCS.tt[h.k] = { loi: o.loi };
+      else if (o.chuaSo) CCS.tt[h.k] = { chuaSo: 1, ten: o.ten };
+      else {
+        CCS.tt[h.k] = { ok: 1, so: o.so, ten: o.ten, duong: o.duong };
+        var g = ccGan().filter(function (x) { return x.so !== o.so; }), d = new Date();
+        g.unshift({ so: o.so, ten: o.ten, duong: o.duong, id: o.id, luc: ('0' + d.getDate()).slice(-2) + '/' + ('0' + (d.getMonth() + 1)).slice(-2) + ' ' + ('0' + d.getHours()).slice(-2) + ':' + ('0' + d.getMinutes()).slice(-2) });
+        luu('vlta_cccd', JSON.stringify(g.slice(0, 30)));
+      }
+      ccVe(); ccChay();
+    }, function (e) { CCS.chay = 0; CCS.tt[h.k] = { loi: e.message }; ccVe(); ccChay(); });
+  }
+  function ccInLai(g) {
+    toast('Đang lấy ảnh ' + (g.ten ? hoaDau(g.ten) : g.so) + '…');
+    apiT({ v: 'cccdAnh', id: g.id, so: g.so }).then(function (o) { if (o.loi) { toastLoi(o.loi); return; } ccTrang([o.anh]); }, function (e) { toastLoi(e.message); });
+  }
   var BAN_MOI = [
+    { so: 49, ds: [['Thêm trang CCCD ở thanh dưới: chọn ảnh mặt trước và mặt sau trong album, app tự cắt, ghép và in mỗi người 1 tờ A4.'], ['Ảnh ghép tự lưu vào thư mục CCCD trên Drive, đúng giới tính và năm sinh.'], ['Ảnh nào app nhận nhầm mặt hoặc lộn đầu thì chạm vào ảnh để sửa.']] },
     { so: 46, ds: [['Phiếu lương BEST mở nhanh hơn.'], ['Ghi 2 khoản thu chi liền nhau: số dư tạm vẫn đúng.', 'chu,ketoan']] },
     { so: 45, ds: [['Sửa lỗi bấm làm mới đôi khi không ăn.'], ['Đầu tháng chưa chấm công: không dồn hết vào Nghỉ.']] },
     { so: 44, ds: [['Thu chi: số dư tính lại khác số tạm thì app nhắc.', 'chu,ketoan']] },
