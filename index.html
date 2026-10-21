@@ -13,7 +13,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
 <script src="config.js"></script>
-<script>window.PB = { so: 35, luc: "21/10 15:20" };</script>
+<script>window.PB = { so: 36, luc: "21/10 16:00" };</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap">
 <style>
@@ -1448,7 +1448,7 @@ textarea.inp{font-family:inherit}
   function choGuiApp(o) {   // vừa sao chép / gửi ảnh phiếu
     var h = S.hs; if (!h || !h.p || !h.p.r) return;
     var thang = h.kieu === 'THANG', p = h.p, cty = S.cty;
-    var q = { v: 'choGui', cty: cty, r: p.r, tuan: thang ? 'Phiếu tháng' : 'Tuần ' + String(o.tuanTxt || '').replace(/\/\d{4}$/, ''), so: Math.round(Number(o.conNhan) || 0), khoaTuan: thang ? 'THANG' : String(o.mon || o.tuanTxt || '') };
+    var q = { v: 'choGui', cty: cty, r: p.r, tuan: thang ? 'Phiếu tháng' : 'Tuần ' + String(o.tuanTxt || '').replace(/\/\d{4}$/, ''), so: Math.round(Number(o.conNhan) || 0), daCk: Math.round(Number(o.daCk) || 0), khoaTuan: thang ? 'THANG' : String(o.mon || o.tuanTxt || '') };
     apiT(q).then(function (k) {
       if (k.loi) { toastLoi('Chưa đưa được vào danh sách chờ: ' + k.loi); return; }
       if (k.khong) { toast(k.ly); return; }   // phiếu không còn tiền phải chuyển
