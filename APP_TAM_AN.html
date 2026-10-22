@@ -695,7 +695,7 @@ textarea.inp{font-family:inherit}
 .cck i{position:absolute;width:30px;height:30px;margin:-15px 0 0 -15px;border-radius:50%;background:rgba(47,107,255,.25);border:3px solid #2F6BFF;touch-action:none}
 #inCC{display:none}
 @media print{@page{size:A4 portrait;margin:0}html,body{background:#fff!important}body.dangIn>*:not(#inCC){display:none!important}body.dangIn #inCC{display:block!important}
-.inTr{width:210mm;height:296mm;box-sizing:border-box;padding-top:20mm;display:flex;justify-content:center;align-items:flex-start;break-after:page;page-break-after:always}.inTr:last-child{break-after:auto;page-break-after:auto}.inTr img{width:128.4mm;height:auto;max-height:256mm}.inTr.the{padding-top:30.5mm}.inTr.the img{width:170mm;max-height:none}}
+.inTr{width:100%;box-sizing:border-box;padding-top:65.7mm;display:flex;justify-content:center;align-items:flex-start;break-after:page;page-break-after:always}html.ios .inTr{padding-top:42mm}.inTr:last-child{break-after:auto;page-break-after:auto}.inTr img{width:128.4mm;height:auto;max-height:256mm}.inTr.the,html.ios .inTr.the{padding-top:30.5mm}.inTr.the img{width:170mm;max-height:none}}
 </style>
 </head>
 <body>
@@ -704,6 +704,8 @@ textarea.inp{font-family:inherit}
 (function () {
   'use strict';
   var S = { t: null, toi: null, cty: null, data: {}, loc: 'all', q: '', hs: null, tqNhom: null };
+  // 22/10: Safari iPhone in có lề đầu/chân trang (~17 mm) và phóng ~5%: lớp ios để căn CCCD giữa tờ
+  if (/iPhone|iPad|iPod/.test(navigator.userAgent) || (/Macintosh/.test(navigator.userAgent) && navigator.maxTouchPoints > 1)) document.documentElement.classList.add('ios');
   var $app = document.getElementById('app');
 
   // ---------- tiện ích ----------
@@ -2522,7 +2524,7 @@ textarea.inp{font-family:inherit}
     })();
   }
   function ccKhoKhoa(ds) { var o = CCS.chinh || {}; return 'kho#' + ds.map(function (g) { return g.id || g.so; }).join(',') + '#' + o.sang + ',' + o.tp + ',' + o.net; }
-  function ccPdf(ds, bo) {   // bo: { rong, tren } mm (mặc định 128,4 / 20 như bản in CCCD)   // ds: [{b: Uint8Array JPEG, w, h}] -> PDF A4, mỗi ảnh 1 trang, rộng 128,4 mm, cách mép trên 20 mm
+  function ccPdf(ds, bo) {   // bo: { rong, tren } mm (mặc định rộng 128,4, đặt giữa tờ)   // ds: [{b: Uint8Array JPEG, w, h}] -> PDF A4, mỗi ảnh 1 trang, rộng 128,4 mm, cách mép trên 20 mm
     var enc = new TextEncoder(), parts = [], off = [], len = 0, n = 2 + ds.length * 3;
     function them(x) { var b = typeof x === 'string' ? enc.encode(x) : x; parts.push(b); len += b.length; }
     function obj(i, s) { off[i] = len; them(i + ' 0 obj\n' + s + '\nendobj\n'); }
@@ -2530,7 +2532,7 @@ textarea.inp{font-family:inherit}
     obj(1, '<< /Type /Catalog /Pages 2 0 R >>');
     obj(2, '<< /Type /Pages /Count ' + ds.length + ' /Kids [' + ds.map(function (x, i) { return (3 + i * 3) + ' 0 R'; }).join(' ') + '] >>');
     ds.forEach(function (x, i) {
-      var p = 3 + i * 3, W = ((bo && bo.rong) || 128.4) * 72 / 25.4, H = W * x.h / x.w, X = (595.28 - W) / 2, Y = 841.89 - ((bo && bo.tren) || 20) * 72 / 25.4 - H;
+      var p = 3 + i * 3, W = ((bo && bo.rong) || 128.4) * 72 / 25.4, H = W * x.h / x.w, X = (595.28 - W) / 2, Y = bo && bo.tren ? 841.89 - bo.tren * 72 / 25.4 - H : (841.89 - H) / 2;   // CCCD: giữa tờ
       if (Y < 20) { H = 841.89 - 40; W = H * x.w / x.h; X = (595.28 - W) / 2; Y = 20; }
       obj(p, '<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595.28 841.89] /Resources << /XObject << /I0 ' + (p + 2) + ' 0 R >> >> /Contents ' + (p + 1) + ' 0 R >>');
       var c = 'q ' + W.toFixed(2) + ' 0 0 ' + H.toFixed(2) + ' ' + X.toFixed(2) + ' ' + Y.toFixed(2) + ' cm /I0 Do Q';
@@ -2999,6 +3001,7 @@ textarea.inp{font-family:inherit}
   }
   function ccCheNoi(t) { t.querySelectorAll('[data-che]').forEach(function (b) { b.onclick = function () { CCS.theMo = b.getAttribute('data-che') === '1'; var lg = theLogoNap(); if (!lg.complete) lg.onload = function () { ccVe(); }; ccVe(); window.scrollTo(0, 0); }; }); }
   var BAN_MOI = [
+    { so: 63, ds: [['In CCCD: mỗi người đúng 1 tờ A4 (hết trang trắng thừa), CCCD nằm giữa tờ giấy. PDF chia sẻ cũng đặt CCCD giữa tờ.']] },
     { so: 62, ds: [['In CCCD: bấm In là mở hộp in ngay, Safari không còn hỏi "chặn tự động in" và không in nhầm ra màn hình app. Nếu ảnh chưa chuẩn bị xong, app hiện nút "In N tờ" để bấm thêm 1 lần.'], ['Ghép tay: ô trống "+ Mặt sau / + Mặt trước" chạm vào để chọn đúng ảnh (ảnh lẻ trong lượt hoặc ảnh khác trong album); nút "Tách 2 ảnh" khi app ghép nhầm người; ảnh "xem lại" có nút đổi mặt ngay bên dưới.'], ['Cắt ảnh tốt hơn với thẻ đặt trên vải trắng / nền sáng và thẻ nhỏ trên chiếu có sọc chéo; ảnh mặt sau bị cắt mất chữ IDVNM vẫn đọc ra số để ghép đúng người.']] },
     { so: 61, ds: [['Phiếu lương tuần (HOJEONG, BEST) trình bày lại cho công nhân dễ hiểu: Tổng được hưởng → Đã nhận (mỗi lần ứng/trả ghi rõ ngày) → CÒN ĐƯỢC NHẬN. Số to trên phiếu giờ luôn là số còn phải trả thật.'], ['Tuần chưa hết: phiếu ghi "Tạm tính đến ngày …", ngày chưa tới để trống (không ghi Nghỉ), chuyên cần ghi "đang tính".']] },
     { so: 60, ds: [['Sửa lỗi bấm Cập nhật ngay đôi khi bị treo, nút mờ đi: giờ chậm nhất khoảng 10 giây app tự mở bản mới; mạng chậm thì nút sáng lại thành Thử lại.']] },
