@@ -2875,6 +2875,7 @@ textarea.inp{font-family:inherit}
   }
   function ccCheNoi(t) { t.querySelectorAll('[data-che]').forEach(function (b) { b.onclick = function () { CCS.theMo = b.getAttribute('data-che') === '1'; var lg = theLogoNap(); if (!lg.complete) lg.onload = function () { ccVe(); }; ccVe(); window.scrollTo(0, 0); }; }); }
   var BAN_MOI = [
+    { so: 61, ds: [['Phiếu lương tuần (HOJEONG, BEST) trình bày lại cho công nhân dễ hiểu: Tổng được hưởng → Đã nhận (mỗi lần ứng/trả ghi rõ ngày) → CÒN ĐƯỢC NHẬN. Số to trên phiếu giờ luôn là số còn phải trả thật.'], ['Tuần chưa hết: phiếu ghi "Tạm tính đến ngày …", ngày chưa tới để trống (không ghi Nghỉ), chuyên cần ghi "đang tính".']] },
     { so: 60, ds: [['Sửa lỗi bấm Cập nhật ngay đôi khi bị treo, nút mờ đi: giờ chậm nhất khoảng 10 giây app tự mở bản mới; mạng chậm thì nút sáng lại thành Thử lại.']] },
     { so: 59, ds: [['Đã lưu gần đây và ảnh trong kho: khi xem to có nút Làm thẻ HOJEONG; trong Tìm trong kho có nút Làm thẻ cho những người đang chọn. App tự lấy mặt trước, cắt ảnh chân dung, điền họ tên.'], ['Sửa lỗi cả app: khi bảng chọn hoặc popup đang mở, vuốt không còn kéo trôi trang bên dưới.']] },
     { so: 58, ds: [['Thẻ HOJEONG: khi bấm Thêm người hoặc Chọn ảnh khác mà chọn trúng ảnh mặt trước CCCD, app tự nắn thẳng, cắt đúng phần chân dung và điền họ tên.'], ['Chọn trúng ảnh mặt sau CCCD thì app báo, không dán cả tấm thẻ vào khung ảnh.']] },
