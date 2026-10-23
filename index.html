@@ -13,7 +13,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
 <script src="config.js"></script>
-<script>window.PB = { so: 66, luc: "23/10 09:45" };</script>
+<script>window.PB = { so: 67, luc: "23/10 09:49" };</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap">
 <style>
@@ -2149,6 +2149,44 @@ textarea.inp{font-family:inherit}
       return cv;
     }
     // ---- 1 ảnh -> 1 mặt thẻ ----
+    // 23/10: không cắt lẹm vào thẻ. Thẻ CCCD luôn có lề trống sát 4 mép; mép khung nào còn dính nét đen (chữ, vân tay, QR)
+    // thì nới mép đó ra ngoài từng 0,25 % tới khi gặp lề trống (tối đa 8 %). Nét = điểm đen/xám đậm (con dấu đỏ, hoa văn, nền màu không tính).
+    function moRong(g, f) {   // g: [trên-trái, trên-phải, dưới-phải, dưới-trái]; f: [trên, phải, dưới, trái]
+      var P = g.map(function (p) { return p.slice(); });
+      function day(i, a, b, k) { P[i][0] += k * (g[a][0] - g[b][0]); P[i][1] += k * (g[a][1] - g[b][1]); }
+      day(0, 0, 3, f[0]); day(1, 1, 2, f[0]); day(1, 1, 0, f[1]); day(2, 2, 3, f[1]);
+      day(2, 2, 1, f[2]); day(3, 3, 0, f[2]); day(3, 3, 2, f[3]); day(0, 0, 1, f[3]);
+      return P;
+    }
+    function noiLe(cv, g) {
+      var E = 0.08, Wc = 600, Hc = Math.round(Wc / TL), ox = Math.round(Wc * E), oy = Math.round(Hc * E), W = Wc + 2 * ox, H = Hc + 2 * oy;
+      var c = nan(cv, moRong(g, [E, E, E, E]), W, H), d = c.getContext('2d').getImageData(0, 0, W, H).data;
+      function den(p) { var r = d[p], gg = d[p + 1], b = d[p + 2], mx = Math.max(r, gg, b), mn = Math.min(r, gg, b); return 0.299 * r + 0.587 * gg + 0.114 * b < 100 && mx - mn < 45; }
+      function dai(x0, y0, x1, y1) {   // tỉ lệ điểm nét trong hình chữ nhật [x0,x1) × [y0,y1)
+        var n = 0, k = 0; for (var y = Math.max(0, y0); y < Math.min(H, y1); y++) for (var x = Math.max(0, x0); x < Math.min(W, x1); x++) { n++; if (den((y * W + x) * 4)) k++; }
+        return n ? k / n : 0;
+      }
+      var f = [0, 0, 0, 0], bdY = Math.max(2, Math.round(Hc * 0.01)), bdX = Math.max(2, Math.round(Wc * 0.01)), bX = Math.round(Wc * 0.03), bY = Math.round(Hc * 0.03);
+      var bang = [   // mỗi mép: dải nét sát mép (bên trong) khi mép lùi ra k bước
+        function (k) { var y = oy - k; return dai(ox + bX, y, ox + Wc - bX, y + bdY); },
+        function (k) { var x = ox + Wc + k; return dai(x - bdX, oy + bY, x, oy + Hc - bY); },
+        function (k) { var y = oy + Hc + k; return dai(ox + bX, y - bdY, ox + Wc - bX, y); },
+        function (k) { var x = ox - k; return dai(x, oy + bY, x + bdX, oy + Hc - bY); }
+      ];
+      for (var m = 0; m < 4; m++) {
+        var dim = m % 2 ? Wc : Hc, buoc = Math.max(1, Math.round(dim * 0.0025)), toi = Math.round(dim * E), v0 = bang[m](0);
+        if (v0 <= 0.01) continue;   // mép đã nằm trên lề trống
+        for (var k = buoc; k <= toi; k += buoc) {
+          var v = bang[m](k);
+          if (v >= 0.5) break;   // gặp nền tối kín (bàn đen…): dừng, không nới
+          if (v <= 0.01) { f[m] = k / dim; break; }
+        }
+      }
+      if (!f[0] && !f[1] && !f[2] && !f[3]) return g;
+      var w = cv.width, h = cv.height, P = moRong(g, f);
+      for (var lan = 0; lan < 8 && P.some(function (p) { return p[0] < -0.01 * w || p[0] > 1.01 * w || p[1] < -0.01 * h || p[1] > 1.01 * h; }); lan++) { f = f.map(function (x) { return x * 0.7; }); P = moRong(g, f); }   // không nới ra ngoài ảnh
+      return P;
+    }
     function xuLy(cv, q) {
       var t = q ? { q: xep(q), nguon: 'tay' } : timThe(cv);
       if (!q) {
@@ -2159,6 +2197,7 @@ textarea.inp{font-family:inherit}
       var g = t.q;
       var d01 = Math.hypot(g[1][0] - g[0][0], g[1][1] - g[0][1]), d12 = Math.hypot(g[2][0] - g[1][0], g[2][1] - g[1][1]);
       var gn = d01 >= d12 ? g : [g[3], g[0], g[1], g[2]];   // cạnh dài nằm ngang
+      if (!q && t.nguon !== 'ca anh') { gn = noiLe(cv, gn); g = gn; }   // 23/10: không cắt lẹm vào thẻ
       var mat = nan(cv, gn, MW, MH), pl = phanLoai(mat);
       if (pl.xoay) mat = xoay(mat, 180);
       return { the: mat, q: g, tim: t, mat: pl.mat, chac: pl.chac, f: pl.f, ro: pl.ro !== false };
@@ -3201,6 +3240,7 @@ textarea.inp{font-family:inherit}
   }
   function ccCheNoi(t) { t.querySelectorAll('[data-che]').forEach(function (b) { b.onclick = function () { CCS.theMo = b.getAttribute('data-che') === '1'; var lg = theLogoNap(); if (!lg.complete) lg.onload = function () { ccVe(); }; ccVe(); window.scrollTo(0, 0); }; }); }
   var BAN_MOI = [
+    { so: 67, ds: [['CCCD: không còn cắt lẹm vào thẻ – mép nào sát mép ảnh còn dính chữ, vân tay, mã QR thì app tự nới ra tới phần lề trống của thẻ.']] },
     { so: 66, ds: [['Số dư quỹ (Thu chi, Tổng quan): lương công nhân dù Hòa hay Long đi trả đều trừ vào quỹ. Cột Người trả chỉ để biết ai đi trả hôm đó; bỏ dòng "Sale trả hộ, chưa hoàn" và "Hoàn tiền sale trả hộ".', 'chu,ketoan']] },
     { so: 65, ds: [['CCCD: thẻ chụp nhỏ trên nền nhiều màu, nhiều sọc (chiếu cói, vải hoa) giờ tự cắt đúng thẻ, không còn để nguyên cả ảnh.']] },
     { so: 64, ds: [['CCCD: nút mới "Lưu kho" – lưu những người đã ghép đúng vào thư mục năm sinh mà không cần in.'], ['CCCD: xử lý ảnh chờ trong thư mục CCCD TẠM – app tải ảnh về, cắt ghép; bấm Lưu kho là vào đúng thư mục năm sinh, ảnh gốc chuyển sang CCCD TẠM/ĐÃ XỬ LÝ (không xoá).'], ['Mặt sau chụp từ VNeID (không có dòng mã ở dưới): app đọc mã QR để biết là của ai; QR mờ thì ghép theo ngày hết hạn trùng ngày sinh.'], ['Cặp ảnh chưa chắc cùng 1 người có nút "Đúng người"; chưa bấm thì Lưu kho bỏ qua cặp đó.']] },
