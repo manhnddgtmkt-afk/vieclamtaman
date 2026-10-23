@@ -13,7 +13,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
 <script src="config.js"></script>
-<script>window.PB = { so: 63, luc: "22/10 22:58" };</script>
+<script>window.PB = { so: 64, luc: "23/10 09:06" };</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap">
 <style>
@@ -668,7 +668,7 @@ textarea.inp{font-family:inherit}
 .thx{border:1px dashed var(--edge);font-size:11px;color:var(--muted);padding:0}
 .thf{display:flex;flex-direction:column;gap:8px}.thf .inp{margin:0}.thf .seg button{padding:7px 4px;font-size:13.5px}
 .thv{width:100%;max-width:420px;align-self:center;border-radius:6px;box-shadow:0 1px 4px rgba(0,0,0,.15)}
-.ccday .ccgui{flex:none;width:48px;padding:0;display:flex;align-items:center;justify-content:center}.ccday .ccgui svg{width:22px;height:22px}
+.ccday .ccgui{flex:none;width:48px;padding:0;display:flex;align-items:center;justify-content:center}.ccday #ccThem,.ccday #ccMoi{flex:none;width:auto;padding-left:12px;padding-right:12px}.ccday .ccgui svg{width:22px;height:22px}
 .ccw .it .ch{color:var(--faint);font-size:20px;flex:none}
 .ccg img,.ccg .ccg0{width:64px;height:40px;object-fit:cover;object-position:top;border-radius:6px;flex:none;background:var(--soft);display:block}
 .cckl{display:flex;flex-direction:column;gap:12px;padding:16px}
@@ -2141,7 +2141,7 @@ textarea.inp{font-family:inherit}
   function ccOpt(p) { return (p.t && p.t.chinh) || (p.s && p.s.chinh) || CCS.chinh; }
   function veCCCD() {
     khung('In CCCD', 'Ghép 2 mặt · in A4 · lưu Drive', '', '<div id="ccThan" class="ccw"></div>');
-    ccVe();
+    ccVe(); ccTamDem();
   }
   function ccCap() {   // 0) cặp anh ghép tay ; 1) mặt trước + mặt sau cùng số CCCD (máy chủ đọc) ; 2) ảnh chưa có số: ghép theo thứ tự chọn
     var vt = {}, out = [], dung = {}, nhom = {}, thu = [];
@@ -2158,16 +2158,27 @@ textarea.inp{font-family:inherit}
       x.so = y.so; if (!x.tay && x.mat === y.mat) { x.mat = y.mat === 'truoc' ? 'sau' : 'truoc'; x.v++; x.ro = true; }
     });
     CCS.ds.forEach(function (x) { if (!dung[x.id] && x.so) { if (!nhom[x.so]) { nhom[x.so] = []; thu.push(x.so); } nhom[x.so].push(x); } });
-    thu.forEach(function (so) {
-      var g = nhom[so], t = g.filter(function (x) { return x.mat === 'truoc'; })[0], s = t && g.filter(function (x) { return x.mat === 'sau' && !cam(t, x); })[0];
-      if (t && s) { out.push({ t: t, s: s }); dung[t.id] = dung[s.id] = 1; }
+    thu.forEach(function (so) {   // 23/10: cùng 1 số có thể gửi 2 lần (2 cặp ảnh) -> ghép hết các cặp
+      var g = nhom[so];
+      g.filter(function (x) { return x.mat === 'truoc'; }).forEach(function (t) {
+        var s = g.filter(function (x) { return x.mat === 'sau' && !dung[x.id] && !cam(t, x); })[0];
+        if (s) { out.push({ t: t, s: s }); dung[t.id] = dung[s.id] = 1; }
+      });
+    });
+    // 23/10: mặt sau không có số (ảnh chụp từ VNeID…) nhưng đọc được ngày hết hạn: thẻ hết hạn đúng sinh nhật tuổi 25/40/60
+    // -> ghép với mặt trước có ngày sinh khớp. Chỉ là gợi ý: phải bấm "Đúng người" mới được Lưu kho.
+    function khopHH(hh, ngs) { return !!(hh && ngs && hh.slice(0, 4) === ngs.slice(0, 4) && [25, 40, 60].indexOf(Number(hh.slice(4)) - Number(ngs.slice(4))) >= 0); }
+    CCS.ds.forEach(function (x) {
+      if (dung[x.id] || x.so || x.mat !== 'sau' || !x.hh) return;
+      var ung = CCS.ds.filter(function (y) { return y !== x && !dung[y.id] && y.mat === 'truoc' && khopHH(x.hh, y.ngs) && !cam(x, y); });
+      if (ung.length === 1) { out.push({ t: ung[0], s: x, goi: 'hh' }); dung[x.id] = dung[ung[0].id] = 1; }
     });
     var T = [], B = [];
     CCS.ds.forEach(function (x) {
       if (dung[x.id]) return;
       var ben = x.mat === 'truoc' ? B : T, k = -1;
       for (var j = 0; j < ben.length; j++) if ((!x.so || !ben[j].so || x.so === ben[j].so) && !cam(x, ben[j])) { k = j; break; }
-      if (k >= 0) { var y = ben.splice(k, 1)[0]; out.push(x.mat === 'truoc' ? { t: x, s: y } : { t: y, s: x }); }
+      if (k >= 0) { var y = ben.splice(k, 1)[0]; out.push(x.mat === 'truoc' ? { t: x, s: y, goi: 'thu' } : { t: y, s: x, goi: 'thu' }); }
       else (x.mat === 'truoc' ? T : B).push(x);
     });
     T.forEach(function (x) { out.push({ t: x, s: null }); }); B.forEach(function (x) { out.push({ t: null, s: x }); });
@@ -2177,6 +2188,7 @@ textarea.inp{font-family:inherit}
       p.co = (p.t && p.t.co) || (p.s && p.s.co) || ''; p.coId = (p.t && p.t.coId) || (p.s && p.s.coId) || '';
       p.doc = [p.t, p.s].some(function (x) { return x && (x.doc === 'cho' || x.doc === 'dang'); });
       p.vt = Math.min(p.t ? vt[p.t.id] : 1e9, p.s ? vt[p.s.id] : 1e9);
+      p.chac = !!(p.t && p.s && (p.tay || !p.goi));   // 2 mặt cùng số CCCD (hoặc đã ghép tay / bấm Đúng người)
     });
     return out.sort(function (a, b) { return a.vt - b.vt; });
   }
@@ -2189,10 +2201,49 @@ textarea.inp{font-family:inherit}
     g.putImageData(im, 0, 0); return c.toDataURL('image/jpeg', 0.8);
   }
   function ccNhanSo(x, o) {
-    if (!o || o.loi) { x.doc = 'loi'; return; }
-    x.doc = 'xong'; x.so = o.so || ''; x.ten = o.ten || o.tenMrz || ''; x.co = o.co || ''; x.coId = o.id || ''; x.day = o.day || '';
+    if (!o || o.loi) { x.doc = 'loi'; ccQrDoc(x); return; }
+    x.doc = 'xong'; x.so = o.so || (x.qr ? x.so : ''); x.ten = o.ten || o.tenMrz || (x.qr ? x.ten : ''); x.co = o.co || ''; x.coId = o.id || ''; x.day = o.day || '';
+    x.ngs = o.ngs || x.ngs || ''; x.hh = o.hh || '';
+    if (!x.so) ccQrDoc(x);
     var m = o.mat || (o.so ? (o.sau ? 'sau' : 'truoc') : '');   // máy chủ nhận mặt theo dòng mã IDVNM / chữ in sẵn trên thẻ
     if (m && !x.tay) { if (m !== x.mat) { x.mat = m; x.v++; } x.ro = true; }
+  }
+  // ---- 23/10: đọc mã QR trên thẻ (thẻ chip cũ: QR mặt trước; thẻ mẫu 2024 và ảnh chụp từ VNeID: QR mặt sau)
+  // QR chứa "số CCCD|số CMND cũ|Họ tên|ngày sinh ddmmyyyy|giới tính|địa chỉ|ngày cấp". Chỉ đọc khi máy chủ không đọc ra số (đỡ chậm máy).
+  var QR_SRC = 'https://manhnddgtmkt-afk.github.io/vieclamtaman/jsqr.js', qrHua = null;
+  function ccQrNap() {   // thư viện jsQR (1.4.0, Apache-2.0) để trong kho app, chỉ tải khi cần
+    if (window.jsQR) return Promise.resolve(window.jsQR);
+    if (qrHua) return qrHua;
+    qrHua = new Promise(function (ok, hong) {
+      var sc = document.createElement('script'); sc.src = /github\.io$/.test(location.hostname) ? 'jsqr.js' : QR_SRC;
+      sc.onload = function () { if (window.jsQR) ok(window.jsQR); else { qrHua = null; hong(new Error('qr')); } };
+      sc.onerror = function () { qrHua = null; hong(new Error('qr')); };
+      document.head.appendChild(sc);
+    });
+    return qrHua;
+  }
+  function ccQrVung(cv, v, rong) {   // cắt vùng v [trái, trên, phải, dưới] (tỉ lệ), phóng về rộng 'rong' px rồi dò QR
+    var W = cv.width, H = cv.height, x0 = Math.round(W * v[0]), y0 = Math.round(H * v[1]), w = Math.max(1, Math.round(W * (v[2] - v[0]))), h = Math.max(1, Math.round(H * (v[3] - v[1])));
+    var k = rong / w, c = document.createElement('canvas'); c.width = Math.round(w * k); c.height = Math.round(h * k);
+    var g = c.getContext('2d'); g.imageSmoothingQuality = 'high'; g.drawImage(cv, x0, y0, w, h, 0, 0, c.width, c.height);
+    var r = window.jsQR(g.getImageData(0, 0, c.width, c.height).data, c.width, c.height, { inversionAttempts: 'dontInvert' });
+    return r ? r.data : '';
+  }
+  function ccQrTach(s) {
+    var a = String(s || '').split('|'), so = (a[0] || '').replace(/\D/g, '');
+    if (!/^\d{12}$/.test(so) || Number(so.slice(0, 3)) < 1 || Number(so.slice(0, 3)) > 96 || Number(so[3]) > 3) return null;
+    return { so: so, ten: String(a[2] || '').trim().toUpperCase(), ngs: /^\d{8}$/.test(a[3] || '') ? a[3] : '' };
+  }
+  function ccQrDoc(x) {
+    if (x.qrXong || !x.the) return; x.qrXong = 1;
+    ccQrNap().then(function () {
+      if (ccTim(x.id) < 0 || x.so) return;
+      var thu = [[[0.68, 0, 1, 0.48], 800], [[0.72, 0.02, 0.99, 0.42], 1000], [[0.68, 0, 1, 0.48], 1200], [[0.6, 0, 1, 0.55], 1000], [[0, 0, 1, 1], 1200]], q = null;
+      for (var i = 0; i < thu.length && !q; i++) { try { q = ccQrTach(ccQrVung(x.the, thu[i][0], thu[i][1])); } catch (e) { } }
+      if (!q || x.so) return;
+      x.so = q.so; x.qr = 1; if (!x.ten) x.ten = q.ten; if (q.ngs) x.ngs = q.ngs;
+      ccVe();
+    }, function () { });
   }
   function ccDocLo(ds) {
     ds = ds.filter(function (x) { return ccTim(x.id) >= 0; }); if (!ds.length) return;
@@ -2221,7 +2272,7 @@ textarea.inp{font-family:inherit}
     });
   }
   function ccNho(cv, w) { var c = document.createElement('canvas'); c.width = w; c.height = Math.round(w * cv.height / cv.width); c.getContext('2d').drawImage(cv, 0, 0, c.width, c.height); return c.toDataURL('image/jpeg', 0.8); }
-  function ccDat(x, r) { x.the = r.the; x.mat = r.mat; x.ro = r.ro; x.q = r.q; x.v++; x.tb = ccNho(r.the, 420); }
+  function ccDat(x, r) { x.the = r.the; x.mat = r.mat; x.ro = r.ro; x.q = r.q; x.v++; x.tb = ccNho(r.the, 420); x.qrXong = 0; }
   function ccNap(files, xong) {
     files = [].slice.call(files || []).filter(function (f) { return !f.type || /^image\//.test(f.type); });
     if (!files.length) return;
@@ -2232,7 +2283,7 @@ textarea.inp{font-family:inherit}
       CCS.dang.i = i; ccVe();
       setTimeout(function () {
         ccMo(files[i]).then(function (cv) {
-          var x = { id: ++ccId, v: 0, file: files[i], doc: 'cho' }; ccDat(x, CC.xuLy(cv)); CCS.ds.push(x); moi.push(x); buoc(i + 1);
+          var x = { id: ++ccId, v: 0, file: files[i], doc: 'cho', tam: files[i].tamId || '' }; ccDat(x, CC.xuLy(cv)); CCS.ds.push(x); moi.push(x); buoc(i + 1);
         }, function () { loi++; buoc(i + 1); });
       }, 30);
     })(0);
@@ -2255,11 +2306,12 @@ textarea.inp{font-family:inherit}
     if (CCS.theMo && !CCS.dang) { ccVeThe(t); return; }
     var cap = ccCap(), gan = ccGan(), h = CCS.dang ? '' : ccChe();
     if (CCS.dang) {
-      h += '<div class="card"><b>Đang cắt và ghép ảnh ' + (CCS.dang.i + 1) + '/' + CCS.dang.n + '…</b><div class="ccbar0"><i style="width:' + Math.round(100 * CCS.dang.i / CCS.dang.n) + '%"></i></div></div>';
+      h += '<div class="card"><b>' + (CCS.dang.tai ? 'Đang tải ảnh từ CCCD TẠM ' + CCS.dang.i : 'Đang cắt và ghép ảnh ' + (CCS.dang.i + 1)) + '/' + CCS.dang.n + '…</b><div class="ccbar0"><i style="width:' + Math.round(100 * CCS.dang.i / CCS.dang.n) + '%"></i></div></div>';
     } else if (!CCS.ds.length) {
-      h += '<div class="card cch">' + ICON.cc + '<b>In CCCD người mới</b><div class="meta">Chọn cùng lúc ảnh mặt trước và mặt sau của từng người trong album. App tự cắt sát viền, nắn thẳng, ghép 2 mặt, in mỗi người 1 tờ A4 rồi lưu vào thư mục CCCD trên Drive.</div>' +
-        '<button class="btn" id="ccChon">Chọn ảnh trong album</button><button class="btn ghost" id="ccKho">Tìm ảnh trong kho</button></div>';
+      h += '<div class="card cch">' + ICON.cc + '<b>In CCCD người mới</b><div class="meta">Chọn cùng lúc ảnh mặt trước và mặt sau của từng người trong album. App tự cắt sát viền, nắn thẳng, ghép 2 mặt, in mỗi người 1 tờ A4 rồi lưu vào thư mục CCCD trên Drive. Không cần in thì bấm Lưu kho.</div>' +
+        '<button class="btn" id="ccChon">Chọn ảnh trong album</button>' + (CCS.tamN ? '<button class="btn ghost" id="ccTam">Xử lý ảnh chờ trong CCCD TẠM (' + CCS.tamN + ')</button>' : '') + '<button class="btn ghost" id="ccKho">Tìm ảnh trong kho</button></div>';
     } else {
+      if (CCS.tam) h += '<div class="note" style="margin-bottom:10px">Lượt này lấy ' + CCS.tam.n + ' ảnh từ <b>CCCD TẠM</b>. Bấm <b>Lưu kho</b> để đưa người đã ghép đúng vào thư mục năm sinh; ảnh gốc của họ chuyển sang CCCD TẠM/ĐÃ XỬ LÝ. Ảnh lẻ, ảnh chưa đọc được vẫn để lại trong CCCD TẠM.</div>';
       if (CCS.doi) h += '<div class="note warn ccdoi"><span>Chạm vào ảnh muốn đổi chỗ</span><button class="btn sm ghost" id="ccDoiThoi">Thôi</button></div>';
       var dangDoc = CCS.ds.filter(function (x) { return x.doc === 'cho' || x.doc === 'dang'; }).length;
       var cg = CCS.chinh, md = CC.CHINH_MD;
@@ -2268,15 +2320,16 @@ textarea.inp{font-family:inherit}
           '<div class="row" style="justify-content:space-between"><button class="btn lk" id="ccMd" style="padding-left:0">Về mặc định (' + md.sang + ' · ' + md.tp + ' · ' + md.net + ')</button></div>' : '') + '</div>';
       h += cap.map(function (p, n) {
         var st = CCS.tt[p.k] || {}, du = p.t && p.s, ln = '';
-        if (!du) ln = '<div class="cct warn">' + (p.t ? 'Thiếu mặt sau' : 'Thiếu mặt trước') + ' – chạm ô trống để chọn ảnh' + (p.so && cap.some(function (q) { return q !== p && q.so === p.so; }) ? ', hoặc bấm × nếu là ảnh thừa.' : '. Chưa lưu Drive.') + '</div>';
+        if (!du) ln = '<div class="cct warn">' + (p.t ? 'Thiếu mặt sau' : 'Thiếu mặt trước') + ' – chạm ô trống để chọn ảnh' + (p.so && cap.some(function (q) { return q !== p && q.so === p.so; }) ? ', hoặc bấm × nếu là ảnh thừa.' : '. Chưa lưu Drive.') + ((p.t || p.s).tam ? ' Ảnh vẫn để trong CCCD TẠM.' : '') + '</div>';
         else if (p.doc) ln = '<div class="cct">Đang đọc số để ghép đúng người…</div>';
         else if (st.dang) ln = '<div class="cct">Đang lưu Drive…</div>';
         else if (st.ok) ln = '<div class="cct ok">✓ Đã lưu · ' + esc(st.duong) + '</div>';
         else if (st.co || p.co) ln = '<div class="cct ok">Đã có trong kho · ' + esc(st.duong || p.co) + '</div>';
         else if (st.chuaSo) ln = '<div class="cct warn">Drive chưa đọc được số CCCD. Gõ số để lưu:</div><div class="row ccso"><input class="inp" inputmode="numeric" maxlength="12" placeholder="12 chữ số" data-k="' + esc(p.k) + '"><button class="btn sm" data-luu="' + esc(p.k) + '">Lưu</button></div>';
         else if (st.loi) ln = '<div class="cct bad">' + esc(st.loi) + ' <a href="#" data-thu="' + esc(p.k) + '">Thử lại</a></div>';
-        else if (!p.so) ln = '<div class="cct warn">Chưa đọc được số · kiểm tra đúng người rồi bấm In</div>';
-        else ln = '<div class="cct">Chưa lưu · tự lưu khi bấm In</div>';
+        else if (!p.chac) ln = '<div class="cct warn">' + (p.goi === 'hh' ? 'Ghép theo ngày hết hạn trùng ngày sinh' : 'Chưa chắc đúng người (ghép theo thứ tự chọn ảnh)') + ' – xem 2 mặt có cùng 1 người không rồi bấm Đúng người.</div><div class="row"><button class="btn sm" data-dung="' + esc(p.k) + '">Đúng người</button></div>';
+        else if (!p.so) ln = '<div class="cct warn">Chưa đọc được số · kiểm tra đúng người rồi bấm In hoặc Lưu kho</div>';
+        else ln = '<div class="cct">Chưa lưu · bấm Lưu kho hoặc In</div>';
         var ten = st.ten || p.ten ? hoaDau(st.ten || p.ten) : 'Người ' + (n + 1), so = st.so || p.so;
         function o(x, nh) {
           if (!x) return '<button class="ccm trong" data-trong="' + esc(p.k) + '" data-mat="' + (nh === 'Mặt trước' ? 'truoc' : 'sau') + '"><b>+ ' + nh + '</b><span>Chạm để chọn ảnh</span></button>';
@@ -2290,8 +2343,9 @@ textarea.inp{font-family:inherit}
           (du ? '<button class="btn lk" data-tach="' + esc(p.k) + '">Tách 2 ảnh</button>' : '') + '</div></div>';
       }).join('');
       h += '<div class="meta" style="text-align:center">Chạm ảnh để xoay, đổi mặt, cắt lại. Ghép nhầm người: bấm “Tách 2 ảnh” rồi chạm ô trống để chọn đúng ảnh.</div>' +
-        '<div class="ccday"><button class="btn ghost" id="ccThem">Thêm ảnh</button><button class="btn ghost" id="ccMoi">Lượt mới</button><button class="btn ghost ccgui" id="ccGui" aria-label="Chia sẻ PDF"' + (dangDoc ? ' disabled' : '') + '>' + ICON_GUI + '</button><button class="btn" id="ccIn"' + (dangDoc ? ' disabled' : '') + '>' + (dangDoc ? 'Đọc số… ' + dangDoc : 'In ' + cap.length + ' tờ') + '</button></div><div class="ccdem"></div>';
+        '<div class="ccday"><button class="btn ghost" id="ccThem">+ Ảnh</button><button class="btn ghost" id="ccMoi" aria-label="Làm lượt mới">Mới</button><button class="btn ghost ccgui" id="ccGui" aria-label="Chia sẻ PDF"' + (dangDoc ? ' disabled' : '') + '>' + ICON_GUI + '</button><button class="btn ghost" id="ccLuu"' + (dangDoc ? ' disabled' : '') + '>Lưu kho</button><button class="btn" id="ccIn"' + (dangDoc ? ' disabled' : '') + '>' + (dangDoc ? 'Đọc… ' + dangDoc : 'In ' + cap.length + ' tờ') + '</button></div><div class="ccdem"></div>';
     }
+    if (CCS.ds.length && !CCS.dang && CCS.tamN) h += '<div class="grp"><button class="it" id="ccTam"><div style="min-width:0;flex:1"><div class="nm">Ảnh chờ trong CCCD TẠM · ' + CCS.tamN + ' ảnh</div><div class="sub">Lấy tối đa 16 ảnh mỗi lượt, cắt ghép rồi Lưu kho</div></div><span class="ch">›</span></button></div>';
     if (CCS.ds.length && !CCS.dang) h += '<div class="grp"><button class="it" id="ccKho"><div style="min-width:0;flex:1"><div class="nm">Tìm ảnh trong kho</div><div class="sub">Lọc nam/nữ, năm sinh rồi chọn người để in</div></div><span class="ch">›</span></button></div>';
     if (gan.length && !CCS.dang) h += '<div class="grp"><div class="gh">Đã lưu gần đây · chạm để xem và in lại</div>' + gan.slice(0, 12).map(function (g, i) {
       return '<button class="it ccg" data-g="' + i + '">' + (g.nho ? '<img src="' + g.nho + '" alt="">' : '<i class="ccg0"></i>') + '<div style="min-width:0;flex:1"><div class="nm ell">' + esc(g.ten ? hoaDau(g.ten) : g.so) + '</div><div class="sub ell">' + esc(g.duong) + ' · ' + esc(g.luc) + '</div></div></button>';
@@ -2307,6 +2361,9 @@ textarea.inp{font-family:inherit}
     if ((b = document.getElementById('ccMoi'))) b.onclick = ccMoi;
     if ((b = document.getElementById('ccGui'))) b.onclick = function () { ccIn('gui'); };
     if ((b = document.getElementById('ccKho'))) b.onclick = ccKhoMo;
+    if ((b = document.getElementById('ccLuu'))) b.onclick = ccLuuKho;
+    if ((b = document.getElementById('ccTam'))) b.onclick = ccTamMo;
+    t.querySelectorAll('[data-dung]').forEach(function (e) { e.onclick = function () { ccDung(e.getAttribute('data-dung')); }; });
     ccDayDat(t); ccCheNoi(t);
     t.querySelectorAll('.ccm[data-id]').forEach(function (e) { e.onclick = function () { ccCham(Number(e.getAttribute('data-id'))); }; });
     t.querySelectorAll('[data-luu]').forEach(function (e) {
@@ -2410,8 +2467,9 @@ textarea.inp{font-family:inherit}
     var c2 = sh.querySelector('#crChung'); if (c2) c2.onclick = function () { [p.t, p.s].forEach(function (x) { if (x) delete x.chinh; }); sh.remove(); ccVe(); };
   }
   function ccMoi() {
-    var con = ccCap().filter(function (p) { var st = CCS.tt[p.k] || {}; return p.t && p.s && !st.ok; }).length;
-    function xoa() { CCS.ds = []; CCS.tt = {}; CCS.jpg = {}; CCS.doi = null; ccVe(); }
+    if (CCS.hang.length || CCS.chay) { toast('Đang lưu lên Drive, chờ xong rồi làm lượt mới.'); return; }
+    var con = ccCap().filter(function (p) { var st = CCS.tt[p.k] || {}; return p.t && p.s && !st.ok && !st.co; }).length;
+    function xoa() { CCS.ds = []; CCS.tt = {}; CCS.jpg = {}; CCS.doi = null; CCS.tam = null; ccVe(); }
     if (!con) { xoa(); return; }
     var sh = moSheet('<h3>Làm lượt mới?</h3><div class="meta">Còn ' + con + ' người chưa lưu lên Drive. Ảnh gốc trong album vẫn còn.</div><button class="btn xn" id="ccX">Bỏ lượt này</button><button class="btn lk" id="ccK">Thôi</button>');
     sh.querySelector('#ccX').onclick = function () { sh.remove(); xoa(); };
@@ -2480,7 +2538,7 @@ textarea.inp{font-family:inherit}
       cap.forEach(function (p) {
         var st = CCS.tt[p.k] || {};
         if (!p.t || !p.s || st.ok || st.co || st.dang) return;
-        if (p.co) { CCS.tt[p.k] = { co: 1, so: p.so, ten: p.ten, duong: p.co }; ccGanThem({ so: p.so, ten: p.ten, duong: p.co, id: p.coId }, p); return; }   // kho đã có: không lưu lại
+        if (p.co) { CCS.tt[p.k] = { co: 1, so: p.so, ten: p.ten, duong: p.co }; ccGanThem({ so: p.so, ten: p.ten, duong: p.co, id: p.coId }, p); ccTamXong(p, p.so); return; }   // kho đã có: không lưu lại
         ccXep(p.k, p.so, p.so ? 'đọc từ ảnh' : '');
       });
       ccVe();
@@ -2572,6 +2630,89 @@ textarea.inp{font-family:inherit}
       setTimeout(function () { URL.revokeObjectURL(u); }, 60000);
     });
   }
+  // ---- 23/10: Lưu kho không cần in; xác nhận cặp chưa chắc; xử lý ảnh gốc trong CCCD TẠM ----
+  function ccDung(k) {   // bấm "Đúng người": giữ cặp này như ghép tay
+    var p = ccCap().filter(function (x) { return x.k === k; })[0]; if (!p || !p.t || !p.s) return;
+    ccBoCap(p.t); ccBoCap(p.s); p.t.cap = p.s.id; p.s.cap = p.t.id; p.t.tay = p.s.tay = 1; p.t.ro = p.s.ro = true;
+    ccVe();
+  }
+  function ccLuuKho() {   // lưu mọi người đã ghép chắc chắn vào thư mục năm sinh, không in
+    var cap = ccCap(); if (!cap.length) return;
+    if (CCS.ds.some(function (x) { return x.doc === 'cho' || x.doc === 'dang'; })) { toast('Đang đọc số để ghép đúng người, chờ chút.'); return; }
+    var luu = 0, co = 0, xem = 0, le = 0;
+    cap.forEach(function (p) {
+      var st = CCS.tt[p.k] || {};
+      if (!p.t || !p.s) { le++; return; }
+      if (st.ok || st.co || st.dang) return;
+      if (!p.chac) { xem++; return; }
+      if (p.co) { CCS.tt[p.k] = { co: 1, so: p.so, ten: p.ten, duong: p.co }; ccGanThem({ so: p.so, ten: p.ten, duong: p.co, id: p.coId }, p); ccTamXong(p, p.so); co++; return; }
+      ccXep(p.k, p.so, p.so ? 'đọc từ ảnh' : ''); luu++;
+    });
+    ccVe();
+    var m = [];
+    if (luu) m.push('Đang lưu ' + luu + ' người'); if (co) m.push(co + ' người kho đã có');
+    if (xem) m.push(xem + ' người cần bấm Đúng người'); if (le) m.push(le + ' ảnh lẻ chưa có cặp');
+    toast(m.length ? m.join(' · ') : 'Không còn người nào cần lưu.');
+  }
+  function ccTamDem() {   // số ảnh chờ trong CCCD TẠM (hỏi ngầm, tối đa 1 lần/phút)
+    if (CCS.tamLuc && Date.now() - CCS.tamLuc < 60000) return; CCS.tamLuc = Date.now();
+    apiT({ v: 'cccdTamDs', im: 1 }).then(function (o) { var n = (o.ds || []).length; if (n !== CCS.tamN) { CCS.tamN = n; ccVe(); } }, function () { });
+  }
+  function ccTamLo(ds, toiDa) {   // lấy khoảng toiDa ảnh, không cắt đôi 1 nhóm ảnh gửi cùng lúc (tên ảnh Zalo bắt đầu bằng mốc giờ; cách nhau < 3 giây = 1 nhóm)
+    function moc(f) { var m = /^(\d{13})_/.exec(f.ten); return m ? Number(m[1]) : f.luc; }
+    var out = [];
+    for (var i = 0; i < ds.length; i++) {
+      if (out.length >= toiDa && (out.length >= toiDa + 4 || Math.abs(moc(ds[i]) - moc(ds[i - 1])) > 3000)) break;
+      out.push(ds[i]);
+    }
+    return out;
+  }
+  function ccTamMo() {
+    if (CCS.dang) return;
+    if (CCS.hang.length || CCS.chay) { toast('Đang lưu lên Drive, chờ xong rồi mở CCCD TẠM.'); return; }
+    var con = ccCap().filter(function (p) { var st = CCS.tt[p.k] || {}; return p.t && p.s && !st.ok && !st.co; }).length;
+    if (CCS.ds.length && con) { toast('Còn ' + con + ' người chưa lưu. Bấm Lưu kho (hoặc Lượt mới để bỏ) rồi mở CCCD TẠM.'); return; }
+    ccTd('Đang xem ảnh trong CCCD TẠM…');
+    apiT({ v: 'cccdTamDs', lang: 1 }).then(function (o) {
+      ccTd('');
+      var ds = o.ds || [], da = CCS.tamDa || (CCS.tamDa = {}); CCS.tamN = ds.length; CCS.tamLuc = Date.now();
+      if (!ds.length) { toast(o.khong ? 'Không thấy thư mục CCCD TẠM trong thư mục CCCD.' : 'CCCD TẠM không còn ảnh chờ.'); ccVe(); return; }
+      var moi = ds.filter(function (f) { return !da[f.id]; }), lay = ccTamLo(moi.length ? moi : ds, 16);   // hết ảnh mới thì lấy lại ảnh lần trước chưa ghép được
+      lay.forEach(function (f) { da[f.id] = 1; });
+      CCS.ds = []; CCS.tt = {}; CCS.jpg = {}; CCS.doi = null; CCS.kho = null; CCS.theMo = false;
+      CCS.tam = { n: lay.length };
+      ccTamTai(lay);
+    }, function (e) { ccTd(''); toastLoi(e.message); });
+  }
+  function ccTamTai(lay) {   // tải ảnh gốc từ Drive (4 ảnh 1 lần) rồi cắt ghép như ảnh chọn trong album
+    var files = [], i = 0, loi = 0;
+    CCS.dang = { i: 0, n: lay.length, tai: 1 }; ccVe();
+    (function buoc() {
+      if (i >= lay.length) {
+        CCS.dang = null;
+        if (loi) toastLoi(loi + ' ảnh không tải được.');
+        if (!files.length) { CCS.tam = null; ccVe(); return; }
+        ccNap(files); return;
+      }
+      var lo = lay.slice(i, i + 4); i += lo.length;
+      apiT({ v: 'cccdTamAnh', ids: lo.map(function (f) { return f.id; }), lang: 1 }).then(function (o) {
+        if (o.loi) { loi += lo.length; } else (o.ds || []).forEach(function (r) {
+          var m = /^data:([^;]+);base64,(.+)$/.exec(r.anh || ''); if (!m) { loi++; return; }
+          var b = atob(m[2]), a = new Uint8Array(b.length); for (var j = 0; j < b.length; j++) a[j] = b.charCodeAt(j);
+          var bl = new Blob([a], { type: m[1] }); bl.tamId = r.id; files.push(bl);
+        });
+        CCS.dang = { i: i, n: lay.length, tai: 1 }; ccVe(); buoc();
+      }, function () { loi += lo.length; buoc(); });
+    })();
+  }
+  function ccTamXong(p, so) {   // người đã vào kho: chuyển ảnh gốc của họ sang CCCD TẠM/ĐÃ XỬ LÝ
+    var xs = [p && p.t, p && p.s].filter(function (x) { return x && x.tam && !x.tamXong; }); if (!xs.length) return;
+    xs.forEach(function (x) { x.tamXong = 1; });
+    apiT({ v: 'cccdTamXong', ids: xs.map(function (x) { return x.tam; }), so: so || p.so || '', lang: 1 }).then(function (o) {
+      if (o && o.loi) { xs.forEach(function (x) { x.tamXong = 0; }); return; }
+      CCS.tamN = Math.max(0, (CCS.tamN || 0) - xs.length); ccVe();
+    }, function () { xs.forEach(function (x) { x.tamXong = 0; }); });
+  }
   // ---- lưu Drive: lần lượt từng người (máy chủ đọc số bằng Drive rồi xếp vào NAM|NỮ/<khoảng năm sinh>) ----
   function ccXep(k, so, ng) { CCS.hang = CCS.hang.filter(function (h) { return h.k !== k; }); CCS.hang.push({ k: k, so: so, ng: ng }); CCS.tt[k] = { dang: 1 }; ccVe(); ccChay(); }
   function ccChay() {
@@ -2583,7 +2724,7 @@ textarea.inp{font-family:inherit}
       CCS.chay = 0;
       if (o.loi) CCS.tt[h.k] = { loi: o.loi };
       else if (o.chuaSo) CCS.tt[h.k] = { chuaSo: 1, ten: o.ten };
-      else { CCS.tt[h.k] = o.co ? { co: 1, so: o.so, ten: o.ten, duong: o.duong } : { ok: 1, so: o.so, ten: o.ten, duong: o.duong }; ccGanThem(o, p); }
+      else { CCS.tt[h.k] = o.co ? { co: 1, so: o.so, ten: o.ten, duong: o.duong } : { ok: 1, so: o.so, ten: o.ten, duong: o.duong }; ccGanThem(o, p); ccTamXong(p, o.so); }
       ccVe(); ccChay();
     }, function (e) { CCS.chay = 0; CCS.tt[h.k] = { loi: e.message }; ccVe(); ccChay(); });
   }
@@ -3012,6 +3153,7 @@ textarea.inp{font-family:inherit}
   }
   function ccCheNoi(t) { t.querySelectorAll('[data-che]').forEach(function (b) { b.onclick = function () { CCS.theMo = b.getAttribute('data-che') === '1'; var lg = theLogoNap(); if (!lg.complete) lg.onload = function () { ccVe(); }; ccVe(); window.scrollTo(0, 0); }; }); }
   var BAN_MOI = [
+    { so: 64, ds: [['CCCD: nút mới "Lưu kho" – lưu những người đã ghép đúng vào thư mục năm sinh mà không cần in.'], ['CCCD: xử lý ảnh chờ trong thư mục CCCD TẠM – app tải ảnh về, cắt ghép; bấm Lưu kho là vào đúng thư mục năm sinh, ảnh gốc chuyển sang CCCD TẠM/ĐÃ XỬ LÝ (không xoá).'], ['Mặt sau chụp từ VNeID (không có dòng mã ở dưới): app đọc mã QR để biết là của ai; QR mờ thì ghép theo ngày hết hạn trùng ngày sinh.'], ['Cặp ảnh chưa chắc cùng 1 người có nút "Đúng người"; chưa bấm thì Lưu kho bỏ qua cặp đó.']] },
     { so: 63, ds: [['In CCCD: mỗi người đúng 1 tờ A4 (hết trang trắng thừa), CCCD nằm giữa tờ giấy. PDF chia sẻ cũng đặt CCCD giữa tờ.']] },
     { so: 62, ds: [['In CCCD: bấm In là mở hộp in ngay, Safari không còn hỏi "chặn tự động in" và không in nhầm ra màn hình app. Nếu ảnh chưa chuẩn bị xong, app hiện nút "In N tờ" để bấm thêm 1 lần.'], ['Ghép tay: ô trống "+ Mặt sau / + Mặt trước" chạm vào để chọn đúng ảnh (ảnh lẻ trong lượt hoặc ảnh khác trong album); nút "Tách 2 ảnh" khi app ghép nhầm người; ảnh "xem lại" có nút đổi mặt ngay bên dưới.'], ['Cắt ảnh tốt hơn với thẻ đặt trên vải trắng / nền sáng và thẻ nhỏ trên chiếu có sọc chéo; ảnh mặt sau bị cắt mất chữ IDVNM vẫn đọc ra số để ghép đúng người.']] },
     { so: 61, ds: [['Phiếu lương tuần (HOJEONG, BEST) trình bày lại cho công nhân dễ hiểu: Tổng được hưởng → Đã nhận (mỗi lần ứng/trả ghi rõ ngày) → CÒN ĐƯỢC NHẬN. Số to trên phiếu giờ luôn là số còn phải trả thật.'], ['Tuần chưa hết: phiếu ghi "Tạm tính đến ngày …", ngày chưa tới để trống (không ghi Nghỉ), chuyên cần ghi "đang tính".']] },
