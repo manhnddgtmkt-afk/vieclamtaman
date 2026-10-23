@@ -2753,6 +2753,7 @@ textarea.inp{font-family:inherit}
     ccTd('Đang soát ảnh trong CCCD TẠM (máy chủ đọc số, tìm người kho đã có)…');
     (function soat() {
       apiT({ v: 'cccdTamSoat', lang: 1 }).then(function (o) {
+        if (o.loi) { ccTd(''); toastLoi(/Không có việc/.test(o.loi) ? 'Máy chủ chưa có mã mới. Vào Tài khoản → Cập nhật mã ngay rồi thử lại.' : o.loi); return; }
         tong.chuyen += o.chuyen || 0; tong.soat = Math.max(tong.soat, o.soat || 0); lan++;
         if (o.conDoc && !o.khongSoat && lan < 6) { ccTd('Đang soát ảnh trong CCCD TẠM… đã chuyển ' + tong.chuyen + ' ảnh của người kho đã có'); soat(); return; }
         ccTd(''); xong(o);
