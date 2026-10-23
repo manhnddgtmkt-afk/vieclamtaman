@@ -13,7 +13,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
 <script src="config.js"></script>
-<script>window.PB = { so: 67, luc: "23/10 09:49" };</script>
+<script>window.PB = { so: 68, luc: "23/10 10:13" };</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap">
 <style>
@@ -668,7 +668,7 @@ textarea.inp{font-family:inherit}
 .thx{border:1px dashed var(--edge);font-size:11px;color:var(--muted);padding:0}
 .thf{display:flex;flex-direction:column;gap:8px}.thf .inp{margin:0}.thf .seg button{padding:7px 4px;font-size:13.5px}
 .thv{width:100%;max-width:420px;align-self:center;border-radius:6px;box-shadow:0 1px 4px rgba(0,0,0,.15)}
-.ccday .ccgui{flex:none;width:48px;padding:0;display:flex;align-items:center;justify-content:center}.ccday #ccThem,.ccday #ccMoi{flex:none;width:auto;padding-left:12px;padding-right:12px}.ccday .ccgui svg{width:22px;height:22px}
+.ccday .ccgui{flex:none;width:48px;padding:0;display:flex;align-items:center;justify-content:center}.ccday #ccMoi,.ccday #ccLuu{flex:none;width:auto;padding-left:11px;padding-right:11px}@media (max-width:385px){.ccday{gap:6px}.ccday .btn{font-size:14px}.ccday #ccMoi,.ccday #ccLuu{padding-left:9px;padding-right:9px}}.ccday .ccgui svg{width:22px;height:22px}
 .ccw .it .ch{color:var(--faint);font-size:20px;flex:none}
 .ccg img,.ccg .ccg0{width:64px;height:40px;object-fit:cover;object-position:top;border-radius:6px;flex:none;background:var(--soft);display:block}
 .cckl{display:flex;flex-direction:column;gap:12px;padding:16px}
@@ -2366,11 +2366,11 @@ textarea.inp{font-family:inherit}
     CCS.dang = { i: 0, n: files.length }; ccVe();
     var loi = 0, moi = [];
     (function buoc(i) {
-      if (i >= files.length) { CCS.dang = null; if (xong) moi.forEach(function (x) { x.tay = 1; }); ccDocLo(moi); if (xong) xong(moi); if (loi) toastLoi(loi + ' ảnh không mở được.'); return; }
+      if (i >= files.length) { CCS.dang = null; if (xong) moi.forEach(function (x) { x.tay = 1; }); moi.forEach(function (x) { if (x.docSan) ccNhanSo(x, x.docSan); }); ccDocLo(moi.filter(function (x) { return !x.docSan; })); ccVe(); if (xong) xong(moi); if (loi) toastLoi(loi + ' ảnh không mở được.'); return; }
       CCS.dang.i = i; ccVe();
       setTimeout(function () {
         ccMo(files[i]).then(function (cv) {
-          var x = { id: ++ccId, v: 0, file: files[i], doc: 'cho', tam: files[i].tamId || '' }; ccDat(x, CC.xuLy(cv)); CCS.ds.push(x); moi.push(x); buoc(i + 1);
+          var x = { id: ++ccId, v: 0, file: files[i], doc: 'cho', tam: files[i].tamId || '', docSan: files[i].docSan && files[i].docSan.so ? files[i].docSan : null }; ccDat(x, CC.xuLy(cv)); CCS.ds.push(x); moi.push(x); buoc(i + 1);
         }, function () { loi++; buoc(i + 1); });
       }, 30);
     })(0);
@@ -2430,7 +2430,7 @@ textarea.inp{font-family:inherit}
           (du ? '<button class="btn lk" data-tach="' + esc(p.k) + '">Tách 2 ảnh</button>' : '') + '</div></div>';
       }).join('');
       h += '<div class="meta" style="text-align:center">Chạm ảnh để xoay, đổi mặt, cắt lại. Ghép nhầm người: bấm “Tách 2 ảnh” rồi chạm ô trống để chọn đúng ảnh.</div>' +
-        '<div class="ccday"><button class="btn ghost" id="ccThem">+ Ảnh</button><button class="btn ghost" id="ccMoi" aria-label="Làm lượt mới">Mới</button><button class="btn ghost ccgui" id="ccGui" aria-label="Chia sẻ PDF"' + (dangDoc ? ' disabled' : '') + '>' + ICON_GUI + '</button><button class="btn ghost" id="ccLuu"' + (dangDoc ? ' disabled' : '') + '>Lưu kho</button><button class="btn" id="ccIn"' + (dangDoc ? ' disabled' : '') + '>' + (dangDoc ? 'Đọc… ' + dangDoc : 'In ' + cap.length + ' tờ') + '</button></div><div class="ccdem"></div>';
+        '<div class="ccday"><button class="btn ghost ccgui" id="ccThem" aria-label="Thêm ảnh"><span style="font-size:26px;font-weight:500;line-height:1">+</span></button><button class="btn ghost" id="ccMoi" aria-label="Xoá hết lượt này">Xoá hết</button><button class="btn ghost ccgui" id="ccGui" aria-label="Chia sẻ PDF"' + (dangDoc ? ' disabled' : '') + '>' + ICON_GUI + '</button><button class="btn ghost" id="ccLuu"' + (dangDoc ? ' disabled' : '') + '>Lưu kho</button><button class="btn" id="ccIn"' + (dangDoc ? ' disabled' : '') + '>' + (dangDoc ? 'Đọc… ' + dangDoc : 'In ' + cap.length + ' tờ') + '</button></div><div class="ccdem"></div>';
     }
     if (CCS.ds.length && !CCS.dang && CCS.tamN) h += '<div class="grp"><button class="it" id="ccTam"><div style="min-width:0;flex:1"><div class="nm">Ảnh chờ trong CCCD TẠM · ' + CCS.tamN + ' ảnh</div><div class="sub">Lấy tối đa 16 ảnh mỗi lượt, cắt ghép rồi Lưu kho</div></div><span class="ch">›</span></button></div>';
     if (CCS.ds.length && !CCS.dang) h += '<div class="grp"><button class="it" id="ccKho"><div style="min-width:0;flex:1"><div class="nm">Tìm ảnh trong kho</div><div class="sub">Lọc nam/nữ, năm sinh rồi chọn người để in</div></div><span class="ch">›</span></button></div>';
@@ -2556,9 +2556,9 @@ textarea.inp{font-family:inherit}
   function ccMoi() {
     if (CCS.hang.length || CCS.chay) { toast('Đang lưu lên Drive, chờ xong rồi làm lượt mới.'); return; }
     var con = ccCap().filter(function (p) { var st = CCS.tt[p.k] || {}; return p.t && p.s && !st.ok && !st.co; }).length;
-    function xoa() { CCS.ds = []; CCS.tt = {}; CCS.jpg = {}; CCS.doi = null; CCS.tam = null; ccVe(); }
+    function xoa() { CCS.ds = []; CCS.tt = {}; CCS.jpg = {}; CCS.doi = null; CCS.tam = null; ccVe(); window.scrollTo(0, 0); }
     if (!con) { xoa(); return; }
-    var sh = moSheet('<h3>Làm lượt mới?</h3><div class="meta">Còn ' + con + ' người chưa lưu lên Drive. Ảnh gốc trong album vẫn còn.</div><button class="btn xn" id="ccX">Bỏ lượt này</button><button class="btn lk" id="ccK">Thôi</button>');
+    var sh = moSheet('<h3>Xoá hết lượt này?</h3><div class="meta">Còn ' + con + ' người chưa lưu lên Drive. Ảnh gốc trong album và trong CCCD TẠM vẫn còn.</div><button class="btn xn" id="ccX">Xoá hết</button><button class="btn lk" id="ccK">Thôi</button>');
     sh.querySelector('#ccX').onclick = function () { sh.remove(); xoa(); };
     sh.querySelector('#ccK').onclick = function () { sh.remove(); };
   }
@@ -2759,17 +2759,26 @@ textarea.inp{font-family:inherit}
     if (CCS.hang.length || CCS.chay) { toast('Đang lưu lên Drive, chờ xong rồi mở CCCD TẠM.'); return; }
     var con = ccCap().filter(function (p) { var st = CCS.tt[p.k] || {}; return p.t && p.s && !st.ok && !st.co; }).length;
     if (CCS.ds.length && con) { toast('Còn ' + con + ' người chưa lưu. Bấm Lưu kho (hoặc Lượt mới để bỏ) rồi mở CCCD TẠM.'); return; }
-    ccTd('Đang xem ảnh trong CCCD TẠM…');
-    apiT({ v: 'cccdTamDs', lang: 1 }).then(function (o) {
-      ccTd('');
+    // 23/10: máy chủ soát trước (đọc số trên ảnh gốc): người kho đã có thì chuyển ảnh gốc sang ĐÃ XỬ LÝ, chỉ tải về người chưa có
+    var tong = { chuyen: 0, soat: 0 }, lan = 0;
+    ccTd('Đang soát ảnh trong CCCD TẠM (máy chủ đọc số, tìm người kho đã có)…');
+    (function soat() {
+      apiT({ v: 'cccdTamSoat', lang: 1 }).then(function (o) {
+        tong.chuyen += o.chuyen || 0; tong.soat = Math.max(tong.soat, o.soat || 0); lan++;
+        if (o.conDoc && !o.khongSoat && lan < 6) { ccTd('Đang soát ảnh trong CCCD TẠM… đã chuyển ' + tong.chuyen + ' ảnh của người kho đã có'); soat(); return; }
+        ccTd(''); xong(o);
+      }, function (e) { ccTd(''); toastLoi(e.message); });
+    })();
+    function xong(o) {
       var ds = o.ds || [], da = CCS.tamDa || (CCS.tamDa = {}); CCS.tamN = ds.length; CCS.tamLuc = Date.now();
-      if (!ds.length) { toast(o.khong ? 'Không thấy thư mục CCCD TẠM trong thư mục CCCD.' : 'CCCD TẠM không còn ảnh chờ.'); ccVe(); return; }
+      if (tong.chuyen) toast('Đã soát ' + tong.soat + ' ảnh: ' + tong.chuyen + ' ảnh của người kho đã có → chuyển sang CCCD TẠM/ĐÃ XỬ LÝ. Còn ' + ds.length + ' ảnh cần ghép.');
+      if (!ds.length) { if (!tong.chuyen) toast(o.khong ? 'Không thấy thư mục CCCD TẠM trong thư mục CCCD.' : 'CCCD TẠM không còn ảnh chờ.'); ccVe(); return; }
       var moi = ds.filter(function (f) { return !da[f.id]; }), lay = ccTamLo(moi.length ? moi : ds, 16);   // hết ảnh mới thì lấy lại ảnh lần trước chưa ghép được
       lay.forEach(function (f) { da[f.id] = 1; });
       CCS.ds = []; CCS.tt = {}; CCS.jpg = {}; CCS.doi = null; CCS.kho = null; CCS.theMo = false;
       CCS.tam = { n: lay.length };
       ccTamTai(lay);
-    }, function (e) { ccTd(''); toastLoi(e.message); });
+    }
   }
   function ccTamTai(lay) {   // tải ảnh gốc từ Drive (4 ảnh 1 lần) rồi cắt ghép như ảnh chọn trong album
     var files = [], i = 0, loi = 0;
@@ -2786,7 +2795,7 @@ textarea.inp{font-family:inherit}
         if (o.loi) { loi += lo.length; } else (o.ds || []).forEach(function (r) {
           var m = /^data:([^;]+);base64,(.+)$/.exec(r.anh || ''); if (!m) { loi++; return; }
           var b = atob(m[2]), a = new Uint8Array(b.length); for (var j = 0; j < b.length; j++) a[j] = b.charCodeAt(j);
-          var bl = new Blob([a], { type: m[1] }); bl.tamId = r.id; files.push(bl);
+          var bl = new Blob([a], { type: m[1] }); bl.tamId = r.id; bl.docSan = (lay.filter(function (f) { return f.id === r.id; })[0] || {}).doc || null; files.push(bl);
         });
         CCS.dang = { i: i, n: lay.length, tai: 1 }; ccVe(); buoc();
       }, function () { loi += lo.length; buoc(); });
@@ -3240,6 +3249,7 @@ textarea.inp{font-family:inherit}
   }
   function ccCheNoi(t) { t.querySelectorAll('[data-che]').forEach(function (b) { b.onclick = function () { CCS.theMo = b.getAttribute('data-che') === '1'; var lg = theLogoNap(); if (!lg.complete) lg.onload = function () { ccVe(); }; ccVe(); window.scrollTo(0, 0); }; }); }
   var BAN_MOI = [
+    { so: 68, ds: [['CCCD TẠM: máy chủ soát trước – người kho đã có thì tự chuyển ảnh gốc sang ĐÃ XỬ LÝ, điện thoại chỉ tải và ghép người chưa có trong kho.'], ['Nút "Mới" đổi tên thành "Xoá hết": bỏ cả lượt đang ghép trong 1 lần bấm (ảnh trên Drive không bị xoá).']] },
     { so: 67, ds: [['CCCD: không còn cắt lẹm vào thẻ – mép nào sát mép ảnh còn dính chữ, vân tay, mã QR thì app tự nới ra tới phần lề trống của thẻ.']] },
     { so: 66, ds: [['Số dư quỹ (Thu chi, Tổng quan): lương công nhân dù Hòa hay Long đi trả đều trừ vào quỹ. Cột Người trả chỉ để biết ai đi trả hôm đó; bỏ dòng "Sale trả hộ, chưa hoàn" và "Hoàn tiền sale trả hộ".', 'chu,ketoan']] },
     { so: 65, ds: [['CCCD: thẻ chụp nhỏ trên nền nhiều màu, nhiều sọc (chiếu cói, vải hoa) giờ tự cắt đúng thẻ, không còn để nguyên cả ảnh.']] },
