@@ -13,7 +13,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
 <script src="config.js"></script>
-<script>window.PB = { so: 65, luc: "23/10 09:43" };</script>
+<script>window.PB = { so: 66, luc: "23/10 09:45" };</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap">
 <style>
@@ -3201,6 +3201,7 @@ textarea.inp{font-family:inherit}
   }
   function ccCheNoi(t) { t.querySelectorAll('[data-che]').forEach(function (b) { b.onclick = function () { CCS.theMo = b.getAttribute('data-che') === '1'; var lg = theLogoNap(); if (!lg.complete) lg.onload = function () { ccVe(); }; ccVe(); window.scrollTo(0, 0); }; }); }
   var BAN_MOI = [
+    { so: 66, ds: [['Số dư quỹ (Thu chi, Tổng quan): lương công nhân dù Hòa hay Long đi trả đều trừ vào quỹ. Cột Người trả chỉ để biết ai đi trả hôm đó; bỏ dòng "Sale trả hộ, chưa hoàn" và "Hoàn tiền sale trả hộ".', 'chu,ketoan']] },
     { so: 65, ds: [['CCCD: thẻ chụp nhỏ trên nền nhiều màu, nhiều sọc (chiếu cói, vải hoa) giờ tự cắt đúng thẻ, không còn để nguyên cả ảnh.']] },
     { so: 64, ds: [['CCCD: nút mới "Lưu kho" – lưu những người đã ghép đúng vào thư mục năm sinh mà không cần in.'], ['CCCD: xử lý ảnh chờ trong thư mục CCCD TẠM – app tải ảnh về, cắt ghép; bấm Lưu kho là vào đúng thư mục năm sinh, ảnh gốc chuyển sang CCCD TẠM/ĐÃ XỬ LÝ (không xoá).'], ['Mặt sau chụp từ VNeID (không có dòng mã ở dưới): app đọc mã QR để biết là của ai; QR mờ thì ghép theo ngày hết hạn trùng ngày sinh.'], ['Cặp ảnh chưa chắc cùng 1 người có nút "Đúng người"; chưa bấm thì Lưu kho bỏ qua cặp đó.']] },
     { so: 63, ds: [['In CCCD: mỗi người đúng 1 tờ A4 (hết trang trắng thừa), CCCD nằm giữa tờ giấy. PDF chia sẻ cũng đặt CCCD giữa tờ.']] },
@@ -3997,9 +3998,9 @@ textarea.inp{font-family:inherit}
       var i0 = m5.dong.indexOf(quy), i1 = duKien ? m5.dong.indexOf(duKien) : m5.dong.length;
       var tenNgan = function (t0) {
         t0 = String(t0).trim();
-        return /^Thu tiền khách/i.test(t0) ? 'Khách đã trả' : /^Chi từ quỹ/i.test(t0) ? 'Chi theo sổ thu chi' : /^Lương công nhân đã/i.test(t0) ? 'Lương công nhân đã trả' : /đã trả, .*chưa chuyển/i.test(t0) ? 'Sale trả hộ, chưa hoàn' :
+        return /^Thu tiền khách/i.test(t0) ? 'Khách đã trả' : /^Chi từ quỹ/i.test(t0) ? 'Chi theo sổ thu chi' : /^Lương công nhân đã/i.test(t0) ? 'Lương công nhân đã trả' :
           /^Thực nhận dự kiến/i.test(t0) ? 'Khách còn nợ' : /^Thanh toán vendor/i.test(t0) ? 'Trả vendor' : /^Chi quản lý/i.test(t0) ? 'Chi quản lý' : /^Lương công nhân chưa/i.test(t0) ? 'Lương công nhân chưa trả' :
-          /^Lương kinh doanh chưa/i.test(t0) ? 'Lương kinh doanh chưa trả' : /^Còn phải chuyển cho/i.test(t0) ? 'Hoàn tiền sale trả hộ' : t0.replace(/\s*\(.*?\)\s*/g, ' ').trim();
+          /^Lương kinh doanh chưa/i.test(t0) ? 'Lương kinh doanh chưa trả' : t0.replace(/\s*\(.*?\)\s*/g, ' ').trim();
       };
       var von = m5.dong.slice(0, i0).filter(function (r) { return r[0] && tqCo(r[1]); });
       if (von.length) {   // quỹ từ đâu mà có: vốn góp → cộng/trừ → quỹ hiện tại
