@@ -3381,6 +3381,7 @@ textarea.inp{font-family:inherit}
   }
   function ccCheNoi(t) { t.querySelectorAll('[data-che]').forEach(function (b) { b.onclick = function () { CCS.theMo = b.getAttribute('data-che') === '1'; var lg = theLogoNap(); if (!lg.complete) lg.onload = function () { ccVe(); }; ccVe(); window.scrollTo(0, 0); }; }); }
   var BAN_MOI = [
+    { so: 74, ds: [['Giả lập: chi phí chung lấy theo sổ thu chi, các khoản trả trước (Claude, tool Zalo, proxy) chia đều theo tháng sử dụng; đồ mua một lần (máy quay, áo dép, ổ khoá) không tính.', 'chu']] },
     { so: 73, ds: [['Tổng quan có thêm mục "Giả lập": thử thay đổi đơn giá khách hàng, chiết khấu cho nhân sự khách hàng, phí pháp nhân, số lao động, bảng lương theo ca, cách trả vendor… và xem ngay lợi nhuận toàn công ty mỗi tháng. Số liệu gốc lấy từ bảng công thực tế.', 'chu'],
       ['Giả lập có bảng độ nhạy (đổi 1 đơn vị thì lợi nhuận đổi bao nhiêu), giới hạn để không lỗ, vốn cần ứng trước, và lưu kịch bản để mở lại hoặc so sánh 2–3 phương án. Bấm nút (i) cạnh mỗi chỉ số để xem giải thích.', 'chu']] },
     { so: 72, ds: [['Ô "người đi làm" của HOJEONG (tab Lao động và Tổng quan) lấy theo bảng tổng cuối sheet "+" mới nhất trong file vân tay của khách, đã trừ người chuyển nhà; có tách ca ngày – ca đêm và số người đã chấm vào sáng hôm sau.', ''],
@@ -4632,7 +4633,7 @@ textarea.inp{font-family:inherit}
       { k: 'C', t: 'Khách hàng thanh toán sau kỳ', u: 'ngày', st: 15, ki: 'd' }];
     function IT() { return IT0.filter(function (f) { return !f.hj || ctx().loai !== 'BEST'; }); }
     function ALL() { return HAY.concat(IT()); }
-    var cpGhi = cp.tam ? 'Tạm tính, chưa đủ 1 tháng số liệu từ tháng 10 · không gồm mua sắm ban đầu' : 'Bình quân ' + (cp.thangTinh || []).map(function (t) { return 'T' + t.slice(-2); }).join(', ') + ' từ sổ thu chi · không gồm mua sắm ban đầu';
+    var cpGhi = (cp.tam ? 'Tạm tính theo tháng ' + Number(String(cp.tHien || '').slice(-2)) + ' đến hôm nay' : 'Bình quân ' + (cp.thangTinh || []).map(function (t) { return 'tháng ' + Number(t.slice(-2)); }).join(', ')) + ' · phần mềm chia theo tháng sử dụng · không gồm mua sắm ban đầu';
     IT0.filter(function (f) { return f.k === 'CP'; })[0].g2 = cpGhi;
 
     /* ===== TÍNH ===== */
@@ -4932,7 +4933,7 @@ textarea.inp{font-family:inherit}
       gioV: ['Giờ công lao động vendor mỗi tháng', '<p>Tổng số giờ do lao động của vendor làm trong tháng, lấy từ bảng công và quy ra tháng. Công ty không có vendor thì bằng 0. Gõ số để giả lập trường hợp có vendor.</p>'],
       S: ['Số nhân viên kinh doanh', '<p>Số nhân viên tuyển dụng và quản lý lao động. Mỗi người hưởng lương cơ bản cố định và thưởng theo giờ công của lao động mình phụ trách: 1.000 đ/giờ cho 2.000 giờ đầu, 1.500 đ/giờ từ giờ 2.001, cộng thưởng mốc 5.000 / 7.000 / 10.000 giờ.</p><p>Giờ của lao động vendor không tính thưởng. Mặc định lấy theo số tài khoản nhân viên trong app.</p>'],
       base: ['Lương cơ bản mỗi nhân viên kinh doanh', '<p>Lương cố định hằng tháng, không phụ thuộc sản lượng. Đây là chi phí toàn công ty, không gắn với một khách hàng cụ thể.</p>'],
-      CP: ['Chi phí chung mỗi tháng', '<p>Các khoản chi lặp lại hằng tháng, không gắn với khách hàng nào: xăng xe đưa đón lao động, tiếp khách, thưởng người giới thiệu, proxy Zalo… Lấy từ sổ thu chi.</p><p>Không gồm mua sắm ban đầu (máy quay, tool Zalo, áo dép, ổ khóa): các khoản này được đánh dấu ở cột "Trang bị ban đầu" của sheet DANH_MUC. Tháng 9 có nhiều mua sắm ban đầu nên không tính.</p>', function () { return cpGhi + '.'; }],
+      CP: ['Chi phí chung mỗi tháng', '<p>Các khoản chi lặp lại hằng tháng, không gắn với khách hàng nào: xăng xe đưa đón lao động, tiếp khách, thưởng người giới thiệu, proxy Zalo… Lấy từ sổ thu chi.</p><p>Khoản trả trước cho nhiều tháng (Claude, tool Zalo 12 tháng, proxy 6 tháng) được chia đều cho các tháng sử dụng, theo cột "Chia cho số tháng" của sheet DANH_MUC.</p><p>Không gồm mua sắm ban đầu (máy quay, áo dép, găng tay, ổ khóa), đánh dấu ở cột "Trang bị ban đầu". Mua bổ sung khi thiếu, mất thì ghi khoản "Chi phí mua bổ sung áo, dép, găng tay, ổ khoá" và được tính vào chi phí chung. Tháng 9 có nhiều mua sắm ban đầu nên không tính.</p>', function () { return cpGhi + '.'; }],
       C: ['Khách hàng thanh toán sau kỳ', '<p>Số ngày từ khi kết thúc kỳ công đến khi khách hàng thanh toán. Ảnh hưởng đến số tiền lương công ty phải ứng trước.</p>'],
       loinhuan: ['Lợi nhuận toàn công ty', '<p>Số tiền còn lại mỗi tháng của cả công ty sau khi trừ mọi chi phí: lương công nhân, trả vendor, phí pháp nhân, chiết khấu, thưởng và lương cơ bản nhân viên kinh doanh, chi phí chung.</p><p>Công ty đang giả lập dùng số thiết lập ở trên; các công ty khác dùng số liệu thực tế. Đây là công cụ so sánh phương án; số chính thức xem ở tab Lợi nhuận.</p>'],
       moigio: ['Lợi nhuận từ lao động công ty', '<p>Phần lợi nhuận riêng của công ty đang xem, tính trên lao động do công ty tự trả lương (không gồm vendor), sau khi trừ lương, phí pháp nhân, chiết khấu và thưởng nhân viên kinh doanh, nhưng chưa trừ chi phí cố định toàn công ty.</p><p>Chia cho số giờ, số công, số lao động để biết mỗi giờ / mỗi công / mỗi người đem lại bao nhiêu.</p>'],
