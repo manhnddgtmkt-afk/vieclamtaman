@@ -616,6 +616,7 @@ textarea.inp{font-family:inherit}
 .dlm{display:flex;align-items:center;gap:10px;margin-top:10px;padding:10px 12px;border-radius:12px;background:var(--soft)}
 .dlm b{font-size:24px;font-weight:800;color:var(--good)}
 .dlm span{display:flex;flex-direction:column;font-size:14px;font-weight:600;min-width:0}
+.vtR.cn .nm,.vtR.cn .vtH{color:var(--muted)}.vtR.cn .av{opacity:.55}
 .dlm small{font-size:11.5px;color:var(--muted);font-weight:500}
 .q2dl{display:flex;gap:8px;flex-wrap:wrap}.q2dl span{display:flex;align-items:center;background:var(--soft);border-radius:10px;padding:6px 10px;font-size:13.5px;white-space:nowrap}.q2dl b{margin-left:4px}
 
@@ -1209,10 +1210,20 @@ textarea.inp{font-family:inherit}
     return !!(p.dem && p.vt === d.moc2 && d.moc === ymdNay() && new Date().getHours() < 20);
   }
   function soDiLam(d) { return d && d.ds ? d.ds.filter(function (p) { return dangLam(d, p); }).length : 0; }
-  function diLamHtml(d) {
+  function svYmd(sv) { var x = serialDate(sv); return x.getUTCFullYear() + '-' + ('0' + (x.getUTCMonth() + 1)).slice(-2) + '-' + ('0' + x.getUTCDate()).slice(-2); }
+  function dlVT(cty) { var t = cty && cty !== 'BEST' ? VTT[cty] : null; return t && t.dl && t.dl.tong >= 0 ? t.dl : null; }   // 24/10: số theo bảng tổng file vân tay (đã trừ người chuyển nhà)
+  function diLamHtml(d, cty) {
+    var v = dlVT(cty || S.cty);
+    if (v) {
+      var hnV = svYmd(v.d) === ymdNay(), gc = ['khách ghi ' + v.tong];
+      if (v.ra) gc.push('trừ ' + v.ra + ' người chuyển nhà'); if (v.vao) gc.push('cộng ' + v.vao + ' người chuyển về');
+      return '<div class="dlm" id="dlm"><b class="num">' + v.n + '</b><span>' + (hnV ? 'người đi làm hôm nay' : 'người đi làm ngày ' + ddmm(serialDate(v.d))) +
+        '<small>ca ngày ' + Math.max(0, v.ngay) + ' · ca đêm ' + Math.max(0, v.dem) + '</small><small>' + esc(gc.join(', ')) + '</small>' +
+        (v.sang && v.sang.d > v.d ? '<small>Sáng ' + ddmm(serialDate(v.sang.d)) + ' đã có ' + v.sang.n + ' người chấm vào</small>' : '') + '</span></div>';
+    }
     if (!d || !d.moc) return '';
     var hn = d.moc === ymdNay();
-    return '<div class="dlm"><b class="num">' + soDiLam(d) + '</b><span>' + (hn ? 'người đi làm hôm nay' : 'người đi làm ngày ' + ngayDM(d.moc)) + '<small>theo vân tay mới nhất' + (hn ? '' : ' · hôm nay chưa có') + '</small></span></div>';
+    return '<div class="dlm" id="dlm"><b class="num">' + soDiLam(d) + '</b><span>' + (hn ? 'người đi làm hôm nay' : 'người đi làm ngày ' + ngayDM(d.moc)) + '<small>theo vân tay mới nhất' + (hn ? '' : ' · hôm nay chưa có') + '</small></span></div>';
   }
   function veDs() {
     S.hs = null; S.loc = S.loc || 'all';
@@ -3369,6 +3380,8 @@ textarea.inp{font-family:inherit}
   }
   function ccCheNoi(t) { t.querySelectorAll('[data-che]').forEach(function (b) { b.onclick = function () { CCS.theMo = b.getAttribute('data-che') === '1'; var lg = theLogoNap(); if (!lg.complete) lg.onload = function () { ccVe(); }; ccVe(); window.scrollTo(0, 0); }; }); }
   var BAN_MOI = [
+    { so: 72, ds: [['Ô "người đi làm" của HOJEONG (tab Lao động và Tổng quan) lấy theo bảng tổng cuối sheet "+" mới nhất trong file vân tay của khách, đã trừ người chuyển nhà; có tách ca ngày – ca đêm và số người đã chấm vào sáng hôm sau.', ''],
+      ['Kiểm tra vân tay hiện đủ mọi dòng Đại Thành như file khách gửi; người đã chuyển nhà vẫn hiện, ghi rõ "đã chuyển nhà – bảng công không tính" và xếp cuối danh sách.', '']] },
     { so: 71, ds: [['Kiểm tra vân tay: các sheet ngày trong file HOJEONG được gộp thành 2 tab "Ngày" và "Ngày +" như file Excel, chọn ngày ở dải phía trên; ca qua đêm hiện trên cùng một trục giờ với ca ngày.', ''],
       ['Sheet chỉ có giờ vào (khách gửi buổi sáng) và người đang trong ca lúc lấy file không còn bị báo "thiếu giờ ra".', '']] },
     { so: 70, ds: [['Lao động: có nút "Kiểm tra vân tay" (BEST: "Kiểm tra chấm công") ngay dưới tên công ty. Bấm vào xem giờ vào – ra từng người theo file khách gửi, đã lọc người Đại Thành, chia theo ngày như file Excel, người thiếu giờ được đưa lên đầu.', ''],
@@ -3645,7 +3658,10 @@ textarea.inp{font-family:inherit}
   function ganVtThe() { var b = document.getElementById('vtThe'); if (b) b.onclick = moVT; }
   function taiVTTep(cty) {
     apiT({ v: 'vtTep', cty: cty, im: 1 }).then(function (o) {
-      if (o.loi) return; VTT[cty] = o;
+      if (o.loi) return;
+      var doiDl = JSON.stringify((VTT[cty] || {}).dl || null) !== JSON.stringify(o.dl || null); VTT[cty] = o;
+      if (doiDl && S.cty === cty && S.tab === 'ld' && !S.hs && !S.vtMo) { var dm = document.getElementById('dlm'), hh = diLamHtml(S.data[cty], cty); if (dm) dm.outerHTML = hh || '<div id="dlm"></div>'; }
+      if (doiDl && S.tab === 'tq' && TQ && (S.tqNhom || 'ln') === 'ln') hienTQ(TQ);
       var b = document.getElementById('vtThe');
       if (b && S.cty === cty && S.tab === 'ld' && !S.hs && !S.utMo && !S.vtMo) { b.outerHTML = vtTheHtml(); ganVtThe(); }
     }, function () { });
@@ -3696,7 +3712,7 @@ textarea.inp{font-family:inherit}
   function taiVT() {
     var cty = S.cty;
     apiT({ v: 'vtXem', cty: cty }).then(function (o) {
-      VTD[cty] = o; if (!o.loi && o.file) VTT[cty] = { ten: o.file.ten, luc: o.file.luc, so: o.file.so || 0, cn: o.cn || {} };
+      VTD[cty] = o; if (!o.loi && o.file) VTT[cty] = { ten: o.file.ten, luc: o.file.luc, so: o.file.so || 0, cn: o.cn || {}, dl: o.dl || (VTT[cty] || {}).dl || null };
       if (S.vtMo && S.cty === cty) veVT();
     }, function (e) { VTD[cty] = { loi: e.message }; if (S.vtMo && S.cty === cty) veVT(); });
   }
@@ -3727,7 +3743,7 @@ textarea.inp{font-family:inherit}
     var f = new Date(d.file.luc), fsv = Math.round(Date.UTC(f.getFullYear(), f.getMonth(), f.getDate()) / 864e5) + 25569;
     return x[1] === fsv || (x[1] === fsv - 1 && x[2] >= 900 && f.getHours() < 12);
   }
-  function vtLoi(x, p, d, cv) { return x[2] < 0 && x[3] < 0 ? 'Không có giờ' : x[2] < 0 ? 'Thiếu giờ vào' : x[3] < 0 ? (vtChuaRa(x, d, cv) ? '' : 'Thiếu giờ ra') : !p ? 'Mã chưa có trong danh sách lao động' : ''; }
+  function vtLoi(x, p, d, cv) { return x[4] === 1 ? '' : x[2] < 0 && x[3] < 0 ? 'Không có giờ' : x[2] < 0 ? 'Thiếu giờ vào' : x[3] < 0 ? (vtChuaRa(x, d, cv) ? '' : 'Thiếu giờ ra') : !p ? 'Mã chưa có trong danh sách lao động' : ''; }
   function veVT() {
     var d = VTD[S.cty], best = S.cty === 'BEST', dl = S.data[S.cty] || {}, sua = d && !d.loi ? !!d.sua : !!dl.het;
     $app.innerHTML = '<div class="top"><div class="row sp"><button class="back" id="bk" aria-label="Quay lại">‹</button>' +
@@ -3777,17 +3793,18 @@ textarea.inp{font-family:inherit}
       var p = timP(x[0]), ten = p ? hoaDau(p.ten) : (d.ten && d.ten[x[0]] ? hoaDau(d.ten[x[0]]) : 'Mã ' + x[0]);
       return { x: x, p: p, ten: ten, loi: vtLoi(x, p, d, cv), chua: vtChuaRa(x, d, cv) };
     }).filter(function (o) { return !k || kd(o.ten).indexOf(k) >= 0 || String(o.x[0]).indexOf(k) >= 0; });
-    rows.sort(function (a, b) { return (b.loi ? 1 : 0) - (a.loi ? 1 : 0) || ((a.x[2] < 0 ? 9999 : a.x[2]) - (b.x[2] < 0 ? 9999 : b.x[2])); });
+    rows.sort(function (a, b) { return (a.x[4] === 1 ? 1 : 0) - (b.x[4] === 1 ? 1 : 0) || (b.loi ? 1 : 0) - (a.loi ? 1 : 0) || ((a.x[2] < 0 ? 9999 : a.x[2]) - (b.x[2] < 0 ? 9999 : b.x[2])); });
     var nLoi = rows.filter(function (o) { return o.loi; }).length, tr = vtTruc(rows.map(function (o) { return o.x; }));
-    var tieu = vtThuDai(S.vtNgay) + ' ' + ddmm(serialDate(S.vtNgay)) + ' · ' + rows.length + ' người';
+    var nCn = rows.filter(function (o) { return o.x[4] === 1; }).length;
+    var tieu = vtThuDai(S.vtNgay) + ' ' + ddmm(serialDate(S.vtNgay)) + ' · ' + rows.length + ' người' + (nCn ? ' · ' + nCn + ' đã chuyển nhà' : '');
     h += '<div class="row sp" style="margin:16px 4px 8px;gap:8px"><span class="sec ell" style="flex:1">' + esc(tieu) + '</span>' + (nLoi ? '<span class="pill warn">' + nLoi + ' cần xem</span>' : '') + '</div>';
     h += '<div class="grp vtDs"><div class="vtTruc num">' + tr.nhan.map(function (t) { return '<span>' + t + '</span>'; }).join('') + '</div>' +
       (rows.length ? rows.map(function (o, i) {
         var x = o.x, cong1 = x[3] >= 0 && ((x[2] >= 0 && x[3] < x[2]) || (tr.dai && x[2] < 0 && x[3] < 720));
-        var sub = o.loi ? o.loi : [x[0], o.p && o.p.sale ? tenSale(o.p.sale) : '', o.chua ? (cv ? 'chỉ có giờ vào' : 'chưa có giờ ra lúc lấy file') : ''].filter(String).join(' · ');
-        return '<button class="it vtR' + (o.loi ? ' loi' : '') + '" data-i="' + i + '"><span class="av">' + esc(o.p || (d.ten || {})[x[0]] ? o.ten.split(' ').slice(-2).map(function (w) { return w.charAt(0); }).join('') : '?') + '</span>' +
+        var sub = o.loi ? o.loi : x[4] === 1 ? 'đã chuyển nhà – bảng công không tính' : [x[0], x[4] === 2 ? 'chuyển về Đại Thành' : '', o.p && o.p.sale ? tenSale(o.p.sale) : '', o.chua ? (cv ? 'chỉ có giờ vào' : 'chưa có giờ ra lúc lấy file') : ''].filter(String).join(' · ');
+        return '<button class="it vtR' + (o.loi ? ' loi' : '') + (x[4] === 1 ? ' cn' : '') + '" data-i="' + i + '"><span class="av">' + esc(o.p || (d.ten || {})[x[0]] ? o.ten.split(' ').slice(-2).map(function (w) { return w.charAt(0); }).join('') : '?') + '</span>' +
           '<span class="vtC"><span class="vtT"><span class="nm ell">' + esc(o.ten) + '</span><span class="vtH num">' + vtGio(x[2]) + ' – <span' + (x[3] < 0 && !o.chua ? ' class="thieu"' : '') + '>' + vtGio(x[3]) + '</span>' + (cong1 ? '<sup>+1</sup>' : '') + '</span></span>' +
-          vtThanh(x, tr, o.loi ? 'var(--warn)' : (vtDem(x) ? 'var(--vtDem)' : 'var(--blue)')) +
+          vtThanh(x, tr, o.loi ? 'var(--warn)' : x[4] === 1 ? 'var(--edge)' : (vtDem(x) ? 'var(--vtDem)' : 'var(--blue)')) +
           '<span class="sub ell' + (o.loi ? ' vtLoi' : '') + '">' + esc(sub) + '</span></span></button>';
       }).join('') : '<div class="empty">' + (k ? 'Không có ai khớp "' + esc(S.vtQ.trim()) + '".' : 'Ngày này không có ai.') + '</div>') + '</div>';
     m.innerHTML = h;
@@ -4325,8 +4342,10 @@ textarea.inp{font-family:inherit}
       h += '<div class="card q2hero"><div class="meta">' + esc(t[0][0]) + (/tạm tính/i.test(t[0][2] || '') ? ' · tạm tính' : '') + '</div><div class="big num" style="color:var(--' + (am ? 'bad' : 'good') + ')">' + esc(dauTru(t[0][1])) + '</div>' + chip + (t[4] ? '<div class="q2sr" style="margin-top:10px;font-size:13px"><span class="ell">Lãi cộng dồn' + (/(\d+)\s*tháng/i.test(t[4][2] || '') ? ' ' + /(\d+)\s*tháng/i.exec(t[4][2])[1] + ' tháng' : '') + '</span><b style="color:var(--' + (q2So(t[4][1]) < 0 ? 'bad' : 'good') + ')">' + esc(dauTru(t[4][1])) + '</b></div>' : '') + (/tạm tính/i.test(t[0][2] || '') ? '<div class="meta" style="margin-top:6px">Tháng chưa kết thúc – số tính đến các khoản đã ghi</div>' : '') + '</div>';
     }
     h += q2Viec(o);
-    var dlCty = Object.keys(S.data || {}).filter(function (k) { return S.data[k] && S.data[k].moc; });
-    if (dlCty.length) h += q2H('Đang đi làm', 'theo vân tay mới nhất') + '<div class="card q2dl">' + dlCty.map(function (k) { var d = S.data[k]; return '<span>' + q2Dot(mauCty(k)) + esc(k) + '<b class="num">' + soDiLam(d) + '</b>' + (d.moc === ymdNay() ? '' : '<small class="meta" style="margin-left:4px">(' + ngayDM(d.moc) + ')</small>') + '</span>'; }).join('') + '</div>';
+    var dlCty = Object.keys(S.data || {}).filter(function (k) { return S.data[k] && (S.data[k].moc || dlVT(k)); });
+    if (dlCty.length) h += q2H('Đang đi làm', 'theo vân tay mới nhất') + '<div class="card q2dl">' + dlCty.map(function (k) { var d = S.data[k], v = dlVT(k);
+      if (v) return '<span>' + q2Dot(mauCty(k)) + esc(k) + '<b class="num">' + v.n + '</b><small class="meta" style="margin-left:4px">(' + (svYmd(v.d) === ymdNay() ? '' : ddmm(serialDate(v.d)) + ' · ') + 'ngày ' + Math.max(0, v.ngay) + ' · đêm ' + Math.max(0, v.dem) + ')</small></span>';
+      return '<span>' + q2Dot(mauCty(k)) + esc(k) + '<b class="num">' + soDiLam(d) + '</b>' + (d.moc === ymdNay() ? '' : '<small class="meta" style="margin-left:4px">(' + ngayDM(d.moc) + ')</small>') + '</span>'; }).join('') + '</div>';
     var tg1 = m1 ? m1.dong.filter(function (r) { return /^Tổng/i.test(r[0]); })[0] : null;
     if (tg1) {   // doanh thu đi đâu: mỗi bước thanh xám = còn lại, đỏ = phần bị trừ
       var dt = q2So(tqGt(m1, tg1, 'Doanh thu (chưa VAT)')), cn = q2So(tqGt(m1, tg1, 'Lương công nhân (gồm CN của vendor)')),
