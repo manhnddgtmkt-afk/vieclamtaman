@@ -733,7 +733,14 @@ textarea.inp{font-family:inherit}
 :root{--vtDem:#3B3F8F}
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--vtDem:#9EA3F0}}
 :root[data-theme="dark"]{--vtDem:#9EA3F0}
-@media (max-width:399px){#tqSeg button{font-size:12.5px;padding:8px 2px}}
+/* 24/10 bản 75: thanh 3 tab có vạch ngăn; Giả lập là nút riêng */
+#tqSeg button{flex:1 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis;position:relative;padding:8px 6px}
+#tqSeg button+button::before{content:'';position:absolute;left:0;top:28%;height:44%;width:1px;background:var(--muted);opacity:.35}
+#tqSeg button.on::before,#tqSeg button.on+button::before{opacity:0}
+.tqMeta{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;margin:-8px 4px 0}.tqMeta>span{white-space:nowrap}.tqMeta .glVao{margin-left:auto}
+.glVao{display:inline-flex;align-items:center;gap:5px;flex:none;border:1px solid var(--line);background:var(--card);color:var(--blue);border-radius:999px;padding:5px 11px 5px 9px;font:inherit;font-size:13.5px;font-weight:600;white-space:nowrap;cursor:pointer}
+.glVao svg{width:15px;height:15px;flex:none}
+.glBar{display:flex;align-items:center;gap:8px;margin:0 0 2px}.glBar .link{padding:4px 0;font-size:15px}.glBar b{margin-left:auto;font-size:15px;font-weight:600;color:var(--muted)}
 </style>
 </head>
 <body>
@@ -3381,6 +3388,7 @@ textarea.inp{font-family:inherit}
   }
   function ccCheNoi(t) { t.querySelectorAll('[data-che]').forEach(function (b) { b.onclick = function () { CCS.theMo = b.getAttribute('data-che') === '1'; var lg = theLogoNap(); if (!lg.complete) lg.onload = function () { ccVe(); }; ccVe(); window.scrollTo(0, 0); }; }); }
   var BAN_MOI = [
+    { so: 75, ds: [['Tổng quan: thanh chọn còn 3 mục (Lợi nhuận, Tiền & công nợ, Vendor & sale), có vạch ngăn cho dễ phân biệt. Giả lập tài chính chuyển thành nút riêng bên phải dòng "Cập nhật".', 'chu']] },
     { so: 74, ds: [['Giả lập: chi phí chung lấy theo sổ thu chi, các khoản trả trước (Claude, tool Zalo, proxy) chia đều theo tháng sử dụng; đồ mua một lần (máy quay, áo dép, ổ khoá) không tính.', 'chu']] },
     { so: 73, ds: [['Tổng quan có thêm mục "Giả lập": thử thay đổi đơn giá khách hàng, chiết khấu cho nhân sự khách hàng, phí pháp nhân, số lao động, bảng lương theo ca, cách trả vendor… và xem ngay lợi nhuận toàn công ty mỗi tháng. Số liệu gốc lấy từ bảng công thực tế.', 'chu'],
       ['Giả lập có bảng độ nhạy (đổi 1 đơn vị thì lợi nhuận đổi bao nhiêu), giới hạn để không lỗ, vốn cần ứng trước, và lưu kịch bản để mở lại hoặc so sánh 2–3 phương án. Bấm nút (i) cạnh mỗi chỉ số để xem giải thích.', 'chu']] },
@@ -4508,13 +4516,19 @@ textarea.inp{font-family:inherit}
       if (nhom === 'gl' && document.getElementById('glHost')) return;   // 24/10: đang ở Giả lập tài chính -> số Tổng quan mới không vẽ lại (giữ ô đang gõ)
       var than = nhom === 'gl' ? '<div id="glHost"></div>' : nhom === 'tien' ? tqNhomTien(o) : nhom === 'vs' ? tqNhomVS(o) : tqNhomLN(o);
       var cn = /(\d{1,2}:\d{2}) ngày (\d{1,2}\/\d{1,2})/.exec(o.capNhat || '');
+      var GLI = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 13.5h12M4 11V8M7.3 11V5M10.7 11V7M14 3l-3 2.5"/></svg>';
+      if (nhom === 'gl') {
+        t.innerHTML = '<div class="glBar"><button class="link" id="glLui">‹ Quay lại báo cáo</button><b>Giả lập tài chính</b></div>' + than;
+        document.getElementById('glLui').onclick = function () { S.tqNhom = S.tqTruoc || 'ln'; luu('vlta_tqn', S.tqNhom); var gh0 = document.getElementById('glHost'); if (gh0) gh0.remove(); hienTQ(o); window.scrollTo(0, 0); };
+        glVe(document.getElementById('glHost')); return;
+      }
       t.innerHTML = '<div class="row sp"><select class="inp ky" id="tqKy" aria-label="Chọn kỳ">' + ds.map(function (x) { return '<option value="' + esc(x) + '"' + (x === o.ky ? ' selected' : '') + '>Kỳ ' + esc(tqThang(x)) + '</option>'; }).join('') + '</select>' +
         '<button class="link" id="tqMoi">⟳ Số mới</button></div>' +
-        '<div class="meta" style="margin:-8px 4px 0">' + (cn ? 'Cập nhật ' + cn[1] + ' · ' + cn[2] : esc(o.capNhat)) + '</div>' +
-        '<div class="seg" id="tqSeg"><button data-n="ln"' + (nhom === 'ln' ? ' class="on"' : '') + '>Lợi nhuận</button><button data-n="tien"' + (nhom === 'tien' ? ' class="on"' : '') + '>Tiền & công nợ</button><button data-n="vs"' + (nhom === 'vs' ? ' class="on"' : '') + '>Vendor & sale</button><button data-n="gl"' + (nhom === 'gl' ? ' class="on"' : '') + '>Giả lập</button></div>' +
+        '<div class="meta tqMeta"><span>' + (cn ? 'Cập nhật ' + cn[1] + ' · ' + cn[2] : esc(o.capNhat)) + '</span>' + (laChu() ? '<button class="glVao" id="glVao">' + GLI + 'Giả lập tài chính ›</button>' : '') + '</div>' +
+        '<div class="seg" id="tqSeg"><button data-n="ln"' + (nhom === 'ln' ? ' class="on"' : '') + '>Lợi nhuận</button><button data-n="tien"' + (nhom === 'tien' ? ' class="on"' : '') + '>Tiền & công nợ</button><button data-n="vs"' + (nhom === 'vs' ? ' class="on"' : '') + '>Vendor & sale</button></div>' +
         than;
       document.querySelectorAll('#tqSeg button').forEach(function (b) { b.onclick = function () { S.tqNhom = b.getAttribute('data-n'); luu('vlta_tqn', S.tqNhom); var gh0 = document.getElementById('glHost'); if (gh0) gh0.remove(); hienTQ(o); }; });
-      if (nhom === 'gl') { var kyR = document.getElementById('tqKy'); if (kyR && kyR.parentElement) kyR.parentElement.style.display = 'none'; var mt = t.querySelector('.meta'); if (mt) mt.style.display = 'none'; glVe(document.getElementById('glHost')); return; }
+      var gv = document.getElementById('glVao'); if (gv) gv.onclick = function () { S.tqTruoc = nhom; S.tqNhom = 'gl'; luu('vlta_tqn', 'gl'); hienTQ(o); window.scrollTo(0, 0); };
       document.getElementById('tqKy').onchange = function () {
         var k = this.value;
         var bm = document.getElementById('tqMoi'); bm.disabled = this.disabled = true; bm.textContent = 'Đang tải kỳ…';
