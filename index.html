@@ -13,7 +13,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
 <script src="config.js"></script>
-<script>window.PB = { so: 75, luc: "24/10 13:40" };</script>
+<script>window.PB = { so: 76, luc: "24/10 14:54" };</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap">
 <style>
@@ -712,6 +712,7 @@ textarea.inp{font-family:inherit}
 .vtThe .vtIc{width:40px;height:40px;border-radius:20px;background:var(--tint);color:var(--blue);display:grid;place-items:center;flex:none}.vtThe .vtIc svg{width:22px;height:22px}
 .vtTx{flex:1;min-width:0;display:flex;flex-direction:column;gap:1px}.vtTx b{font-size:16px;font-weight:600}.vtTx small{font-size:13px;color:var(--muted)}.vtTx small.cu{color:var(--warn);font-weight:600}
 .vtThe>i{font-style:normal;color:var(--faint);font-size:22px}
+.vtTx small.zlc{white-space:normal;line-height:1.35}
 .tbk{background:var(--card);border:1.5px solid var(--tint);border-radius:18px;margin-top:12px;overflow:hidden}
 .tbk-h{display:flex;align-items:center;gap:8px;padding:12px 14px 8px}.tbk-h b{flex:1;font-size:15px;font-weight:700}.tbk-h .link{padding:0;font-size:13px}
 .tbDot{width:8px;height:8px;border-radius:4px;background:var(--bad);flex:none}
@@ -3399,6 +3400,8 @@ textarea.inp{font-family:inherit}
   }
   function ccCheNoi(t) { t.querySelectorAll('[data-che]').forEach(function (b) { b.onclick = function () { CCS.theMo = b.getAttribute('data-che') === '1'; var lg = theLogoNap(); if (!lg.complete) lg.onload = function () { ccVe(); }; ccVe(); window.scrollTo(0, 0); }; }); }
   var BAN_MOI = [
+    { so: 76, ds: [['HOJEONG: file vân tay khách gửi vào nhóm Zalo được máy tự lấy về và cập nhật vào bảng công (từ 12h trưa, 30 phút một lần). Thẻ "Kiểm tra vân tay" ghi "từ Zalo" khi bản mới nhất do máy tự lấy.', ''],
+      ['Chọn file vân tay giống hệt bản đã cập nhật thì app báo "Vân tay đã ở bản mới nhất", không cập nhật lại. Cần gấp vẫn chọn file như cũ.', '']] },
     { so: 75, ds: [['Tổng quan: thanh chọn còn 3 mục (Lợi nhuận, Tiền & công nợ, Vendor & sale), có vạch ngăn cho dễ phân biệt. Giả lập tài chính chuyển thành nút riêng bên phải dòng "Cập nhật".', 'chu']] },
     { so: 74, ds: [['Giả lập: chi phí chung lấy theo sổ thu chi, các khoản trả trước (Claude, tool Zalo, proxy) chia đều theo tháng sử dụng; đồ mua một lần (máy quay, áo dép, ổ khoá) không tính.', 'chu']] },
     { so: 73, ds: [['Tổng quan có thêm mục "Giả lập": thử thay đổi đơn giá khách hàng, chiết khấu cho nhân sự khách hàng, phí pháp nhân, số lao động, bảng lương theo ca, cách trả vendor… và xem ngay lợi nhuận toàn công ty mỗi tháng. Số liệu gốc lấy từ bảng công thực tế.', 'chu'],
@@ -3651,7 +3654,7 @@ textarea.inp{font-family:inherit}
           if (o.loi) { loiNut(btn); m.style.color = ''; m.textContent = o.loi; return; }
           xong = true; btn.textContent = 'Xong'; fi.value = ''; fi.classList.add('hidden');
           var hu = document.getElementById('cHuy'); if (hu) hu.classList.add('hidden');
-          m.style.color = 'var(--good)'; m.textContent = 'Đã cập nhật xong sau ' + o.giay + ' giây.' + (o.bao ? ' ' + o.bao : '');
+          m.style.color = 'var(--good)'; m.textContent = o.moiNhat || ('Đã cập nhật xong sau ' + o.giay + ' giây.' + (o.bao ? ' ' + o.bao : ''));
           lg.textContent = o.log || ''; lg.classList.toggle('hidden', !o.log);
           PC = {}; taiDs(true);
         }, function (e) { clearInterval(dem); dang = false; btn.disabled = false; loiNut(btn); m.style.color = ''; m.textContent = e.message; });
@@ -3676,8 +3679,10 @@ textarea.inp{font-family:inherit}
     var t = VTT[S.cty], sub = 'Xem giờ ' + vtTen() + ' khách gửi', cu = false;
     if (t && !t.luc) sub = 'Chưa có file ' + vtTen() + ' nào';
     else if (t && t.luc) { sub = (S.cty === 'BEST' ? 'Chấm công' : 'Vân tay') + ' mới nhất ' + gioPhut(t.luc) + ' · ' + truoc(t.luc); cu = Date.now() - t.luc > 864e5 && new Date().getDay() !== 0; }
-    return '<button class="vtThe" id="vtThe"><span class="vtIc">' + ICON_VT + '</span><span class="vtTx"><b>Kiểm tra ' + vtTen() + '</b><small class="ell' + (cu ? ' cu' : '') + '">' + esc(sub) + '</small></span><i aria-hidden="true">›</i></button>';
+    var zl = t && t.zl ? '<small class="cu zlc">' + esc(vtZlCB(t.zl)) + '</small>' : (t && t.luc && t.nguon === 'zalo' ? '<small class="ell">Máy tự lấy từ nhóm Zalo</small>' : '');   // 24/10: nguồn file / file Zalo máy không nhận được
+    return '<button class="vtThe" id="vtThe"><span class="vtIc">' + ICON_VT + '</span><span class="vtTx"><b>Kiểm tra ' + vtTen() + '</b><small class="zlc' + (cu ? ' cu' : '') + '">' + esc(sub) + '</small>' + zl + '</span><i aria-hidden="true">›</i></button>';
   }
+  function vtZlCB(z) { return 'File Zalo lúc ' + gioPhut(z.luc) + ' chưa nhận: ' + z.l + '. Sale kiểm tra rồi chọn file đúng.'; }
   function ganVtThe() { var b = document.getElementById('vtThe'); if (b) b.onclick = moVT; }
   function taiVTTep(cty) {
     apiT({ v: 'vtTep', cty: cty, im: 1 }).then(function (o) {
@@ -3785,15 +3790,16 @@ textarea.inp{font-family:inherit}
     var d = VTD[S.cty], dl = S.data[S.cty] || {}, sua = d && !d.loi ? !!d.sua : !!dl.het, h = '';
     // thẻ file + chọn file mới (chọn là tự cập nhật vào bảng công)
     var f = d && !d.loi && d.file ? d.file : (VTT[S.cty] && VTT[S.cty].luc ? VTT[S.cty] : null), cn = (d && d.cn) || (VTT[S.cty] && VTT[S.cty].cn) || {};
-    var cnL = vtLucCN(cn.luc), theo = f && cnL && cnL >= f.luc - 120000;
+    var cnL = vtLucCN(cn.luc), theo = f && cnL && cnL >= f.luc - 120000, tT = VTT[S.cty] || {}, tuZl = f && tT.nguon === 'zalo' && tT.luc === f.luc;
     h += '<div class="vtFile"><div class="vtF1">' + (theo ? '<span class="vtOk" aria-hidden="true">✓</span>' : '<span class="vtDoc" aria-hidden="true">▤</span>') +
       '<span class="vtTx"><b class="ell">' + esc(f ? (f.so > 1 ? f.so + ' file · mới nhất ' + f.ten : f.ten) : 'Chưa có file') + '</b>' +
-      '<small class="ell">' + esc(!f ? '' : theo ? 'Bảng công đang theo file này · cập nhật ' + gioPhut(cnL) : 'Bảng công chưa theo file này' + (cnL ? ' · lần cập nhật cuối ' + gioPhut(cnL) : '')) + '</small></span>' +
+      '<small class="zlc">' + esc(!f ? '' : theo ? 'Bảng công đang theo file này · cập nhật ' + gioPhut(cnL) + (tuZl ? ' · máy tự lấy từ Zalo' : '') : 'Bảng công chưa theo file này' + (cnL ? ' · lần cập nhật cuối ' + gioPhut(cnL) : '')) + '</small></span>' +
       (sua ? '<button class="link" id="vtChon">Chọn file mới</button><input type="file" id="vtFileIn" class="hidden" accept=".xls,.xlsx,.xlsm,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet">' : '') + '</div>';
     var up = S.vtUp;
     if (up && up.dang) h += '<div class="vtBan dang" id="vtBan">Đang đưa file vào bảng công… <span id="vtGiay">' + Math.round((Date.now() - up.dang) / 1000) + '</span> giây</div>';
     else if (up && up.ok) h += '<div class="vtBan ok">' + esc(up.ok) + '</div>';
     else if (up && up.loi) h += '<div class="vtBan loi">' + esc(up.loi) + '</div>';
+    else if (tT.zl) h += '<div class="vtBan loi">' + esc(vtZlCB(tT.zl)) + '</div>';
     h += '</div>';
     if (!d) { m.innerHTML = h + '<div class="sk" style="height:56px;margin-top:12px"></div><div class="sk" style="height:300px;margin-top:12px"></div>'; vtGanChon(); return; }
     if (d.loi) { m.innerHTML = h + '<div class="empty">' + esc(d.loi) + '</div>'; vtGanChon(); return; }
@@ -3852,6 +3858,7 @@ textarea.inp{font-family:inherit}
         apiT({ v: 'capNhat', cty: cty, ten: f.name, b64: x.slice(x.indexOf(',') + 1), lang: 1 }).then(function (o) {
           clearInterval(dem);
           if (o.loi) { S.vtUp = { loi: o.loi.replace(/^Lỗi khi cập nhật: /, '') }; if (S.vtMo && S.cty === cty) veVTThan(); return; }
+          if (o.moiNhat) { S.vtUp = { ok: o.moiNhat }; if (S.vtMo && S.cty === cty) veVTThan(); return; }   // 24/10: file giống hệt bản đã cập nhật
           S.vtUp = { ok: 'Đã đưa file vào bảng công lúc ' + gioPhut(Date.now()) + ' (' + o.giay + ' giây).' };
           PC = {}; delete VTD[cty]; taiDs(true); taiVT(); taiVTTep(cty);
           if (S.vtMo && S.cty === cty) veVTThan();
