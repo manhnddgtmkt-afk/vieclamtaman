@@ -13,7 +13,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
 <script src="config.js"></script>
-<script>window.PB = { so: 78, luc: "25/10 19:01" };</script>
+<script>window.PB = { so: 79, luc: "25/10 21:59" };</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap">
 <style>
@@ -3446,6 +3446,9 @@ textarea.inp{font-family:inherit}
   }
   function ccCheNoi(t) { t.querySelectorAll('[data-che]').forEach(function (b) { b.onclick = function () { CCS.theMo = b.getAttribute('data-che') === '1'; var lg = theLogoNap(); if (!lg.complete) lg.onload = function () { ccVe(); }; ccVe(); window.scrollTo(0, 0); }; }); }
   var BAN_MOI = [
+    { so: 79, ds: [['Giả lập tài chính: nhập riêng số người ca ngày và ca đêm ở phần Chỉ số chính (ca đêm lãi hơn hẳn ca ngày).', 'chu'],
+      ['Giả lập: thêm ô "Công chủ nhật mỗi tháng" cho HOJEONG và BEST, tính đúng giá ×2 / ×2,3 và lương chủ nhật; BEST tách ngày thường và chủ nhật.', 'chu'],
+      ['Giả lập: thưởng nhân viên kinh doanh tính gộp giờ mọi công ty của từng người (lũy tiến, thưởng mốc, phụ cấp 50 người); chuyên cần tính theo số công.', 'chu']] },
     { so: 78, ds: [['CCCD → Xử lý ảnh chờ trong CCCD TẠM: hiện thanh tiến độ, đếm giây và số ảnh đã đọc tới khi xong (trước đây dòng báo tự tắt sau 15 giây nên tưởng app đứng).', ''],
       ['Xong có bảng "Lần xử lý CCCD TẠM gần nhất" nằm cố định trong tab CCCD: bao nhiêu ảnh, bao nhiêu người kho đã có, bao nhiêu người lưu mới, ảnh lẻ, ảnh không đọc được.', ''],
       ['Ảnh của người kho đã có giờ chuyển riêng vào CCCD TẠM/ĐÃ XỬ LÝ/TRÙNG; ảnh đã ghép vào kho nằm ở ĐÃ XỬ LÝ. Không xoá ảnh nào.', ''],
@@ -4680,34 +4683,45 @@ textarea.inp{font-family:inherit}
       { k: 'n8', t: 'Ca ngày 8 tiếng', g: 'Thứ 2–7', hs: 8, gio: 8 },
       { k: 'n10', t: 'Ca ngày 10,5 tiếng', g: '2,5 tiếng tăng ca ×1,5', hs: 11.75, gio: 10.5 },
       { k: 'd8', t: 'Ca đêm 8 tiếng', g: '×1,3', hs: 10.4, gio: 8 },
-      { k: 'd10', t: 'Ca đêm 10,5 tiếng', g: '2,5 tiếng tăng ca ×1,8', hs: 14.9, gio: 10.5 }];
-    var LMAC = { n8: 240000, n10: 360000, d8: 290000, d10: 420000 };
+      { k: 'd10', t: 'Ca đêm 10,5 tiếng', g: '2,5 tiếng tăng ca ×1,8', hs: 14.9, gio: 10.5 },
+      { k: 'cn8', t: 'Chủ nhật ca ngày 8 tiếng', g: '×2', hs: 16, gio: 8, cn: 1 },
+      { k: 'cn11', t: 'Chủ nhật ca ngày 11 tiếng', g: '×2', hs: 22, gio: 11, cn: 1 },
+      { k: 'cnd11', t: 'Chủ nhật ca đêm 11 tiếng', g: '×2,3', hs: 25.3, gio: 11, cn: 1 }];
+    var LMAC = { n8: 240000, n10: 360000, d8: 290000, d10: 420000, cn8: 420000, cn11: 580000, cnd11: 620000 };
     var cp = D.cp || { tb: 3000000, tam: 1, thangTinh: [] };
     var CHUNG = { S: Math.max(1, D.nvkd || 2), base: 5000000, CP: Math.round((cp.tb || 3000000) / 1000) * 1000, C: 30 };
     function clone(o) { return JSON.parse(JSON.stringify(o)); }
     function dung(c) {   // số thực tế 1 công ty -> {ma, ten, loai, MUC, kV, base}
-      var span = Math.max(1, c.span || c.nNgay || 1), nN = Math.max(1, c.nNgay || 1), x = { ma: c.ma, ten: c.ten, loai: c.loai, c: c }, o = c.cong.own || {};
-      var Dng = Math.min(31, Math.max(1, Math.round(nN / span * 30)));
-      var gioV = (c.gio.ven || 0) / span * 30, kV = c.kV > 0 ? c.kV : 1.2;
-      var p = { P: c.P || 37000, cutKieu: 'pc', cut: 0, fee: c.fee || 5, G: c.G || 3500, vKieu: 'giu', dL: 0, D: Dng, cc: Math.round((c.cc || 0) / span * 30 / 1000) * 1000, gioV: Math.round(gioV), S: CHUNG.S, base: CHUNG.base, CP: CHUNG.CP, C: CHUNG.C };
+      var span = Math.max(1, c.span || c.nNgay || 1), nCN = c.nNgayCN || 0, nT = Math.max(1, (c.nNgay || 1) - nCN), x = { ma: c.ma, ten: c.ten, loai: c.loai, c: c }, o = c.cong.own || {};
+      var Dng = Math.min(31, Math.max(1, Math.round(nT / span * 30)));   // ngày làm thường (thứ 2–7) quy ra tháng; chủ nhật tính riêng ở ô Công chủ nhật
+      var gioV = (c.gio.ven || 0) / span * 30, kV = c.kV > 0 ? c.kV : 1.2, tongCong = 0;
+      var p = { P: c.P || 37000, cutKieu: 'pc', cut: 0, fee: c.fee || 5, G: c.G || 3500, vKieu: 'giu', dL: 0, D: Dng, gioV: Math.round(gioV), S: CHUNG.S, base: CHUNG.base, CP: CHUNG.CP, C: CHUNG.C };
+      function r1(v) { return Math.round(v * 10) / 10; }
       if (c.loai === 'BEST') {
-        var cC = o.c || 0, b = c.best && c.best.cong > 0 ? c.best : null;   // tỷ lệ mỗi công lấy từ file chủ (có thành tiền, gồm tiền ăn khách trả)
-        var h = b ? b.gio / b.cong : (cC ? (c.gio.own || 0) / cC : 9), lc = b ? b.luong / b.cong : (cC ? (c.luong.own || 0) / cC : 300000);
-        var hs = b && c.P > 0 ? b.tien / (c.P * b.cong) : h;
-        x.MUC = [{ k: 'c', t: 'Công bình quân', g: fD(h, 1) + ' giờ mỗi công, gồm tăng ca, chủ nhật, tiền ăn', hs: hs, gio: h }];
-        p.L = { c: Math.round(lc / 1000) * 1000 }; p.N = cC / nN; p.dem = 0; p.tc = 0;
+        var cC = o.c || 0, cnN = o.cn || 0, b = c.best && c.best.cong > 0 ? c.best : null, P = c.P || 40000, LB = c.LB || { t: {}, cn: {} };
+        var tra = function (bang, h, md) { var ks = Object.keys(bang || {}).map(Number).sort(function (a, z) { return a - z; }); if (!ks.length) return md; var t = ks[0]; ks.forEach(function (k) { if (Math.abs(k - h) < Math.abs(t - h)) t = k; }); return bang[t]; };
+        var anC, hT, hsT, lT, hCN, hsCN, lCN;
+        if (b) {   // tỷ lệ mỗi công lấy từ file chủ (có thành tiền, tiền ăn); tách chủ nhật: giờ ×2, lương theo bảng chủ nhật CO_CHE
+          var cnB = b.cnCong || 0, cT = Math.max(0.0001, b.cong - cnB); anC = b.an / b.cong; hCN = cnB ? (b.gioCN || 0) / cnB : 10; lCN = tra(LB.cn, hCN, 500000); hsCN = 2 * hCN;
+          hT = ((b.gio || 0) - (b.gioCN || 0)) / cT; hsT = (b.tien - (P * hsCN + anC) * cnB - anC * cT) / (P * cT); lT = (b.luong - lCN * cnB) / cT;
+        } else { anC = 0; hT = cC ? (c.gio.own || 0) / cC : 9; hsT = hT; lT = cC ? (c.luong.own || 0) / cC : 300000; hCN = 10; hsCN = 20; lCN = tra(LB.cn, 10, 500000); }
+        x.MUC = [{ k: 'c', t: 'Ngày thường bình quân', g: fD(hT, 1) + ' giờ mỗi công, gồm tăng ca, tiền ăn', hs: hsT, gio: hT, an: anC },
+          { k: 'cn', t: 'Chủ nhật bình quân', g: fD(hCN, 1) + ' giờ ×2, gồm tiền ăn', hs: hsCN, gio: hCN, an: anC, cn: 1 }];
+        p.L = { c: Math.round(lT / 1000) * 1000, cn: Math.round(lCN / 1000) * 1000 }; p.N = cC / nT; p.dem = 0; p.tc = 0; p.cnC = r1(cnN / span * 30); tongCong = cC + cnN;
         if (c.ql > 0) { p.cutKieu = 'gio'; p.cut = c.ql; }
       } else {
-        var tot = (o.n8 || 0) + (o.n10 || 0) + (o.d8 || 0) + (o.d10 || 0);
-        x.MUC = MUC_HJ; p.L = { n8: c.L.n8 || LMAC.n8, n10: c.L.n10 || LMAC.n10, d8: c.L.d8 || LMAC.d8, d10: c.L.d10 || LMAC.d10 };
-        p.N = tot / nN; p.dem = tot ? ((o.d8 || 0) + (o.d10 || 0)) / tot * 100 : 30; p.tc = tot ? ((o.n10 || 0) + (o.d10 || 0)) / tot * 100 : 50;
+        var tot = (o.n8 || 0) + (o.n10 || 0) + (o.d8 || 0) + (o.d10 || 0), cnH = (o.cn || 0) + (o.cnd || 0);
+        x.MUC = MUC_HJ; p.L = {}; MUC_HJ.forEach(function (m) { p.L[m.k] = (c.L || {})[m.k] || LMAC[m.k]; });
+        p.Nn = ((o.n8 || 0) + (o.n10 || 0)) / nT; p.Nd = ((o.d8 || 0) + (o.d10 || 0)) / nT; p.N = p.Nn + p.Nd;
+        p.dem = tot ? ((o.d8 || 0) + (o.d10 || 0)) / tot * 100 : 30; p.tc = tot ? ((o.n10 || 0) + (o.d10 || 0)) / tot * 100 : 50; p.cnC = r1(cnH / span * 30); tongCong = tot + cnH;
       }
+      p.ccC = tongCong ? Math.round((c.cc || 0) / tongCong) : 0;   // chuyên cần bình quân mỗi công (tăng theo số công)
       x.kV = kV; x.base = p; return x;
     }
     var CT = (D.cty || []).map(dung), hj0 = CT.filter(function (x) { return x.loai !== 'BEST'; })[0];
     var MOI = { ma: 'moi', ten: 'Công ty mới', loai: 'HJ', MUC: MUC_HJ, kV: 1.2, base: null };
-    MOI.base = hj0 ? clone(hj0.base) : { P: 35000, cutKieu: 'pc', cut: 0, fee: 5, G: 3500, vKieu: 'giu', dL: 0, D: 26, cc: 0, gioV: 0, S: CHUNG.S, base: CHUNG.base, CP: CHUNG.CP, C: 30, L: clone(LMAC), dem: 30, tc: 50 };
-    MOI.base.P = 35000; MOI.base.N = 0; MOI.base.dem = 30; MOI.base.tc = 50; MOI.base.cc = 0; MOI.base.gioV = 0; MOI.base.D = 26; MOI.base.cutKieu = 'pc'; MOI.base.cut = 0;
+    MOI.base = hj0 ? clone(hj0.base) : { P: 35000, cutKieu: 'pc', cut: 0, fee: 5, G: 3500, vKieu: 'giu', dL: 0, D: 26, ccC: 0, gioV: 0, S: CHUNG.S, base: CHUNG.base, CP: CHUNG.CP, C: 30, L: clone(LMAC), dem: 30, tc: 50 };
+    MOI.base.P = 35000; MOI.base.N = 0; MOI.base.Nn = 0; MOI.base.Nd = 0; MOI.base.cnC = 0; MOI.base.dem = 30; MOI.base.tc = 50; MOI.base.gioV = 0; MOI.base.D = 26; MOI.base.cutKieu = 'pc'; MOI.base.cut = 0;
     function ctxOf(ma) { return ma === 'moi' ? MOI : (CT.filter(function (x) { return x.ma === ma; })[0] || MOI); }
     if (!GLS || !giuThietLap || !ctxOf(GLS.mode) || (GLS.mode !== 'moi' && !CT.some(function (x) { return x.ma === GLS.mode; }))) {
       var m0 = CT.length ? CT[0].ma : 'moi'; GLS = { mode: m0, ten: '', p: clone(ctxOf(m0).base), chon: [] };
@@ -4715,49 +4729,96 @@ textarea.inp{font-family:inherit}
     var S = GLS;
     function ctx() { return ctxOf(S.mode); }
     function base() { return ctx().base; }
-    var HAY = [
-      { k: 'P', t: 'Đơn giá {KH} trả mỗi giờ', g2: 'Hệ số 1 · ca đêm, tăng ca nhân hệ số theo bảng kê', u: 'đ', st: 500, ki: 't' },
+    var HAY0 = [
+      { k: 'P', t: 'Đơn giá {KH} trả mỗi giờ', g2: 'Hệ số 1 · ca đêm, tăng ca, chủ nhật nhân hệ số theo bảng kê', u: 'đ', st: 500, ki: 't' },
       { k: 'cut', t: 'Chiết khấu nhân sự {KH}', pick: 1, u: '%', st: 0.5, ki: 'p' },
       { k: 'fee', t: 'Phí pháp nhân', g2: '% hóa đơn trước VAT, công ty chịu', u: '%', st: 0.5, ki: 'p' },
-      { k: 'N', t: 'Lao động công ty đi làm mỗi ngày', g2: 'Không gồm lao động của vendor', u: 'người', st: 1, ki: 'd' },
+      { k: 'Nn', t: 'Lao động ca ngày mỗi ngày', g2: 'Người của công ty, không gồm vendor', u: 'người', st: 1, ki: 'd', hj: 1 },
+      { k: 'Nd', t: 'Lao động ca đêm mỗi ngày', g2: '', u: 'người', st: 1, ki: 'd', hj: 1 },
+      { k: 'N', t: 'Lao động công ty đi làm mỗi ngày', g2: 'Bình quân các ngày làm, gồm cả ngày sale tăng cường', u: 'người', st: 1, ki: 'd', be: 1 },
       { k: 'G', t: 'Giữ lại từ vendor', pick: 'v', g2: '', u: 'đ/giờ', st: 500, ki: 't' }];
+    function HAY() { var be = ctx().loai === 'BEST'; return HAY0.filter(function (f) { return be ? !f.hj : !f.be; }); }
     var IT0 = [
-      { k: 'D', t: 'Ngày làm mỗi tháng', u: 'ngày', st: 1, ki: 'd' },
-      { k: 'dem', t: 'Công làm ca đêm', g2: '% số công', u: '%', st: 5, ki: 'p', hj: 1 },
-      { k: 'tc', t: 'Công có tăng ca', g2: '% số công, làm 10,5 tiếng', u: '%', st: 5, ki: 'p', hj: 1 },
-      { k: 'cc', t: 'Thưởng chuyên cần mỗi tháng', g2: '50.000 đ/tuần đủ 6 công · theo số liệu thực tế', u: 'đ', st: 50000, ki: 't' },
+      { k: 'D', t: 'Ngày làm thường mỗi tháng', g2: 'Thứ 2 – thứ 7, chủ nhật tính riêng ở dưới', u: 'ngày', st: 1, ki: 'd' },
+      { k: 'tc', t: 'Công có tăng ca', g2: '% số công, ngày thường 10,5 tiếng, chủ nhật 11 tiếng', u: '%', st: 5, ki: 'p', hj: 1 },
+      { k: 'cnC', t: 'Công chủ nhật mỗi tháng', g2: '', u: 'công', st: 1, ki: 'd' },
+      { k: 'ccC', t: 'Chuyên cần bình quân mỗi công', g2: '', u: 'đ', st: 500, ki: 't' },
       { k: 'gioV', t: 'Giờ công lao động vendor mỗi tháng', g2: 'Lấy theo bảng công', u: 'giờ', st: 50, ki: 'd' },
-      { k: 'S', t: 'Số nhân viên kinh doanh', g2: 'Thưởng giờ lũy tiến 1.000 / 1.500 đ và thưởng mốc', u: 'người', st: 1, ki: 'd' },
+      { k: 'S', t: 'Số nhân viên kinh doanh', g2: 'Thưởng tính gộp giờ mọi công ty của từng người', u: 'người', st: 1, ki: 'd' },
       { k: 'base', t: 'Lương cơ bản mỗi nhân viên kinh doanh', u: 'đ', st: 500000, ki: 't' },
       { k: 'CP', t: 'Chi phí chung mỗi tháng', g2: '', u: 'đ', st: 1000000, ki: 't' },
       { k: 'C', t: '{KH} thanh toán sau kỳ', u: 'ngày', st: 15, ki: 'd' }];
     function IT() { return IT0.filter(function (f) { return !f.hj || ctx().loai !== 'BEST'; }); }
-    function ALL() { return HAY.concat(IT()); }
+    function ALL() { return HAY().concat(IT()); }
     var cpGhi = (cp.tam ? 'Tạm tính theo tháng ' + Number(String(cp.tHien || '').slice(-2)) + ' đến hôm nay' : 'Bình quân ' + (cp.thangTinh || []).map(function (t) { return 'tháng ' + Number(t.slice(-2)); }).join(', ')) + ' · phần mềm chia theo tháng sử dụng · không gồm mua sắm ban đầu';
     IT0.filter(function (f) { return f.k === 'CP'; })[0].g2 = cpGhi;
 
     /* ===== TÍNH ===== */
     function thuongSale(h) { var t = 1000 * Math.min(h, 2000) + 1500 * Math.max(0, h - 2000); if (h >= 10000) t += 3e6; else if (h >= 7000) t += 2e6; else if (h >= 5000) t += 1e6; return t; }
-    function phan(p, cx) { if (cx.loai === 'BEST') return { c: 1 }; var d = p.dem / 100, t = p.tc / 100; return { n8: (1 - d) * (1 - t), n10: (1 - d) * t, d8: d * (1 - t), d10: d * t }; }
-    function tinh1(p, cx) {   // 1 công ty
-      var cong = Math.max(0, p.N) * Math.max(0, p.D), ph = phan(p, cx), q1 = 0, gio = 0, luong = 0;
-      cx.MUC.forEach(function (m) { var c = cong * (ph[m.k] || 0); q1 += c * m.hs; gio += c * m.gio; luong += c * ((p.L[m.k] || 0) + (p.dL || 0)); });
-      var rev = p.P * q1, cutPct = p.cutKieu === 'pc' ? p.cut / 100 : (p.P > 0 ? p.cut / p.P : 0);
-      var cut = rev * cutPct, fee = rev * p.fee / 100, nS = Math.max(1, Math.round(p.S)), thuong = nS * thuongSale(gio / nS);
-      var mang = rev - luong - p.cc - fee - cut - thuong;
+    function chuan(p, cx) {   // bản sao đã chuẩn hóa (kịch bản cũ chỉ có N + % đêm, chuyên cần theo tháng, chưa có chủ nhật)
+      var q = {}, b = cx.base || {}, k; for (k in p) q[k] = p[k];
+      q.L = {}; for (k in (b.L || {})) q.L[k] = b.L[k]; for (k in (p.L || {})) q.L[k] = p.L[k];
+      if (cx.loai !== 'BEST') {
+        if (q.Nn == null || q.Nd == null) { var N0 = Number(q.N) || 0, d0 = (q.dem != null ? q.dem : 30) / 100; q.Nn = N0 * (1 - d0); q.Nd = N0 * d0; }
+        q.N = q.Nn + q.Nd; if (q.N > 0) q.dem = q.Nd / q.N * 100;
+      }
+      if (q.cnC == null) q.cnC = b.cnC || 0;
+      if (q.ccC == null) { var cg = (Number(q.N) || 0) * (Number(q.D) || 0); q.ccC = q.cc != null && cg > 0 ? q.cc / cg : (b.ccC || 0); }
+      return q;
+    }
+    function congMuc(p, cx) {   // số công mỗi mức trong tháng
+      var o = {}, D = Math.max(0, p.D), cn = Math.max(0, p.cnC || 0);
+      if (cx.loai === 'BEST') { o.c = Math.max(0, p.N) * D; o.cn = cn; return o; }
+      var t = p.tc / 100, wN = Math.max(0, p.Nn) * D, wD = Math.max(0, p.Nd) * D, N = Math.max(0, p.Nn) + Math.max(0, p.Nd), d = N > 0 ? Math.max(0, p.Nd) / N : p.dem / 100;
+      o.n8 = wN * (1 - t); o.n10 = wN * t; o.d8 = wD * (1 - t); o.d10 = wD * t;
+      o.cn8 = cn * (1 - d) * (1 - t); o.cn11 = cn * (1 - d) * t; o.cnd11 = cn * d;   // chủ nhật: ngày/đêm theo tỷ lệ người ngày thường
+      return o;
+    }
+    function tinh1(p, cx) {   // 1 công ty, chưa trừ thưởng nhân viên kinh doanh (tính gộp ở tinh)
+      p = chuan(p, cx);
+      var cm = congMuc(p, cx), cong = 0, q1 = 0, gio = 0, luong = 0, an = 0, ph = {}, congCN = 0;
+      cx.MUC.forEach(function (m) { var c = cm[m.k] || 0; cong += c; q1 += c * m.hs; gio += c * m.gio; an += c * (m.an || 0); luong += c * ((p.L[m.k] || 0) + (p.dL || 0)); if (m.cn) congCN += c; });
+      cx.MUC.forEach(function (m) { ph[m.k] = cong > 0 ? (cm[m.k] || 0) / cong : 0; });
+      var rev = p.P * q1 + an, cutPct = p.cutKieu === 'pc' ? p.cut / 100 : (p.P > 0 ? p.cut / p.P : 0);
+      var cut = p.cutKieu === 'pc' ? rev * cutPct : p.cut * q1, fee = rev * p.fee / 100, cc = (p.ccC || 0) * cong;
+      var mang0 = rev - luong - cc - fee - cut;
       var q1V = (p.gioV || 0) * cx.kV, revV = p.P * q1V, laiV, luongV;
       if (p.vKieu === 'gio') { luongV = gio > 0 ? luong / gio * p.gioV : 0; laiV = revV - luongV - revV * p.fee / 100 - revV * cutPct - p.G * p.gioV; }
       else { laiV = (p.G - p.P * p.fee / 100) * q1V; luongV = revV * (1 - cutPct) - p.G * q1V; }
-      var tienLuong = luong + p.cc + luongV;
-      return { cong: cong, gio: gio, q1: q1, rev: rev, luong: luong, fee: fee, cut: cut, cutPct: cutPct, thuong: thuong, mang: mang, laiV: laiV, luongV: luongV, revV: revV, mangV: mang + laiV, nS: nS, ph: ph, tienLuong: tienLuong, von: tienLuong * (30 + p.C - 7) / 30 };
+      var tienLuong = luong + cc + luongV;
+      return { p: p, cong: cong, congCN: congCN, gio: gio, q1: q1, rev: rev, luong: luong, cc: cc, fee: fee, cut: cut, cutPct: cutPct, mang0: mang0, laiV: laiV, luongV: luongV, revV: revV, ph: ph, tienLuong: tienLuong, von: tienLuong * (30 + p.C - 7) / 30 };
+    }
+    function thuongTong(ds, nS) {   // thưởng nhân viên kinh doanh theo đúng cơ chế: giờ của từng người gộp mọi công ty (tỷ lệ theo bảng công thực tế)
+      var ten = {}; ds.forEach(function (d) { var sl = d.x.c && d.x.c.sale; if (sl) Object.keys(sl).forEach(function (k) { if (sl[k].gio > 0 && k !== '?') ten[k] = 1; }); });
+      var dsT = Object.keys(ten), that = dsT.length === nS, gS = {}, nG = {};
+      if (!that) { dsT = []; for (var i = 0; i < nS; i++) dsT.push('Nhân viên ' + (i + 1)); }
+      dsT.forEach(function (t) { gS[t] = 0; nG[t] = 0; });
+      ds.forEach(function (d) {
+        var sl = (d.x.c && d.x.c.sale) || {}, tong = 0, oc = (d.x.c && d.x.c.cong && d.x.c.cong.own) || {}, cThat = 0;
+        if (that) dsT.forEach(function (t) { tong += sl[t] ? sl[t].gio : 0; });
+        Object.keys(oc).forEach(function (k) { cThat += oc[k]; });
+        dsT.forEach(function (t) {
+          var ty = that && tong > 0 ? (sl[t] ? sl[t].gio : 0) / tong : 1 / dsT.length; gS[t] += d.r.gio * ty;
+          if (that && sl[t] && cThat > 0) nG[t] += sl[t].nguoi3 / cThat * d.r.cong;   // số người làm từ 3 công, tăng theo số công
+        });
+      });
+      var ct = dsT.map(function (t) { var pc = nG[t] >= 50; return { ten: t, gio: gS[t], nguoi: nG[t], pc: pc, tien: thuongSale(gS[t]) + (pc ? 1e6 : 0) }; });
+      return { ct: ct, that: that, tong: ct.reduce(function (s2, c) { return s2 + c.tien; }, 0) };
     }
     function tinh(p, mode) {   // công ty đang giả lập + các công ty khác theo số liệu thực tế − chi phí cố định
       mode = mode || S.mode; var cx = ctxOf(mode), r = tinh1(p, cx), khac = [];
       CT.forEach(function (x) { if (x.ma === mode) return; var b = clone(x.base); b.S = p.S; khac.push({ x: x, r: tinh1(b, x) }); });
-      r.khac = khac; r.coDinh = r.nS * p.base + p.CP;
-      r.cty = r.mangV + khac.reduce(function (s, k) { return s + k.r.mangV; }, 0) - r.coDinh;
+      var nS = Math.max(1, Math.round(p.S)), ds = [{ x: cx, r: r }].concat(khac), th = thuongTong(ds, nS), sg = ds.reduce(function (a, d) { return a + d.r.gio; }, 0);
+      ds.forEach(function (d) { var x = d.r; x.thuong = sg > 0 ? th.tong * x.gio / sg : 0; x.mang = x.mang0 - x.thuong; x.mangV = x.mang + x.laiV; x.nS = nS; });   // thưởng chia cho công ty theo tỷ lệ giờ
+      r.khac = khac; r.th = th; r.nS = nS; r.coDinh = nS * p.base + p.CP;
+      r.cty = r.mangV + khac.reduce(function (s2, k) { return s2 + k.r.mangV; }, 0) - r.coDinh;
       return r;
     }
+    function datN(p, x) {   // đặt tổng số người, giữ tỷ lệ ngày/đêm
+      if (ctx().loai === 'BEST') { p.N = x; return; }
+      var t = (p.Nn || 0) + (p.Nd || 0), d = t > 0 ? (p.Nd || 0) / t : (p.dem || 30) / 100; p.Nn = x * (1 - d); p.Nd = x * d; p.N = x;
+    }
+    function dongBo(p) { if (ctx().loai !== 'BEST') { p.N = (p.Nn || 0) + (p.Nd || 0); if (p.N > 0) p.dem = p.Nd / p.N * 100; } }
 
     /* ===== ĐỊNH DẠNG ===== */
     function fT(n) { return Math.round(n).toLocaleString('vi-VN'); }
@@ -4794,7 +4855,7 @@ textarea.inp{font-family:inherit}
     function veO() {
       var cx = ctx(), h = '<div class="nhom-t">' + esc(tenCt()) + '</div>';
       if (S.mode === 'moi') h += '<div class="ten"><label for="tenCt" hidden>Tên công ty</label><input id="tenCt" placeholder="Tên công ty mới" value="' + esc(S.ten) + '"></div>';
-      $g('oHay').innerHTML = h + HAY.map(oHtml).join('');
+      $g('oHay').innerHTML = h + HAY().map(oHtml).join('');
       $g('oIt').innerHTML = IT().map(oHtml).join('');
       var l = '<div class="lvhd"><span>Mức</span><span>Doanh thu / công</span><span>Lương / công</span></div>';
       cx.MUC.forEach(function (m) {
@@ -4821,6 +4882,9 @@ textarea.inp{font-family:inherit}
           if (!(S.p.gioV > 0)) g += ' · chưa có lao động vendor, giờ vendor lấy từ bảng công';
         }
         if (f.k === 'cut') g = S.p.cutKieu === 'gio' ? 'Đ mỗi giờ hệ số 1 · vendor chịu phần tương ứng' : '% hóa đơn trước VAT · vendor chịu phần tương ứng';
+        if (f.k === 'Nd') g = 'Tổng <b>' + fD(r.p.N, 1) + ' người</b> · ' + fD(r.p.N > 0 ? r.p.Nd / r.p.N * 100 : 0, 0) + '% ca đêm';
+        if (f.k === 'cnC') { var c1 = clone(S.p); c1.cnC = (c1.cnC || 0) + 1; var dc = tinh(c1).cty - r.cty; g = (cx.loai === 'BEST' ? 'Theo bảng công' : 'Ngày/đêm theo tỷ lệ người ngày thường') + ' · mỗi công chủ nhật thêm <b>' + fDelta(dc) + ' đ</b>'; }
+        if (f.k === 'ccC') g = '50.000 đ/tuần đủ 6 công · khoảng ' + fT(r.cc) + ' đ mỗi tháng';
         if (doi) g = (laThuc() ? 'Thực tế ' : 'Mặc định ') + '<b>' + hienO(f, b[f.k]) + ' ' + esc(f.u) + '</b>' + (g ? ' · ' + g : '');
         $g('g_' + f.k).innerHTML = g;
       });
@@ -4828,13 +4892,13 @@ textarea.inp{font-family:inherit}
       cx.MUC.forEach(function (m) {
         var doi = Math.abs((S.p.L[m.k] || 0) - (b.L[m.k] || 0)) > 0; if (doi) mD++;
         $g('lv_' + m.k).classList.toggle('doi', doi);
-        var gia = S.p.P * m.hs, con = gia - (S.p.L[m.k] || 0) - (S.p.dL || 0), k = $g('lvk_' + m.k);
+        var gia = S.p.P * m.hs + (m.an || 0), con = gia - (S.p.L[m.k] || 0) - (S.p.dL || 0), k = $g('lvk_' + m.k);
         k.innerHTML = KH('{KH} trả ') + fT(gia) + '<b>còn ' + fS(con) + '</b>'; k.classList.toggle('hot', con > 0);
         $g('lvp_' + m.k).textContent = fD((r.ph[m.k] || 0) * 100, 0) + '% số công';
       });
       n += mD; if (S.p.dL) n++; $g('r_dL').classList.toggle('doi', !!S.p.dL);
       $g('soDoi').textContent = n ? n + ' chỉ số khác ' + (laThuc() ? 'số liệu thực tế' : 'mặc định') : '';
-      $g('itTom').textContent = fD(S.p.D, 0) + ' ngày' + (cx.loai === 'BEST' ? '' : ' · đêm ' + fD(S.p.dem, 0) + '% · tăng ca ' + fD(S.p.tc, 0) + '%') + ' · ' + r.nS + ' NVKD · chi phí chung ' + fTr(S.p.CP) + (nIt ? ' · ' + nIt + ' đã sửa' : '');
+      $g('itTom').textContent = fD(S.p.D, 0) + ' ngày' + (cx.loai === 'BEST' ? '' : ' · tăng ca ' + fD(S.p.tc, 0) + '%') + ' · chủ nhật ' + fD(S.p.cnC || 0, 1) + ' công · ' + r.nS + ' NVKD · chi phí chung ' + fTr(S.p.CP) + (nIt ? ' · ' + nIt + ' đã sửa' : '');
       R0.querySelectorAll('#pick button').forEach(function (x) { x.classList.toggle('on', x.dataset.ck === S.p.cutKieu); });
       R0.querySelectorAll('#pickV button').forEach(function (x) { x.classList.toggle('on', x.dataset.vk === (S.p.vKieu || 'giu')); });
       $g('u_cut').textContent = S.p.cutKieu === 'pc' ? '%' : 'đ';
@@ -4848,36 +4912,37 @@ textarea.inp{font-family:inherit}
       var kd = $g('kqD'); kd.className = 'kq-d ' + lop(d); kd.textContent = Math.abs(d) < 0.5 ? (laThuc() ? '= thực tế' : 'mặc định') : fDelta(d);
       $g('kqG').textContent = r.gio ? fS(r.mang / r.gio) + ' đ' : '–';
       $g('kqC').textContent = r.cong ? fS(r.mang / r.cong) + ' đ' : '–';
-      $g('kqP').textContent = S.p.N > 0 ? fS(r.mang / S.p.N) + ' đ' : '–';
+      $g('kqP').textContent = r.p.N > 0 ? fS(r.mang / r.p.N) + ' đ' : '–';
       var mn = $g('miniN'); mn.textContent = fS(r.cty) + ' đ'; mn.style.color = r.cty < 0 ? 'var(--bad)' : 'var(--fg)';
       $g('miniL').textContent = tenCt() + ' đóng góp'; $g('miniC').textContent = fS(r.mangV);
       var md = $g('miniD'); md.className = 'kq-d ' + lop(d); md.textContent = Math.abs(d) < 0.5 ? (laThuc() ? '= thực tế' : '= mặc định') : fDelta(d) + ' đ';
       $g('vSoThat').textContent = laThuc() ? '↺ Khôi phục số liệu thực tế' : '↺ Về mặc định';
       $g('nguon').textContent = laThuc()
-        ? 'Bảng công ' + (c.kyTu || '') + (c.kyDen ? '–' + c.kyDen : '') + ' · quy đổi ' + fD(base().D, 0) + ' ngày làm' + (c.giaMoi ? ' · giá, lương mức mới' : '')
-        : (S.p.N > 0 ? 'Số liệu công ty mới do anh nhập · các công ty khác dùng số liệu thực tế' : 'Nhập số lao động dự kiến và đơn giá ở phần Thiết lập · các công ty khác dùng số liệu thực tế');
+        ? 'Bảng công ' + (c.kyTu || '') + (c.kyDen ? '–' + c.kyDen : '') + ' · quy đổi ' + fD(base().D, 0) + ' ngày làm thường' + (base().cnC ? ' + ' + fD(base().cnC, 1) + ' công chủ nhật' : '') + (c.giaMoi ? ' · giá, lương mức mới' : '')
+        : (r.p.N > 0 ? 'Số liệu công ty mới do anh nhập · các công ty khác dùng số liệu thực tế' : 'Nhập số lao động dự kiến và đơn giá ở phần Thiết lập · các công ty khác dùng số liệu thực tế');
       $g('bacL').textContent = 'Phân bổ doanh thu ' + tenCt();
       veCty(r); veBac(r); veNhay(r); veGioiHan(r); veSoCat(); veVon(r); capNhatO(r);
     }
     function dong(t, v, cl, sm) { return '<div class="bt"><span>' + (cl ? '<span class="dot" style="--c:' + cl + '"></span>' : '') + t + '</span><b class="num ' + (v < 0 ? 'am' : '') + '">' + fS(v) + '</b>' + (sm ? '<small>' + sm + '</small>' : '') + '</div>'; }
-    function bocCty(ten, cl, x, ghi, cc) {
-      var tong = x.rev + x.revV, luong = x.luong + cc + x.luongV, khac = x.mangV - (tong - luong);
+    function bocCty(ten, cl, x, ghi) {
+      var tong = x.rev + x.revV, luong = x.luong + x.cc + x.luongV, khac = x.mangV - (tong - luong) + x.thuong;
       return '<details class="ctx"><summary class="bt"><span><span class="dot" style="--c:' + cl + '"></span>' + ten + ' đóng góp <i class="mui">›</i></span><b class="num ' + (x.mangV < 0 ? 'am' : '') + '">' + fS(x.mangV) + '</b><small>' + ghi + '</small></summary>' +
         '<div class="bt con"><span>Doanh thu trước VAT</span><b class="num">' + fT(tong) + '</b></div>' +
         '<div class="bt con"><span>− Lương công nhân, chuyên cần (gồm người của vendor)</span><b class="num">' + fT(luong) + '</b></div>' +
-        '<div class="bt con"><span>− Phí pháp nhân, chiết khấu, thưởng giờ NVKD, trả vendor</span><b class="num">' + fT(-khac) + '</b></div></details>';
+        '<div class="bt con"><span>− Phí pháp nhân, chiết khấu, trả vendor</span><b class="num">' + fT(-khac) + '</b></div>' +
+        '<div class="bt con"><span>− Thưởng nhân viên kinh doanh (theo giờ của công ty này)</span><b class="num">' + fT(x.thuong) + '</b></div></details>';
     }
     function veCty(r) {
-      var h = bocCty(esc(tenCt()), mauCt(S.mode), r, 'Đang giả lập', S.p.cc);
-      r.khac.forEach(function (k) { h += bocCty(esc(k.x.ten), mauCt(k.x.ma), k.r, 'Số liệu thực tế', k.x.base.cc); });
+      var h = bocCty(esc(tenCt()), mauCt(S.mode), r, 'Đang giả lập');
+      r.khac.forEach(function (k) { h += bocCty(esc(k.x.ten), mauCt(k.x.ma), k.r, 'Số liệu thực tế'); });
       h += dong('− Lương cơ bản ' + r.nS + ' nhân viên kinh doanh', -r.nS * S.p.base, null, null);
       h += dong('− Chi phí chung', -S.p.CP, null, null);
       h += '<div class="bt tong"><span>Lợi nhuận toàn công ty</span><b class="num ' + (r.cty < 0 ? 'am' : 'duong') + '">' + fS(r.cty) + '</b></div>';
       $g('caCty').innerHTML = h;
     }
     function veBac(r) {
-      var ds = [['Doanh thu trước VAT', r.rev, 0, mauCt(S.mode)], ['Lương công nhân + chuyên cần', r.luong + S.p.cc, 1, 'var(--blue)'],
-        ['Phí pháp nhân ' + fD(S.p.fee, 1) + '%', r.fee, 1, 'var(--warn)'], [KH('Chiết khấu nhân sự {KH}'), r.cut, 1, 'var(--bad)'], ['Thưởng giờ nhân viên kinh doanh', r.thuong, 1, 'var(--muted)']];
+      var ds = [['Doanh thu trước VAT', r.rev, 0, mauCt(S.mode)], ['Lương công nhân + chuyên cần', r.luong + r.cc, 1, 'var(--blue)'],
+        ['Phí pháp nhân ' + fD(S.p.fee, 1) + '%', r.fee, 1, 'var(--warn)'], [KH('Chiết khấu nhân sự {KH}'), r.cut, 1, 'var(--bad)'], ['Thưởng nhân viên kinh doanh', r.thuong, 1, 'var(--muted)']];
       var h = '';
       ds.forEach(function (x) { if (x[2] && Math.abs(x[1]) < 0.5) return; var w = r.rev > 0 ? Math.min(100, Math.abs(x[1]) / r.rev * 100) : 0;
         h += '<div class="bt"><span class="' + (x[2] ? 'tru' : '') + '">' + (x[2] ? '− ' : '') + esc(x[0]) + '</span><b class="num">' + fT(x[1]) + '</b><div class="bar"><s style="width:' + w.toFixed(1) + '%;--q:' + x[3] + '"></s></div></div>'; });
@@ -4891,12 +4956,14 @@ textarea.inp{font-family:inherit}
     }
     var NH = [
       { t: 'Đơn giá {KH} trả', dv: '+1.000 đ/giờ', fn: function (p) { p.P += 1000; } },
-      { t: 'Lao động công ty đi làm', dv: '+1 người mỗi ngày', fn: function (p) { p.N += 1; } },
+      { t: 'Lao động ca ngày', dv: '+1 người mỗi ngày', fn: function (p) { p.Nn = (p.Nn || 0) + 1; }, co: function () { return ctx().loai !== 'BEST'; } },
+      { t: 'Lao động ca đêm', dv: '+1 người mỗi ngày', fn: function (p) { p.Nd = (p.Nd || 0) + 1; }, co: function () { return ctx().loai !== 'BEST'; } },
+      { t: 'Lao động công ty đi làm', dv: '+1 người mỗi ngày', fn: function (p) { p.N += 1; }, co: function () { return ctx().loai === 'BEST'; } },
+      { t: 'Công chủ nhật', dv: '+1 công mỗi tháng', fn: function (p) { p.cnC = (p.cnC || 0) + 1; } },
       { t: 'Phí pháp nhân', dv: '−1% hóa đơn', fn: function (p) { p.fee = Math.max(0, p.fee - 1); }, co: function () { return S.p.fee > 0; } },
       { t: 'Chiết khấu nhân sự {KH}', dv: '−1% hóa đơn', fn: function (p) { p.cut = Math.max(0, p.cut - 1); }, co: function () { return S.p.cutKieu === 'pc' && S.p.cut > 0; } },
       { t: 'Chiết khấu nhân sự {KH}', dv: '−100 đ/giờ', fn: function (p) { p.cut = Math.max(0, p.cut - 100); }, co: function () { return S.p.cutKieu === 'gio' && S.p.cut > 0; } },
       { t: 'Lương công nhân', dv: '−1.000 đ mỗi công, mọi mức', fn: function (p) { p.dL = (p.dL || 0) - 1000; } },
-      { t: 'Công làm ca đêm', dv: '+1% số công', fn: function (p) { p.dem = Math.min(100, p.dem + 1); }, co: function () { return ctx().loai !== 'BEST'; } },
       { t: 'Giữ lại từ vendor', dv: '+100 đ/giờ', fn: function (p) { p.G += 100; }, co: function () { return S.p.gioV > 0 && S.p.vKieu !== 'gio'; } },
       { t: 'Trả vendor', dv: '−100 đ/giờ', fn: function (p) { p.G = Math.max(0, p.G - 100); }, co: function () { return S.p.gioV > 0 && S.p.vKieu === 'gio'; } }];
     function veNhay(r) {
@@ -4914,9 +4981,9 @@ textarea.inp{font-family:inherit}
       var h = '', gP = giai(function (p, x) { p.P = x; }, 10000, 80000);
       h += '<div class="gh"><span>' + KH('Đơn giá {KH} trả tối thiểu') + '</span><b class="num">' + (gP ? fT(Math.ceil(gP / 100) * 100) + ' đ/giờ' : '–') + '</b><small>Đang thiết lập ' + fT(S.p.P) + ' đ</small></div>';
       var gC = S.p.cutKieu === 'pc' ? giai(function (p, x) { p.cut = x; }, 0, 60) : giai(function (p, x) { p.cut = x; }, 0, 20000);
-      h += '<div class="gh"><span>' + KH('Chiết khấu nhân sự {KH} tối đa') + '</span><b class="num">' + (gC !== null ? (S.p.cutKieu === 'pc' ? fD(Math.floor(gC * 10) / 10, 1) + '%' : fT(Math.floor(gC / 100) * 100) + ' đ/giờ') : (r.cty < 0 ? 'Đang lỗ' : 'Không giới hạn')) + '</b><small>' + (gC !== null ? 'Đang thiết lập ' + hienO(HAY[1], S.p.cut) + (S.p.cutKieu === 'pc' ? '%' : ' đ') : 'Không chiết khấu vẫn lỗ, cần điều chỉnh chỉ số khác') + '</small></div>';
-      var gN = giai(function (p, x) { p.N = x; }, 0.1, 400);
-      h += '<div class="gh"><span>Lao động công ty tối thiểu mỗi ngày</span><b class="num">' + (gN ? fD(Math.ceil(gN), 0) + ' người' : 'Không đạt') + '</b><small>' + (gN ? 'Đang thiết lập ' + fD(S.p.N, 1) + ' người' : 'Mỗi công đang lỗ, thêm lao động không bù được') + '</small></div>';
+      h += '<div class="gh"><span>' + KH('Chiết khấu nhân sự {KH} tối đa') + '</span><b class="num">' + (gC !== null ? (S.p.cutKieu === 'pc' ? fD(Math.floor(gC * 10) / 10, 1) + '%' : fT(Math.floor(gC / 100) * 100) + ' đ/giờ') : (r.cty < 0 ? 'Đang lỗ' : 'Không giới hạn')) + '</b><small>' + (gC !== null ? 'Đang thiết lập ' + hienO(fDef('cut'), S.p.cut) + (S.p.cutKieu === 'pc' ? '%' : ' đ') : 'Không chiết khấu vẫn lỗ, cần điều chỉnh chỉ số khác') + '</small></div>';
+      var gN = giai(function (p, x) { datN(p, x); }, 0.1, 400);
+      h += '<div class="gh"><span>Lao động công ty tối thiểu mỗi ngày</span><b class="num">' + (gN ? fD(Math.ceil(gN), 0) + ' người' : 'Không đạt') + '</b><small>' + (gN ? 'Đang thiết lập ' + fD(r.p.N, 1) + ' người' + (ctx().loai === 'BEST' ? '' : ', giữ tỷ lệ ngày/đêm') : 'Mỗi công đang lỗ, thêm lao động không bù được') + '</small></div>';
       var gL = giai(function (p, x) { p.dL = (S.p.dL || 0) + x; }, -200000, 200000);
       h += '<div class="gh"><span>Lương mỗi công còn tăng được tối đa</span><b class="num">' + (gL !== null ? (gL < 0 ? 'Phải giảm ' : '') + fT(Math.abs(Math.floor(gL / 1000) * 1000)) + ' đ/công' : '–') + '</b><small>Áp cho mọi mức, so với bảng lương đang thiết lập</small></div>';
       $g('gioiHan').innerHTML = h;
@@ -4939,7 +5006,8 @@ textarea.inp{font-family:inherit}
 
     /* ===== KỊCH BẢN (lưu ở sheet KICH_BAN) ===== */
     function kbDs() { return GLD.kb || []; }
-    function moTa(p) { return fT(p.P) + 'đ · chiết khấu ' + (p.cutKieu === 'pc' ? fD(p.cut, 1) + '%' : fT(p.cut) + 'đ/giờ') + ' · phí ' + fD(p.fee, 1) + '% · ' + fD(p.N, 1) + ' người'; }
+    function cxKb(k) { return k.mode === 'moi' || !CT.some(function (x) { return x.ma === k.mode; }) ? MOI : ctxOf(k.mode); }
+    function moTa(k) { var cx = cxKb(k), p = chuan(k.p || {}, cx); return fT(p.P) + 'đ · chiết khấu ' + (p.cutKieu === 'pc' ? fD(p.cut, 1) + '%' : fT(p.cut) + 'đ/giờ') + ' · phí ' + fD(p.fee, 1) + '% · ' + (cx.loai === 'BEST' ? fD(p.N, 1) + ' người' : 'ngày ' + fD(p.Nn, 1) + ' · đêm ' + fD(p.Nd, 1) + ' người') + (p.cnC ? ' · chủ nhật ' + fD(p.cnC, 0) + ' công' : ''); }
     function tinhKb(k) { var p = k.p || {}; return tinh(p, ctxOf(k.mode) === MOI && k.mode !== 'moi' ? 'moi' : k.mode); }
     function ngayLuu(t) { var d = new Date(t); return ('0' + d.getDate()).slice(-2) + '/' + ('0' + (d.getMonth() + 1)).slice(-2); }
     function veKb() {
@@ -4950,7 +5018,7 @@ textarea.inp{font-family:inherit}
         h += '<div class="kb"><input type="checkbox" aria-label="Chọn để so sánh" data-i="' + esc(k.ma) + '"' + (S.chon.indexOf(k.ma) >= 0 ? ' checked' : '') + '>' +
           '<div class="kb-t">' + esc(k.ten) + '</div><div class="kb-n"><b class="num ' + (x.cty < 0 ? 'am' : 'duong') + '">' + fTr(x.cty) + '</b>' +
           '<span><button type="button" class="btn lk" data-mo="' + esc(k.ma) + '">Mở</button> · <button type="button" class="btn lk" data-xoa="' + esc(k.ma) + '">Xoá</button></span></div>' +
-          '<div class="kb-s">' + esc(moTa(k.p)) + ' · Lưu ' + ngayLuu(k.luc) + (k.ky ? ' trên số liệu ' + esc(k.ky) : '') + '</div></div>'; });
+          '<div class="kb-s">' + esc(moTa(k)) + ' · Lưu ' + ngayLuu(k.luc) + (k.ky ? ' trên số liệu ' + esc(k.ky) : '') + '</div></div>'; });
       $g('kbDs').innerHTML = h; veKbSo(a);
     }
     function veKbSo(a) {
@@ -4958,7 +5026,7 @@ textarea.inp{font-family:inherit}
       if (ds.length < 2) { el.innerHTML = a.length > 1 ? '<div class="ghi">Chọn 2–3 kịch bản để so sánh.</div>' : ''; return; }
       var rs = ds.map(function (k) { return { k: k, x: tinhKb(k) }; }), cyThuc = tinh(base()).cty;
       var dg = [['Đơn giá', function (o) { return fT(o.k.p.P); }], ['Chiết khấu', function (o) { return o.k.p.cutKieu === 'pc' ? fD(o.k.p.cut, 1) + '%' : fT(o.k.p.cut) + 'đ'; }],
-        ['Phí pháp nhân', function (o) { return fD(o.k.p.fee, 1) + '%'; }], ['Lao động/ngày', function (o) { return fD(o.k.p.N, 1); }],
+        ['Phí pháp nhân', function (o) { return fD(o.x.p.fee, 1) + '%'; }], ['Lao động/ngày', function (o) { return cxKb(o.k).loai === 'BEST' ? fD(o.x.p.N, 1) : fD(o.x.p.Nn, 1) + ' ngày + ' + fD(o.x.p.Nd, 1) + ' đêm'; }], ['Công chủ nhật', function (o) { return fD(o.x.p.cnC || 0, 0); }],
         ['Công ty đóng góp', function (o) { return fTr(o.x.mangV); }], ['Toàn công ty', function (o) { return '<b class="' + (o.x.cty < 0 ? 'am' : 'duong') + '">' + fTr(o.x.cty) + '</b>'; }],
         ['So với thực tế hiện nay', function (o) { var dd = o.x.cty - cyThuc; return '<span class="' + (dd < 0 ? 'am' : 'duong') + '">' + (dd > 0 ? '+' : dd < 0 ? '−' : '') + fTr(Math.abs(dd)) + '</span>'; }], ['Vốn ứng trước', function (o) { return fTr(o.x.von); }]];
       var h = '<div class="bang" style="margin-top:10px"><table><thead><tr><th></th>' + rs.map(function (o) { return '<th>' + esc(o.k.ten) + '</th>'; }).join('') + '</tr></thead><tbody>';
@@ -4968,23 +5036,23 @@ textarea.inp{font-family:inherit}
 
     /* ===== SỰ KIỆN ===== */
     function fDef(k) { var a = ALL(); for (var i = 0; i < a.length; i++) if (a[i].k === k) return a[i]; }
-    function gh(k, v) { if (!isFinite(v)) return null; v = Math.max(0, v); if (k === 'dem' || k === 'tc' || k === 'fee') v = Math.min(100, v); if (k === 'S') v = Math.max(1, Math.round(v)); return v; }
+    function gh(k, v) { if (!isFinite(v)) return null; v = Math.max(0, v); if (k === 'tc' || k === 'fee') v = Math.min(100, v); if (k === 'S') v = Math.max(1, Math.round(v)); return v; }
     function stO(f) { return (f.k === 'cut' && S.p.cutKieu === 'gio') ? 500 : f.st; }
     function suKien(root) {
       root.addEventListener('click', function (e) {
-        var ck = e.target.closest('[data-ck]'); if (ck) { S.p.cutKieu = ck.dataset.ck; S.p.cut = S.p.cutKieu === base().cutKieu ? base().cut : 0; $g('o_cut').value = hienO(HAY[1], S.p.cut); ve(); return; }
+        var ck = e.target.closest('[data-ck]'); if (ck) { S.p.cutKieu = ck.dataset.ck; S.p.cut = S.p.cutKieu === base().cutKieu ? base().cut : 0; $g('o_cut').value = hienO(fDef('cut'), S.p.cut); ve(); return; }
         var vk = e.target.closest('[data-vk]'); if (vk) { S.p.vKieu = vk.dataset.vk; S.p.G = vk.dataset.vk === 'gio' ? 1500 : (base().G || 3500); $g('o_G').value = fT(S.p.G); ve(); return; }
         var bd = e.target.closest('button[data-k="dL"]'); if (bd) { S.p.dL = (S.p.dL || 0) + 5000 * Number(bd.dataset.s); $g('o_dL').value = fS(S.p.dL); ve(); return; }
         var b = e.target.closest('button[data-k]'); if (!b) return;
-        var k = b.dataset.k, f = fDef(k), st = stO(f), v = gh(k, S.p[k] + st * Number(b.dataset.s)); if (st >= 1 && k !== 'N') v = Math.round(v / st) * st;
-        S.p[k] = v; $g('o_' + k).value = hienO(f, v); ve();
+        var k = b.dataset.k, f = fDef(k), st = stO(f), v = gh(k, (S.p[k] || 0) + st * Number(b.dataset.s)); if (st >= 1 && ['N', 'Nn', 'Nd', 'cnC'].indexOf(k) < 0) v = Math.round(v / st) * st;
+        S.p[k] = v; dongBo(S.p); $g('o_' + k).value = hienO(f, v); ve();
       });
       root.addEventListener('input', function (e) {
         var el = e.target;
         if (el.dataset.l) { var x = docS(el.value); if (isFinite(x)) { S.p.L[el.dataset.l] = Math.max(0, x); ve(); } return; }
         var k = el.dataset.k; if (!k) return;
         if (k === 'dL') { var y = docS(el.value.replace('−', '-')); if (isFinite(y)) { S.p.dL = y; ve(); } return; }
-        var v = gh(k, docS(el.value)); if (v === null) return; S.p[k] = v; ve();
+        var v = gh(k, docS(el.value)); if (v === null) return; S.p[k] = v; dongBo(S.p); ve();
       });
       root.addEventListener('focusout', function (e) { var el = e.target; if (el.dataset && el.dataset.l) el.value = fT(S.p.L[el.dataset.l] || 0); else if (el.dataset && el.dataset.k === 'dL') el.value = fS(S.p.dL || 0); else if (el.dataset && el.dataset.k) el.value = hienO(fDef(el.dataset.k), S.p[el.dataset.k]); });
     }
@@ -5005,7 +5073,7 @@ textarea.inp{font-family:inherit}
       var el = e.target.closest('button'); if (!el) return;
       var a = kbDs();
       if (el.dataset.mo !== undefined) { var k = a.filter(function (x) { return x.ma === el.dataset.mo; })[0]; if (!k) return;
-        S.mode = (k.mode === 'moi' || CT.some(function (x) { return x.ma === k.mode; })) ? k.mode : 'moi'; S.ten = k.tenCt || ''; S.p = clone(k.p); if (!S.p.L) S.p.L = clone(base().L);
+        S.mode = (k.mode === 'moi' || CT.some(function (x) { return x.ma === k.mode; })) ? k.mode : 'moi'; S.ten = k.tenCt || ''; S.p = chuan(clone(k.p || {}), ctx());
         veChip(); veO(); ve(); window.scrollTo({ top: 0, behavior: 'smooth' }); toast('Đã mở "' + k.ten + '"'); }
       if (el.dataset.xoa !== undefined) { var ma = el.dataset.xoa, kx = a.filter(function (x) { return x.ma === ma; })[0]; if (!kx) return;
         toastNut('Xoá kịch bản "' + kx.ten + '"?', 'Xoá', function () {
@@ -5023,17 +5091,19 @@ textarea.inp{font-family:inherit}
       P: ['Đơn giá {KH} trả mỗi giờ', '<p>Số tiền {KH} trả cho Đại Thành cho 1 giờ làm việc ở hệ số 1 (ca ngày, thứ 2–7), chưa gồm VAT.</p><p>Các ca khác nhân hệ số theo bảng kê: tăng ca ngày ×1,5; ca đêm ×1,3; tăng ca đêm ×1,8; chủ nhật ×2 và ×2,3.</p>', function () { return 'Đang thiết lập ' + fT(S.p.P) + ' đ.'; }],
       cut: ['Chiết khấu nhân sự {KH}', '<p>Khoản Đại Thành trích lại cho bộ phận nhân sự của {KH} trên mỗi hóa đơn, tính trên tiền trước VAT.</p><p><b>Theo % hóa đơn:</b> ví dụ 2% của hóa đơn 100 triệu là 2 triệu.<br><b>Khoán đ/giờ:</b> một số tiền cố định cho mỗi giờ hệ số 1, giống cách làm với BEST (5.000 đ/giờ).</p><p>Với lao động của vendor, phần chiết khấu này được trừ vào giá trả vendor nên vendor chịu.</p>', function () { var r = tinh(S.p); return 'Đang thiết lập: mỗi tháng trích ' + fT(r.cut + r.revV * r.cutPct) + ' đ.'; }],
       fee: ['Phí pháp nhân', '<p>Công ty ký hợp đồng và xuất hóa đơn qua pháp nhân của bên khác. Bên đó nộp VAT thay và giữ lại một tỷ lệ % trên tiền hàng trước VAT (hiện 5%) rồi chuyển phần còn lại cho công ty.</p><p>Giảm được 1% phí tương đương tăng lợi nhuận 1% doanh thu.</p>', function () { var r = tinh(S.p); return 'Đang thiết lập ' + fD(S.p.fee, 1) + '%: mỗi tháng mất ' + fT(r.fee + r.revV * S.p.fee / 100) + ' đ.'; }],
-      N: ['Lao động công ty đi làm mỗi ngày', '<p>Số lao động do công ty tuyển và trả lương, trung bình mỗi ngày có đi làm. Không tính lao động do vendor cung ứng.</p><p>Số công mỗi tháng = số lao động × số ngày làm (ở Thiết lập khác).</p>', function () { var r = tinh(S.p); return 'Đang thiết lập ' + fD(S.p.N, 1) + ' người × ' + fD(S.p.D, 0) + ' ngày = ' + fT(r.cong) + ' công, khoảng ' + fT(r.gio) + ' giờ mỗi tháng.'; }],
+      N: ['Lao động công ty đi làm mỗi ngày', '<p>Số lao động do công ty tuyển và trả lương, bình quân mỗi ngày làm thường. Với {KH}, số này đã gồm cả những ngày sale được tăng cường thêm người (ví dụ 2 người cố định, ngày sale thêm 1–2 người thì bình quân khoảng 2,2–2,5).</p><p>Số công ngày thường mỗi tháng = số lao động × số ngày làm thường. Công chủ nhật tính riêng ở Thiết lập khác.</p>', function () { var r = tinh(S.p); return fD(r.p.N, 1) + ' người × ' + fD(S.p.D, 0) + ' ngày + ' + fD(S.p.cnC || 0, 1) + ' công chủ nhật = ' + fT(r.cong) + ' công, khoảng ' + fT(r.gio) + ' giờ mỗi tháng.'; }],
+      Nn: ['Lao động ca ngày mỗi ngày', '<p>Số lao động của công ty (không gồm vendor) đi ca ngày, bình quân mỗi ngày làm thường. Mặc định lấy theo bảng công thực tế.</p><p>Muốn ướm thêm người, gõ thẳng số người ca ngày và ca đêm dự kiến. Ca đêm {KH} trả hệ số 1,3 (tăng ca đêm 1,8) nên mỗi người ca đêm thường lãi gấp 2–3 lần người ca ngày; xem dòng "Lao động ca ngày / ca đêm" ở mục Độ nhạy.</p>', function () { var r = tinh(S.p); return 'Ngày ' + fD(r.p.Nn, 1) + ' + đêm ' + fD(r.p.Nd, 1) + ' = ' + fD(r.p.N, 1) + ' người · ' + fT(r.cong) + ' công, khoảng ' + fT(r.gio) + ' giờ mỗi tháng (gồm chủ nhật).'; }],
+      Nd: ['Lao động ca đêm mỗi ngày', '<p>Số lao động của công ty (không gồm vendor) đi ca đêm, bình quân mỗi ngày làm thường. Mặc định lấy theo bảng công thực tế.</p><p>Ca đêm {KH} trả hệ số 1,3, tăng ca đêm 1,8; lương công nhân ca đêm cũng cao hơn nhưng phần còn lại vẫn lớn hơn ca ngày nhiều.</p>', function () { var r = tinh(S.p); return 'Đang thiết lập ' + fD(r.p.Nd, 1) + ' người ca đêm, chiếm ' + fD(r.p.N > 0 ? r.p.Nd / r.p.N * 100 : 0, 0) + '% tổng số người.'; }],
       G: ['Lao động vendor', '<p>Vendor là đơn vị cung ứng lại lao động cho công ty. Có 2 hình thức:</p><p><b>Giữ lại từ đơn giá</b> (cách đang làm với Đức, Hoàng, Quyền): trên mỗi giờ hệ số 1 công ty giữ lại một khoản (ví dụ 3.500 đ, hay gọi là "3,5 giá"), phần còn lại chuyển cho vendor để vendor trả lương công nhân của họ. Công ty vẫn là bên ứng tiền lương hằng tuần. Phí pháp nhân công ty chịu; chiết khấu nhân sự {KH} trừ vào phần của vendor.</p><p><b>Trả vendor theo giờ công:</b> công ty trả lương thẳng cho công nhân của vendor theo bảng lương của mình, và trả thêm vendor một khoản cố định mỗi giờ công (ví dụ 1.500 đ).</p><p>Cả hai cách công ty đều phải ứng lương trước, nên lương công nhân vendor được tính vào Vốn cần ứng trước. Số giờ của lao động vendor lấy từ bảng công, không nhập tay.</p>'],
-      luong: ['Bảng lương công nhân theo ca', '<p>Lương công ty trả công nhân cho 1 công, theo tổng số giờ làm trong ngày và ca ngày/đêm, đúng như bảng cơ chế lương đang áp dụng (sheet CO_CHE). BEST có một dòng là lương bình quân mỗi công.</p><p>Cột <b>Doanh thu / công</b> là số {KH} trả cho công đó (đơn giá × giờ × hệ số). Dòng <b>còn</b> là doanh thu trừ lương, chưa trừ phí pháp nhân, chiết khấu, thưởng.</p><p>Sửa từng mức, hoặc dùng ô "Điều chỉnh đồng loạt" để cộng/trừ cùng một số vào mọi mức.</p>'],
+      luong: ['Bảng lương công nhân theo ca', '<p>Lương công ty trả công nhân cho 1 công, theo tổng số giờ làm trong ngày và ca ngày/đêm, đúng như bảng cơ chế lương đang áp dụng (sheet CO_CHE). BEST có 2 dòng: lương bình quân mỗi công ngày thường và chủ nhật. Các dòng Chủ nhật dùng bảng lương chủ nhật.</p><p>Cột <b>Doanh thu / công</b> là số {KH} trả cho công đó (đơn giá × giờ × hệ số). Dòng <b>còn</b> là doanh thu trừ lương, chưa trừ phí pháp nhân, chiết khấu, thưởng.</p><p>Sửa từng mức, hoặc dùng ô "Điều chỉnh đồng loạt" để cộng/trừ cùng một số vào mọi mức.</p>'],
       dL: ['Điều chỉnh đồng loạt mọi mức', '<p>Cộng thêm số này vào tất cả các mức lương ở trên. Gõ số âm để giảm (ví dụ −10.000 là mỗi công giảm 10.000 đ, giống đợt điều chỉnh từ 15/10).</p>'],
       khac: ['Thiết lập khác', '<p>Các chỉ số ít khi thay đổi, mặc định lấy theo số liệu thực tế. Mở ra khi cần giả lập cơ cấu ca, số nhân viên kinh doanh, chi phí chung hoặc thời hạn {KH} thanh toán.</p>'],
-      D: ['Ngày làm mỗi tháng', '<p>Số ngày trong tháng có lao động đi làm. Dùng để quy đổi số liệu kỳ chưa đủ tháng thành cả tháng. Mặc định tính theo tỷ lệ ngày có công trong kỳ đang chạy.</p>'],
-      dem: ['Công làm ca đêm', '<p>Tỷ lệ số công làm ca đêm trên tổng số công. Ca đêm {KH} trả hệ số 1,3 nhưng lương công nhân cũng cao hơn, nên tỷ lệ này ảnh hưởng đến lợi nhuận mỗi công.</p>', function () { return 'Thực tế: ' + fD(base().dem, 0) + '%.'; }],
+      D: ['Ngày làm thường mỗi tháng', '<p>Số ngày thứ 2 – thứ 7 trong tháng có lao động đi làm. Dùng để quy đổi số liệu kỳ chưa đủ tháng thành cả tháng. Mặc định tính theo tỷ lệ ngày có công trong kỳ đang chạy. Chủ nhật tính riêng ở ô Công chủ nhật.</p>'],
       tc: ['Công có tăng ca', '<p>Tỷ lệ số công làm 10,5 tiếng (có 2,5 tiếng tăng ca) trên tổng số công. Tăng ca {KH} trả hệ số 1,5 (ngày) hoặc 1,8 (đêm).</p>', function () { return 'Thực tế: ' + fD(base().tc, 0) + '%.'; }],
-      cc: ['Thưởng chuyên cần mỗi tháng', '<p>Tổng tiền thưởng chuyên cần công ty trả công nhân trong tháng (50.000 đ cho mỗi tuần đi đủ 6 công). Mặc định lấy theo số liệu thực tế quy ra tháng.</p>'],
+      cnC: ['Công chủ nhật mỗi tháng', '<p>Số công làm ngày chủ nhật trong tháng của lao động công ty. Mặc định lấy theo bảng công thực tế quy ra tháng (không làm chủ nhật thì bằng 0).</p><p>Chủ nhật {KH} trả hệ số 2 (ca đêm 2,3 với HOJEONG) cho mọi giờ, lương công nhân theo bảng lương chủ nhật ở CO_CHE, nên mỗi công chủ nhật lãi gấp nhiều lần công ngày thường. HOJEONG: ca ngày/đêm của công chủ nhật chia theo tỷ lệ người ngày thường, có tăng ca thì tính 11 tiếng.</p>', function () { var r = tinh(S.p), c1 = clone(S.p); c1.cnC = (c1.cnC || 0) + 1; return fD(S.p.cnC || 0, 1) + ' công chủ nhật · mỗi công thêm ' + fDelta(tinh(c1).cty - r.cty) + ' đ lợi nhuận toàn công ty.'; }],
+      ccC: ['Chuyên cần bình quân mỗi công', '<p>Thưởng chuyên cần (50.000 đ cho mỗi tuần đi đủ 6 công) quy ra bình quân mỗi công theo số liệu thực tế. Thêm người, thêm công thì tiền chuyên cần tăng theo.</p>', function () { var r = tinh(S.p); return fT(S.p.ccC || 0) + ' đ/công × ' + fT(r.cong) + ' công ≈ ' + fT(r.cc) + ' đ mỗi tháng.'; }],
       gioV: ['Giờ công lao động vendor mỗi tháng', '<p>Tổng số giờ do lao động của vendor làm trong tháng, lấy từ bảng công và quy ra tháng. Công ty không có vendor thì bằng 0. Gõ số để giả lập trường hợp có vendor.</p>'],
-      S: ['Số nhân viên kinh doanh', '<p>Số nhân viên tuyển dụng và quản lý lao động. Mỗi người hưởng lương cơ bản cố định và thưởng theo giờ công của lao động mình phụ trách: 1.000 đ/giờ cho 2.000 giờ đầu, 1.500 đ/giờ từ giờ 2.001, cộng thưởng mốc 5.000 / 7.000 / 10.000 giờ.</p><p>Giờ của lao động vendor không tính thưởng. Mặc định lấy theo số tài khoản nhân viên trong app.</p>'],
+      S: ['Số nhân viên kinh doanh', '<p>Số nhân viên tuyển dụng và quản lý lao động. Mỗi người hưởng lương cơ bản cố định và thưởng theo giờ công của lao động mình tuyển, <b>gộp giờ ở mọi công ty</b>: 1.000 đ/giờ cho 2.000 giờ đầu, 1.500 đ/giờ từ giờ 2.001, thưởng mốc 5.000 / 7.000 / 10.000 giờ (+1 / +2 / +3 triệu), phụ cấp 1 triệu khi có từ 50 người đi làm từ 3 công.</p><p>Giờ chia cho từng người theo tỷ lệ trong bảng công thực tế của từng công ty (công ty mới chia đều). Tổng thưởng chia lại cho các công ty theo tỷ lệ giờ để tính phần đóng góp. Giờ của lao động vendor không tính thưởng. Số nhân viên khác số người đang có trong bảng công thì giờ chia đều.</p>', function () { var r = tinh(S.p); return r.th.ct.map(function (c) { return esc(c.ten) + ': ' + fT(c.gio) + ' giờ' + (c.nguoi ? ', khoảng ' + fT(c.nguoi) + ' người từ 3 công' : '') + ' → ' + fT(c.tien) + ' đ' + (c.pc ? ' (gồm phụ cấp)' : ''); }).join('<br>') + '<br>Tổng thưởng ' + fT(r.th.tong) + ' đ mỗi tháng.'; }],
       base: ['Lương cơ bản mỗi nhân viên kinh doanh', '<p>Lương cố định hằng tháng, không phụ thuộc sản lượng. Đây là chi phí toàn công ty, không gắn với một công ty cụ thể.</p>'],
       CP: ['Chi phí chung mỗi tháng', '<p>Các khoản chi lặp lại hằng tháng, không gắn với công ty nào: xăng xe đưa đón lao động, tiếp khách, thưởng người giới thiệu, proxy Zalo… Lấy từ sổ thu chi.</p><p>Khoản trả trước cho nhiều tháng (Claude, tool Zalo 12 tháng, proxy 6 tháng) được chia đều cho các tháng sử dụng, theo cột "Chia cho số tháng" của sheet DANH_MUC.</p><p>Không gồm mua sắm ban đầu (máy quay, áo dép, găng tay, ổ khóa), đánh dấu ở cột "Trang bị ban đầu". Mua bổ sung khi thiếu, mất thì ghi khoản "Chi phí mua bổ sung áo, dép, găng tay, ổ khoá" và được tính vào chi phí chung. Tháng 9 có nhiều mua sắm ban đầu nên không tính.</p>', function () { return cpGhi + '.'; }],
       C: ['{KH} thanh toán sau kỳ', '<p>Số ngày từ khi kết thúc kỳ công đến khi {KH} thanh toán. Ảnh hưởng đến số tiền lương công ty phải ứng trước.</p>'],
