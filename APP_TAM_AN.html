@@ -603,6 +603,12 @@ textarea.inp{font-family:inherit}
 .q2ngay{text-align:center;border-radius:12px;background:var(--soft);padding:5px 0}.q2ngay b{display:block;font-size:17px}.q2ngay span{font-size:10.5px;color:var(--muted)}
 .q2lk{font-size:14px;font-weight:600}
 .q2lr .q2tag{margin-top:3px}
+.q2lr.q2lr2{grid-template-columns:44px minmax(0,1fr);gap:9px}
+.q2l1,.q2l2{display:flex;align-items:baseline;justify-content:space-between;gap:6px}
+.q2l1 .q2lk{flex:1}.q2lky{font-weight:500;color:var(--muted)}.q2lv{font-weight:700;white-space:nowrap;flex:none}
+.q2l2{margin-top:3px;font-size:12.5px;color:var(--muted)}.q2l2 .num{white-space:nowrap;flex:none}
+.q2ls{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}.q2ls.d{color:var(--bad);font-weight:600}.q2ls.v{color:var(--warn);font-weight:600}
+.q2lt{display:flex;justify-content:space-between;gap:8px;padding:9px 0 0;border-top:1px solid var(--line);font-size:13.5px;font-weight:600}.q2lt .num{white-space:nowrap}
 .q2sale{margin-top:0}
 .q2sd{display:flex;align-items:center;gap:12px}
 .q2av{width:40px;height:40px;border-radius:50%;background:var(--soft);color:var(--blue);font-weight:800;display:flex;align-items:center;justify-content:center;font-size:16px;flex:none}
@@ -3435,6 +3441,8 @@ textarea.inp{font-family:inherit}
   }
   function ccCheNoi(t) { t.querySelectorAll('[data-che]').forEach(function (b) { b.onclick = function () { CCS.theMo = b.getAttribute('data-che') === '1'; var lg = theLogoNap(); if (!lg.complete) lg.onload = function () { ccVe(); }; ccVe(); window.scrollTo(0, 0); }; }); }
   var BAN_MOI = [
+    { so: 83, ds: [['Tổng quan → Tiền & công nợ → Lịch thu tiền: số lớn mỗi dòng là giá trị hóa đơn gồm VAT, khớp bảng kê gửi công ty; dòng nhỏ "Thực nhận" là số về tay sau VAT và phí 5%.', 'chu'],
+      ['Lịch thu tiền: tên kỳ rút gọn thành T9, T10 nên tên công ty không còn bị cắt; tổng thực nhận dự kiến nằm ở cuối danh sách.', 'chu']] },
     { so: 81, ds: [['Giả lập: bỏ mục "Toàn công ty" bị lặp; lãi từng công ty nằm ngay trong ô kết quả, chạm › để xem chi tiết.', 'chu']] },
     { so: 80, ds: [['Giả lập tài chính: ô kết quả hiện thẳng lãi của từng công ty (HOJEONG lãi, BEST lãi), đã trừ phần chi phí cố định chia theo doanh thu; cộng lại bằng lợi nhuận toàn công ty.', 'chu'],
       ['Giả lập: chạm › ở từng công ty để xem chi tiết và dòng "Nếu không có công ty này, toàn công ty còn…".', 'chu']] },
@@ -4373,6 +4381,24 @@ textarea.inp{font-family:inherit}
   // dòng tiền 6 tuần tới: chỉ gom các khoản đã có hạn trên báo cáo (mục 6 thu khách, mục 2 trả vendor), không tính thêm
   // ---------- Tổng quan: mỗi nhóm 1 số chính, các khối gọn như bản vẽ; bảng đối chiếu chi tiết để trong "Xem chi tiết" ----------
   function tqMuc(o, chu) { return o.muc.filter(function (m) { return m.tieu.indexOf(chu) === 0; })[0]; }
+  function veLichThu(m6) {   // Lịch thu tiền: số lớn = giá trị hóa đơn gồm VAT (khớp bảng kê), dòng nhỏ = thực nhận sau VAT và phí 5%
+    var cHd = m6.dau.filter(function (c) { return /^Giá trị hóa đơn/i.test(c); })[0] || '', cTn = 'Thực nhận dự kiến';
+    var rs = m6.dong.filter(function (r) { return (tqCo(tqGt(m6, r, cTn)) || tqCo(tqGt(m6, r, cHd))) && !/^Tổng/i.test(r[0]); }), tg = m6.dong.filter(function (r) { return /^Tổng/i.test(r[0]); })[0];
+    rs.sort(function (a, b) { return (ngayHan(tqGt(m6, a, 'Hạn thanh toán')) || 0) - (ngayHan(tqGt(m6, b, 'Hạn thanh toán')) || 0); });
+    var coHd = cHd && rs.some(function (r) { return tqCo(tqGt(m6, r, cHd)); });
+    var ky = function (t) { t = String(t || '').trim(); var m = /^tháng\s*(\d{1,2})/i.exec(t); return m ? 'T' + m[1] : t; };
+    var h = q2H('Lịch thu tiền các công ty', tg ? esc(tqGt(m6, tg, coHd ? cHd : cTn)) : '') + '<div class="card q2lich">' + rs.map(function (r) {
+      var d = ngayHan(tqGt(m6, r, 'Hạn thanh toán')), tt = tqGt(m6, r, 'Tình trạng'), ng = tqGt(m6, r, 'Số ngày đến hạn'), kh = tqGt(m6, r, 'Khách hàng');
+      var mau = /quá hạn/i.test(tt) ? 'd' : /sắp/i.test(tt) ? 'v' : '';
+      var han = tqCo(ng) || ng === '0' ? (q2So(ng) < 0 ? 'Quá ' + Math.abs(q2So(ng)) + ' ngày' : q2So(ng) === 0 ? 'Đến hạn hôm nay' : 'Còn ' + q2So(ng) + ' ngày') : (tt || '');
+      var hd = tqGt(m6, r, cHd), tn = tqGt(m6, r, cTn);
+      return '<div class="q2lr q2lr2"><div class="q2ngay"><b>' + (d ? ('0' + d.getDate()).slice(-2) : '?') + '</b><span>th ' + (d ? d.getMonth() + 1 : '') + '</span></div><div style="min-width:0">' +
+        '<div class="q2l1"><div class="q2lk ell">' + q2Dot(mauCty(kh)) + esc(kh) + ' <span class="q2lky">' + esc(ky(tqGt(m6, r, 'Kỳ'))) + '</span>' + '</div><div class="num q2lv">' + esc(coHd && tqCo(hd) ? hd : tn) + '</div></div>' +
+        '<div class="q2l2"><span class="q2ls ' + mau + '">' + esc(han) + '</span>' + (coHd && tqCo(tn) ? '<span class="num">Thực nhận ' + esc(tn) + '</span>' : '') + '</div></div></div>';
+    }).join('');
+    if (coHd && tg && tqCo(tqGt(m6, tg, cTn))) h += '<div class="q2lt"><span class="ell">Tổng thực nhận dự kiến</span><span class="num">' + esc(tqGt(m6, tg, cTn)) + '</span></div>';
+    return h + '<div class="meta" style="margin-top:6px">' + (coHd ? 'Số lớn là giá trị hóa đơn gồm VAT, khớp bảng kê gửi công ty. Thực nhận là số còn lại sau khi trừ VAT và phí pháp nhân 5%.' : 'Thực nhận dự kiến, đã trừ VAT và phí 5%') + '</div></div>';
+  }
   function tqGt(m, r, cot) { var i = m ? m.dau.indexOf(cot) : -1; return i >= 0 ? String(r[i] || '').trim() : ''; }
   function tqCo(v) { return v && v !== '-' && v !== '0'; }
   function tqDong(ten, so, phu, cls, pill) {   // 1 dòng: tên trái, số phải; dòng phụ xám; nhãn tình trạng cạnh dòng phụ
@@ -4538,16 +4564,7 @@ textarea.inp{font-family:inherit}
     }).join('') + '</div><div id="c6ct"></div>' +
       (w.qua.thu || w.qua.chi ? '<div class="note bad" style="margin-top:10px">Đã quá hạn: các công ty chưa trả ' + vnd(w.qua.thu) + (w.qua.chi ? ' · vendor chưa trả ' + vnd(w.qua.chi) : '') + '</div>' : '') +
       '<div class="meta" style="margin-top:8px">Triệu đồng · chưa gồm lương công nhân hằng tuần</div></div>';
-    if (m6) {   // lịch thu tiền theo hạn
-      var rs = m6.dong.filter(function (r) { return tqCo(tqGt(m6, r, 'Thực nhận dự kiến')) && !/^Tổng/i.test(r[0]); }), tg = m6.dong.filter(function (r) { return /^Tổng/i.test(r[0]); })[0];
-      rs.sort(function (a, b) { return (ngayHan(tqGt(m6, a, 'Hạn thanh toán')) || 0) - (ngayHan(tqGt(m6, b, 'Hạn thanh toán')) || 0); });
-      h += q2H('Lịch thu tiền các công ty', tg ? esc(tqGt(m6, tg, 'Thực nhận dự kiến')) : '') + '<div class="card q2lich">' + rs.map(function (r) {
-        var d = ngayHan(tqGt(m6, r, 'Hạn thanh toán')), tt = tqGt(m6, r, 'Tình trạng'), ng = tqGt(m6, r, 'Số ngày đến hạn'), kh = tqGt(m6, r, 'Khách hàng');
-        var mau = /quá hạn/i.test(tt) ? 'd' : /sắp/i.test(tt) ? 'v' : 'x';
-        return '<div class="q2lr"><div class="q2ngay"><b>' + (d ? ('0' + d.getDate()).slice(-2) : '?') + '</b><span>th ' + (d ? d.getMonth() + 1 : '') + '</span></div><div style="min-width:0"><div class="q2lk ell">' + q2Dot(mauCty(kh)) + esc(kh) + ' · ' + esc(String(tqGt(m6, r, 'Kỳ')).toLowerCase()) + '</div><div class="meta">' + (tqCo(ng) ? (q2So(ng) < 0 ? 'quá ' + Math.abs(q2So(ng)) + ' ngày' : 'còn ' + esc(ng) + ' ngày') : '') + '</div></div>' +
-          '<div style="text-align:right"><div class="num" style="font-weight:700">' + esc(tqGt(m6, r, 'Thực nhận dự kiến')) + '</div>' + (tt ? '<span class="q2tag ' + mau + '">' + esc(tt) + '</span>' : '') + '</div></div>';
-      }).join('') + '<div class="meta" style="margin-top:6px">Thực nhận dự kiến, đã trừ VAT và phí 5%</div></div>';
-    }
+    if (m6) h += veLichThu(m6);   // lịch thu tiền theo hạn
     return h;
   }
   function tqNhomVS(o) {
