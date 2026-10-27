@@ -13,7 +13,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
 <script src="config.js"></script>
-<script>window.PB = { so: 84, luc: "27/10 20:57" };</script>
+<script>window.PB = { so: 85, luc: "27/10 21:29" };</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap">
 <style>
@@ -788,7 +788,7 @@ textarea.inp{font-family:inherit}
   // ---------- gọi máy chủ ----------
   // ---------- thanh tiến trình (ước tính theo thời gian thường mất của từng việc) ----------
   var VIEC_TG = { hoi: [3, 'Đang kiểm tra'], vao: [4, 'Đang đăng nhập'], toi: [3, 'Đang mở'], ds: [3, 'Đang tải danh sách'], phieu: [4, 'Đang tính phiếu lương'],
-    phieuTuan: [5, 'Đang tính phiếu các tuần'], vtXem: [8, 'Đang đọc file vân tay'], dsTra: [2, ''], ghiUT: [7, 'Đang ghi vào sổ ứng/trả'], cho: [3, ''], choGui: [3, ''], choHoan: [2, ''], choBo: [3, ''], utGan: [4, 'Đang tải ứng / trả'], themNguoi: [5, 'Đang thêm vào danh sách'], thuNhap: [4, 'Đang tải thu nhập'],
+    phieuTuan: [5, 'Đang tính phiếu các tuần'], vtXem: [8, 'Đang đọc file vân tay'], dsTra: [2, ''], ghiUT: [7, 'Đang ghi vào sổ ứng/trả'], suaUT: [7, 'Đang sửa sổ ứng/trả'], cho: [3, ''], choGui: [3, ''], choHoan: [2, ''], choBo: [3, ''], utGan: [4, 'Đang tải ứng / trả'], themNguoi: [5, 'Đang thêm vào danh sách'], thuNhap: [4, 'Đang tải thu nhập'],
     quy: [7, 'Đang tải sổ thu chi'], ghiSo: [7, 'Đang ghi sổ thu chi'], tq: [4, 'Đang tải báo cáo'], capNhat: [30, 'Đang cập nhật'], doiPin: [3, 'Đang lưu mã PIN'], ra: [1, ''] };
   var TT = { viec: [], el: null, t: null };
   function ttBat(q) {
@@ -1286,7 +1286,7 @@ textarea.inp{font-family:inherit}
       '<div id="ktBox"></div>';
     ganVtThe(); veTB();
     hd.insertAdjacentHTML('beforeend', '<button class="ckt nghi" id="moUT"><span class="ell" style="flex:1">Ứng / trả gần đây</span><i>›</i></button>');
-    document.getElementById('moUT').onclick = moUT;
+    document.getElementById('moUT').onclick = moUTTuDs;
     veCho();
     var cn = document.getElementById('capNhat'); if (cn) cn.onclick = moCapNhat;
     if (S.cty === 'HOJEONG') {
@@ -1435,7 +1435,7 @@ textarea.inp{font-family:inherit}
       '<main><div class="card hero"><div class="meta">Còn phải trả</div><div class="row" style="align-items:baseline;flex-wrap:wrap;gap:10px"><span class="big num" style="color:' + (p.con < 0 ? 'var(--bad)' : p.con > 0 ? 'var(--cam)' : 'var(--good)') + '">' + vnd(p.con) + '</span>' +
       (p.con < 0 ? '<span class="pill bad">Trả dư</span>' : p.con > 0 ? '<span class="pill warn">' + (new Date().getDay() === 3 ? 'Hôm nay trả lương' : 'Trả vào thứ Tư') + '</span>' : '') + '</div>' +
       (Math.abs(p.kt || 0) >= 1 ? '<div class="meta">' + (p.kt > 0 ? 'Gồm lương tháng trước chưa nhận ' + vnd(p.kt) : 'Đã trừ khoản nhận trước tháng trước ' + vnd(-p.kt)) + '</div>' : '') +
-      '<div class="meta">Đã ứng ' + vnd(p.ung) + ' · Đã trả ' + vnd(p.tra) + '</div>' +
+      '<div class="row sp" style="gap:8px"><span class="meta">Đã ứng ' + vnd(p.ung) + ' · Đã trả ' + vnd(p.tra) + '</span>' + (p.r ? '<button class="link" id="hsUT" style="padding:0;font-size:13px;white-space:nowrap">Sửa ứng / trả ›</button>' : '') + '</div>' +
       (p.r ? '<div class="g2" style="margin-top:16px"><button class="btn ghost" id="gUng">Ghi ứng</button><button class="btn" id="gTra">Trả lương</button></div>' : '') + '</div>' +
       '<div id="hsCho"></div>' +
       (p.cb ? '<div class="note warn">⚠ ' + esc(p.cb) + '</div>' : '') +
@@ -1455,6 +1455,7 @@ textarea.inp{font-family:inherit}
     if (!p.r) return;
     document.getElementById('gUng').onclick = function () { moGhiUT(p, 'ung'); };
     document.getElementById('gTra').onclick = function () { moGhiUT(p, 'tra'); };
+    var hsU = document.getElementById('hsUT'); if (hsU) hsU.onclick = function () { S.utQ = p.ten; S.utHet = 0; S.hs = null; moUT(); };
     document.querySelectorAll('.seg button').forEach(function (b) { b.onclick = function () { document.querySelectorAll('.seg button').forEach(function (x) { x.classList.toggle('on', x === b); }); S.hs.kieu = b.getAttribute('data-k'); S.hs.ngay = ''; taiPhieu(); }; });
     taiPhieu();
   }
@@ -1752,7 +1753,7 @@ textarea.inp{font-family:inherit}
       '<div class="fl">' + (tra && p.con > 0 ? '<button data-v="' + p.con + '">Trả hết ' + vnd(p.con) + '</button>' : '') + [100000, 200000, 500000, 1000000].map(function (v) { return '<button data-v="' + v + '">' + vnd(v) + '</button>'; }).join('') + '</div>' +
       '<label class="lb">Người trả tiền</label><select class="inp" id="gn"><option>Đang tải…</option></select>' +
       '<input class="inp" id="gg" placeholder="Ghi chú (không bắt buộc)">' +
-      '<div class="meta">Ghi nhầm thì báo quản lý sửa.</div>' +
+      '<div class="meta">Ghi nhầm thì vào Ứng / trả gần đây, giữ ngón tay lên dòng đó để sửa hoặc xoá (trong hôm nay).</div>' +
       '<div class="msg" id="gm"></div><button class="btn" id="gok">Ghi</button><button class="btn ghost" id="ghuy">Thôi</button>');
     var bp = banPhim('gs'), lay = bp.lay;
     if (tra && pc) bp.dat(p.con > 0 ? p.con : pc.so);
@@ -3453,6 +3454,9 @@ textarea.inp{font-family:inherit}
   }
   function ccCheNoi(t) { t.querySelectorAll('[data-che]').forEach(function (b) { b.onclick = function () { CCS.theMo = b.getAttribute('data-che') === '1'; var lg = theLogoNap(); if (!lg.complete) lg.onload = function () { ccVe(); }; ccVe(); window.scrollTo(0, 0); }; }); }
   var BAN_MOI = [
+    { so: 85, ds: [['Ứng / trả gần đây: giữ ngón tay lên một dòng để sửa (số tiền, loại, ngày, người trả, ghi chú) hoặc xoá. Kế toán và chủ sửa được mọi dòng; sale chỉ sửa được dòng chính mình ghi trên app trong hôm nay.', ''],
+      ['Có ô lọc theo tên; trong hồ sơ lao động bấm "Sửa ứng / trả ›" để xem ngay các dòng của người đó.', ''],
+      ['Sale sửa hoặc xoá ứng / trả thì hiện trong khối thông báo của chủ, chạm vào là mở đúng người.', 'chu']] },
     { so: 84, ds: [['Lương tháng trước còn nợ người lao động không còn ghi thành dòng "Ứng" số âm ở sổ ứng trả nữa: máy ghi riêng ở sheet KY_TRUOC và cột "Nợ kỳ trước" trên bảng công. Sổ ứng trả chỉ còn tiền ứng / trả thật.', ''],
       ['Hồ sơ lao động: dưới số Còn phải trả có dòng "Gồm lương tháng trước chưa nhận …" khi người đó còn lương tháng trước.', '']] },
     { so: 83, ds: [['Tổng quan → Tiền & công nợ → Lịch thu tiền: số lớn mỗi dòng là giá trị hóa đơn gồm VAT, khớp bảng kê gửi công ty; dòng nhỏ "Thực nhận" là số về tay sau VAT và phí 5%.', 'chu'],
@@ -3660,6 +3664,7 @@ textarea.inp{font-family:inherit}
   // ---------- 20/10: màn Ứng / trả: phiếu chờ + tuần này theo người trả + các dòng gần đây ----------
   var UTG = {};
   function moUT() { S.utMo = 1; S.utMoc = {}; window.scrollTo(0, 0); veUT(); taiUT(); }
+  function moUTTuDs() { S.utQ = ''; moUT(); }
   function taiUT() {
     var cty = S.cty;
     apiT({ v: 'utGan', cty: cty }).then(function (o) { if (o.loi) { toast(o.loi); return; } UTG[cty] = o; if (S.utMo && S.cty === cty) veUT(); }, function (e) { toast(e.message); });
@@ -3683,18 +3688,85 @@ textarea.inp{font-family:inherit}
     var kx = 'vlta_utx_' + S.cty, xem = null; S.utMoc = S.utMoc || {};
     if (!(S.cty in S.utMoc)) { try { S.utMoc[S.cty] = JSON.parse(doc(kx) || 'null'); } catch (e) { S.utMoc[S.cty] = null; } }   // mốc lần xem trước (giữ suốt lần mở này)
     xem = S.utMoc[S.cty];
-    var lon = o.ds.reduce(function (a, x) { return Math.max(a, x.dong); }, 0), gioi = S.utHet ? o.ds.length : 60, ngTruoc = '';
+    var lon = o.ds.reduce(function (a, x) { return Math.max(a, x.dong); }, 0), ngTruoc = '';
+    var utQ = kd(S.utQ || ''), dsL = utQ ? o.ds.filter(function (x) { return kd(x.ten).indexOf(utQ) >= 0; }) : o.ds, gioi = S.utHet ? dsL.length : 60;   // 27/10: lọc theo tên
     h += '<div class="row sp" style="margin:18px 4px 8px"><span class="sec">Gần đây</span><button class="link" id="utLm" style="padding:0;font-size:13px">Làm mới</button></div>';
-    h += o.ds.length ? '<div class="grp">' + o.ds.slice(0, gioi).map(function (x) {
+    h += '<input class="search" id="utQ" type="search" placeholder="Lọc theo tên…" autocomplete="off" value="' + esc(S.utQ || '') + '" style="margin-bottom:8px">';
+    h += '<div class="meta" style="margin:0 4px 8px">Giữ ngón tay lên một dòng để sửa hoặc xoá.</div>';
+    h += dsL.length ? '<div class="grp">' + dsL.slice(0, gioi).map(function (x) {
       var moi = xem && xem.id === o.id && x.dong > xem.dong, g = '';
       if (x.ngay !== ngTruoc) { ngTruoc = x.ngay; g = '<div class="gh">' + esc(x.ngay.replace(/\/\d{4}$/, '')) + '</div>'; }
-      return g + '<div class="it"><div style="min-width:0;flex:1"><div class="nm ell">' + (moi ? '<i class="moiDot"></i>' : '') + esc(hoaDau(x.ten)) + '</div><div class="sub ell">' + esc([x.loai, x.nguoi, x.ghi].filter(String).join(' · ')) + '</div></div><div class="amt num">' + vnd(x.so) + '</div></div>';
-    }).join('') + (gioi < o.ds.length ? '<button class="it xt" id="utThem"><span class="link" style="padding:0">Xem thêm ' + (o.ds.length - gioi) + ' dòng</span></button>' : '') + '</div>' : '<div class="empty">Chưa có khoản ứng / trả nào trong kỳ.</div>';
+      return g + '<div class="it utIt" data-d="' + x.dong + '"><div style="min-width:0;flex:1"><div class="nm ell">' + (moi ? '<i class="moiDot"></i>' : '') + esc(hoaDau(x.ten)) + '</div><div class="sub ell">' + esc([x.loai, x.nguoi, x.ghi].filter(String).join(' · ')) + '</div></div><div class="amt num">' + vnd(x.so) + '</div></div>';
+    }).join('') + (gioi < dsL.length ? '<button class="it xt" id="utThem"><span class="link" style="padding:0">Xem thêm ' + (dsL.length - gioi) + ' dòng</span></button>' : '') + '</div>' : '<div class="empty">' + (utQ ? 'Không có dòng nào của tên này.' : 'Chưa có khoản ứng / trả nào trong kỳ.') + '</div>';
     m.innerHTML = h;
     var bc = document.getElementById('utCho'); if (bc) ganChoDong(bc, dsC);
     var th = document.getElementById('utThem'); if (th) th.onclick = function () { S.utHet = 1; veUT(); };
     document.getElementById('utLm').onclick = function () { taiUT(); taiCho(); };
+    var qI = document.getElementById('utQ'), qHen = 0;
+    qI.oninput = function () { clearTimeout(qHen); qHen = setTimeout(function () { S.utQ = qI.value; S.utHet = 0; veUT(); var q2 = document.getElementById('utQ'); if (q2) { q2.focus(); q2.setSelectionRange(q2.value.length, q2.value.length); } }, 350); };
+    m.querySelectorAll('.utIt').forEach(function (el) {
+      var x = o.ds.filter(function (y) { return String(y.dong) === el.getAttribute('data-d'); })[0]; if (!x) return;
+      giuNgon(el, function () { xemUT(x); }, function () { menuUT(x); });
+    });
     if (lon) luu(kx, JSON.stringify({ id: o.id, dong: lon }));   // lần sau mở: dòng ghi thêm sau lần này có chấm xanh
+  }
+
+  // ---------- 27/10: xem / sửa / xoá 1 dòng ứng / trả (chủ, kế toán: mọi dòng; sale: dòng mình ghi trên app trong hôm nay) ----------
+  function utCam() { toast('Dòng này không phải bạn ghi trên app hôm nay – nhờ kế toán hoặc anh Mạnh sửa.'); }
+  function xemUT(x) {
+    var sh = moSheet('<h3 class="ell">' + esc(hoaDau(x.ten)) + '</h3>' +
+      '<div class="kv so">' + [['Loại', x.loai], ['Số tiền', vnd(x.so)], ['Ngày', x.ngay], ['Người trả', x.nguoi]].filter(function (k) { return k[1]; }).map(function (k) { return '<span>' + esc(k[0]) + '</span><b class="num">' + esc(k[1]) + '</b>'; }).join('') + '</div>' +
+      (x.ghi ? '<div class="note" style="white-space:pre-line">' + esc(x.ghi) + '</div>' : '') +
+      (x.sua ? '<div class="g2"><button class="btn ghost" id="xuS">Sửa</button><button class="btn ghost xoa" id="xuX">Xoá</button></div>' : '<div class="meta">Chỉ kế toán, chủ hoặc người vừa ghi dòng này trên app (trong hôm nay) mới sửa được.</div>') +
+      '<button class="btn ghost" id="xuD">Đóng</button>');
+    document.getElementById('xuD').onclick = function () { sh.remove(); };
+    if (x.sua) {
+      document.getElementById('xuS').onclick = function () { sh.remove(); moSuaUT(x); };
+      document.getElementById('xuX').onclick = function () { if (!confirmLan(this, 'Bấm lần nữa để xoá')) return; sh.remove(); xoaUT(x); };
+    }
+  }
+  function menuUT(x) { if (!x.sua) { utCam(); return; } menuGiu(function () { moSuaUT(x); }, function () { xoaUT(x); }); }
+  function utCu(x) { return { ngay: x.ngay, ten: x.ten, loai: x.loai, so: x.so, nguoi: x.nguoi }; }
+  function utXong(cty, o, chu) {
+    if (o.loi) { toastLoi(o.loi); return false; }
+    toast(o.khongDoi ? 'Không có gì thay đổi' : chu);
+    delete UTG[cty]; PC = {}; taiUT();
+    apiT({ v: 'ds', cty: cty, im: 1 }).then(function (y) { (y.cty || []).forEach(function (c) { if (!c.giong) { c.luc = y.luc; S.data[c.cty] = c; } }); luuDs(); setTimeout(taiSanPhieu, 1500); }, function () { });
+    return true;
+  }
+  function xoaUT(x) {
+    var cty = S.cty; toast('Đang xoá…');
+    apiT({ v: 'suaUT', cty: cty, dong: x.dong, cu: utCu(x), xoa: 1 }).then(function (o) { utXong(cty, o, 'Đã xoá ' + x.loai.toLowerCase() + ' ' + vnd(x.so) + ' của ' + hoaDau(x.ten)); }, function (e) { toastLoi(e.message); });
+  }
+  function moSuaUT(x) {
+    var cty = S.cty, tra = x.loai === 'Trả lương', iso = soVeIso(x.ngay);
+    var sh = moSheet('<h3>Sửa ứng / trả · ' + esc(hoaDau(x.ten)) + '</h3>' +
+      '<div class="seg" id="suL"><button data-l="ung"' + (tra ? '' : ' class="on"') + '>Ứng</button><button data-l="tra"' + (tra ? ' class="on"' : '') + '>Trả lương</button></div>' +
+      '<div id="suS"></div>' +
+      '<div class="g2"><div><label class="lb">Ngày</label><input class="inp" id="suN" type="date" value="' + esc(iso) + '"></div>' +
+      '<div><label class="lb">Người trả tiền</label><select class="inp" id="suP"><option>' + esc(x.nguoi || 'Đang tải…') + '</option></select></div></div>' +
+      '<input class="inp" id="suG" placeholder="Ghi chú (không bắt buộc)" value="' + esc(x.ghi || '') + '">' +
+      '<div class="meta">Ghi nhầm người thì xoá dòng này rồi ghi lại ở hồ sơ người đúng.</div>' +
+      '<div class="msg" id="suM"></div><button class="btn" id="suOk">Lưu</button><button class="btn ghost" id="suT">Thôi</button>');
+    var bp = banPhim('suS'), loai = tra ? 'tra' : 'ung';
+    bp.dat(x.so);
+    sh.querySelectorAll('#suL button').forEach(function (b) { b.onclick = function () { loai = b.getAttribute('data-l'); sh.querySelectorAll('#suL button').forEach(function (c) { c.classList.toggle('on', c === b); }); }; });
+    document.getElementById('suT').onclick = function () { sh.remove(); };
+    apiT({ v: 'dsTra', cty: cty }).then(function (o) {
+      var s2 = document.getElementById('suP'); if (!s2) return;
+      var ds = o.ds || []; if (x.nguoi && ds.indexOf(x.nguoi) < 0) ds = [x.nguoi].concat(ds);
+      s2.innerHTML = ds.map(function (y) { return '<option' + (y === x.nguoi ? ' selected' : '') + '>' + esc(y) + '</option>'; }).join('');
+    }, function (e) { document.getElementById('suM').textContent = e.message; });
+    document.getElementById('suOk').onclick = function () {
+      var so = bp.lay(), m = document.getElementById('suM'), btn = this;
+      if (so < 1000) { m.textContent = 'Nhập số tiền.'; return; }
+      if (!document.getElementById('suN').value) { m.textContent = 'Chọn ngày.'; return; }
+      btn.disabled = true; btn.textContent = 'Đang lưu…';
+      apiT({ v: 'suaUT', cty: cty, dong: x.dong, cu: utCu(x), moi: { loai: loai, so: so, ngay: document.getElementById('suN').value, nguoi: document.getElementById('suP').value, ghi: document.getElementById('suG').value.trim() } }).then(function (o) {
+        if (o.loi) { btn.disabled = false; btn.textContent = 'Lưu'; m.textContent = o.loi; return; }
+        sh.remove(); utXong(cty, o, 'Đã sửa');
+      }, function (e) { btn.disabled = false; btn.textContent = 'Lưu'; m.textContent = e.message; });
+    };
   }
 
   // ---------- cập nhật vân tay / chấm công (= nút CẬP NHẬT trên file nhập liệu) ----------
@@ -3781,7 +3853,7 @@ textarea.inp{font-family:inherit}
     var ds = tbDs().filter(function (x) { return x.cty === S.cty; });
     if (!ds.length) { box.innerHTML = ''; return; }
     var hien = S.tbHet ? ds : ds.slice(0, 5);
-    box.innerHTML = '<div class="tbk"><div class="tbk-h"><i class="tbDot"></i><b>Bảng công sửa khác ' + vtTen() + ' · ' + ds.length + '</b><button class="link" id="tbHet">Đã xem hết</button></div>' +
+    box.innerHTML = '<div class="tbk"><div class="tbk-h"><i class="tbDot"></i><b>' + (ds.some(function (x) { return /ứng\/trả/.test(x.loai); }) ? 'Sale sửa bảng công / ứng trả' : 'Bảng công sửa khác ' + vtTen()) + ' · ' + ds.length + '</b><button class="link" id="tbHet">Đã xem hết</button></div>' +
       hien.map(function (x) {
         var nd = (x.truoc ? esc(x.truoc) + ' <span class="tbMui">→</span> ' : '') + '<b>' + esc(x.sau) + '</b>';
         return '<div class="tbR"><button class="tbM" data-tb="' + esc(x.id) + '"><span class="tbN"><b class="ell">' + esc(hoaDau(x.ten)) + '</b><span class="num">ngày ' + esc(String(x.ngay).replace(/\/\d{4}$/, '')) + '</span></span>' +
@@ -3797,6 +3869,7 @@ textarea.inp{font-family:inherit}
       b.onclick = function () {
         var x = ds.filter(function (y) { return y.id === b.getAttribute('data-tb'); })[0]; if (!x) return;
         tbDaXem([x.id]);
+        if (/ứng\/trả/.test(x.loai)) { S.utQ = x.ten; S.utHet = 0; moUT(); return; }   // 27/10: thông báo sửa / xoá ứng trả
         var d = S.data[S.cty] || {}, p = (d.ds || []).filter(function (q) { return x.ma && q.ma === x.ma; })[0] || (d.ds || []).filter(function (q) { return kd(q.ten) === kd(x.ten); })[0];
         var m = /^(\d{2})\/(\d{2})\/(\d{4})$/.exec(x.ngay || '');
         if (!p) { toast('Không thấy ' + hoaDau(x.ten) + ' trong danh sách.'); return; }
