@@ -1423,6 +1423,7 @@ textarea.inp{font-family:inherit}
       (S.cn && S.cn.cty === S.cty ? S.cn.ds.filter(function (x) { return x.ma && x.ma === p.ma; }).map(function (x) { return '<div class="meta"' + (String(x.tt).charAt(0) === '✔' ? '' : ' style="color:var(--warn)"') + '>' + (x.loai === 'Vào' ? 'Vào Đại Thành' : 'Ra khỏi Đại Thành') + ' từ ' + esc(ngayCN(x.ngay)) + '</div>'; }).join('') : '') + '</div>' +
       '<main><div class="card hero"><div class="meta">Còn phải trả</div><div class="row" style="align-items:baseline;flex-wrap:wrap;gap:10px"><span class="big num" style="color:' + (p.con < 0 ? 'var(--bad)' : p.con > 0 ? 'var(--cam)' : 'var(--good)') + '">' + vnd(p.con) + '</span>' +
       (p.con < 0 ? '<span class="pill bad">Trả dư</span>' : p.con > 0 ? '<span class="pill warn">' + (new Date().getDay() === 3 ? 'Hôm nay trả lương' : 'Trả vào thứ Tư') + '</span>' : '') + '</div>' +
+      (Math.abs(p.kt || 0) >= 1 ? '<div class="meta">' + (p.kt > 0 ? 'Gồm lương tháng trước chưa nhận ' + vnd(p.kt) : 'Đã trừ khoản nhận trước tháng trước ' + vnd(-p.kt)) + '</div>' : '') +
       '<div class="meta">Đã ứng ' + vnd(p.ung) + ' · Đã trả ' + vnd(p.tra) + '</div>' +
       (p.r ? '<div class="g2" style="margin-top:16px"><button class="btn ghost" id="gUng">Ghi ứng</button><button class="btn" id="gTra">Trả lương</button></div>' : '') + '</div>' +
       '<div id="hsCho"></div>' +
@@ -3441,6 +3442,8 @@ textarea.inp{font-family:inherit}
   }
   function ccCheNoi(t) { t.querySelectorAll('[data-che]').forEach(function (b) { b.onclick = function () { CCS.theMo = b.getAttribute('data-che') === '1'; var lg = theLogoNap(); if (!lg.complete) lg.onload = function () { ccVe(); }; ccVe(); window.scrollTo(0, 0); }; }); }
   var BAN_MOI = [
+    { so: 84, ds: [['Lương tháng trước còn nợ người lao động không còn ghi thành dòng "Ứng" số âm ở sổ ứng trả nữa: máy ghi riêng ở sheet KY_TRUOC và cột "Nợ kỳ trước" trên bảng công. Sổ ứng trả chỉ còn tiền ứng / trả thật.', ''],
+      ['Hồ sơ lao động: dưới số Còn phải trả có dòng "Gồm lương tháng trước chưa nhận …" khi người đó còn lương tháng trước.', '']] },
     { so: 83, ds: [['Tổng quan → Tiền & công nợ → Lịch thu tiền: số lớn mỗi dòng là giá trị hóa đơn gồm VAT, khớp bảng kê gửi công ty; dòng nhỏ "Thực nhận" là số về tay sau VAT và phí 5%.', 'chu'],
       ['Lịch thu tiền: tên kỳ rút gọn thành T9, T10 nên tên công ty không còn bị cắt; tổng thực nhận dự kiến nằm ở cuối danh sách.', 'chu']] },
     { so: 81, ds: [['Giả lập: bỏ mục "Toàn công ty" bị lặp; lãi từng công ty nằm ngay trong ô kết quả, chạm › để xem chi tiết.', 'chu']] },
