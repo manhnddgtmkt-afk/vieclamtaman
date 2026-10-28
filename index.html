@@ -13,7 +13,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
 <script src="config.js"></script>
-<script>window.PB = { so: 85, luc: "27/10 21:29" };</script>
+<script>window.PB = { so: 86, luc: "28/10 15:38" };</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap">
 <style>
@@ -106,6 +106,8 @@ main{padding:14px 16px calc(40px + env(safe-area-inset-bottom,0px));display:flex
 .note{border-radius:12px;padding:10px 12px;font-size:13.5px}
 .note.warn{background:var(--warn-bg);color:var(--warn)}
 .note.bad{background:var(--bad-bg);color:var(--bad);font-weight:600}
+.note.ok{background:var(--good-bg);color:var(--good)}
+.tcN .btn{margin-top:10px}.tcN .meta{margin-top:4px;color:inherit;opacity:.85}
 .kv{display:grid;grid-template-columns:auto 1fr;gap:6px 14px;font-size:14px}
 .kv span{color:var(--muted)}
 .kv b{font-weight:600;text-align:right;word-break:break-word}
@@ -160,7 +162,7 @@ details.mc[open] summary b::after{content:" ▴"}
 .kv.so{grid-template-columns:minmax(0,1fr) auto}
 .kv b.num{white-space:nowrap}
 #them{white-space:nowrap;flex:0 0 auto}
-.note:not(.warn):not(.bad){background:var(--soft);color:var(--muted)}
+.note:not(.warn):not(.bad):not(.ok){background:var(--soft);color:var(--muted)}
 
 html,body{overflow-x:hidden}
 main,.card{min-width:0}
@@ -498,7 +500,7 @@ textarea.inp{font-family:inherit}
 .tc3 span{flex:1;font-size:15px;color:var(--fg2);min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .tc3 b{font-size:16px;font-weight:600;white-space:nowrap}
 .ur .l.u{color:var(--cam)!important;font-weight:500!important}.ur .l.t{color:var(--good)!important;font-weight:500!important}
-.tch.dt small{color:var(--good)!important}
+.tch.dt small{color:var(--good)!important}.tch.gl small{color:var(--warn)!important}
 /* số không bao giờ bị bẻ dòng (Safari bẻ sau dấu phẩy); số chính quá dài thì tự thu nhỏ */
 .num,.big,b.num,.amt{white-space:nowrap}
 .big{display:inline-block;max-width:100%}
@@ -788,7 +790,7 @@ textarea.inp{font-family:inherit}
   // ---------- gọi máy chủ ----------
   // ---------- thanh tiến trình (ước tính theo thời gian thường mất của từng việc) ----------
   var VIEC_TG = { hoi: [3, 'Đang kiểm tra'], vao: [4, 'Đang đăng nhập'], toi: [3, 'Đang mở'], ds: [3, 'Đang tải danh sách'], phieu: [4, 'Đang tính phiếu lương'],
-    phieuTuan: [5, 'Đang tính phiếu các tuần'], vtXem: [8, 'Đang đọc file vân tay'], dsTra: [2, ''], ghiUT: [7, 'Đang ghi vào sổ ứng/trả'], suaUT: [7, 'Đang sửa sổ ứng/trả'], cho: [3, ''], choGui: [3, ''], choHoan: [2, ''], choBo: [3, ''], utGan: [4, 'Đang tải ứng / trả'], themNguoi: [5, 'Đang thêm vào danh sách'], thuNhap: [4, 'Đang tải thu nhập'],
+    phieuTuan: [5, 'Đang tính phiếu các tuần'], tangCuong: [8, 'Đang ghi xác nhận tăng cường'], vtXem: [8, 'Đang đọc file vân tay'], dsTra: [2, ''], ghiUT: [7, 'Đang ghi vào sổ ứng/trả'], suaUT: [7, 'Đang sửa sổ ứng/trả'], cho: [3, ''], choGui: [3, ''], choHoan: [2, ''], choBo: [3, ''], utGan: [4, 'Đang tải ứng / trả'], themNguoi: [5, 'Đang thêm vào danh sách'], thuNhap: [4, 'Đang tải thu nhập'],
     quy: [7, 'Đang tải sổ thu chi'], ghiSo: [7, 'Đang ghi sổ thu chi'], tq: [4, 'Đang tải báo cáo'], capNhat: [30, 'Đang cập nhật'], doiPin: [3, 'Đang lưu mã PIN'], ra: [1, ''] };
   var TT = { viec: [], el: null, t: null };
   function ttBat(q) {
@@ -1599,13 +1601,13 @@ textarea.inp{font-family:inherit}
     if (!h.monChon || !T.ds.some(function (x) { return x.mon === h.monChon; })) h.monChon = T.mac && T.ds.some(function (x) { return x.mon === T.mac; }) ? T.mac : T.ds[T.ds.length - 1].mon;
     box.innerHTML = T.ds.slice().reverse().map(function (x) {
       var nh = x.tuanTxt.replace(/\/\d{4}$/, '').replace(' – ', '–').replace(/^(\d+)\/(\d+)–(\d+)\/\2$/, '$1–$3/$2');
-      return '<button class="tch' + (T.mac && x.mon > T.mac ? ' cc' : !x.conNhan ? ' dt' : '') + (x.mon === h.monChon ? ' on' : '') + (x.mon === T.mac ? ' tra' : '') + '" data-m="' + x.mon + '"><b>' + esc(nh) + '</b><small class="num">' + (T.mac && x.mon > T.mac ? 'Chưa chốt' : x.conNhan ? vnd(x.conNhan) : 'Đã trả') + '</small></button>';
+      return '<button class="tch' + (T.mac && x.mon > T.mac ? ' cc' : x.tcD && !x.tc && !x.conNhan ? ' gl' : !x.conNhan ? ' dt' : '') + (x.mon === h.monChon ? ' on' : '') + (x.mon === T.mac ? ' tra' : '') + '" data-m="' + x.mon + '"><b>' + esc(nh) + '</b><small class="num">' + (T.mac && x.mon > T.mac ? 'Chưa chốt' : x.conNhan ? vnd(x.conNhan) : x.tcD && !x.tc ? 'Giữ lại' : 'Đã trả') + '</small></button>';
     }).join('');
     box.querySelectorAll('.tch').forEach(function (b) { b.onclick = function () { h.monChon = Number(b.getAttribute('data-m')); veTuanChon(h, T); }; });
     var on = box.querySelector('.tch.on'); if (on) { var ds = [].slice.call(box.children), k = ds.indexOf(on), dau = Math.max(0, Math.min(k - 1, ds.length - 3)); box.scrollLeft = 0; box.scrollLeft = ds[dau].getBoundingClientRect().left - ds[0].getBoundingClientRect().left; }
     var it = T.ds.filter(function (x) { return x.mon === h.monChon; })[0];
     document.getElementById('wt').textContent = 'Phiếu tuần ' + it.tuanTxt.replace(/\/\d{4}$/, '');
-    if (!it._o) { it._o = Object.assign({ css: T.css, ut: T.ut }, it); }
+    if (!it._o) { it._o = Object.assign({ css: T.css, ut: T.ut, sua: T.sua }, it); }
     hienPhieu(h, it._o);
   }
   function taiPhieu() {
@@ -1632,16 +1634,48 @@ textarea.inp{font-family:inherit}
     if (!slip) return;
     if (o.loi) { slip.innerHTML = '<div class="empty">' + esc(o.loi) + '</div>'; return; }
     if (o.mon) h.mon = o.mon;
-    var cb = String(o.canhBao || '').trim(), x = '';
+    var cb = String(o.canhBao || '').trim(), x = '', coTC = S.cty === 'BEST' && (o.tcD || o.tc);
+    if (coTC) cb = cb.split('\n').filter(function (s) { return !/^(Tuần này mới \d+ công|Đã xác nhận thanh toán tăng cường)/.test(s.trim()); }).join('\n').trim();   // 28/10: đã có khối tăng cường riêng
+    if (coTC) x += veTCNote(o);
     if (o.chan) x += '<div class="note bad">Phiếu tháng lệch với cột "Còn phải trả" trên BCC – chưa gửi cho công nhân, báo kế toán kiểm tra.</div>';
     if (cb) x += '<div class="note warn"><b>Lưu ý cho sale (không in lên phiếu):</b>' + cb.split('\n').map(function (s) { return '<div>• ' + esc(s) + '</div>'; }).join('') + '</div>';
     document.getElementById('pcb').innerHTML = x;
+    if (coTC) ganTC(h, o);
     vePhieu(slip, o.css, o.html);
     ganXuat(o);
     var ut = document.getElementById('ut');
     if (ut && o.ut) ut.innerHTML = (o.ut.length ? '<div class="ul">' + o.ut.map(function (z) {
       return '<div class="ur"><span class="d">' + esc(z.ngay) + '</span><span class="l ' + (/ứng/i.test(z.loai) ? 'u' : 't') + '">' + esc(z.loai) + '</span><b class="num">' + vnd(z.so) + '</b><span class="g">' + esc([z.nguoi, z.ghi].filter(String).join(' · ')) + '</span></div>';
     }).join('') + '</div>' : '<div class="meta">Chưa có khoản nào.</div>');
+  }
+  // ---------- 28/10: BEST – thanh toán tăng cường (tuần chưa đủ số công tối thiểu nhưng trả theo ngày) ----------
+  function veTCNote(o) {
+    if (o.tc) return '<div class="note ok tcN"><b>Đã xác nhận thanh toán tăng cường</b><div class="meta">' + esc([o.nCong + ' công, trả theo ngày', o.tc.ai, o.tc.luc].filter(String).join(' · ')) + '</div>' +
+      (o.sua ? '<button class="link" id="tcBo" style="padding:6px 0 0">Bỏ xác nhận</button>' : '') + '</div>';
+    return '<div class="note warn tcN"><b>Tuần này mới ' + o.nCong + ' công – tiền công ' + vnd(o.tienTuan || 0) + ' đang giữ lại</b><div class="meta">Người đi tăng cường được trả theo ngày thì bấm nút dưới. Chủ sẽ nhận thông báo.</div>' +
+      (o.sua ? '<button class="btn" id="tcNut">Thanh toán tăng cường</button>' : '') + '</div>';
+  }
+  function ganTC(h, o) {
+    var nut = document.getElementById('tcNut') || document.getElementById('tcBo'); if (!nut) return;
+    nut.onclick = function () {
+      var bo = !!o.tc, tuan = String(o.tuanTxt || '').replace(/\/\d{4}$/, '');
+      var sh = moSheet('<h3>' + (bo ? 'Bỏ xác nhận tăng cường' : 'Thanh toán tăng cường') + '</h3>' +
+        '<div class="meta ell">' + esc(hoaDau(o.ten)) + ' · tuần ' + esc(tuan) + '</div>' +
+        '<div class="note ' + (bo ? 'warn' : 'ok') + '" style="margin:12px 0">' + (bo ? 'Phiếu tuần này sẽ giữ lại tiền công như cũ (chưa đủ số công tối thiểu).'
+          : 'Phiếu tuần này sẽ thanh toán <b>' + vnd(o.tienTuan || 0) + '</b> cho ' + o.nCong + ' công, không tính chuyên cần. Chủ sẽ nhận thông báo.') + '</div>' +
+        '<button class="btn" id="tcOk">' + (bo ? 'Bỏ xác nhận' : 'Xác nhận thanh toán') + '</button><button class="btn ghost" id="tcThoi">Thôi</button>');
+      document.getElementById('tcThoi').onclick = function () { sh.remove(); };
+      document.getElementById('tcOk').onclick = function () {
+        var b = this; b.disabled = true; b.textContent = 'Đang ghi…';
+        apiT({ v: 'tangCuong', cty: S.cty, r: h.p.r, mon: o.mon, bo: bo ? 1 : 0 }).then(function (k) {
+          if (k.loi) { b.disabled = false; b.textContent = bo ? 'Bỏ xác nhận' : 'Xác nhận thanh toán'; toastLoi(k.loi); return; }
+          sh.remove();
+          var goc = S.cty + '|' + h.p.r + '|'; Object.keys(PC).forEach(function (k2) { if (k2.indexOf(goc) === 0 && k2 !== goc + 'TUAN') delete PC[k2]; });
+          toast(bo ? 'Đã bỏ xác nhận – phiếu giữ lại tiền như cũ.' : 'Đã xác nhận thanh toán tăng cường – phiếu đang tính lại.');
+          lamMoiHs(h);
+        }, function (e) { b.disabled = false; b.textContent = bo ? 'Bỏ xác nhận' : 'Xác nhận thanh toán'; toastLoi(e.message); });
+      };
+    };
   }
   // ---------- xuất ảnh phiếu (giống nút trên Google Sheets): chụp bằng html2canvas trong khung ẩn ----------
   function chupPhieu(o) {
@@ -3454,6 +3488,9 @@ textarea.inp{font-family:inherit}
   }
   function ccCheNoi(t) { t.querySelectorAll('[data-che]').forEach(function (b) { b.onclick = function () { CCS.theMo = b.getAttribute('data-che') === '1'; var lg = theLogoNap(); if (!lg.complete) lg.onload = function () { ccVe(); }; ccVe(); window.scrollTo(0, 0); }; }); }
   var BAN_MOI = [
+    { so: 86, ds: [['Phiếu tuần BEST: tuần chưa đủ 3 công hiện khối vàng "đang giữ lại". Người đi tăng cường được trả theo ngày thì người phụ trách bấm "Thanh toán tăng cường" để phiếu tính đủ tiền.', ''],
+      ['Thẻ tuần đang giữ lại tiền ghi "Giữ lại" (trước đây ghi nhầm "Đã trả"). Bấm nhầm thì mở lại phiếu, chọn "Bỏ xác nhận".', ''],
+      ['Sale xác nhận thanh toán tăng cường thì hiện trong khối thông báo của chủ, chạm vào là mở đúng phiếu tuần đó.', 'chu']] },
     { so: 85, ds: [['Ứng / trả gần đây: giữ ngón tay lên một dòng để sửa (số tiền, loại, ngày, người trả, ghi chú) hoặc xoá. Kế toán và chủ sửa được mọi dòng; sale chỉ sửa được dòng chính mình ghi trên app trong hôm nay.', ''],
       ['Có ô lọc theo tên; trong hồ sơ lao động bấm "Sửa ứng / trả ›" để xem ngay các dòng của người đó.', ''],
       ['Sale sửa hoặc xoá ứng / trả thì hiện trong khối thông báo của chủ, chạm vào là mở đúng người.', 'chu']] },
@@ -3856,7 +3893,7 @@ textarea.inp{font-family:inherit}
     box.innerHTML = '<div class="tbk"><div class="tbk-h"><i class="tbDot"></i><b>' + (ds.some(function (x) { return /ứng\/trả/.test(x.loai); }) ? 'Sale sửa bảng công / ứng trả' : 'Bảng công sửa khác ' + vtTen()) + ' · ' + ds.length + '</b><button class="link" id="tbHet">Đã xem hết</button></div>' +
       hien.map(function (x) {
         var nd = (x.truoc ? esc(x.truoc) + ' <span class="tbMui">→</span> ' : '') + '<b>' + esc(x.sau) + '</b>';
-        return '<div class="tbR"><button class="tbM" data-tb="' + esc(x.id) + '"><span class="tbN"><b class="ell">' + esc(hoaDau(x.ten)) + '</b><span class="num">ngày ' + esc(String(x.ngay).replace(/\/\d{4}$/, '')) + '</span></span>' +
+        return '<div class="tbR"><button class="tbM" data-tb="' + esc(x.id) + '"><span class="tbN"><b class="ell">' + esc(hoaDau(x.ten)) + '</b><span class="num">' + (/tăng cường/i.test(x.loai) ? 'tuần ' : 'ngày ') + esc(String(x.ngay).replace(/\/\d{4}$/, '')) + '</span></span>' +
           '<span class="tbG num ell">' + nd + '</span>' +
           '<span class="tbS ell">' + esc([x.loai, x.vt ? 'máy ' + x.vt : '', hoaDau(x.ai), x.tu === 'App' ? 'trên app' : 'trên Sheet', gioPhut(x.luc)].filter(String).join(' · ')) + '</span></button>' +
           '<button class="tbX" data-x="' + esc(x.id) + '">Đã xem</button></div>';
@@ -3873,6 +3910,7 @@ textarea.inp{font-family:inherit}
         var d = S.data[S.cty] || {}, p = (d.ds || []).filter(function (q) { return x.ma && q.ma === x.ma; })[0] || (d.ds || []).filter(function (q) { return kd(q.ten) === kd(x.ten); })[0];
         var m = /^(\d{2})\/(\d{2})\/(\d{4})$/.exec(x.ngay || '');
         if (!p) { toast('Không thấy ' + hoaDau(x.ten) + ' trong danh sách.'); return; }
+        if (m && /tăng cường/i.test(x.loai)) { moHs(p, { kieu: 'TUAN', mon: Math.round(Date.UTC(+m[3], +m[2] - 1, +m[1]) / 864e5) + 25569 }); return; }   // 28/10: mở đúng phiếu tuần
         if (m) S.moNgaySv = Math.round(Date.UTC(+m[3], +m[2] - 1, +m[1]) / 864e5) + 25569;
         moHs(p, { kieu: 'LICH' });
       };
