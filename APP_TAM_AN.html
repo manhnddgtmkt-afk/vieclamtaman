@@ -1641,7 +1641,7 @@ textarea.inp{font-family:inherit}
   function veTCNote(o) {
     if (o.tc) return '<div class="note ok tcN"><b>Đã xác nhận thanh toán tăng cường</b><div class="meta">' + esc([o.nCong + ' công, trả theo ngày', o.tc.ai, o.tc.luc].filter(String).join(' · ')) + '</div>' +
       (o.sua ? '<button class="link" id="tcBo" style="padding:6px 0 0">Bỏ xác nhận</button>' : '') + '</div>';
-    return '<div class="note warn tcN"><b>Tuần này mới ' + o.nCong + ' công – tiền công ' + vnd(o.tienTuan || 0) + ' đang giữ lại</b><div class="meta">Người đi tăng cường được trả theo ngày thì bấm nút dưới. Chủ sẽ nhận thông báo.</div>' +
+    return '<div class="note warn tcN"><b>Tuần này mới ' + o.nCong + ' công – tiền công ' + vnd(o.tienGiu || 0) + ' đang giữ lại</b><div class="meta">Người đi tăng cường được trả theo ngày thì bấm nút dưới. Chủ sẽ nhận thông báo.</div>' +
       (o.sua ? '<button class="btn" id="tcNut">Thanh toán tăng cường</button>' : '') + '</div>';
   }
   function ganTC(h, o) {
@@ -1651,7 +1651,7 @@ textarea.inp{font-family:inherit}
       var sh = moSheet('<h3>' + (bo ? 'Bỏ xác nhận tăng cường' : 'Thanh toán tăng cường') + '</h3>' +
         '<div class="meta ell">' + esc(hoaDau(o.ten)) + ' · tuần ' + esc(tuan) + '</div>' +
         '<div class="note ' + (bo ? 'warn' : 'ok') + '" style="margin:12px 0">' + (bo ? 'Phiếu tuần này sẽ giữ lại tiền công như cũ (chưa đủ số công tối thiểu).'
-          : 'Phiếu tuần này sẽ thanh toán <b>' + vnd(o.tienTuan || 0) + '</b> cho ' + o.nCong + ' công, không tính chuyên cần. Chủ sẽ nhận thông báo.') + '</div>' +
+          : 'Phiếu tuần này sẽ thanh toán <b>' + vnd(o.tienGiu || 0) + '</b> cho ' + o.nCong + ' công, không tính chuyên cần. Chủ sẽ nhận thông báo.') + '</div>' +
         '<button class="btn" id="tcOk">' + (bo ? 'Bỏ xác nhận' : 'Xác nhận thanh toán') + '</button><button class="btn ghost" id="tcThoi">Thôi</button>');
       document.getElementById('tcThoi').onclick = function () { sh.remove(); };
       document.getElementById('tcOk').onclick = function () {
