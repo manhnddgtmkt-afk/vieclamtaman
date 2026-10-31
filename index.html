@@ -13,7 +13,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
 <script src="config.js"></script>
-<script>window.PB = { so: 91, luc: "31/10 13:44" };</script>
+<script>window.PB = { so: 92, luc: "31/10 13:47" };</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap">
 <style>
@@ -719,7 +719,7 @@ textarea.inp{font-family:inherit}
 .cck i{position:absolute;width:30px;height:30px;margin:-15px 0 0 -15px;border-radius:50%;background:rgba(47,107,255,.25);border:3px solid #2F6BFF;touch-action:none}
 #inCC{display:none}
 @media print{@page{size:A4 portrait;margin:0}html,body{background:#fff!important}body.dangIn>*:not(#inCC){display:none!important}body.dangIn #inCC{display:block!important}
-.inTr{width:100%;box-sizing:border-box;padding-top:65.7mm;display:flex;justify-content:center;align-items:flex-start;break-after:page;page-break-after:always}html.ios .inTr{padding-top:42mm}.inTr:last-child{break-after:auto;page-break-after:auto}.inTr img{width:128.4mm;height:auto;max-height:256mm}.inTr.the,html.ios .inTr.the{padding-top:30.5mm}.inTr.the img{width:170mm;max-height:none}.inTr.the5{padding-top:18mm}html.ios .inTr.the5{padding-top:4mm}.inTr.the5 img{width:112mm;max-height:none}}
+.inTr{width:100%;box-sizing:border-box;padding-top:65.7mm;display:flex;justify-content:center;align-items:flex-start;break-after:page;page-break-after:always}html.ios .inTr{padding-top:42mm}.inTr:last-child{break-after:auto;page-break-after:auto}.inTr img{width:128.4mm;height:auto;max-height:256mm}.inTr.the,html.ios .inTr.the{padding-top:30.5mm}.inTr.the img{width:170mm;max-height:none}.inTr.the5{padding-top:4.9mm}html.ios .inTr.the5{padding-top:0}.inTr.the5 img{width:112mm;max-height:none}}
 .vtThe{display:flex;align-items:center;gap:14px;width:100%;margin-top:12px;border:1.5px solid var(--tint);border-radius:18px;padding:12px 16px;background:var(--card);color:var(--fg);text-align:left}
 .vtThe .vtIc{width:40px;height:40px;border-radius:20px;background:var(--tint);color:var(--blue);display:grid;place-items:center;flex:none}.vtThe .vtIc svg{width:22px;height:22px}
 .vtTx{flex:1;min-width:0;display:flex;flex-direction:column;gap:1px}.vtTx b{font-size:16px;font-weight:600}.vtTx small{font-size:13px;color:var(--muted)}.vtTx small.cu{color:var(--warn);font-weight:600}
@@ -2903,7 +2903,7 @@ textarea.inp{font-family:inherit}
     d.innerHTML = urls.map(function (u) { return '<div class="inTr' + (kieu ? ' ' + kieu : '') + '"><img src="' + u + '" alt=""></div>'; }).join('');
     INS.k = k; INS.san = false; INS.urls = urls; INS.kieu = kieu || '';
     var kp = document.getElementById('inKho'); if (!kp) { kp = document.createElement('style'); kp.id = 'inKho'; document.head.appendChild(kp); }
-    kp.textContent = kieu === 'the5' ? '@media print{@page{size:A5 portrait;margin:0}}' : '';
+    kp.textContent = kieu === 'the5' ? '@media print{@page{size:5in 7in;margin:0}}' : '';
     document.body.classList.add('dangIn');
     var ims = [].slice.call(d.querySelectorAll('img'));
     var hua = Promise.all(ims.map(function (im) { return im.decode ? im.decode().catch(function () { }) : null; })).then(function () { if (INS.hua === hua) INS.san = true; });
@@ -2932,7 +2932,7 @@ textarea.inp{font-family:inherit}
   function inSan(urls, kieu, k, n) {   // trang in chưa dựng sẵn: dựng xong hiện nút In để chạm (cú chạm mới)
     if (KHONG_IN) { inPdf(urls, kieu); return; }
     inDung(urls, kieu, k).then(function () {
-      var sh = moSheet('<h3>Đã sẵn sàng in</h3><div class="meta">' + n + ' tờ ' + (INS.kieu === 'the5' ? 'A5' : 'A4') + '. Bấm In để mở hộp in.</div>' + ccMay(INS.kieu === 'the' || INS.kieu === 'the5') + '<button class="btn" id="isI">In ' + n + ' tờ</button><button class="btn lk" id="isK">Thôi</button>');
+      var sh = moSheet('<h3>Đã sẵn sàng in</h3><div class="meta">' + n + ' tờ ' + (INS.kieu === 'the5' ? 'A5 (khổ 5 × 7 inch)' : 'A4') + '. Bấm In để mở hộp in.</div>' + ccMay(INS.kieu === 'the' || INS.kieu === 'the5') + '<button class="btn" id="isI">In ' + n + ' tờ</button><button class="btn lk" id="isK">Thôi</button>');
       sh.querySelector('#isI').onclick = function () { sh.remove(); inGoi(); };
       sh.querySelector('#isK').onclick = function () { sh.remove(); };
     });
@@ -2958,9 +2958,9 @@ textarea.inp{font-family:inherit}
     obj(1, '<< /Type /Catalog /Pages 2 0 R >>');
     obj(2, '<< /Type /Pages /Count ' + ds.length + ' /Kids [' + ds.map(function (x, i) { return (3 + i * 3) + ' 0 R'; }).join(' ') + '] >>');
     ds.forEach(function (x, i) {
-      var PW = bo && bo.kho === 'A5' ? 419.53 : 595.28, PH = bo && bo.kho === 'A5' ? 595.28 : 841.89;   // A5 148 × 210 mm, A4 210 × 297 mm
+      var PW = bo && bo.kho === 'A5' ? 360 : 595.28, PH = bo && bo.kho === 'A5' ? 504 : 841.89;   // thẻ A5: trang 5 × 7 inch; A4 210 × 297 mm
       var p = 3 + i * 3, W = ((bo && bo.rong) || 128.4) * 72 / 25.4, H = W * x.h / x.w, X = (PW - W) / 2, Y = bo && bo.tren ? PH - bo.tren * 72 / 25.4 - H : (PH - H) / 2;   // CCCD: giữa tờ
-      if (Y < 20) { H = PH - 40; W = H * x.w / x.h; X = (PW - W) / 2; Y = 20; }
+      if (Y < 0) { H = PH - 40; W = H * x.w / x.h; X = (PW - W) / 2; Y = 20; }
       obj(p, '<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ' + PW + ' ' + PH + '] /Resources << /XObject << /I0 ' + (p + 2) + ' 0 R >> >> /Contents ' + (p + 1) + ' 0 R >>');
       var c = 'q ' + W.toFixed(2) + ' 0 0 ' + H.toFixed(2) + ' ' + X.toFixed(2) + ' ' + Y.toFixed(2) + ' cm /I0 Do Q';
       obj(p + 1, '<< /Length ' + c.length + ' >>\nstream\n' + c + '\nendstream');
@@ -3143,7 +3143,7 @@ textarea.inp{font-family:inherit}
   // iPhone tự chọn máy in lần trước nên dễ nhầm -> luôn ghi rõ máy cần chọn ngay cạnh nút In.
   var MAY_IN = { mau: 'Màu HP Smart Tank 210', den: 'Đen trắng Brother' };
   function ccMay(the) {
-    return '<div class="ccmay' + (the ? ' mau' : '') + '"><i></i>Máy in: <b>' + (the ? MAY_IN.mau : MAY_IN.den) + '</b> · khổ ' + (the ? theKho() + ' · 100%' : 'A4') + '</div>';
+    return '<div class="ccmay' + (the ? ' mau' : '') + '"><i></i>Máy in: <b>' + (the ? MAY_IN.mau : MAY_IN.den) + '</b> · ' + (the ? (theKho() === 'A5' ? 'giấy A5' : 'khổ A4 · 100%') : 'khổ A4') + '</div>';
   }
   function ccDayDat(t) {   // đặt thanh nút ngay trên thanh tab dưới cùng
     var d = t.querySelector('.ccday'), nv = document.querySelector('.nav');
@@ -3224,7 +3224,7 @@ textarea.inp{font-family:inherit}
         '<div class="meta">Bấm In, trong bảng hiện ra chọn <b>In</b>, rồi chọn đúng máy in và khổ giấy như dòng trên.</div><button class="btn" id="gP">In</button><button class="btn lk" id="gK">Thôi</button>') :
         moSheet('<h3>PDF sẵn sàng</h3><div class="meta">' + esc(ten) + ' · ' + cl + '</div>' +
         (mb > 20 ? '<div class="note warn">File lớn, gửi email có thể bị chặn (thường giới hạn 25 MB). Nên chia làm nhiều lượt ít người hơn.</div>' : '') +
-        '<div class="meta">' + (bo ? (bo.kho === 'A5' ? 'Khổ A5, 4 thẻ một tờ, mỗi thẻ 8,1 × 5,3 cm. Dặn quán in màu trên giấy A5, in 100% (đúng kích thước), không chọn vừa trang.' : 'Khổ A4, 8 thẻ một tờ, mỗi thẻ 8,1 × 5,3 cm. Dặn quán in màu, in 100% (đúng kích thước), không chọn vừa trang.') : 'Mỗi người 1 trang A4, ảnh to gấp 1,5 lần thẻ thật. Ở quán in cứ in khổ A4 bình thường.') + '</div>' +
+        '<div class="meta">' + (bo ? (bo.kho === 'A5' ? 'Trang 5 × 7 inch, 4 thẻ một tờ, mỗi thẻ 8,1 × 5,3 cm. Dặn quán in màu trên giấy A5, in 100% (đúng kích thước), không chọn vừa trang.' : 'Khổ A4, 8 thẻ một tờ, mỗi thẻ 8,1 × 5,3 cm. Dặn quán in màu, in 100% (đúng kích thước), không chọn vừa trang.') : 'Mỗi người 1 trang A4, ảnh to gấp 1,5 lần thẻ thật. Ở quán in cứ in khổ A4 bình thường.') + '</div>' +
                 '<button class="btn" id="gP">Gửi PDF (Zalo, email…)</button><button class="btn lk" id="gK">Thôi</button>');
       function mo() {   // máy không có bảng chia sẻ: mở PDF để dùng nút chia sẻ của trình xem
         var u = URL.createObjectURL(o.bl), a = document.createElement('a'); a.href = u; a.target = '_blank'; a.download = ten; document.body.appendChild(a); a.click(); a.remove();
@@ -3431,8 +3431,9 @@ textarea.inp{font-family:inherit}
   }
   // trang A4: 2 cột × 4 hàng, khe 8 mm; khối 170 × 244 mm (gồm dòng nhắc) đặt cách trái 20 mm, cách trên 30,5 mm
   var THE_TR = { trai: 20, tren: 30.5, rong: 170, cao: 244 };
-  // 31/10: khổ A5 dọc: 4 thẻ / tờ, thẻ xoay đứng (5,3 × 8,1 cm), 2 cột × 2 hàng, khe 6 mm; khối 112 × 174 mm (gồm dòng nhắc), cách trên 18 mm, căn giữa ngang
-  var THE_TR5 = { tren: 18, rong: 112, cao: 174 };
+  // 31/10: khổ A5: 4 thẻ / tờ, thẻ xoay đứng (5,3 × 8,1 cm), 2 cột × 2 hàng, khe 6 mm; khối 112 × 168 mm.
+  // Máy HP chỉ báo khổ 5 × 7 inch cho iPhone (không có A5) -> trang PDF / trang in đúng 5 × 7 inch (127 × 177,8 mm) để in 100%, giấy A5 vẫn đặt trong khay.
+  var THE_TR5 = { tren: 4.9, rong: 112, cao: 168 };
   function theKho() { return doc('vlta_theKho') === 'A5' ? 'A5' : 'A4'; }
   function theBo() { return theKho() === 'A5' ? { rong: THE_TR5.rong, tren: THE_TR5.tren, kho: 'A5' } : { rong: THE_TR.rong, tren: THE_TR.tren }; }
   function theTrang5(ds) {
@@ -3444,8 +3445,6 @@ textarea.inp{font-family:inherit}
         var t = theVe(e, Math.round(81 * k)), X = Math.round((j % 2) * 59 * k), Y = Math.round(Math.floor(j / 2) * 87 * k);
         x.save(); x.translate(X + t.height, Y); x.rotate(Math.PI / 2); x.drawImage(t, 0, 0); x.restore();   // xoay 90° theo chiều kim đồng hồ: thẻ đứng 5,3 × 8,1 cm
       });
-      x.fillStyle = '#9AA1AC'; x.textAlign = 'center'; x.font = (6.5 * 25.4 / 72 * k) + 'px Arial, Helvetica, sans-serif';
-      x.fillText('In 100% khổ A5 · mỗi thẻ 8,1 × 5,3 cm', c.width / 2, (168 + 5) * k);
       out.push(c.toDataURL('image/jpeg', 0.92));
     }
     return out;
@@ -3583,7 +3582,7 @@ textarea.inp{font-family:inherit}
     var ds = theDs(), n = ds.filter(function (e) { return e.chon; }).length, h = ccChe();
     if (!ds.length) h += '<div class="card cch">' + ICON.cc + '<b>Thẻ ra vào HOJEONG</b><div class="meta">Chọn ảnh CCCD ở mục In CCCD, rồi quay lại đây tích người cần làm thẻ. Người chưa có CCCD trong lượt thì bấm Thêm người.</div></div>';
     else h += '<div class="row thk"><span class="meta">Khổ giấy</span><div class="seg" id="thKho">' + ['A4', 'A5'].map(function (g) { return '<button data-tk="' + g + '"' + (theKho() === g ? ' class="on"' : '') + '>' + g + (g === 'A4' ? ' · 8 thẻ/tờ' : ' · 4 thẻ/tờ') + '</button>'; }).join('') + '</div></div>' +
-      '<div class="meta" style="padding:0 2px">Tích người cần làm thẻ, gõ mã thẻ. Mỗi thẻ 8,1 × 5,3 cm, cần in màu.' + (theKho() === 'A5' ? ' Khi in chọn Khổ giấy A5, tỷ lệ 100%.' : '') + '</div>';
+      '<div class="meta" style="padding:0 2px">Tích người cần làm thẻ, gõ mã thẻ. Mỗi thẻ 8,1 × 5,3 cm, cần in màu.' + (theKho() === 'A5' ? ' Đặt giấy A5 vào khay; hộp in hiện khổ 5 × 7 inch là đúng.' : '') + '</div>';
     h += ds.map(function (e) {
       var n0 = theAnhNguon(e), dd = e.chon;
       var nh = n0 ? (function () { var c = document.createElement('canvas'); c.width = 60; c.height = 90; theVeAnh(c.getContext('2d'), n0, 0, 0, 60, 90); return c.toDataURL('image/jpeg', 0.8); })() : '';
@@ -3657,6 +3656,7 @@ textarea.inp{font-family:inherit}
   }
   function ccCheNoi(t) { t.querySelectorAll('[data-che]').forEach(function (b) { b.onclick = function () { CCS.theMo = b.getAttribute('data-che') === '1'; var lg = theLogoNap(); if (!lg.complete) lg.onload = function () { ccVe(); }; ccVe(); window.scrollTo(0, 0); }; }); }
   var BAN_MOI = [
+    { so: 92, ds: [['Thẻ HOJEONG khổ A5 in đúng kích thước 8,1 × 5,3 cm trên máy HP: app làm trang đúng khổ 5 × 7 inch mà máy HP nhận, nên iPhone không thu nhỏ nữa. Vẫn đặt giấy A5 vào khay; hộp in hiện "5 x 7 inch" là đúng.', '']] },
     { so: 91, ds: [['Thẻ HOJEONG có lịch sử: mỗi lần In hoặc gửi PDF, app lưu lại họ tên, mã thẻ, bộ phận và ảnh chân dung. Bấm "Thẻ đã in trước đây", tìm tên hoặc mã thẻ, chọn người rồi in lại ngay, không phải cắt ảnh hay gõ lại.', ''], ['Gõ mã thẻ đã cấp cho người khác, app hỏi lại trước khi in.', '']] },
     { so: 90, ds: [['App mở từ màn hình chính iPhone: bấm In sẽ tạo PDF ngay, hiện bảng "In". Bấm In, trong bảng hiện ra chọn In, rồi chọn đúng máy và khổ giấy. Không còn hiện nhầm bảng "Gửi PDF" khi muốn in.', '']] },
     { so: 89, ds: [['Ngay cạnh nút In luôn ghi rõ máy cần chọn: thẻ HOJEONG chọn máy màu HP Smart Tank 210 (khổ A4 hoặc A5, tỷ lệ 100%), in CCCD chọn máy đen trắng Brother (khổ A4). iPhone tự chọn máy in lần trước nên cần xem dòng này trước khi in.', ''], ['In thẻ HOJEONG mở thẳng hộp in, bỏ hộp nhắc gửi ra quán vì nhà đã có máy in màu. Nút gửi PDF vẫn giữ.', '']] },
