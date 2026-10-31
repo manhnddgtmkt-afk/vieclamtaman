@@ -1459,7 +1459,7 @@ textarea.inp{font-family:inherit}
   // ---------- hồ sơ + phiếu ----------
   function moHs(p, giu) {
     if (!p) return;
-    var coThang = S.cty !== 'BEST', cu = !!p.fid, nay = cu ? nguoiThangNay(p) : null;
+    var coThang = true, cu = !!p.fid, nay = cu ? nguoiThangNay(p) : null;
     S.hs = { p: p, kieu: 'TUAN', ngay: '' };
     if (giu && p.r) {   // 24/10: chuyển sang người khác từ ô tìm trong hồ sơ -> mở đúng mục + tuần đang xem
       if (giu.kieu === 'LICH' || (giu.kieu === 'THANG' && coThang)) S.hs.kieu = giu.kieu;
