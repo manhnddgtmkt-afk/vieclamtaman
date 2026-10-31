@@ -560,7 +560,8 @@ textarea.inp{font-family:inherit}
 .q2viec summary{display:flex;gap:10px;align-items:center;padding:7px 0;border-top:1px solid rgba(180,110,0,.18);font-size:14px;cursor:pointer;list-style:none}
 .q2viec summary::-webkit-details-marker{display:none}
 .q2viec details:first-of-type summary{border-top:0}
-.q2viec summary span{flex:1;min-width:0}.q2viec summary b{white-space:nowrap}
+.q2viec summary span{flex:1;min-width:0}.q2viec summary b{white-space:nowrap;max-width:45%;overflow:hidden;text-overflow:ellipsis}
+.q2vt{display:flex;flex-direction:column;flex:1;min-width:0}.q2vt .ell{flex:none}.q2vs{font-size:12.5px;color:var(--muted);line-height:1.35;margin-top:1px;white-space:normal;overflow-wrap:anywhere}
 .q2viec-d{font-size:13px;color:var(--muted);padding:0 0 8px;white-space:pre-line}
 .q2bac .q2r{display:grid;grid-template-columns:1fr auto;gap:3px 10px;padding:7px 0;font-size:14px}
 .q2bac .q2r span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -4845,8 +4846,9 @@ textarea.inp{font-family:inherit}
   function boCP(x) { var y = String(x).replace(/^Chi phí\s+/i, ''); return y.charAt(0).toUpperCase() + y.slice(1); }
   function tqViec(v) {   // câu việc cần xử lý → [nhãn ngắn, số, câu đầy đủ]
     var m;
-    if ((m = /^(\S+): kiểm tra (\d+) lao động (.+)$/i.exec(v))) return [m[1] + ' · ' + m[3], m[2] + ' người', v];
-    if ((m = /^(\S+): kiểm tra (.+?)\s+[–-]\s+(.+)$/i.exec(v))) return [hoaDau(m[2]), m[3].replace(/^Đã\s+/i, '').replace(/^\S/, function (c) { return c.toLowerCase(); }), v];
+    if ((m = /^(\S+): kiểm tra (\d+) lao động (.+)$/i.exec(v))) return [m[1] + ' · ' + m[3].replace(/^[–-]\s*/, ''), m[2] + ' người', v];
+    // 01/11 (anh chê chữ nhảy): "BEST: kiểm tra <tên> – <câu dài>" -> dòng 1 "BEST · Tên", dòng 2 câu (tự xuống dòng); không để câu dài ở cột số
+    if ((m = /^(\S+): kiểm tra (.+?)\s+[–-]\s+(.+)$/i.exec(v))) return [m[1] + ' · ' + (/^UNG_TRA/.test(m[2]) ? m[2] : hoaDau(m[2])), '', v, m[3].replace(/^\S/, function (c) { return c.toUpperCase(); })];
     if ((m = /lương kinh doanh tháng (\d+) còn thiếu:\s*(.+?)\s+([\d,.]+)$/i.exec(v))) return ['Lương KD T' + m[1] + ' còn thiếu · ' + m[2], m[3], v];
     if ((m = /^Chuẩn bị thu:\s*(.+)$/i.exec(v))) { var ds = m[1].split(/,\s*(?=[A-ZĐ])/); return ['Chuẩn bị thu sắp đến hạn', ds.length + ' khoản', ds.join('\n')]; }
     return [v, '', v];
@@ -4863,7 +4865,8 @@ textarea.inp{font-family:inherit}
     if (!o.viec.length) return '';
     return '<div class="q2viec"><div class="q2viec-h">Việc cần xử lý · ' + o.viec.length + '</div>' + o.viec.map(function (v) {
       var x = tqViec(String(v).replace(/^\d+\.\s*/, ''));
-      return '<details><summary><span class="ell">' + esc(x[0]) + '</span><b class="num">' + esc(x[1]) + '</b></summary><div class="q2viec-d">' + esc(x[2]) + '</div></details>';
+      var trai = x[3] ? '<span class="q2vt"><span class="ell">' + esc(x[0]) + '</span><small class="q2vs">' + esc(x[3]) + '</small></span>' : '<span class="ell">' + esc(x[0]) + '</span>';
+      return '<details><summary>' + trai + (x[1] ? '<b class="num">' + esc(x[1]) + '</b>' : '') + '</summary><div class="q2viec-d">' + esc(x[2]) + '</div></details>';
     }).join('') + '</div>';
   }
   // thác nước dạng thanh ngang: rows [nhãn, số (+ cộng / − trừ), 'moc'|''] ; thanh xám = đang có, xanh = cộng vào, đỏ = trừ đi
