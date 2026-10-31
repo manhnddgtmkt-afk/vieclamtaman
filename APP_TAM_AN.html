@@ -714,6 +714,9 @@ textarea.inp{font-family:inherit}
 .vtTx{flex:1;min-width:0;display:flex;flex-direction:column;gap:1px}.vtTx b{font-size:16px;font-weight:600}.vtTx small{font-size:13px;color:var(--muted)}.vtTx small.cu{color:var(--warn);font-weight:600}
 .vtThe>i{font-style:normal;color:var(--faint);font-size:22px}
 .vtTx small.zlc{white-space:normal;line-height:1.35}
+.lkk .lkB{padding:0 14px 12px;display:flex;flex-direction:column;gap:6px}.lkk .lkS{font-size:14px;line-height:1.4}.lkk .lkS b{font-weight:700}.lkk small{font-size:12.5px;color:var(--muted);line-height:1.35}
+.lkk .lkW{background:var(--warn-bg);border-radius:10px;padding:8px 10px;font-size:13px;line-height:1.35}.lkk .btn{margin-top:4px}.lkk .lkHang{display:flex;gap:8px}.lkk .lkHang .btn{flex:1;min-width:0}
+.lkk details summary{font-size:13px;color:var(--blue);padding:4px 0;cursor:pointer}.lkk .lkD{font-size:13px;line-height:1.45;padding:2px 0}.lkk .lkD.sai{color:var(--bad)}
 .tbk{background:var(--card);border:1.5px solid var(--tint);border-radius:18px;margin-top:12px;overflow:hidden}
 .tbk-h{display:flex;align-items:center;gap:8px;padding:12px 14px 8px}.tbk-h b{flex:1;font-size:15px;font-weight:700}.tbk-h .link{padding:0;font-size:13px}
 .tbDot{width:8px;height:8px;border-radius:4px;background:var(--bad);flex:none}
@@ -1274,11 +1277,11 @@ textarea.inp{font-family:inherit}
     var loaiCb = {}; cb.forEach(function (p) { var t = lyDo(p); loaiCb[t] = (loaiCb[t] || 0) + 1; });
     var tenLoc = function (f) { return f === 'am' ? 'Nhận trước' : f === 'moi' ? 'Người mới' : /^cb:/.test(f) ? f.slice(3) : 'Cần kiểm tra'; };
     var luc = '<button class="link" id="capNhat" style="padding:0;font-size:13px">Cập nhật ' + (S.cty === 'BEST' ? 'chấm công' : 'vân tay') + '</button>';
-    hd.innerHTML = vtTheHtml() + '<div id="tbBox"></div><div id="choBox"></div><div class="card hero"><div class="meta">Còn phải trả</div><div class="row" style="align-items:baseline;gap:4px 10px;flex-wrap:wrap"><span class="big num ' + (tong > 0 ? 'c-cam' : 'c-xanh') + '">' + vnd(tong) + '</span>' + (tong > 0 ? '<span class="pill warn">Trả vào thứ Tư</span>' : '<span class="pill good">Đã trả đủ</span>') + '</div>' +
+    hd.innerHTML = vtTheHtml() + '<div id="tbBox"></div><div id="lkBox"></div><div id="choBox"></div><div class="card hero"><div class="meta">Còn phải trả</div><div class="row" style="align-items:baseline;gap:4px 10px;flex-wrap:wrap"><span class="big num ' + (tong > 0 ? 'c-cam' : 'c-xanh') + '">' + vnd(tong) + '</span>' + (tong > 0 ? '<span class="pill warn">Trả vào thứ Tư</span>' : '<span class="pill good">Đã trả đủ</span>') + '</div>' +
       '<div class="meta ell">' + esc(canTra.length + ' người' + (d.ky ? ' · kỳ ' + String(d.ky).replace(/\/\d{4}$/, '') : '')) + '</div>' + diLamHtml(d) +
       (d.het ? '' : '<div class="meta">Bạn thấy những người bạn tuyển ở công ty này.</div>') + '</div>' +
       '<div id="ktBox"></div>';
-    ganVtThe(); veTB();
+    ganVtThe(); veTB(); veLK(); taiLK();
     hd.insertAdjacentHTML('beforeend', '<button class="ckt nghi" id="moUT"><span class="ell" style="flex:1">Ứng / trả gần đây</span><i>›</i></button>');
     document.getElementById('moUT').onclick = moUTTuDs;
     veCho();
@@ -3650,6 +3653,9 @@ textarea.inp{font-family:inherit}
   }
   function ccCheNoi(t) { t.querySelectorAll('[data-che]').forEach(function (b) { b.onclick = function () { CCS.theMo = b.getAttribute('data-che') === '1'; var lg = theLogoNap(); if (!lg.complete) lg.onload = function () { ccVe(); }; ccVe(); window.scrollTo(0, 0); }; }); }
   var BAN_MOI = [
+    { so: 94, ds: [['Tab Lao động → HOJEONG có thẻ "File gửi HOJEONG": khi HOJEONG gửi danh sách linh kiện qua Zalo, bấm "Gửi danh sách linh kiện", chọn file đó; máy tự làm bộ file gửi HOJEONG trong khoảng 2 phút.', ''],
+      ['Máy tự kiểm 10 điểm (khớp từng dòng linh kiện, tổng tiền, ngày, bằng chữ, không ô lỗi…). Đạt thì bấm "Gửi file cho HOJEONG" rồi chọn Zalo; chưa đạt thì không gửi được và ghi rõ sai ở đâu.', 'chu'],
+      ['Có email báo kết quả mỗi lần máy làm xong file.', 'chu']] },
     { so: 93, ds: [['Thẻ HOJEONG to hơn: 8,5 × 6 cm (trước 8,1 × 5,3 cm). Khổ A4 vẫn 8 thẻ một tờ; khổ A5 vẫn 4 thẻ một tờ nhưng các thẻ nằm sát nhau, cắt theo đường viền chung.', '']] },
     { so: 92, ds: [['Thẻ HOJEONG khổ A5 in đúng kích thước 8,1 × 5,3 cm trên máy HP: app làm trang đúng khổ 5 × 7 inch mà máy HP nhận, nên iPhone không thu nhỏ nữa. Vẫn đặt giấy A5 vào khay; hộp in hiện "5 x 7 inch" là đúng.', '']] },
     { so: 91, ds: [['Thẻ HOJEONG có lịch sử: mỗi lần In hoặc gửi PDF, app lưu lại họ tên, mã thẻ, bộ phận và ảnh chân dung. Bấm "Thẻ đã in trước đây", tìm tên hoặc mã thẻ, chọn người rồi in lại ngay, không phải cắt ảnh hay gõ lại.', ''], ['Gõ mã thẻ đã cấp cho người khác, app hỏi lại trước khi in.', '']] },
@@ -4016,6 +4022,73 @@ textarea.inp{font-family:inherit}
     };
   }
 
+
+  // ---------- 31/10: FILE GỬI HOJEONG (máy tự làm theo danh sách linh kiện HOJEONG gửi) ----------
+  var LK = null, LKluc = 0, LKfile = null;
+  function taiLK(ep) {
+    if (S.cty !== 'HOJEONG' || (!ep && Date.now() - LKluc < 60000)) return;
+    LKluc = Date.now();
+    apiT({ v: 'lkTT', im: 1 }).then(function (o) { if (o.loi) return; LK = o; veLK(); }, function () { });
+  }
+  function veLK() {
+    var box = document.getElementById('lkBox'); if (!box) return;
+    if (S.cty !== 'HOJEONG' || !LK || LK.an) { box.innerHTML = ''; return; }
+    var k = LK.kq, chu = !!LK.chu, h = '', pill = '';
+    if (LK.dang) pill = '<span class="pill warn">Đang làm…</span>';
+    else if (k && k.loiDoc) pill = '<span class="pill bad">Lỗi</span>';
+    else if (k && k.dat) pill = '<span class="pill good">Đạt ' + esc(k.kt) + '</span>';
+    else if (k) pill = '<span class="pill bad">Chưa đạt ' + esc(k.kt) + '</span>';
+    else pill = '<span class="pill warn">Chờ danh sách</span>';
+    if (LK.dang) h += '<div class="lkS">Máy đang làm file (bắt đầu ' + gioPhut(LK.dang) + '), khoảng 2 phút nữa xong.</div>';
+    if (!k && !LK.dang) h += '<div class="lkS">Chưa có danh sách linh kiện. Sau khi chốt bảng công, HOJEONG gửi file danh sách linh kiện qua Zalo: bấm nút dưới, chọn file đó.</div>';
+    if (k && k.loiDoc) h += '<div class="lkW">' + (chu ? esc(k.loiDoc) : 'File ' + esc(k.fl || '') + ' không đọc được.') + ' Kiểm tra lại file HOJEONG gửi rồi đưa lại.</div>';
+    if (k && !k.loiDoc) {
+      if (chu) h += '<div class="lkS">Tiền công <b class="num">' + vnd(k.tc) + '</b><br>Hóa đơn linh kiện ' + esc(k.n) + ' dòng · <b class="num">' + vnd(k.tg) + '</b>' + (Math.abs(k.tc - k.tg) >= 1 ? ' <small>(lệch ' + vnd(k.tc - k.tg) + ')</small>' : '') + '</div>';
+      else h += '<div class="lkS">' + (k.dat ? 'Đã làm xong file, đã báo chủ doanh nghiệp kiểm tra.' : 'File còn điểm chưa đạt, đã báo chủ doanh nghiệp.') + '</div>';
+      h += '<small>Làm lúc ' + gioPhut(k.luc) + ' theo file ' + esc(k.fl || '') + '</small>';
+      if (LK.cho) h += '<div class="lkW">Có danh sách linh kiện mới hơn, máy sẽ làm lại trong vài phút.</div>';
+      if (chu && k.ds && k.ds.length) h += '<details><summary>Xem ' + k.ds.length + ' điểm kiểm tra</summary>' + k.ds.map(function (d) { return '<div class="lkD' + (d[0] ? '' : ' sai') + '">' + (d[0] ? '✅ ' : '❌ ') + esc(d[1]) + (d[2] ? ' – ' + esc(d[2]) : '') + '</div>'; }).join('') + '</details>';
+      if (chu) h += k.dat ? '<button class="btn" id="lkGui">' + (LKfile && LKfile.id === k.id ? 'Chọn Zalo để gửi' : 'Gửi file cho HOJEONG') + '</button>' : '<div class="lkW">File chưa đạt nên không gửi được. Xem các điểm ❌ ở trên.</div>';
+    }
+    h += '<div class="lkHang"><button class="btn ghost" id="lkNap">' + (k ? 'Danh sách mới' : 'Gửi danh sách linh kiện') + '</button>' + (chu && k ? '<button class="btn ghost" id="lkLai">Làm lại ngay</button>' : '') + '</div><input type="file" id="lkF" accept=".xls,.xlsx,.xlsm,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" hidden>';
+    box.innerHTML = '<div class="tbk lkk"><div class="tbk-h"><b>File gửi HOJEONG T' + esc(LK.thang) + '</b>' + pill + '</div><div class="lkB">' + h + '</div></div>';
+    var bG = document.getElementById('lkGui'), bN = document.getElementById('lkNap'), bL = document.getElementById('lkLai'), fi = document.getElementById('lkF');
+    if (bG) bG.onclick = function () {
+      if (LKfile && LKfile.id === k.id) {   // iPhone đòi bấm trực tiếp mới mở bảng chia sẻ -> tải trước, bấm lần 2 mới chia sẻ
+        var f = LKfile.f;
+        if (navigator.canShare && navigator.canShare({ files: [f] })) { navigator.share({ files: [f], title: f.name }).catch(function () { }); return; }
+        var a = document.createElement('a'); a.href = URL.createObjectURL(f); a.download = f.name; document.body.appendChild(a); a.click(); setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 4000);
+        toast('Đã tải file về máy – mở Zalo và gửi file này.'); return;
+      }
+      bG.disabled = true; bG.textContent = 'Đang tải file…';
+      apiT({ v: 'lkTai', lang: 1 }).then(function (o) {
+        bG.disabled = false;
+        if (o.loi) { bG.textContent = 'Gửi file cho HOJEONG'; toast(o.loi); return; }
+        var b = atob(o.b64), u = new Uint8Array(b.length); for (var i = 0; i < b.length; i++) u[i] = b.charCodeAt(i);
+        LKfile = { id: k.id, f: new File([u], o.ten, { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' }) };
+        bG.textContent = 'Chọn Zalo để gửi'; toast('File đã sẵn sàng – bấm "Chọn Zalo để gửi".');
+      }, function (e) { bG.disabled = false; bG.textContent = 'Gửi file cho HOJEONG'; toast(e.message); });
+    };
+    if (bL) bL.onclick = function () { lkChay(bL, { v: 'lkLam', lang: 1 }, 'Đang làm…'); };
+    if (bN) bN.onclick = function () { fi.click(); };
+    fi.onchange = function () {
+      var f = fi.files[0]; if (!f) return;
+      if (!/\.xls[xm]?$/i.test(f.name)) { toast('Chọn file Excel (.xlsx) HOJEONG gửi.'); return; }
+      var r = new FileReader();
+      r.onload = function () { var x = String(r.result); lkChay(bN, { v: 'lkNap', ten: f.name, b64: x.slice(x.indexOf(',') + 1), lang: 1 }, 'Đang làm file…'); };
+      r.onerror = function () { toast('Không đọc được file.'); };
+      r.readAsDataURL(f);
+    };
+  }
+  function lkChay(btn, q, chu) {
+    var t0 = Date.now(), cu = btn.textContent, dem = setInterval(function () { btn.textContent = chu + ' ' + Math.round((Date.now() - t0) / 1000) + ' giây'; }, 1000);
+    btn.disabled = true; btn.textContent = chu;
+    apiT(q).then(function (o) {
+      clearInterval(dem); btn.disabled = false; btn.textContent = cu;
+      if (o.loi) { toastLoi(o.loi); taiLK(true); return; }
+      LKfile = null; toast(o.ket || 'Xong'); taiLK(true);
+    }, function (e) { clearInterval(dem); btn.disabled = false; btn.textContent = cu; toastLoi(e.message); });
+  }
   // ---------- 24/10: KIỂM TRA VÂN TAY (file công ty gửi, đã lọc Đại Thành) + THÔNG BÁO CHO CHỦ ----------
   var VTT = {}, VTD = {}, TB = null;
   var ICON_VT = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M12 11v3.5c0 1.8-.4 3.5-1.2 5"/><path d="M8.5 9.6A3.5 3.5 0 0 1 15.5 11v1.5c0 2.3-.4 4.4-1.3 6.3"/><path d="M5.6 7.8A7 7 0 0 1 19 11v1.5c0 1.6-.2 3-.5 4.3"/><path d="M5 11v1.5c0 1.6-.3 3.1-.8 4.5"/><path d="M8.8 4.8A7 7 0 0 1 12 4"/></svg>';
