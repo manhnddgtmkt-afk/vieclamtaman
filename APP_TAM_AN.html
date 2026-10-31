@@ -716,6 +716,8 @@ textarea.inp{font-family:inherit}
 .vtTx small.zlc{white-space:normal;line-height:1.35}
 .lkk .lkB{padding:0 14px 12px;display:flex;flex-direction:column;gap:6px}.lkk .lkS{font-size:14px;line-height:1.4}.lkk .lkS b{font-weight:700}.lkk small{font-size:12.5px;color:var(--muted);line-height:1.35}
 .lkk .lkW{background:var(--warn-bg);border-radius:10px;padding:8px 10px;font-size:13px;line-height:1.35}.lkk .btn{margin-top:4px}.lkk .lkHang{display:flex;gap:8px}.lkk .lkHang .btn{flex:1;min-width:0}
+.lkk .lkLinks{display:flex;justify-content:center;gap:18px}.lkk .lkLai{align-self:center;font-size:13px;color:var(--muted);padding:6px 0 0;background:none;border:0}.lkk .lkHD .inp{flex:2;margin:0}.lkk .lkHD .btn{flex:1}
+.lkGon{display:flex;flex-direction:column;align-items:stretch;gap:2px;padding:0 0 10px;text-align:left;color:var(--fg);border:1.5px solid var(--tint);cursor:pointer;position:relative}.lkGon .tbk-h{padding-right:34px}.lkGon .lkS{padding:0 14px;font-size:13px;color:var(--muted)}.lkGon>i{position:absolute;right:14px;top:50%;transform:translateY(-50%);font-style:normal;color:var(--faint);font-size:22px}
 .lkk details summary{font-size:13px;color:var(--blue);padding:4px 0;cursor:pointer}.lkk .lkD{font-size:13px;line-height:1.45;padding:2px 0}.lkk .lkD.sai{color:var(--bad)}
 .tbk{background:var(--card);border:1.5px solid var(--tint);border-radius:18px;margin-top:12px;overflow:hidden}
 .tbk-h{display:flex;align-items:center;gap:8px;padding:12px 14px 8px}.tbk-h b{flex:1;font-size:15px;font-weight:700}.tbk-h .link{padding:0;font-size:13px}
@@ -3653,6 +3655,10 @@ textarea.inp{font-family:inherit}
   }
   function ccCheNoi(t) { t.querySelectorAll('[data-che]').forEach(function (b) { b.onclick = function () { CCS.theMo = b.getAttribute('data-che') === '1'; var lg = theLogoNap(); if (!lg.complete) lg.onload = function () { ccVe(); }; ccVe(); window.scrollTo(0, 0); }; }); }
   var BAN_MOI = [
+    { so: 96, ds: [['Thẻ "File gửi HOJEONG": bấm "Gửi cho HOJEONG qua Zalo" một lần là mở Zalo ngay (file đã tải sẵn); có "Xem file" để mở xem trước khi gửi. Gửi xong thẻ tự thu gọn còn một dòng "Đã gửi HOJEONG lúc…".', 'chu'],
+      ['Điền số hóa đơn thật sau khi phát hành trên MISA, máy xuất bản chính thức có số hóa đơn ở mọi chứng từ. Bản đã gửi HOJEONG không bao giờ bị tự bỏ.', 'chu'],
+      ['Bảng công thay đổi sau khi HOJEONG đã gửi danh sách linh kiện thì thẻ và email báo rõ; email chỉ gửi khi kết quả thay đổi, không gửi dồn dập.', 'chu'],
+      ['Sale: file làm xong thì thẻ thu còn một dòng; đang làm thì không có nút bấm, tự cập nhật khi xong. Thả file vào thư mục DANH_SACH_LINH_KIEN ngày nào máy cũng nhận.', '']] },
     { so: 95, ds: [['Tổng quan → ô chọn kỳ hiện kỳ mới ngay khi kỳ công bắt đầu (vd kỳ tháng 11 của HOJEONG từ 26/10), không phải chờ sang tháng theo lịch.', 'chu'],
       ['Kỳ mới chưa đủ các công ty thì có dòng vàng nhỏ ghi rõ mới có số của công ty nào, số là tạm tính.', 'chu']] },
     { so: 94, ds: [['Tab Lao động → HOJEONG có thẻ "File gửi HOJEONG": khi HOJEONG gửi danh sách linh kiện qua Zalo, bấm "Gửi danh sách linh kiện", chọn file đó; máy tự làm bộ file gửi HOJEONG trong khoảng 2 phút.', ''],
@@ -4026,52 +4032,85 @@ textarea.inp{font-family:inherit}
 
 
   // ---------- 31/10: FILE GỬI HOJEONG (máy tự làm theo danh sách linh kiện HOJEONG gửi) ----------
-  var LK = null, LKluc = 0, LKfile = null;
+  var LK = null, LKluc = 0, LKfile = null, LKtai = 0, LKdem = null;
   function taiLK(ep) {
     if (S.cty !== 'HOJEONG' || (!ep && Date.now() - LKluc < 60000)) return;
     LKluc = Date.now();
-    apiT({ v: 'lkTT', im: 1 }).then(function (o) { if (o.loi) return; LK = o; veLK(); }, function () { });
+    apiT({ v: 'lkTT', im: 1 }).then(function (o) {
+      if (o.loi) return; LK = o; veLK();
+      if (o.dang) { clearTimeout(LKdem); LKdem = setTimeout(function () { taiLK(true); }, 20000); }   // đang làm: tự hỏi lại 20 giây/lần
+      else lkTaiSan();
+    }, function () { });
   }
+  function lkTaiSan() {   // chủ + file đạt: tải sẵn file để bấm "Gửi" một lần là mở Zalo (iPhone đòi bấm trực tiếp)
+    var k = LK && LK.kq; if (!LK || !LK.chu || !k || !k.dat || !k.id || (LKfile && LKfile.id === k.id) || LKtai === k.id) return;
+    LKtai = k.id;
+    apiT({ v: 'lkTai', im: 1 }).then(function (o) {
+      LKtai = 0; if (o.loi || !o.b64) return;
+      var b = atob(o.b64), u = new Uint8Array(b.length); for (var i = 0; i < b.length; i++) u[i] = b.charCodeAt(i);
+      LKfile = { id: k.id, f: new File([u], o.ten, { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' }) };
+      var bG = document.getElementById('lkGui'); if (bG) { bG.disabled = false; bG.textContent = 'Gửi cho HOJEONG qua Zalo'; }
+    }, function () { LKtai = 0; });
+  }
+  function lkThe(pill, h) { return '<div class="tbk lkk"><div class="tbk-h"><b>File gửi HOJEONG T' + esc(LK.thang) + '</b>' + pill + '</div>' + (h ? '<div class="lkB">' + h + '</div>' : '') + '</div>'; }
   function veLK() {
     var box = document.getElementById('lkBox'); if (!box) return;
     if (S.cty !== 'HOJEONG' || !LK || LK.an) { box.innerHTML = ''; return; }
-    var k = LK.kq, chu = !!LK.chu, h = '', pill = '';
+    var k = LK.kq, chu = !!LK.chu, gui = LK.gui, daGui = !!(gui && k && gui.id === k.id), h = '', pill;
     if (LK.dang) pill = '<span class="pill warn">Đang làm…</span>';
     else if (k && k.loiDoc) pill = '<span class="pill bad">Lỗi</span>';
     else if (k && k.dat) pill = '<span class="pill good">Đạt ' + esc(k.kt) + '</span>';
     else if (k) pill = '<span class="pill bad">Chưa đạt ' + esc(k.kt) + '</span>';
     else pill = '<span class="pill warn">Chờ danh sách</span>';
-    if (LK.dang) h += '<div class="lkS">Máy đang làm file (bắt đầu ' + gioPhut(LK.dang) + '), khoảng 2 phút nữa xong.</div>';
-    if (!k && !LK.dang) h += '<div class="lkS">Chưa có danh sách linh kiện. Sau khi chốt bảng công, HOJEONG gửi file danh sách linh kiện qua Zalo: bấm nút dưới, chọn file đó.</div>';
-    if (k && k.loiDoc) h += '<div class="lkW">' + (chu ? esc(k.loiDoc) : 'File ' + esc(k.fl || '') + ' không đọc được.') + ' Kiểm tra lại file HOJEONG gửi rồi đưa lại.</div>';
+    // 6: đang làm -> chỉ 1 dòng, không nút
+    if (LK.dang) {
+      var conP = Math.max(0, Math.ceil((120000 - (Date.now() - LK.dang)) / 60000));
+      box.innerHTML = lkThe(pill, '<div class="lkS">Máy đang làm file (bắt đầu ' + gioPhut(LK.dang) + ')' + (conP ? ', còn khoảng ' + conP + ' phút.' : ', sắp xong.') + '</div>'); return;
+    }
+    // 5: đã gửi HOJEONG (chủ) / đã làm xong (sale) -> thu còn 1 dòng, chạm để mở
+    var gon = k && !k.loiDoc && !S.lkMo && (chu ? daGui : true);
+    if (gon) {
+      var dong = chu ? 'Đã gửi HOJEONG lúc ' + gioPhut(gui.luc) + (k.soHD ? ' · bản chính thức, số HĐ ' + esc(k.soHD) : '') : (k.dat ? 'Đã làm xong, đã báo chủ doanh nghiệp.' : 'Còn điểm chưa đạt, đã báo chủ doanh nghiệp.');
+      box.innerHTML = '<button class="tbk lkk lkGon" id="lkMoNut"><span class="tbk-h"><b>File gửi HOJEONG T' + esc(LK.thang) + '</b>' + pill + '</span><span class="lkS">' + dong + (k.cb ? ' <span class="c-cam">· có thay đổi</span>' : '') + '</span><i>›</i></button>';
+      document.getElementById('lkMoNut').onclick = function () { S.lkMo = 1; veLK(); };
+      return;
+    }
+    if (!k) h += '<div class="lkS">Chưa có danh sách linh kiện. Sau khi chốt bảng công, HOJEONG gửi file danh sách linh kiện qua Zalo: bấm nút dưới, chọn file đó.</div>';
+    if (k && k.loiDoc) h += '<div class="lkW">' + (chu ? esc(k.loiDoc).replace(/\.?$/, '.') : 'File ' + esc(k.fl || '') + ' không đọc được.') + ' Kiểm tra lại file HOJEONG gửi rồi đưa lại.</div>';
     if (k && !k.loiDoc) {
+      if (k.cb) h += '<div class="lkW"><b>Lưu ý:</b> ' + (chu ? esc(k.cb) : 'Bảng công thay đổi sau khi HOJEONG đã gửi danh sách, đã báo chủ doanh nghiệp.') + '</div>';
       if (chu) h += '<div class="lkS">Tiền công <b class="num">' + vnd(k.tc) + '</b><br>Hóa đơn linh kiện ' + esc(k.n) + ' dòng · <b class="num">' + vnd(k.tg) + '</b>' + (Math.abs(k.tc - k.tg) >= 1 ? ' <small>(lệch ' + vnd(k.tc - k.tg) + ')</small>' : '') + '</div>';
       else h += '<div class="lkS">' + (k.dat ? 'Đã làm xong file, đã báo chủ doanh nghiệp kiểm tra.' : 'File còn điểm chưa đạt, đã báo chủ doanh nghiệp.') + '</div>';
-      h += '<small>Làm lúc ' + gioPhut(k.luc) + ' theo file ' + esc(k.fl || '') + '</small>';
+      h += '<small>Làm lúc ' + gioPhut(k.luc) + ' theo file ' + esc(k.fl || '') + (k.soHD ? ' · bản chính thức, số HĐ ' + esc(k.soHD) : '') + (daGui ? ' · đã gửi HOJEONG ' + gioPhut(gui.luc) : (gui && gui.id ? ' · bản đã gửi HOJEONG là bản lúc ' + gioPhut(gui.luc) : '')) + '</small>';
       if (LK.cho) h += '<div class="lkW">Có danh sách linh kiện mới hơn, máy sẽ làm lại trong vài phút.</div>';
       if (chu && k.ds && k.ds.length) h += '<details><summary>Xem ' + k.ds.length + ' điểm kiểm tra</summary>' + k.ds.map(function (d) { return '<div class="lkD' + (d[0] ? '' : ' sai') + '">' + (d[0] ? '✅ ' : '❌ ') + esc(d[1]) + (d[2] ? ' – ' + esc(d[2]) : '') + '</div>'; }).join('') + '</details>';
-      if (chu) h += k.dat ? '<button class="btn" id="lkGui">' + (LKfile && LKfile.id === k.id ? 'Chọn Zalo để gửi' : 'Gửi file cho HOJEONG') + '</button>' : '<div class="lkW">File chưa đạt nên không gửi được. Xem các điểm ❌ ở trên.</div>';
-    }
-    h += '<div class="lkHang"><button class="btn ghost" id="lkNap">' + (k ? 'Danh sách mới' : 'Gửi danh sách linh kiện') + '</button>' + (chu && k ? '<button class="btn ghost" id="lkLai">Làm lại ngay</button>' : '') + '</div><input type="file" id="lkF" accept=".xls,.xlsx,.xlsm,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" hidden>';
-    box.innerHTML = '<div class="tbk lkk"><div class="tbk-h"><b>File gửi HOJEONG T' + esc(LK.thang) + '</b>' + pill + '</div><div class="lkB">' + h + '</div></div>';
-    var bG = document.getElementById('lkGui'), bN = document.getElementById('lkNap'), bL = document.getElementById('lkLai'), fi = document.getElementById('lkF');
-    if (bG) bG.onclick = function () {
-      if (LKfile && LKfile.id === k.id) {   // iPhone đòi bấm trực tiếp mới mở bảng chia sẻ -> tải trước, bấm lần 2 mới chia sẻ
-        var f = LKfile.f;
-        if (navigator.canShare && navigator.canShare({ files: [f] })) { navigator.share({ files: [f], title: f.name }).catch(function () { }); return; }
-        var a = document.createElement('a'); a.href = URL.createObjectURL(f); a.download = f.name; document.body.appendChild(a); a.click(); setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 4000);
-        toast('Đã tải file về máy – mở Zalo và gửi file này.'); return;
+      if (chu) {
+        if (k.dat) h += '<button class="btn" id="lkGui"' + (LKfile && LKfile.id === k.id ? '' : ' disabled') + '>' + (LKfile && LKfile.id === k.id ? (daGui ? 'Gửi lại cho HOJEONG qua Zalo' : 'Gửi cho HOJEONG qua Zalo') : 'Đang tải file…') + '</button>';
+        else h += '<div class="lkW">File chưa đạt nên không gửi được. Xem các điểm ❌ ở trên.</div>';
+        if (k.dat) h += k.soHD ? '' : '<div class="lkHang lkHD"><input class="inp" id="lkSo" inputmode="numeric" placeholder="Số hóa đơn thật"><button class="btn ghost" id="lkSoOk">Lưu</button></div>';
       }
-      bG.disabled = true; bG.textContent = 'Đang tải file…';
-      apiT({ v: 'lkTai', lang: 1 }).then(function (o) {
-        bG.disabled = false;
-        if (o.loi) { bG.textContent = 'Gửi file cho HOJEONG'; toast(o.loi); return; }
-        var b = atob(o.b64), u = new Uint8Array(b.length); for (var i = 0; i < b.length; i++) u[i] = b.charCodeAt(i);
-        LKfile = { id: k.id, f: new File([u], o.ten, { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' }) };
-        bG.textContent = 'Chọn Zalo để gửi'; toast('File đã sẵn sàng – bấm "Chọn Zalo để gửi".');
-      }, function (e) { bG.disabled = false; bG.textContent = 'Gửi file cho HOJEONG'; toast(e.message); });
+    }
+    h += '<button class="btn ghost" id="lkNap">' + (k ? 'Gửi danh sách linh kiện mới' : 'Gửi danh sách linh kiện') + '</button>' +
+      (chu && k && !k.loiDoc ? '<div class="lkLinks">' + (k.id ? '<button class="link lkLai" id="lkXem">Xem file</button>' : '') + '<button class="link lkLai" id="lkLai">Làm lại ngay</button>' + (S.lkMo ? '<button class="link lkLai" id="lkThu">Thu gọn</button>' : '') + '</div>'
+        : ((chu && k ? '<button class="link lkLai" id="lkLai">Làm lại ngay</button>' : '') + (S.lkMo ? '<button class="link lkLai" id="lkThu">Thu gọn</button>' : ''))) +
+      '<input type="file" id="lkF" accept=".xls,.xlsx,.xlsm,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" hidden>';
+    box.innerHTML = lkThe(pill, h);
+    var bG = document.getElementById('lkGui'), bX = document.getElementById('lkXem'), bN = document.getElementById('lkNap'), bL = document.getElementById('lkLai'), bT = document.getElementById('lkThu'), bS = document.getElementById('lkSoOk'), fi = document.getElementById('lkF');
+    if (bG) bG.onclick = function () {
+      if (!LKfile || LKfile.id !== k.id) { lkTaiSan(); toast('Đang tải file, chờ vài giây.'); return; }
+      var f = LKfile.f, xong = function () { apiT({ v: 'lkDaGui', id: k.id, im: 1 }).then(function (o) { if (o.loi) { toast(o.loi); return; } LK.gui = o.gui; S.lkMo = 0; veLK(); toast('Đã ghi nhận: file đã gửi HOJEONG.'); }, function () { }); };
+      if (navigator.canShare && navigator.canShare({ files: [f] })) { navigator.share({ files: [f], title: f.name }).then(xong, function () { }); return; }
+      var a = document.createElement('a'); a.href = URL.createObjectURL(f); a.download = f.name; document.body.appendChild(a); a.click(); setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 4000);
+      toast('Máy này không chia sẻ trực tiếp được – đã tải file về, anh gửi bằng Zalo trên máy.'); xong();
     };
-    if (bL) bL.onclick = function () { lkChay(bL, { v: 'lkLam', lang: 1 }, 'Đang làm…'); };
+    if (bX) bX.onclick = function () { window.open('https://drive.google.com/file/d/' + encodeURIComponent(k.id) + '/view', '_blank'); };
+    if (bL) bL.onclick = function () { toastNut('Làm lại file gửi HOJEONG? Mất khoảng 2 phút.', 'Làm lại', function () { lkChay(bL, { v: 'lkLam', lang: 1 }, 'Đang làm…'); }, 8000); };
+    if (bT) bT.onclick = function () { S.lkMo = 0; veLK(); };
+    if (bS) bS.onclick = function () {
+      var so = (document.getElementById('lkSo').value || '').replace(/\D/g, '');
+      if (!so) { toast('Gõ số hóa đơn đã phát hành trên MISA.'); return; }
+      toastNut('Số hóa đơn ' + so + ' – xuất bản chính thức?', 'Đồng ý', function () { lkChay(bS, { v: 'lkSoHD', so: so, lang: 1 }, 'Đang làm…'); }, 8000);
+    };
     if (bN) bN.onclick = function () { fi.click(); };
     fi.onchange = function () {
       var f = fi.files[0]; if (!f) return;
@@ -4088,7 +4127,7 @@ textarea.inp{font-family:inherit}
     apiT(q).then(function (o) {
       clearInterval(dem); btn.disabled = false; btn.textContent = cu;
       if (o.loi) { toastLoi(o.loi); taiLK(true); return; }
-      LKfile = null; toast(o.ket || 'Xong'); taiLK(true);
+      LKfile = null; S.lkMo = 1; toast(o.ket || 'Xong'); taiLK(true);
     }, function (e) { clearInterval(dem); btn.disabled = false; btn.textContent = cu; toastLoi(e.message); });
   }
   // ---------- 24/10: KIỂM TRA VÂN TAY (file công ty gửi, đã lọc Đại Thành) + THÔNG BÁO CHO CHỦ ----------
