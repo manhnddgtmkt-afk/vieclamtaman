@@ -708,7 +708,7 @@ textarea.inp{font-family:inherit}
 .cck i{position:absolute;width:30px;height:30px;margin:-15px 0 0 -15px;border-radius:50%;background:rgba(47,107,255,.25);border:3px solid #2F6BFF;touch-action:none}
 #inCC{display:none}
 @media print{@page{size:A4 portrait;margin:0}html,body{background:#fff!important}body.dangIn>*:not(#inCC){display:none!important}body.dangIn #inCC{display:block!important}
-.inTr{width:100%;box-sizing:border-box;padding-top:65.7mm;display:flex;justify-content:center;align-items:flex-start;break-after:page;page-break-after:always}html.ios .inTr{padding-top:42mm}.inTr:last-child{break-after:auto;page-break-after:auto}.inTr img{width:128.4mm;height:auto;max-height:256mm}.inTr.the,html.ios .inTr.the{padding-top:30.5mm}.inTr.the img{width:170mm;max-height:none}.inTr.the5{padding-top:4.9mm}html.ios .inTr.the5{padding-top:0}.inTr.the5 img{width:112mm;max-height:none}}
+.inTr{width:100%;box-sizing:border-box;padding-top:65.7mm;display:flex;justify-content:center;align-items:flex-start;break-after:page;page-break-after:always}html.ios .inTr{padding-top:42mm}.inTr:last-child{break-after:auto;page-break-after:auto}.inTr img{width:128.4mm;height:auto;max-height:256mm}.inTr.the,html.ios .inTr.the{padding-top:12.5mm}.inTr.the img{width:178mm;max-height:none}.inTr.the5{padding-top:3.9mm}html.ios .inTr.the5{padding-top:0}.inTr.the5 img{width:120mm;max-height:none}}
 .vtThe{display:flex;align-items:center;gap:14px;width:100%;margin-top:12px;border:1.5px solid var(--tint);border-radius:18px;padding:12px 16px;background:var(--card);color:var(--fg);text-align:left}
 .vtThe .vtIc{width:40px;height:40px;border-radius:20px;background:var(--tint);color:var(--blue);display:grid;place-items:center;flex:none}.vtThe .vtIc svg{width:22px;height:22px}
 .vtTx{flex:1;min-width:0;display:flex;flex-direction:column;gap:1px}.vtTx b{font-size:16px;font-weight:600}.vtTx small{font-size:13px;color:var(--muted)}.vtTx small.cu{color:var(--warn);font-weight:600}
@@ -3213,7 +3213,7 @@ textarea.inp{font-family:inherit}
         '<div class="meta">Bấm In, trong bảng hiện ra chọn <b>In</b>, rồi chọn đúng máy in và khổ giấy như dòng trên.</div><button class="btn" id="gP">In</button><button class="btn lk" id="gK">Thôi</button>') :
         moSheet('<h3>PDF sẵn sàng</h3><div class="meta">' + esc(ten) + ' · ' + cl + '</div>' +
         (mb > 20 ? '<div class="note warn">File lớn, gửi email có thể bị chặn (thường giới hạn 25 MB). Nên chia làm nhiều lượt ít người hơn.</div>' : '') +
-        '<div class="meta">' + (bo ? (bo.kho === 'A5' ? 'Trang 5 × 7 inch, 4 thẻ một tờ, mỗi thẻ 8,1 × 5,3 cm. Dặn quán in màu trên giấy A5, in 100% (đúng kích thước), không chọn vừa trang.' : 'Khổ A4, 8 thẻ một tờ, mỗi thẻ 8,1 × 5,3 cm. Dặn quán in màu, in 100% (đúng kích thước), không chọn vừa trang.') : 'Mỗi người 1 trang A4, ảnh to gấp 1,5 lần thẻ thật. Ở quán in cứ in khổ A4 bình thường.') + '</div>' +
+        '<div class="meta">' + (bo ? (bo.kho === 'A5' ? 'Trang 5 × 7 inch, 4 thẻ một tờ, mỗi thẻ 8,5 × 6 cm. Dặn quán in màu trên giấy A5, in 100% (đúng kích thước), không chọn vừa trang.' : 'Khổ A4, 8 thẻ một tờ, mỗi thẻ 8,5 × 6 cm. Dặn quán in màu, in 100% (đúng kích thước), không chọn vừa trang.') : 'Mỗi người 1 trang A4, ảnh to gấp 1,5 lần thẻ thật. Ở quán in cứ in khổ A4 bình thường.') + '</div>' +
                 '<button class="btn" id="gP">Gửi PDF (Zalo, email…)</button><button class="btn lk" id="gK">Thôi</button>');
       function mo() {   // máy không có bảng chia sẻ: mở PDF để dùng nút chia sẻ của trình xem
         var u = URL.createObjectURL(o.bl), a = document.createElement('a'); a.href = u; a.target = '_blank'; a.download = ten; document.body.appendChild(a); a.click(); a.remove();
@@ -3384,33 +3384,38 @@ textarea.inp{font-family:inherit}
     if (sw / sh > r) { var w2 = sh * r; sx += (sw - w2) / 2; sw = w2; } else { var h2 = sw / r; sy += (sh - h2) * (n.tay ? 0.3 : 0.5); sh = h2; }
     x.imageSmoothingQuality = 'high'; x.drawImage(n.cv, sx, sy, sw, sh, X, Y, W, H);
   }
-  function theVe(e, rong) {   // 1 thẻ -> canvas; rong = bề rộng px (957 = 300 dpi)
-    var W = rong || 957, k = W / 81, c = document.createElement('canvas'); c.width = W; c.height = Math.round(53 * k);
+  // 31/10: thẻ 8,5 × 6 cm (trước 8,1 × 5,3): giữ bố cục cũ, phóng ngang SX, dọc SY; ô ảnh giữ tỉ lệ cũ (29,6 : 44,6) nên ảnh đã lưu dùng lại được
+  var THE_W = 85, THE_H = 60, THE_SX = 85 / 81, THE_SY = 60 / 53;
+  function theVe(e, rong) {   // 1 thẻ -> canvas; rong = bề rộng px (1004 = 300 dpi)
+    var W = rong || 1004, u = W / THE_W, c = document.createElement('canvas'); c.width = W; c.height = Math.round(THE_H * u);
     var x = c.getContext('2d'), F = '"Times New Roman", Times, serif';
-    function mm(v) { return v * k; }
-    function pt(v) { return v * 25.4 / 72 * k; }
+    function mx(v) { return v * THE_SX * u; }
+    function my(v) { return v * THE_SY * u; }
+    function mm(v) { return v * u; }
+    function pt(v) { return v * 25.4 / 72 * THE_SX * u; }
     x.fillStyle = '#fff'; x.fillRect(0, 0, c.width, c.height);
-    // ảnh chân dung trong khung viền mảnh
-    var n = theAnhNguon(e), bx = mm(1.6), by = mm(6.4), bw = mm(29.6), bh = mm(44.6);
+    // ảnh chân dung trong khung viền mảnh (cao theo dọc, rộng giữ tỉ lệ 29,6 : 44,6)
+    var bh = my(44.6), bw = bh * 29.6 / 44.6, bx = mx(1.6), by = my(6.4), n = theAnhNguon(e);
     if (n) theVeAnh(x, n, bx, by, bw, bh); else { x.fillStyle = '#EEF1F5'; x.fillRect(bx, by, bw, bh); x.fillStyle = '#98A2B3'; x.font = pt(7) + 'px sans-serif'; x.textAlign = 'center'; x.fillText('Ảnh 3×4', bx + bw / 2, by + bh / 2); }
     x.strokeStyle = '#555'; x.lineWidth = mm(0.25); x.strokeRect(bx, by, bw, bh);
-    // logo + bộ phận
-    var lg = theLogoNap(); if (lg.complete && lg.naturalWidth) x.drawImage(lg, mm(36), mm(2.2), mm(25), mm(25 * lg.naturalHeight / lg.naturalWidth));
+    // logo + bộ phận (bắt đầu sau ô ảnh)
+    var tx = Math.max(mx(36.6), bx + bw + mm(3)), lg = theLogoNap();
+    if (lg.complete && lg.naturalWidth) x.drawImage(lg, tx - mm(0.6), my(2.2), mx(25), mx(25) * lg.naturalHeight / lg.naturalWidth);
     x.fillStyle = '#000'; x.textAlign = 'left'; x.textBaseline = 'alphabetic';
-    x.font = 'bold ' + pt(7.5) + 'px ' + F; x.fillText(THE_BP[e.bp] || THE_BP.P, mm(36.6), mm(18.6));
-    x.font = pt(6.5) + 'px ' + F; x.fillText('WORKER', mm(36.6), mm(21.6));
-    // họ tên (tự thu nhỏ, quá dài thì 2 dòng) + mã thẻ
-    var cx = mm(56.2), rongMax = mm(46), ten = String(e.ten || '').trim().toUpperCase(), s = 10.5;
+    x.font = 'bold ' + pt(7.5) + 'px ' + F; x.fillText(THE_BP[e.bp] || THE_BP.P, tx, my(18.6));
+    x.font = pt(6.5) + 'px ' + F; x.fillText('WORKER', tx, my(21.6));
+    // họ tên (tự thu nhỏ, quá dài thì 2 dòng) + mã thẻ: căn giữa vùng chữ
+    var phai = c.width - mm(2.4), cx = (tx + phai) / 2, rongMax = phai - tx, ten = String(e.ten || '').trim().toUpperCase(), s = 10.5;
     x.textAlign = 'center';
     for (; s >= 7.5; s -= 0.5) { x.font = 'bold ' + pt(s) + 'px ' + F; if (x.measureText(ten).width <= rongMax) break; }
-    if (s >= 7.5) x.fillText(ten, cx, mm(33.6));
+    if (s >= 7.5) x.fillText(ten, cx, my(33.6));
     else {
       var tu = ten.split(/\s+/), a = tu.slice(0, Math.ceil(tu.length / 2)).join(' '), b = tu.slice(Math.ceil(tu.length / 2)).join(' ');
       s = 9; do { x.font = 'bold ' + pt(s) + 'px ' + F; s -= 0.5; } while (s > 6 && Math.max(x.measureText(a).width, x.measureText(b).width) > rongMax);
-      x.fillText(a, cx, mm(31.6)); x.fillText(b, cx, mm(35.6));
+      x.fillText(a, cx, my(31.6)); x.fillText(b, cx, my(35.6));
     }
-    x.font = 'bold ' + pt(12.5) + 'px ' + F; x.fillText(String(e.ma || ''), cx, mm(44.2));
-    x.textAlign = 'right'; x.font = 'bold ' + pt(4.5) + 'px Arial, Helvetica, sans-serif'; x.fillText('HOJEONG Co.LTD', mm(78.6), mm(50.4));
+    x.font = 'bold ' + pt(12.5) + 'px ' + F; x.fillText(String(e.ma || ''), cx, my(44.2));
+    x.textAlign = 'right'; x.font = 'bold ' + pt(4.5) + 'px Arial, Helvetica, sans-serif'; x.fillText('HOJEONG Co.LTD', c.width - mm(2.4), my(50.4));
     // viền: trên đỏ, phải xám đậm, dưới xanh; ngoài cùng viền xám nhạt làm đường cắt
     x.fillStyle = '#E3262C'; x.fillRect(0, 0, c.width, mm(0.8));
     x.fillStyle = '#404040'; x.fillRect(c.width - mm(0.8), 0, mm(0.8), c.height);
@@ -3418,11 +3423,11 @@ textarea.inp{font-family:inherit}
     x.strokeStyle = '#B8BEC8'; x.lineWidth = Math.max(1, mm(0.15)); x.strokeRect(x.lineWidth / 2, x.lineWidth / 2, c.width - x.lineWidth, c.height - x.lineWidth);
     return c;
   }
-  // trang A4: 2 cột × 4 hàng, khe 8 mm; khối 170 × 244 mm (gồm dòng nhắc) đặt cách trái 20 mm, cách trên 30,5 mm
-  var THE_TR = { trai: 20, tren: 30.5, rong: 170, cao: 244 };
+  // trang A4: 2 cột × 4 hàng thẻ 8,5 × 6, khe 8 mm; khối 178 × 272 mm (gồm dòng nhắc) căn giữa ngang, cách trên 12,5 mm
+  var THE_TR = { trai: 16, tren: 12.5, rong: 178, cao: 272 };
   // 31/10: khổ A5: 4 thẻ / tờ, thẻ xoay đứng (5,3 × 8,1 cm), 2 cột × 2 hàng, khe 6 mm; khối 112 × 168 mm.
   // Máy HP chỉ báo khổ 5 × 7 inch cho iPhone (không có A5) -> trang PDF / trang in đúng 5 × 7 inch (127 × 177,8 mm) để in 100%, giấy A5 vẫn đặt trong khay.
-  var THE_TR5 = { tren: 4.9, rong: 112, cao: 168 };
+  var THE_TR5 = { tren: 3.9, rong: 120, cao: 170 };   // 31/10: thẻ 8,5 × 6 đứng, 2 × 2 sát nhau (chung đường cắt), lề ~3,5–3,9 mm
   function theKho() { return doc('vlta_theKho') === 'A5' ? 'A5' : 'A4'; }
   function theBo() { return theKho() === 'A5' ? { rong: THE_TR5.rong, tren: THE_TR5.tren, kho: 'A5' } : { rong: THE_TR.rong, tren: THE_TR.tren }; }
   function theTrang5(ds) {
@@ -3431,7 +3436,7 @@ textarea.inp{font-family:inherit}
       var c = document.createElement('canvas'); c.width = Math.round(THE_TR5.rong * k); c.height = Math.round(THE_TR5.cao * k);
       var x = c.getContext('2d'); x.fillStyle = '#fff'; x.fillRect(0, 0, c.width, c.height);
       ds.slice(i, i + 4).forEach(function (e, j) {
-        var t = theVe(e, Math.round(81 * k)), X = Math.round((j % 2) * 59 * k), Y = Math.round(Math.floor(j / 2) * 87 * k);
+        var t = theVe(e, Math.round(THE_W * k)), X = Math.round((j % 2) * THE_H * k), Y = Math.round(Math.floor(j / 2) * THE_W * k);
         x.save(); x.translate(X + t.height, Y); x.rotate(Math.PI / 2); x.drawImage(t, 0, 0); x.restore();   // xoay 90° theo chiều kim đồng hồ: thẻ đứng 5,3 × 8,1 cm
       });
       out.push(c.toDataURL('image/jpeg', 0.92));
@@ -3444,9 +3449,9 @@ textarea.inp{font-family:inherit}
     for (var i = 0; i < ds.length; i += 8) {
       var c = document.createElement('canvas'); c.width = Math.round(THE_TR.rong * k); c.height = Math.round(THE_TR.cao * k);
       var x = c.getContext('2d'); x.fillStyle = '#fff'; x.fillRect(0, 0, c.width, c.height);
-      ds.slice(i, i + 8).forEach(function (e, j) { x.drawImage(theVe(e, Math.round(81 * k)), Math.round((j % 2) * 89 * k), Math.round(Math.floor(j / 2) * 61 * k)); });
+      ds.slice(i, i + 8).forEach(function (e, j) { x.drawImage(theVe(e, Math.round(THE_W * k)), Math.round((j % 2) * (THE_W + 8) * k), Math.round(Math.floor(j / 2) * (THE_H + 8) * k)); });
       x.fillStyle = '#9AA1AC'; x.textAlign = 'center'; x.font = (7 * 25.4 / 72 * k) + 'px Arial, Helvetica, sans-serif';
-      x.fillText('In 100% (đúng kích thước, không thu phóng) · mỗi thẻ 8,1 × 5,3 cm', c.width / 2, (236 + 6) * k);
+      x.fillText('In 100% (đúng kích thước, không thu phóng) · mỗi thẻ 8,5 × 6 cm', c.width / 2, (264 + 6) * k);
       out.push(c.toDataURL('image/jpeg', 0.92));
     }
     return out;
@@ -3571,7 +3576,7 @@ textarea.inp{font-family:inherit}
     var ds = theDs(), n = ds.filter(function (e) { return e.chon; }).length, h = ccChe();
     if (!ds.length) h += '<div class="card cch">' + ICON.cc + '<b>Thẻ ra vào HOJEONG</b><div class="meta">Chọn ảnh CCCD ở mục In CCCD, rồi quay lại đây tích người cần làm thẻ. Người chưa có CCCD trong lượt thì bấm Thêm người.</div></div>';
     else h += '<div class="row thk"><span class="meta">Khổ giấy</span><div class="seg" id="thKho">' + ['A4', 'A5'].map(function (g) { return '<button data-tk="' + g + '"' + (theKho() === g ? ' class="on"' : '') + '>' + g + (g === 'A4' ? ' · 8 thẻ/tờ' : ' · 4 thẻ/tờ') + '</button>'; }).join('') + '</div></div>' +
-      '<div class="meta" style="padding:0 2px">Tích người cần làm thẻ, gõ mã thẻ. Mỗi thẻ 8,1 × 5,3 cm, cần in màu.' + (theKho() === 'A5' ? ' Đặt giấy A5 vào khay; hộp in hiện khổ 5 × 7 inch là đúng.' : '') + '</div>';
+      '<div class="meta" style="padding:0 2px">Tích người cần làm thẻ, gõ mã thẻ. Mỗi thẻ 8,5 × 6 cm, cần in màu.' + (theKho() === 'A5' ? ' Đặt giấy A5 vào khay; hộp in hiện khổ 5 × 7 inch là đúng.' : '') + '</div>';
     h += ds.map(function (e) {
       var n0 = theAnhNguon(e), dd = e.chon;
       var nh = n0 ? (function () { var c = document.createElement('canvas'); c.width = 60; c.height = 90; theVeAnh(c.getContext('2d'), n0, 0, 0, 60, 90); return c.toDataURL('image/jpeg', 0.8); })() : '';
@@ -3598,7 +3603,7 @@ textarea.inp{font-family:inherit}
     function xemLai(k) { var im = t.querySelector('[data-tv="' + k + '"]'); clearTimeout(xemLai.h); xemLai.h = setTimeout(function () { if (im) im.src = theTb(e_(k)); }, 250); }
     t.querySelectorAll('[data-tt]').forEach(function (i) { i.oninput = function () { var e = e_(i.getAttribute('data-tt')); e.ten = i.value.toUpperCase(); e.sua = 1; xemLai(e.k); var hd = t.querySelector('[data-tc2="' + e.k + '"] b'); if (hd) hd.textContent = e.ten || 'Người thêm tay'; }; i.onblur = function () { i.value = e_(i.getAttribute('data-tt')).ten; }; });
     t.querySelectorAll('[data-tm]').forEach(function (i) { i.oninput = function () { i.value = i.value.replace(/\D/g, '').slice(0, 10); var e = e_(i.getAttribute('data-tm')); e.ma = i.value; xemLai(e.k); }; });
-    t.querySelectorAll('[data-tv]').forEach(function (im) { im.onclick = function () { ccXemTo(theVe(e_(im.getAttribute('data-tv')), 957).toDataURL('image/jpeg', 0.9)); }; });
+    t.querySelectorAll('[data-tv]').forEach(function (im) { im.onclick = function () { ccXemTo(theVe(e_(im.getAttribute('data-tv')), 1004).toDataURL('image/jpeg', 0.9)); }; });
     document.getElementById('thThem').onclick = function () { var k = 'm' + (++CCS.theThem); CCS.the[k] = { k: k, chon: true, ten: '', ma: '', bp: 'P', sua: 1 }; theChonAnh(CCS.the[k]); ccVe(); };
     document.getElementById('thGui').onclick = theGui;
     document.getElementById('thLs').onclick = function () { if (!CCS.thLs) { toast('Đang tải danh sách thẻ đã in…'); theLsTai(); return; } theLsMo(); };
@@ -3645,6 +3650,7 @@ textarea.inp{font-family:inherit}
   }
   function ccCheNoi(t) { t.querySelectorAll('[data-che]').forEach(function (b) { b.onclick = function () { CCS.theMo = b.getAttribute('data-che') === '1'; var lg = theLogoNap(); if (!lg.complete) lg.onload = function () { ccVe(); }; ccVe(); window.scrollTo(0, 0); }; }); }
   var BAN_MOI = [
+    { so: 93, ds: [['Thẻ HOJEONG to hơn: 8,5 × 6 cm (trước 8,1 × 5,3 cm). Khổ A4 vẫn 8 thẻ một tờ; khổ A5 vẫn 4 thẻ một tờ nhưng các thẻ nằm sát nhau, cắt theo đường viền chung.', '']] },
     { so: 92, ds: [['Thẻ HOJEONG khổ A5 in đúng kích thước 8,1 × 5,3 cm trên máy HP: app làm trang đúng khổ 5 × 7 inch mà máy HP nhận, nên iPhone không thu nhỏ nữa. Vẫn đặt giấy A5 vào khay; hộp in hiện "5 x 7 inch" là đúng.', '']] },
     { so: 91, ds: [['Thẻ HOJEONG có lịch sử: mỗi lần In hoặc gửi PDF, app lưu lại họ tên, mã thẻ, bộ phận và ảnh chân dung. Bấm "Thẻ đã in trước đây", tìm tên hoặc mã thẻ, chọn người rồi in lại ngay, không phải cắt ảnh hay gõ lại.', ''], ['Gõ mã thẻ đã cấp cho người khác, app hỏi lại trước khi in.', '']] },
     { so: 90, ds: [['App mở từ màn hình chính iPhone: bấm In sẽ tạo PDF ngay, hiện bảng "In". Bấm In, trong bảng hiện ra chọn In, rồi chọn đúng máy và khổ giấy. Không còn hiện nhầm bảng "Gửi PDF" khi muốn in.', '']] },
