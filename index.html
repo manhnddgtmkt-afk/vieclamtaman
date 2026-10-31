@@ -13,7 +13,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
 <script src="config.js"></script>
-<script>window.PB = { so: 94, luc: "31/10 20:44" };</script>
+<script>window.PB = { so: 95, luc: "31/10 20:58" };</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap">
 <style>
@@ -3664,6 +3664,8 @@ textarea.inp{font-family:inherit}
   }
   function ccCheNoi(t) { t.querySelectorAll('[data-che]').forEach(function (b) { b.onclick = function () { CCS.theMo = b.getAttribute('data-che') === '1'; var lg = theLogoNap(); if (!lg.complete) lg.onload = function () { ccVe(); }; ccVe(); window.scrollTo(0, 0); }; }); }
   var BAN_MOI = [
+    { so: 95, ds: [['Tổng quan → ô chọn kỳ hiện kỳ mới ngay khi kỳ công bắt đầu (vd kỳ tháng 11 của HOJEONG từ 26/10), không phải chờ sang tháng theo lịch.', 'chu'],
+      ['Kỳ mới chưa đủ các công ty thì có dòng vàng nhỏ ghi rõ mới có số của công ty nào, số là tạm tính.', 'chu']] },
     { so: 94, ds: [['Tab Lao động → HOJEONG có thẻ "File gửi HOJEONG": khi HOJEONG gửi danh sách linh kiện qua Zalo, bấm "Gửi danh sách linh kiện", chọn file đó; máy tự làm bộ file gửi HOJEONG trong khoảng 2 phút.', ''],
       ['Máy tự kiểm 10 điểm (khớp từng dòng linh kiện, tổng tiền, ngày, bằng chữ, không ô lỗi…). Đạt thì bấm "Gửi file cho HOJEONG" rồi chọn Zalo; chưa đạt thì không gửi được và ghi rõ sai ở đâu.', 'chu'],
       ['Có email báo kết quả mỗi lần máy làm xong file.', 'chu']] },
@@ -4988,7 +4990,11 @@ textarea.inp{font-family:inherit}
       var t = document.getElementById('than'); if (!t || S.tab !== 'tq') return;
       if (o.loi) { t.innerHTML = '<div class="empty">' + esc(o.loi) + '</div>'; return; }
       var hn = new Date(), max = hn.getFullYear() + '-T' + ('0' + (hn.getMonth() + 1)).slice(-2);   // chỉ các tháng đã tới
-      var ds = (o.thangDs && o.thangDs.length ? o.thangDs : [o.ky]).filter(function (x) { return x <= max || x === o.ky; }).reverse();
+      var co = o.thangCo || {};   // 31/10: tháng đã có số liệu (kỳ công bắt đầu trước tháng lịch, vd HOJEONG 26/10 -> kỳ T11) cũng hiện
+      var ds = (o.thangDs && o.thangDs.length ? o.thangDs : [o.ky]).filter(function (x) { return x <= max || x === o.ky || !!co[x]; }).reverse();
+      var thCo = Object.keys(co).sort(), thMoi = thCo[thCo.length - 1], thTruoc = thCo[thCo.length - 2];
+      var kyTam = o.ky && o.ky === thMoi && thTruoc && co[thMoi].length < co[thTruoc].length
+        ? '<div class="meta" style="color:#B26A00;margin:2px 0 6px">Kỳ đang chạy – mới có số của ' + esc(co[thMoi].join(', ')) + ', số tạm tính</div>' : '';
       var nhom = S.tqNhom || 'ln';
       if (nhom === 'gl' && document.getElementById('glHost')) return;   // 24/10: đang ở Giả lập tài chính -> số Tổng quan mới không vẽ lại (giữ ô đang gõ)
       var than = nhom === 'gl' ? '<div id="glHost"></div>' : nhom === 'tien' ? tqNhomTien(o) : nhom === 'vs' ? tqNhomVS(o) : tqNhomLN(o);
@@ -5000,7 +5006,7 @@ textarea.inp{font-family:inherit}
         glVe(document.getElementById('glHost')); return;
       }
       t.innerHTML = '<div class="row sp"><select class="inp ky" id="tqKy" aria-label="Chọn kỳ">' + ds.map(function (x) { return '<option value="' + esc(x) + '"' + (x === o.ky ? ' selected' : '') + '>Kỳ ' + esc(tqThang(x)) + '</option>'; }).join('') + '</select>' +
-        '<button class="link" id="tqMoi">⟳ Số mới</button></div>' +
+        '<button class="link" id="tqMoi">⟳ Số mới</button></div>' + kyTam +
         '<div class="meta tqMeta"><span>' + (cn ? 'Cập nhật ' + cn[1] + ' · ' + cn[2] : esc(o.capNhat)) + '</span>' + (laChu() ? '<button class="glVao" id="glVao">' + GLI + 'Giả lập tài chính ›</button>' : '') + '</div>' +
         '<div class="seg" id="tqSeg"><button data-n="ln"' + (nhom === 'ln' ? ' class="on"' : '') + '>Lợi nhuận</button><button data-n="tien"' + (nhom === 'tien' ? ' class="on"' : '') + '>Tiền & công nợ</button><button data-n="vs"' + (nhom === 'vs' ? ' class="on"' : '') + '>Vendor & sale</button></div>' +
         than;
