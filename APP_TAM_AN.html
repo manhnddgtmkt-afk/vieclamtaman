@@ -2897,8 +2897,16 @@ textarea.inp{font-family:inherit}
     var hua = Promise.all(ims.map(function (im) { return im.decode ? im.decode().catch(function () { }) : null; })).then(function () { if (INS.hua === hua) INS.san = true; });
     INS.hua = hua; return hua;
   }
+  // 31/10: app mở từ màn hình chính iPhone: iPhone chặn lệnh in của trang web -> làm PDF ngay, bấm In mở bảng chia sẻ rồi chọn In
+  var KHONG_IN = document.documentElement.classList.contains('ios') && (navigator.standalone === true || !!(window.matchMedia && matchMedia('(display-mode: standalone)').matches));
+  function inPdf(urls, kieu) {
+    var the = kieu === 'the' || kieu === 'the5', a5 = kieu === 'the5';
+    ccGui(Promise.resolve(urls), the ? 'The_HOJEONG_' + urls.length + '_to_' + theNgay() + (a5 ? '_A5' : '') + '.pdf' : 'CCCD_' + new Date().toISOString().slice(0, 10) + '.pdf',
+      the ? (a5 ? { rong: THE_TR5.rong, tren: THE_TR5.tren, kho: 'A5' } : { rong: THE_TR.rong, tren: THE_TR.tren }) : undefined, the ? kieu : 'cc');
+  }
   function inGoi() {   // gọi trong cú chạm
     var mo = false, urls = INS.urls, kieu = INS.kieu;
+    if (KHONG_IN) { inPdf(urls, kieu); return; }
     function truoc() { mo = true; }
     function sau() { window.removeEventListener('beforeprint', truoc); window.removeEventListener('afterprint', sau); }
     window.addEventListener('beforeprint', truoc); window.addEventListener('afterprint', sau);
@@ -2906,13 +2914,11 @@ textarea.inp{font-family:inherit}
     try { window.print(); } catch (e) { }
     setTimeout(function () {
       if (mo) return;
-      sau();   // máy không mở hộp in (app cài trên màn hình chính, hoặc Safari đang hỏi): thêm đường in qua PDF, trang in vẫn giữ nguyên
-      var sh = moSheet('<h3>In bằng PDF</h3><div class="meta">Nếu chưa thấy hộp in: bấm nút dưới, chọn <b>In</b> rồi chọn máy in Brother.</div><button class="btn" id="ccP">Mở PDF để in</button><button class="btn lk" id="ccPk">Thôi</button>');
-      sh.querySelector('#ccP').onclick = function () { sh.remove(); if (kieu === 'the' || kieu === 'the5') ccGui(Promise.resolve(urls), 'The_HOJEONG' + (kieu === 'the5' ? '_A5' : '') + '.pdf', kieu === 'the5' ? { rong: THE_TR5.rong, tren: THE_TR5.tren, kho: 'A5' } : { rong: THE_TR.rong, tren: THE_TR.tren }); else ccPdfMo(urls); };
-      sh.querySelector('#ccPk').onclick = function () { sh.remove(); };
+      sau(); inPdf(urls, kieu);   // máy không mở hộp in: in qua PDF
     }, 2500);
   }
   function inSan(urls, kieu, k, n) {   // trang in chưa dựng sẵn: dựng xong hiện nút In để chạm (cú chạm mới)
+    if (KHONG_IN) { inPdf(urls, kieu); return; }
     inDung(urls, kieu, k).then(function () {
       var sh = moSheet('<h3>Đã sẵn sàng in</h3><div class="meta">' + n + ' tờ ' + (INS.kieu === 'the5' ? 'A5' : 'A4') + '. Bấm In để mở hộp in.</div>' + ccMay(INS.kieu === 'the' || INS.kieu === 'the5') + '<button class="btn" id="isI">In ' + n + ' tờ</button><button class="btn lk" id="isK">Thôi</button>');
       sh.querySelector('#isI').onclick = function () { sh.remove(); inGoi(); };
@@ -3195,16 +3201,19 @@ textarea.inp{font-family:inherit}
       });
     })).then(function (ds) { return ccPdf(ds, bo); });
   }
-  function ccGui(hua, ten, bo) {   // tạo PDF xong mới hiện nút Gửi (iPhone chỉ mở bảng chia sẻ ngay sau 1 lần bấm tay)
+  function ccGui(hua, ten, bo, inK) {   // inK: 'cc' | 'the' | 'the5' -> bảng In (mở bảng chia sẻ, chọn In) thay cho bảng Gửi   // tạo PDF xong mới hiện nút Gửi (iPhone chỉ mở bảng chia sẻ ngay sau 1 lần bấm tay)
     ccTd('Đang tạo PDF…');
     hua.then(function (urls) { ccTd('Đang tạo PDF…'); return ccPdfTao(urls, bo).then(function (bl) { return { bl: bl, n: urls.length }; }); }).then(function (o) {
       ccTd('');
       var mb = o.bl.size / 1048576, f = null;
       try { f = new File([o.bl], ten, { type: 'application/pdf' }); } catch (e) { }
-      var sh = moSheet('<h3>PDF sẵn sàng</h3><div class="meta">' + esc(ten) + ' · ' + o.n + ' trang · ' + (mb < 1 ? Math.max(1, Math.round(mb * 1024)) + ' KB' : mb.toFixed(1).replace('.', ',') + ' MB') + '</div>' +
+      var cl = o.n + ' trang · ' + (mb < 1 ? Math.max(1, Math.round(mb * 1024)) + ' KB' : mb.toFixed(1).replace('.', ',') + ' MB');
+      var sh = inK ? moSheet('<h3>' + (inK === 'cc' ? 'In CCCD' : 'In thẻ HOJEONG') + '</h3><div class="meta">' + cl + '</div>' + ccMay(inK !== 'cc') +
+        '<div class="meta">Bấm In, trong bảng hiện ra chọn <b>In</b>, rồi chọn đúng máy in và khổ giấy như dòng trên.</div><button class="btn" id="gP">In</button><button class="btn lk" id="gK">Thôi</button>') :
+        moSheet('<h3>PDF sẵn sàng</h3><div class="meta">' + esc(ten) + ' · ' + cl + '</div>' +
         (mb > 20 ? '<div class="note warn">File lớn, gửi email có thể bị chặn (thường giới hạn 25 MB). Nên chia làm nhiều lượt ít người hơn.</div>' : '') +
         '<div class="meta">' + (bo ? (bo.kho === 'A5' ? 'Khổ A5, 4 thẻ một tờ, mỗi thẻ 8,1 × 5,3 cm. Dặn quán in màu trên giấy A5, in 100% (đúng kích thước), không chọn vừa trang.' : 'Khổ A4, 8 thẻ một tờ, mỗi thẻ 8,1 × 5,3 cm. Dặn quán in màu, in 100% (đúng kích thước), không chọn vừa trang.') : 'Mỗi người 1 trang A4, ảnh to gấp 1,5 lần thẻ thật. Ở quán in cứ in khổ A4 bình thường.') + '</div>' +
-        '<button class="btn" id="gP">Gửi PDF (Zalo, email…)</button><button class="btn lk" id="gK">Thôi</button>');
+                '<button class="btn" id="gP">Gửi PDF (Zalo, email…)</button><button class="btn lk" id="gK">Thôi</button>');
       function mo() {   // máy không có bảng chia sẻ: mở PDF để dùng nút chia sẻ của trình xem
         var u = URL.createObjectURL(o.bl), a = document.createElement('a'); a.href = u; a.target = '_blank'; a.download = ten; document.body.appendChild(a); a.click(); a.remove();
         setTimeout(function () { URL.revokeObjectURL(u); }, 120000);
@@ -3565,6 +3574,7 @@ textarea.inp{font-family:inherit}
   }
   function ccCheNoi(t) { t.querySelectorAll('[data-che]').forEach(function (b) { b.onclick = function () { CCS.theMo = b.getAttribute('data-che') === '1'; var lg = theLogoNap(); if (!lg.complete) lg.onload = function () { ccVe(); }; ccVe(); window.scrollTo(0, 0); }; }); }
   var BAN_MOI = [
+    { so: 90, ds: [['App mở từ màn hình chính iPhone: bấm In sẽ tạo PDF ngay, hiện bảng "In". Bấm In, trong bảng hiện ra chọn In, rồi chọn đúng máy và khổ giấy. Không còn hiện nhầm bảng "Gửi PDF" khi muốn in.', '']] },
     { so: 89, ds: [['Ngay cạnh nút In luôn ghi rõ máy cần chọn: thẻ HOJEONG chọn máy màu HP Smart Tank 210 (khổ A4 hoặc A5, tỷ lệ 100%), in CCCD chọn máy đen trắng Brother (khổ A4). iPhone tự chọn máy in lần trước nên cần xem dòng này trước khi in.', ''], ['In thẻ HOJEONG mở thẳng hộp in, bỏ hộp nhắc gửi ra quán vì nhà đã có máy in màu. Nút gửi PDF vẫn giữ.', '']] },
     { so: 88, ds: [['Thẻ HOJEONG in được cả khổ A5 (4 thẻ một tờ, thẻ in đứng, đúng kích thước 8,1 × 5,3 cm). Chọn khổ A4 hoặc A5 ở đầu mục Thẻ HOJEONG, máy tự nhớ lần chọn trước. In CCCD vẫn khổ A4 như cũ.', '']] },
     { so: 87, ds: [['Tìm người ở tab Lao động: ngoài người tháng này, app tìm thêm cả người đã làm các tháng trước (mục "Đã làm các tháng trước" bên dưới kết quả).', ''],
