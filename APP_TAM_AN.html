@@ -665,6 +665,7 @@ textarea.inp{font-family:inherit}
 .thr{align-items:center;gap:12px}
 .thc{flex:none;width:28px;height:28px;border-radius:8px;border:2px solid var(--edge);background:var(--card);color:#fff;font-weight:700;font-size:16px;line-height:1;padding:0}
 .tht.on .thc{background:var(--cta);border-color:var(--cta)}
+.thls .it{gap:10px}.thls .it.on .thc{background:var(--cta);border-color:var(--cta)}.thls .sub{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.thlsDs{max-height:52vh;overflow:auto;margin:8px 0;-webkit-overflow-scrolling:touch}
 .tha{flex:none;width:40px;height:60px;border-radius:6px;object-fit:cover;background:var(--soft)}
 .thx{border:1px dashed var(--edge);font-size:11px;color:var(--muted);padding:0}
 .thf{display:flex;flex-direction:column;gap:8px}.thf .inp{margin:0}.thf .seg button{padding:7px 4px;font-size:13.5px}
@@ -3370,7 +3371,7 @@ textarea.inp{font-family:inherit}
       e.p = p; if (!e.sua && p.ten) e.ten = String(p.ten).toUpperCase();
       out.push(e);
     });
-    Object.keys(CCS.the).forEach(function (k) { if (k[0] === 'm' || k[0] === 'k') out.push(CCS.the[k]); });
+    Object.keys(CCS.the).forEach(function (k) { if (k[0] === 'm' || k[0] === 'k' || k[0] === 'h') out.push(CCS.the[k]); });
     return out;
   }
   function theAnhNguon(e) {   // -> { cv, x, y, w, h } vùng ảnh chân dung
@@ -3451,6 +3452,72 @@ textarea.inp{font-family:inherit}
     }
     return out;
   }
+  // ---- 31/10: lịch sử thẻ đã in (sheet THE_HOJEONG + ảnh chân dung trên Drive) để in lại không phải làm từ đầu ----
+  function theTenC(s) { return String(s || '').normalize('NFC').replace(/\s+/g, ' ').trim().toUpperCase(); }
+  function theTrung(ds) {   // mã đã cấp cho người khác
+    var m = {}; (CCS.thLs || []).forEach(function (x) { m[x.ma] = x; });
+    return ds.map(function (e) { var cu = m[String(e.ma)]; return cu && theTenC(cu.ten) !== theTenC(e.ten) ? { e: e, cu: cu } : null; }).filter(Boolean);
+  }
+  function theAnhLuu(e) {   // ảnh chân dung đúng tỉ lệ ô ảnh trên thẻ (29,6 × 44,6 mm) -> JPEG 360 × 542
+    var n = theAnhNguon(e); if (!n) return '';
+    var c = document.createElement('canvas'); c.width = 360; c.height = 542; theVeAnh(c.getContext('2d'), n, 0, 0, 360, 542);
+    return c.toDataURL('image/jpeg', 0.9);
+  }
+  function theGhi(ds, pdf) {
+    var gui = ds.map(function (e) { var o = { ma: String(e.ma), ten: e.ten, so: e.so || (e.p && e.p.so) || '', bp: e.bp }; if (!(e.anhGoc && e.anh === e.anhGoc)) o.anh = theAnhLuu(e); return o; });
+    apiT({ v: 'theGhi', ds: gui, kho: theKho(), pdf: pdf ? 1 : 0, im: 1 }).then(function (o) {
+      if (o && o.loi) { toastLoi('Lịch sử thẻ chưa ghi được: ' + o.loi); return; }
+      ds.forEach(function (e) { if (e.anh && !e.anhGoc) e.anhGoc = e.anh; });
+      theLsTai(1);
+    }, function (er) { toastLoi('Lịch sử thẻ chưa ghi được: ' + er.message); });
+  }
+  function theLsTai(ep) {
+    if (CCS.thLsDang || (CCS.thLs && !ep)) return;
+    CCS.thLsDang = 1;
+    apiT({ v: 'theDs', im: 1 }).then(function (o) { CCS.thLsDang = 0; if (o && o.ds) { CCS.thLs = o.ds; if (S.tab === 'cc' && CCS.theMo && !document.querySelector('.thls')) { var ae = document.activeElement; if (ae && /INPUT|TEXTAREA/.test(ae.tagName)) { var nt = document.getElementById('thLs'); if (nt) nt.querySelector('.nm').textContent = 'Thẻ đã in trước đây · ' + o.ds.length; } else ccVe(); } } }, function () { CCS.thLsDang = 0; });
+  }
+  function theLsMo() {
+    var chon = {}, ds = CCS.thLs || [];
+    var sh = moSheet('<div class="thls"><div class="row sp"><h3>Thẻ đã in trước đây</h3><button class="link" id="tlD">Đóng</button></div>' +
+      '<input class="inp" id="tlQ" placeholder="Tìm tên, mã thẻ, số CCCD" autocomplete="off">' +
+      '<div class="thlsDs grp" id="tlDs"></div><button class="btn" id="tlT" disabled>Chọn người cần in lại</button></div>');
+    var q = sh.querySelector('#tlQ'), box = sh.querySelector('#tlDs'), nut = sh.querySelector('#tlT');
+    function ve() {
+      var k = kd(q.value).trim(), so = q.value.replace(/\D/g, ''), loc = ds.filter(function (x) { return !k || kd(x.ten).indexOf(k) >= 0 || (so && (x.ma.indexOf(so) >= 0 || String(x.so).indexOf(so) >= 0)); });
+      box.innerHTML = loc.length ? loc.slice(0, 60).map(function (x) {
+        return '<button class="it' + (chon[x.ma] ? ' on' : '') + '" data-ma="' + esc(x.ma) + '"><span class="thc">' + (chon[x.ma] ? '✓' : '') + '</span><div style="min-width:0;flex:1"><div class="nm">' + esc(x.ten) + '</div>' +
+          '<div class="sub">Mã ' + esc(x.ma) + ' · ' + (x.bp === 'Q' ? 'Quality' : 'Production') + ' · ' + esc(String(x.gan).slice(0, 5)) + (String(x.gan).slice(6, 10) && String(x.gan).slice(6, 10) !== String(new Date().getFullYear()) ? '/' + esc(String(x.gan).slice(8, 10)) : '') + (x.lan > 1 ? ' · ' + x.lan + ' lần' : '') + '</div></div></button>';
+      }).join('') + (loc.length > 60 ? '<div class="meta" style="padding:10px 16px">Còn ' + (loc.length - 60) + ' thẻ nữa, gõ thêm để tìm.</div>' : '') :
+        '<div class="meta" style="padding:14px 16px">' + (ds.length ? 'Không tìm thấy.' : 'Chưa có thẻ nào được in.') + '</div>';
+      box.querySelectorAll('[data-ma]').forEach(function (b) { b.onclick = function () { var m = b.getAttribute('data-ma'); if (chon[m]) delete chon[m]; else chon[m] = 1; ve(); }; });
+      var n = Object.keys(chon).length; nut.disabled = !n; nut.textContent = n ? 'Thêm ' + n + ' người vào danh sách in' : 'Chọn người cần in lại';
+    }
+    q.oninput = ve; ve();
+    sh.querySelector('#tlD').onclick = function () { sh.remove(); };
+    nut.onclick = function () { sh.remove(); theTuLs(ds.filter(function (x) { return chon[x.ma]; })); };
+  }
+  function theTuLs(ls) {   // đưa thẻ cũ vào danh sách in, tải ảnh chân dung đã lưu
+    var can = [];
+    ls.forEach(function (x) {
+      var k = 'h' + x.ma, e = CCS.the[k];
+      if (!e) e = CCS.the[k] = { k: k, ten: x.ten, ma: x.ma, bp: x.bp, so: x.so, sua: 1 };
+      e.chon = true;
+      if (!e.anh && x.id) can.push({ e: e, id: x.id });
+    });
+    ccVe(); window.scrollTo(0, 0);
+    var thieu = ls.filter(function (x) { return !x.id; }).length;
+    (function lo(i) {
+      if (i >= can.length) { if (thieu) toast(thieu + ' người chưa có ảnh lưu, bấm + Ảnh để chọn.'); return; }
+      var lo12 = can.slice(i, i + 12);
+      apiT({ v: 'theAnh', ids: lo12.map(function (y) { return y.id; }), im: 1 }).then(function (o) {
+        var cho = lo12.map(function (y) {
+          var u = o && o.ds && o.ds[y.id]; if (!u) { thieu++; return null; }
+          return new Promise(function (ok) { var im = new Image(); im.onload = function () { var c = document.createElement('canvas'); c.width = im.naturalWidth; c.height = im.naturalHeight; c.getContext('2d').drawImage(im, 0, 0); y.e.anh = c; y.e.anhGoc = c; y.e.tb = ''; ok(); }; im.onerror = function () { thieu++; ok(); }; im.src = u; });
+        });
+        Promise.all(cho).then(function () { ccVe(); lo(i + 12); });
+      }, function (er) { toastLoi('Không tải được ảnh thẻ cũ: ' + er.message); });
+    })(0);
+  }
   function theNgay() { var d = new Date(); return ('0' + d.getDate()).slice(-2) + '-' + ('0' + (d.getMonth() + 1)).slice(-2); }
   function theChon() { return theDs().filter(function (e) { return e.chon; }); }
   function theKiem(ds, tiep) {   // thiếu tên / mã thì báo; mã dài ngắn khác nhau thì hỏi lại
@@ -3459,15 +3526,17 @@ textarea.inp{font-family:inherit}
     if (thieu.length) { toast(thieu.length + ' người còn thiếu ' + (thieu.some(function (e) { return !theAnhNguon(e); }) ? 'ảnh, ' : '') + 'họ tên hoặc mã thẻ.'); ccVe(); return; }
     var dem = {}; ds.forEach(function (e) { var l = String(e.ma).length; dem[l] = (dem[l] || 0) + 1; });
     var hay = Object.keys(dem).sort(function (a, b) { return dem[b] - dem[a]; })[0], la = ds.filter(function (e) { return String(e.ma).length !== Number(hay); });
-    if (!la.length) { tiep(); return; }
-    var sh = moSheet('<h3>Kiểm tra mã thẻ</h3><div class="meta">' + la.map(function (e) { return '<b>' + esc(e.ma) + '</b> (' + esc(e.ten) + ') có ' + String(e.ma).length + ' số'; }).join('<br>') + '<br>Các mã khác có ' + hay + ' số. Có gõ nhầm không?</div><button class="btn" id="tkS">Sửa lại</button><button class="btn ghost" id="tkV">Vẫn làm thẻ</button>');
+    var tr = theTrung(ds);
+    if (!la.length && !tr.length) { tiep(); return; }
+    var sh = moSheet('<h3>Kiểm tra mã thẻ</h3><div class="meta">' + tr.map(function (x) { return 'Mã <b>' + esc(x.e.ma) + '</b> đã cấp cho <b>' + esc(x.cu.ten) + '</b> (in ' + esc(x.cu.gan) + '), nay gõ cho ' + esc(x.e.ten) + '.'; }).join('<br>') + (tr.length && la.length ? '<br>' : '') + la.map(function (e) { return '<b>' + esc(e.ma) + '</b> (' + esc(e.ten) + ') có ' + String(e.ma).length + ' số'; }).join('<br>') + (la.length ? '<br>Các mã khác có ' + hay + ' số.' : '') + ' Có gõ nhầm không?</div><button class="btn" id="tkS">Sửa lại</button><button class="btn ghost" id="tkV">Vẫn làm thẻ</button>');
     sh.querySelector('#tkS').onclick = function () { sh.remove(); };
     sh.querySelector('#tkV').onclick = function () { sh.remove(); tiep(); };
   }
-  function theGui() { var ds = theChon(); theKiem(ds, function () { ccTd('Đang dựng thẻ…'); setTimeout(function () { ccGui(Promise.resolve(theTrang(ds)), 'The_HOJEONG_' + ds.length + '_nguoi_' + theNgay() + (theKho() === 'A5' ? '_A5' : '') + '.pdf', theBo()); }, 30); }); }
+  function theGui() { var ds = theChon(); theKiem(ds, function () { theGhi(ds, 1); ccTd('Đang dựng thẻ…'); setTimeout(function () { ccGui(Promise.resolve(theTrang(ds)), 'The_HOJEONG_' + ds.length + '_nguoi_' + theNgay() + (theKho() === 'A5' ? '_A5' : '') + '.pdf', theBo()); }, 30); }); }
   function theIn() {
     var ds = theChon();
     theKiem(ds, function () {
+      theGhi(ds, 0);
       ccTd('Đang dựng thẻ…'); setTimeout(function () { var u = theTrang(ds); ccTd(''); ccTrang(u, theKho() === 'A5' ? 'the5' : 'the'); }, 30);
     });
   }
@@ -3517,6 +3586,8 @@ textarea.inp{font-family:inherit}
           '<img class="thv" data-tv="' + esc(e.k) + '" src="' + theTb(e) + '" alt="">' +
           '<div class="row" style="justify-content:space-between"><button class="btn lk" data-ta="' + esc(e.k) + '" style="padding-left:0">Chọn ảnh khác</button>' + ((e.anh || e.anhThe) && e.p && e.p.t ? '<button class="btn lk" data-tg="' + esc(e.k) + '">Dùng ảnh trên CCCD</button>' : '') + '</div></div>' : '') + '</div>';
     }).join('');
+    theLsTai();
+    h += '<div class="grp"><button class="it" id="thLs"><div style="min-width:0;flex:1"><div class="nm">Thẻ đã in trước đây' + (CCS.thLs ? ' · ' + CCS.thLs.length : '') + '</div><div class="sub">Tìm theo tên hoặc mã thẻ để in lại</div></div><span class="ch">›</span></button></div>';
     h += '<div class="ccday">' + ccMay(1) + '<button class="btn ghost" id="thThem">Thêm người</button><button class="btn ghost ccgui" id="thGui" aria-label="Chia sẻ PDF"' + (n ? '' : ' disabled') + '>' + ICON_GUI + '</button><button class="btn" id="thIn"' + (n ? '' : ' disabled') + '>' + (n ? 'In ' + n + ' thẻ' : 'Chưa chọn ai') + '</button></div><div class="ccdem"></div>';
     t.innerHTML = h; ccDayDat(t); ccCheNoi(t);
     function e_(k) { return CCS.the[k]; }
@@ -3531,6 +3602,7 @@ textarea.inp{font-family:inherit}
     t.querySelectorAll('[data-tv]').forEach(function (im) { im.onclick = function () { ccXemTo(theVe(e_(im.getAttribute('data-tv')), 957).toDataURL('image/jpeg', 0.9)); }; });
     document.getElementById('thThem').onclick = function () { var k = 'm' + (++CCS.theThem); CCS.the[k] = { k: k, chon: true, ten: '', ma: '', bp: 'P', sua: 1 }; theChonAnh(CCS.the[k]); ccVe(); };
     document.getElementById('thGui').onclick = theGui;
+    document.getElementById('thLs').onclick = function () { if (!CCS.thLs) { toast('Đang tải danh sách thẻ đã in…'); theLsTai(); return; } theLsMo(); };
     t.querySelectorAll('[data-tk]').forEach(function (b) { b.onclick = function () { luu('vlta_theKho', b.getAttribute('data-tk')); ccVe(); }; });
     document.getElementById('thIn').onclick = theIn;
   }
@@ -3574,6 +3646,7 @@ textarea.inp{font-family:inherit}
   }
   function ccCheNoi(t) { t.querySelectorAll('[data-che]').forEach(function (b) { b.onclick = function () { CCS.theMo = b.getAttribute('data-che') === '1'; var lg = theLogoNap(); if (!lg.complete) lg.onload = function () { ccVe(); }; ccVe(); window.scrollTo(0, 0); }; }); }
   var BAN_MOI = [
+    { so: 91, ds: [['Thẻ HOJEONG có lịch sử: mỗi lần In hoặc gửi PDF, app lưu lại họ tên, mã thẻ, bộ phận và ảnh chân dung. Bấm "Thẻ đã in trước đây", tìm tên hoặc mã thẻ, chọn người rồi in lại ngay, không phải cắt ảnh hay gõ lại.', ''], ['Gõ mã thẻ đã cấp cho người khác, app hỏi lại trước khi in.', '']] },
     { so: 90, ds: [['App mở từ màn hình chính iPhone: bấm In sẽ tạo PDF ngay, hiện bảng "In". Bấm In, trong bảng hiện ra chọn In, rồi chọn đúng máy và khổ giấy. Không còn hiện nhầm bảng "Gửi PDF" khi muốn in.', '']] },
     { so: 89, ds: [['Ngay cạnh nút In luôn ghi rõ máy cần chọn: thẻ HOJEONG chọn máy màu HP Smart Tank 210 (khổ A4 hoặc A5, tỷ lệ 100%), in CCCD chọn máy đen trắng Brother (khổ A4). iPhone tự chọn máy in lần trước nên cần xem dòng này trước khi in.', ''], ['In thẻ HOJEONG mở thẳng hộp in, bỏ hộp nhắc gửi ra quán vì nhà đã có máy in màu. Nút gửi PDF vẫn giữ.', '']] },
     { so: 88, ds: [['Thẻ HOJEONG in được cả khổ A5 (4 thẻ một tờ, thẻ in đứng, đúng kích thước 8,1 × 5,3 cm). Chọn khổ A4 hoặc A5 ở đầu mục Thẻ HOJEONG, máy tự nhớ lần chọn trước. In CCCD vẫn khổ A4 như cũ.', '']] },
