@@ -13,7 +13,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
 <script src="config.js"></script>
-<script>window.PB = { so: 98, luc: "31/10 23:07" };</script>
+<script>window.PB = { so: 99, luc: "31/10 23:39" };</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap">
 <style>
@@ -3666,6 +3666,8 @@ textarea.inp{font-family:inherit}
   }
   function ccCheNoi(t) { t.querySelectorAll('[data-che]').forEach(function (b) { b.onclick = function () { CCS.theMo = b.getAttribute('data-che') === '1'; var lg = theLogoNap(); if (!lg.complete) lg.onload = function () { ccVe(); }; ccVe(); window.scrollTo(0, 0); }; }); }
   var BAN_MOI = [
+    { so: 99, ds: [['Tiền & công nợ → Lịch thu tiền: hạn thu tính đúng theo hợp đồng từng công ty và ngày xuất hóa đơn (HOJEONG ngày 20 tháng sau tháng xuất hóa đơn, BEST 30 ngày làm việc, CHAOFENG 15 ngày, ATUM 60 ngày). Kỳ chưa có hóa đơn ghi "Chưa có HĐ", ngày bên trái là hạn ước theo lịch xuất hóa đơn thường lệ.', 'chu'],
+      ['Giá trị hóa đơn HOJEONG tính VAT 0% đúng như hóa đơn.', 'chu']] },
     { so: 98, ds: [['Tổng quan → Vendor & sale: khối mới "Trả lương ngày 05/xx" ghi tổng phải trả và từng nhân viên (lương tháng trước + nợ cũ nếu còn). Khối hiện từ mùng 1 đến mùng 5; ghi "Lương sale" trong sổ thu chi đủ số thì tự ẩn; quá mùng 5 chưa trả đủ thì hiện đỏ "quá hạn".', 'chu'],
       ['Thẻ nhân viên kinh doanh ghi rõ kỳ: "Lương T11 tạm tính", "giờ kỳ T11".', 'chu'],
       ['Thu nhập của tôi: từ mùng 1 đến mùng 5 có dòng "Nhận ngày 05/xx" – số lương tháng trước sẽ nhận.', '']] },
@@ -4810,6 +4812,7 @@ textarea.inp{font-family:inherit}
       var d = ngayHan(tqGt(m6, r, 'Hạn thanh toán')), tt = tqGt(m6, r, 'Tình trạng'), ng = tqGt(m6, r, 'Số ngày đến hạn'), kh = tqGt(m6, r, 'Khách hàng');
       var mau = /quá hạn/i.test(tt) ? 'd' : /sắp/i.test(tt) ? 'v' : '';
       var han = tqCo(ng) || ng === '0' ? (q2So(ng) < 0 ? 'Quá ' + Math.abs(q2So(ng)) + ' ngày' : q2So(ng) === 0 ? 'Đến hạn hôm nay' : 'Còn ' + q2So(ng) + ' ngày') : (tt || '');
+      if (/chưa có hóa đơn/i.test(tt) && q2So(ng) >= 0) han = 'Chưa có HĐ';   // 31/10: hạn ước theo lịch xuất hóa đơn (ô ngày bên trái là hạn ước)
       var hd = tqGt(m6, r, cHd), tn = tqGt(m6, r, cTn);
       return '<div class="q2lr q2lr2"><div class="q2ngay"><b>' + (d ? ('0' + d.getDate()).slice(-2) : '?') + '</b><span>th ' + (d ? d.getMonth() + 1 : '') + '</span></div><div style="min-width:0">' +
         '<div class="q2l1"><div class="q2lk ell">' + q2Dot(mauCty(kh)) + esc(kh) + ' <span class="q2lky">' + esc(ky(tqGt(m6, r, 'Kỳ'))) + '</span>' + '</div><div class="num q2lv">' + esc(coHd && tqCo(hd) ? hd : tn) + '</div></div>' +
