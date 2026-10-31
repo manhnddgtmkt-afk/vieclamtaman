@@ -3655,6 +3655,9 @@ textarea.inp{font-family:inherit}
   }
   function ccCheNoi(t) { t.querySelectorAll('[data-che]').forEach(function (b) { b.onclick = function () { CCS.theMo = b.getAttribute('data-che') === '1'; var lg = theLogoNap(); if (!lg.complete) lg.onload = function () { ccVe(); }; ccVe(); window.scrollTo(0, 0); }; }); }
   var BAN_MOI = [
+    { so: 98, ds: [['Tổng quan → Vendor & sale: khối mới "Trả lương ngày 05/xx" ghi tổng phải trả và từng nhân viên (lương tháng trước + nợ cũ nếu còn). Khối hiện từ mùng 1 đến mùng 5; ghi "Lương sale" trong sổ thu chi đủ số thì tự ẩn; quá mùng 5 chưa trả đủ thì hiện đỏ "quá hạn".', 'chu'],
+      ['Thẻ nhân viên kinh doanh ghi rõ kỳ: "Lương T11 tạm tính", "giờ kỳ T11".', 'chu'],
+      ['Thu nhập của tôi: từ mùng 1 đến mùng 5 có dòng "Nhận ngày 05/xx" – số lương tháng trước sẽ nhận.', '']] },
     { so: 97, ds: [['Thẻ "File gửi HOJEONG": bỏ ô "Số hóa đơn thật" – xuất hóa đơn xong không phải gửi gì thêm cho HOJEONG.', 'chu']] },
     { so: 96, ds: [['Thẻ "File gửi HOJEONG": bấm "Gửi cho HOJEONG qua Zalo" một lần là mở Zalo ngay (file đã tải sẵn); có "Xem file" để mở xem trước khi gửi. Gửi xong thẻ tự thu gọn còn một dòng "Đã gửi HOJEONG lúc…".', 'chu'],
       ['Điền số hóa đơn thật sau khi phát hành trên MISA, máy xuất bản chính thức có số hóa đơn ở mọi chứng từ. Bản đã gửi HOJEONG không bao giờ bị tự bỏ.', 'chu'],
@@ -4426,6 +4429,7 @@ textarea.inp{font-family:inherit}
         '<div class="g3"><div><span>Tổng giờ quản lý</span><b class="num">' + esc(gt('Tổng giờ')) + '</b></div><div><span>LĐ đi từ 3 công</span><b class="num">' + esc(gt('LĐ đi từ 3 công')) + '</b></div><div><span>Chưa thanh toán</span><b class="num">' + esc(gt('Chưa thanh toán')) + '</b></div></div></div>' +
         '<div class="card"><b>Giờ theo công ty</b><div class="kv so" style="margin-top:8px">' + chi.map(function (x) { return '<span>' + esc(x[0]) + '</span><b class="num">' + esc(x[1] || '–') + '</b>'; }).join('') +
         '<span>Đã thanh toán</span><b class="num">' + esc(gt('Đã thanh toán')) + '</b></div></div>' +
+        (o.tra ? '<div class="card">' + traSaleDong({ tieu: o.tra.tieu, dau: o.tra.dau, dong: [o.tra.dong] }, o.tra.dong) + '</div>' : '') +
         (o.ghiChu ? '<div class="note">' + esc(o.ghiChu) + '</div>' : '') +
         '<div class="meta" style="text-align:center">' + esc(o.capNhat) + ' · <a href="#" id="tnMoi" style="color:var(--blue)">làm mới</a></div>';
       document.getElementById('tnMoi').onclick = function (e) { e.preventDefault(); this.textContent = 'đang tải…'; taiTN(true); };
@@ -4805,6 +4809,22 @@ textarea.inp{font-family:inherit}
   }
   function tqGt(m, r, cot) { var i = m ? m.dau.indexOf(cot) : -1; return i >= 0 ? String(r[i] || '').trim() : ''; }
   function tqCo(v) { return v && v !== '-' && v !== '0'; }
+  // 31/10: khối "LƯƠNG KINH DOANH TRẢ NGÀY 05/mm/yyyy[ – QUÁ HẠN]" của bảng tổng hợp
+  function traSaleTieu(m) {
+    var t = String(m.tieu || ''), d = m.dau || [];
+    return { ng: (/NGÀY (\d{2}\/\d{2})/.exec(t) || [])[1] || '', qua: /QUÁ HẠN/.test(t), thang: String(d[1] || '').replace(/^Lương\s*/, '').replace(/tháng (\d+)/, 'T$1') };
+  }
+  // 1 người: tên (hoặc nhãn) + số phải trả, dòng nhỏ lương tháng nào + nợ cũ / đã trả
+  function traSaleDong(m, r, coTen) {
+    if (!m || !r) return '';
+    var tt = traSaleTieu(m), phai = tqGt(m, r, 'Phải trả'), luong = String(r[1] || '').trim(), dau = tqGt(m, r, 'Còn thiếu trước');
+    var soDau = Number(String(dau).replace(/[^\d-]/g, '')) || 0, phu = [];
+    if (tqCo(luong)) phu.push('Lương ' + tt.thang + ' ' + luong);
+    if (soDau > 0) phu.push('nợ cũ ' + dau); else if (soDau < 0) phu.push('đã trả ' + String(dau).replace(/^[-−]/, ''));
+    var nhan = coTen ? '<b style="font-size:16px">' + esc(String(r[0]).trim()) + '</b>' : (tt.qua ? 'Chưa trả · quá hạn ' + esc(tt.ng) : 'Nhận ngày ' + esc(tt.ng));
+    return '<div class="q2sr" style="margin-top:10px"><span>' + nhan + '</span><b class="num" style="font-size:17px' + (tt.qua ? ';color:var(--bad)' : '') + '">' + esc(phai) + '</b></div>' +
+      (phu.length ? '<div class="meta" style="text-align:right">' + phu.map(function (x) { return '<span style="white-space:nowrap">' + esc(x) + '</span>'; }).join(soDau > 0 ? ' + ' : ' · ') + '</div>' : '');
+  }
   function tqDong(ten, so, phu, cls, pill) {   // 1 dòng: tên trái, số phải; dòng phụ xám; nhãn tình trạng cạnh dòng phụ
     return '<div class="tr' + (cls ? ' ' + cls : '') + '"><div class="tr1"><span class="tn">' + esc(ten) + '</span><b class="num">' + esc(so) + '</b></div>' +
       (phu || pill ? '<div class="tp tpp"><span>' + esc(phu || '') + '</span>' + (pill || '') + '</div>' : '') + '</div>';
@@ -4977,12 +4997,21 @@ textarea.inp{font-family:inherit}
       var tg = m3.dong.filter(function (r) { return /^Tổng nhân viên/i.test(r[0]); })[0], iT = m3.dong.indexOf(tg);
       var nv = m3.dong.slice(0, iT < 0 ? m3.dong.length : iT).filter(function (r) { return tqCo(tqGt(m3, r, 'Lương phải trả')); });
       var iTongGio = m3.dau.indexOf('Tổng giờ'), ctys = m3.dau.slice(1, iTongGio < 0 ? 1 : iTongGio);
-      h += q2H('Nhân viên kinh doanh', 'tạm tính');
+      // 31/10: khối 1 – trả lương ngày 05 (lương tháng trước; chỉ có khi còn phải trả); khối 2 – kỳ đang xem (tạm tính)
+      var mTra = tqMuc(o, 'LƯƠNG KINH DOANH TRẢ');
+      if (mTra) {
+        var tt = traSaleTieu(mTra), tTra = mTra.dong.filter(function (x) { return /^Tổng/i.test(String(x[0]).trim()); })[0];
+        h += q2H(tt.qua ? 'Quá hạn trả lương ' + tt.ng : 'Trả lương ngày ' + tt.ng, tt.thang ? 'Lương ' + tt.thang : '');
+        h += '<div class="card"><div class="q2sr"><span>' + (tt.qua ? 'Còn phải trả' : 'Tổng phải trả') + '</span><b class="num" style="font-size:22px' + (tt.qua ? ';color:var(--bad)' : '') + '">' + esc(tTra ? tqGt(mTra, tTra, 'Phải trả') : '') + '</b></div><div class="q2sep"></div>' +
+          mTra.dong.filter(function (x) { return x !== tTra && String(x[0]).trim(); }).map(function (x) { return traSaleDong(mTra, x, true); }).join('') + '</div>';
+      }
+      var kyX = String(o.ky || '').match(/(\d{4})-T(\d{2})/), kyT = kyX ? 'T' + Number(kyX[2]) : '', kyTra = kyX ? new Date(Number(kyX[1]), Number(kyX[2]), 5) : null, kyChay = kyTra ? new Date() < new Date(kyTra.getFullYear(), kyTra.getMonth(), 1) : true;
+      h += q2H('Kỳ ' + kyT + (kyChay ? ' đang chạy' : ''), (kyChay ? 'Tạm tính · ' : '') + (kyTra ? 'trả ' + ('0' + kyTra.getDate()).slice(-2) + '/' + ('0' + (kyTra.getMonth() + 1)).slice(-2) : ''));
       h += nv.map(function (r) {
         var gio = parseFloat(String(tqGt(m3, r, 'Tổng giờ')).replace(/,/g, '')) || 0, ld = q2So(tqGt(m3, r, 'LĐ đi từ 3 công')), no = tqGt(m3, r, 'Chưa thanh toán'), luong = tqGt(m3, r, 'Lương phải trả');
         var phan = ctys.map(function (c) { return [c, parseFloat(String(tqGt(m3, r, c)).replace(/,/g, '')) || 0]; }).filter(function (x) { return x[1] > 0; });
-        return '<div class="card q2sale"><div class="q2sd"><div class="q2av">' + esc(String(r[0]).trim().charAt(0)) + '</div><div style="min-width:0;flex:1"><b style="font-size:16px">' + esc(r[0]) + '</b><div class="meta">' + esc(tqGt(m3, r, 'Tổng giờ')) + ' giờ tháng này</div></div>' +
-          '<div style="text-align:right"><div class="meta">Lương tạm tính</div><b class="num" style="font-size:19px">' + esc(luong) + '</b>' + (tqCo(no) && no !== luong ? '<div class="meta" style="color:var(--warn)">còn ' + esc(no) + '</div>' : !tqCo(no) ? '<div class="meta" style="color:var(--good)">đã trả</div>' : '') + '</div></div>' +
+        return '<div class="card q2sale"><div class="q2sd"><div class="q2av">' + esc(String(r[0]).trim().charAt(0)) + '</div><div style="min-width:0;flex:1"><b style="font-size:16px">' + esc(r[0]) + '</b><div class="meta">' + esc(tqGt(m3, r, 'Tổng giờ')) + ' giờ kỳ ' + esc(kyT) + '</div></div>' +
+          '<div style="text-align:right"><div class="meta">Lương ' + esc(kyT) + (kyChay ? ' tạm tính' : '') + '</div><b class="num" style="font-size:19px">' + esc(luong) + '</b>' + (tqCo(no) && no !== luong ? '<div class="meta" style="color:var(--warn)">còn ' + esc(no) + '</div>' : !tqCo(no) ? '<div class="meta" style="color:var(--good)">đã trả</div>' : '') + '</div></div>' +
           '<div class="q2chong" style="margin:12px 0 6px">' + phan.map(function (x) { return '<s style="width:' + (x[1] / (gio || 1) * 100).toFixed(2) + '%;background:' + mauCty(x[0]) + '"></s>'; }).join('') + '</div>' +
           '<div class="q2lg q2lg2">' + phan.map(function (x) { return '<span>' + q2Dot(mauCty(x[0])) + esc(x[0]) + ' ' + x[1].toLocaleString('en-US') + '</span>'; }).join('') + '</div>' +
           '<div class="q2sep"></div><div class="q2sr"><span>Giờ quản lý</span><b>' + (gio >= 2000 ? 'đã qua mốc 2,000 giờ' : 'còn ' + (2000 - gio).toLocaleString('en-US') + ' giờ tới mốc 2,000') + '</b></div>' +
