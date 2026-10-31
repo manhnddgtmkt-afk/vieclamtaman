@@ -657,7 +657,8 @@ textarea.inp{font-family:inherit}
 .ccnut .btn{flex:1}
 .ccday{position:fixed;left:0;right:0;bottom:64px;z-index:29;display:flex;gap:8px;padding:10px max(16px,calc(50vw - 224px));background:var(--card);border-top:1px solid var(--line);box-shadow:0 -4px 14px rgba(16,24,40,.06)}
 .ccday .btn{flex:1;min-width:0;padding-left:4px;padding-right:4px;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.ccday .btn:last-child{flex:1.15}
-.ccdem{height:56px;flex:none}
+.ccdem{height:80px;flex:none}
+.ccmay{font-size:12px;line-height:1.3;color:var(--muted);text-align:center;white-space:nowrap}.ccday .ccmay{position:absolute;left:0;right:0;bottom:100%;padding:6px 10px;background:var(--card);border-top:1px solid var(--line)}.ccmay b{color:var(--fg)}.ccmay i{display:inline-block;width:8px;height:8px;border-radius:4px;margin:0 6px 1px 0;background:#475467;vertical-align:middle}.ccmay.mau i{background:linear-gradient(135deg,#E3262C,#F59E0B 50%,#0EA5E9)}.ccxl+.ccmay,.sheet .ccmay{margin:2px 0 8px}
 #ccChe{margin-bottom:-2px}
 .thk{gap:10px;align-items:center}.thk .seg{flex:1}.thk .seg button{padding:6px 4px;font-size:13.5px;white-space:nowrap}
 .tht{padding:12px 14px;display:flex;flex-direction:column;gap:10px}.tht.on{box-shadow:0 0 0 2px var(--cta)}
@@ -2679,7 +2680,7 @@ textarea.inp{font-family:inherit}
           (du ? '<button class="btn lk" data-tach="' + esc(p.k) + '">Tách 2 ảnh</button>' : '') + '</div></div>';
       }).join('');
       h += '<div class="meta" style="text-align:center">Chạm ảnh để xoay, đổi mặt, cắt lại. Ghép nhầm người: bấm “Tách 2 ảnh” rồi chạm ô trống để chọn đúng ảnh.</div>' +
-        '<div class="ccday"><button class="btn ghost ccgui" id="ccThem" aria-label="Thêm ảnh"><span style="font-size:26px;font-weight:500;line-height:1">+</span></button><button class="btn ghost" id="ccMoi" aria-label="Xoá hết lượt này">Xoá hết</button><button class="btn ghost ccgui" id="ccGui" aria-label="Chia sẻ PDF"' + (dangDoc ? ' disabled' : '') + '>' + ICON_GUI + '</button><button class="btn ghost" id="ccLuu"' + (dangDoc ? ' disabled' : '') + '>Lưu kho</button><button class="btn" id="ccIn"' + (dangDoc ? ' disabled' : '') + '>' + (dangDoc ? 'Đọc… ' + dangDoc : 'In ' + cap.length + ' tờ') + '</button></div><div class="ccdem"></div>';
+        '<div class="ccday">' + ccMay(0) + '<button class="btn ghost ccgui" id="ccThem" aria-label="Thêm ảnh"><span style="font-size:26px;font-weight:500;line-height:1">+</span></button><button class="btn ghost" id="ccMoi" aria-label="Xoá hết lượt này">Xoá hết</button><button class="btn ghost ccgui" id="ccGui" aria-label="Chia sẻ PDF"' + (dangDoc ? ' disabled' : '') + '>' + ICON_GUI + '</button><button class="btn ghost" id="ccLuu"' + (dangDoc ? ' disabled' : '') + '>Lưu kho</button><button class="btn" id="ccIn"' + (dangDoc ? ' disabled' : '') + '>' + (dangDoc ? 'Đọc… ' + dangDoc : 'In ' + cap.length + ' tờ') + '</button></div><div class="ccdem"></div>';
     }
     if (CCS.ds.length && !CCS.dang && CCS.tamN) h += '<div class="grp"><button class="it" id="ccTam"><div style="min-width:0;flex:1"><div class="nm">Ảnh chờ trong CCCD TẠM · ' + CCS.tamN + ' ảnh</div><div class="sub">Lấy tối đa 16 ảnh mỗi lượt, cắt ghép rồi Lưu kho</div></div><span class="ch">›</span></button></div>';
     if (CCS.ds.length && !CCS.dang) h += '<div class="grp"><button class="it" id="ccKho"><div style="min-width:0;flex:1"><div class="nm">Tìm ảnh trong kho</div><div class="sub">Lọc nam/nữ, năm sinh rồi chọn người để in</div></div><span class="ch">›</span></button></div>';
@@ -2913,7 +2914,7 @@ textarea.inp{font-family:inherit}
   }
   function inSan(urls, kieu, k, n) {   // trang in chưa dựng sẵn: dựng xong hiện nút In để chạm (cú chạm mới)
     inDung(urls, kieu, k).then(function () {
-      var sh = moSheet('<h3>Đã sẵn sàng in</h3><div class="meta">' + n + (INS.kieu === 'the5' ? ' tờ A5. Bấm In, trong hộp in chọn Khổ giấy A5, tỷ lệ 100%.' : ' tờ A4. Bấm In để mở hộp in.') + '</div><button class="btn" id="isI">In ' + n + ' tờ</button><button class="btn lk" id="isK">Thôi</button>');
+      var sh = moSheet('<h3>Đã sẵn sàng in</h3><div class="meta">' + n + ' tờ ' + (INS.kieu === 'the5' ? 'A5' : 'A4') + '. Bấm In để mở hộp in.</div>' + ccMay(INS.kieu === 'the' || INS.kieu === 'the5') + '<button class="btn" id="isI">In ' + n + ' tờ</button><button class="btn lk" id="isK">Thôi</button>');
       sh.querySelector('#isI').onclick = function () { sh.remove(); inGoi(); };
       sh.querySelector('#isK').onclick = function () { sh.remove(); };
     });
@@ -3120,6 +3121,12 @@ textarea.inp{font-family:inherit}
     luu('vlta_cccd', JSON.stringify(g.slice(0, 30)));
   }
   // ---- 22/10: thanh nút cố định trên thanh tab; xem ảnh lớn; tìm ảnh trong kho rồi chọn in ----
+  // 31/10: nhà có 2 máy in: thẻ HOJEONG in màu bằng HP Smart Tank 210 (khổ A4/A5); CCCD in đen trắng bằng Brother (A4).
+  // iPhone tự chọn máy in lần trước nên dễ nhầm -> luôn ghi rõ máy cần chọn ngay cạnh nút In.
+  var MAY_IN = { mau: 'Màu HP Smart Tank 210', den: 'Đen trắng Brother' };
+  function ccMay(the) {
+    return '<div class="ccmay' + (the ? ' mau' : '') + '"><i></i>Máy in: <b>' + (the ? MAY_IN.mau : MAY_IN.den) + '</b> · khổ ' + (the ? theKho() + ' · 100%' : 'A4') + '</div>';
+  }
   function ccDayDat(t) {   // đặt thanh nút ngay trên thanh tab dưới cùng
     var d = t.querySelector('.ccday'), nv = document.querySelector('.nav');
     if (d && nv && nv.offsetHeight) d.style.bottom = nv.offsetHeight + 'px';
@@ -3213,7 +3220,7 @@ textarea.inp{font-family:inherit}
   function ccXemLon(g, kt) {   // g: {so, ten, id, duong}; kt: ô trong kho (để chọn / bỏ chọn)
     var k = CCS.kho, chon = !!(kt && k && k.chon[g.so]);
     var sh = moSheet('<div class="row sp"><div style="min-width:0"><h3 class="ell">' + esc(g.ten ? hoaDau(g.ten) : g.so) + '</h3><div class="meta ell">' + esc((g.ten ? g.so + ' · ' : '') + (g.duong || '')) + '</div></div><button class="link" id="xlD">Đóng</button></div>' +
-      '<div class="ccxl"><img id="xlA" alt=""' + (g.nho && kt ? ' src="' + g.nho + '"' : '') + '><span class="meta" id="xlT">Đang tải ảnh…</span></div>' +
+      '<div class="ccxl"><img id="xlA" alt=""' + (g.nho && kt ? ' src="' + g.nho + '"' : '') + '><span class="meta" id="xlT">Đang tải ảnh…</span></div>' + ccMay(0) +
       '<button class="btn" id="xlIn" disabled>In tờ này</button><button class="btn ghost" id="xlG" disabled>Chia sẻ PDF</button><button class="btn ghost" id="xlThe" disabled>Làm thẻ HOJEONG</button>' + (kt ? '<button class="btn ghost" id="xlC">' + (chon ? 'Bỏ chọn' : 'Chọn để in cùng người khác') + '</button>' : ''));
     var img = sh.querySelector('#xlA'), tt = sh.querySelector('#xlT'), nIn = sh.querySelector('#xlIn');
     sh.querySelector('#xlD').onclick = function () { sh.remove(); };
@@ -3298,7 +3305,7 @@ textarea.inp{font-family:inherit}
       }).join('') + '</div>';
       if (k.tong > k.ds.length) h += '<button class="btn ghost" id="ckThem"' + (k.dang ? ' disabled' : '') + '>' + (k.dang === 2 ? 'Đang tải…' : 'Xem thêm (còn ' + (k.tong - k.ds.length) + ' người)') + '</button>';
     } else if (k.dang !== 1) h += '<div class="meta" style="text-align:center">Chọn giới tính, gõ năm sinh rồi bấm Tìm. Chạm ảnh để chọn người cần in, bấm kính lúp để xem to.</div>';
-    h += '<div class="ccday"><button class="btn ghost" id="ckLai">Quay lại</button><button class="btn ghost ccgui" id="ckGui" aria-label="Chia sẻ PDF">' + ICON_GUI + '</button><button class="btn" id="ckIn"></button></div><div class="ccdem"></div>';
+    h += '<div class="ccday">' + ccMay(0) + '<button class="btn ghost" id="ckLai">Quay lại</button><button class="btn ghost ccgui" id="ckGui" aria-label="Chia sẻ PDF">' + ICON_GUI + '</button><button class="btn" id="ckIn"></button></div><div class="ccdem"></div>';
     t.innerHTML = h;
     ccDayDat(t); ckBar();
     var b;
@@ -3452,10 +3459,7 @@ textarea.inp{font-family:inherit}
   function theIn() {
     var ds = theChon();
     theKiem(ds, function () {
-      var sh = moSheet('<h3>In ' + ds.length + ' thẻ</h3><div class="note warn">Thẻ HOJEONG cần in màu. Máy in ở nhà (Brother) in đen trắng.</div><button class="btn" id="tiG">Gửi PDF ra quán in màu</button><button class="btn ghost" id="tiI">Vẫn in ở máy này</button><button class="btn lk" id="tiK">Thôi</button>');
-      sh.querySelector('#tiK').onclick = function () { sh.remove(); };
-      sh.querySelector('#tiG').onclick = function () { sh.remove(); theGui(); };
-      sh.querySelector('#tiI').onclick = function () { sh.remove(); ccTd('Đang dựng thẻ…'); setTimeout(function () { var u = theTrang(ds); ccTd(''); ccTrang(u, theKho() === 'A5' ? 'the5' : 'the'); }, 30); };
+      ccTd('Đang dựng thẻ…'); setTimeout(function () { var u = theTrang(ds); ccTd(''); ccTrang(u, theKho() === 'A5' ? 'the5' : 'the'); }, 30);
     });
   }
   function theChonAnh(e) {   // ảnh chân dung khác trong album
@@ -3504,7 +3508,7 @@ textarea.inp{font-family:inherit}
           '<img class="thv" data-tv="' + esc(e.k) + '" src="' + theTb(e) + '" alt="">' +
           '<div class="row" style="justify-content:space-between"><button class="btn lk" data-ta="' + esc(e.k) + '" style="padding-left:0">Chọn ảnh khác</button>' + ((e.anh || e.anhThe) && e.p && e.p.t ? '<button class="btn lk" data-tg="' + esc(e.k) + '">Dùng ảnh trên CCCD</button>' : '') + '</div></div>' : '') + '</div>';
     }).join('');
-    h += '<div class="ccday"><button class="btn ghost" id="thThem">Thêm người</button><button class="btn ghost ccgui" id="thGui" aria-label="Chia sẻ PDF"' + (n ? '' : ' disabled') + '>' + ICON_GUI + '</button><button class="btn" id="thIn"' + (n ? '' : ' disabled') + '>' + (n ? 'In ' + n + ' thẻ' : 'Chưa chọn ai') + '</button></div><div class="ccdem"></div>';
+    h += '<div class="ccday">' + ccMay(1) + '<button class="btn ghost" id="thThem">Thêm người</button><button class="btn ghost ccgui" id="thGui" aria-label="Chia sẻ PDF"' + (n ? '' : ' disabled') + '>' + ICON_GUI + '</button><button class="btn" id="thIn"' + (n ? '' : ' disabled') + '>' + (n ? 'In ' + n + ' thẻ' : 'Chưa chọn ai') + '</button></div><div class="ccdem"></div>';
     t.innerHTML = h; ccDayDat(t); ccCheNoi(t);
     function e_(k) { return CCS.the[k]; }
     t.querySelectorAll('[data-tc],[data-tc2]').forEach(function (b) { b.onclick = function () { var e = e_(b.getAttribute('data-tc') || b.getAttribute('data-tc2')); e.chon = !e.chon; ccVe(); }; });
@@ -3561,6 +3565,7 @@ textarea.inp{font-family:inherit}
   }
   function ccCheNoi(t) { t.querySelectorAll('[data-che]').forEach(function (b) { b.onclick = function () { CCS.theMo = b.getAttribute('data-che') === '1'; var lg = theLogoNap(); if (!lg.complete) lg.onload = function () { ccVe(); }; ccVe(); window.scrollTo(0, 0); }; }); }
   var BAN_MOI = [
+    { so: 89, ds: [['Ngay cạnh nút In luôn ghi rõ máy cần chọn: thẻ HOJEONG chọn máy màu HP Smart Tank 210 (khổ A4 hoặc A5, tỷ lệ 100%), in CCCD chọn máy đen trắng Brother (khổ A4). iPhone tự chọn máy in lần trước nên cần xem dòng này trước khi in.', ''], ['In thẻ HOJEONG mở thẳng hộp in, bỏ hộp nhắc gửi ra quán vì nhà đã có máy in màu. Nút gửi PDF vẫn giữ.', '']] },
     { so: 88, ds: [['Thẻ HOJEONG in được cả khổ A5 (4 thẻ một tờ, thẻ in đứng, đúng kích thước 8,1 × 5,3 cm). Chọn khổ A4 hoặc A5 ở đầu mục Thẻ HOJEONG, máy tự nhớ lần chọn trước. In CCCD vẫn khổ A4 như cũ.', '']] },
     { so: 87, ds: [['Tìm người ở tab Lao động: ngoài người tháng này, app tìm thêm cả người đã làm các tháng trước (mục "Đã làm các tháng trước" bên dưới kết quả).', ''],
       ['Chạm vào người tháng trước để xem lại thông tin, bảng công, phiếu tuần, phiếu tháng và các lần ứng / trả của tháng đó. Hồ sơ tháng trước chỉ để xem, không ghi ứng / trả hay sửa giờ.', '']] },
