@@ -13,7 +13,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
 <script src="config.js"></script>
-<script>window.PB = { so: 102, luc: "02/11 23:12" };</script>
+<script>window.PB = { so: 103, luc: "02/11 23:30" };</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap">
 <style>
@@ -1603,7 +1603,9 @@ textarea.inp{font-family:inherit}
       (sua ? '<div class="sec" style="margin-top:4px">Sửa giờ ngày này</div>' +
         (best ? '<div class="g2">' + oGio(0, 'Giờ vào') + oGio(1, 'Giờ ra') + '</div>'
           : '<div class="g2">' + oSo(0, 'Ca ngày · HC') + oSo(1, 'Ca ngày · TC') + '</div><div class="g2">' + oSo(2, 'Ca đêm · HC') + oSo(3, 'Ca đêm · TC') + '</div>') +
-        '<div class="g2 ogN">' + (le ? '<button class="btn ghost" id="ogXn">Trả công lẻ</button>' : '') + '<button class="btn ghost" id="ogBo"' + (le ? '' : ' style="grid-column:1/-1"') + '>Không tính ngày</button></div>' : '') +
+        (best && raw.xn ? '<div class="note">Công lẻ đã xác nhận trả: <b>' + esc(String(raw.hcXn || '')) + ' giờ</b> (' + esc(S.cty) + ' đồng ý trả).</div>' : '') +
+        (best && le && !raw.xn ? '<div class="note warn">Về sớm – công lẻ ' + esc(String(le)) + ' giờ, chưa tính lương. ' + esc(S.cty) + ' đồng ý trả thì bấm "Trả công lẻ".</div>' : '') +
+        '<div class="g2 ogN">' + (le && !raw.xn ? '<button class="btn ghost" id="ogXn">Trả công lẻ</button>' : '') + (best && raw.xn ? '<button class="btn ghost" id="ogBoLe">Bỏ trả công lẻ</button>' : '') + '<button class="btn ghost" id="ogBo"' + ((le && !raw.xn) || (best && raw.xn) ? '' : ' style="grid-column:1/-1"') + '>Không tính ngày</button></div>' : '') +
       // 24/10: bỏ "Báo sai giờ" – người không phụ trách công ty chỉ xem; người phụ trách sửa thẳng (chủ được báo tự động)
       (sua ? '<label class="lb">Thêm ghi chú</label><textarea class="inp" id="bsNd" rows="2" placeholder="Ví dụ: ' + esc(S.cty) + ' đồng ý trả"></textarea>' +
         '<div class="msg" id="bsM"></div><button class="btn" id="bsOk">Lưu</button>' : '') + '<button class="btn ghost" id="bsHuy">Đóng</button>');
@@ -1611,8 +1613,10 @@ textarea.inp{font-family:inherit}
     function oDoc() { var a = []; for (var k = 0; k < n0; k++) a.push(document.getElementById('og' + k).value.trim()); return a; }
     if (sua) {
       var xn = document.getElementById('ogXn');
-      if (xn) xn.onclick = function () { for (var k = 0; k < 4; k++) document.getElementById('og' + k).value = raw.le && raw.le[k] ? raw.le[k] : ''; xn.classList.add('on'); xn.textContent = '✓ Trả công lẻ'; document.getElementById('ogBo').classList.remove('on'); kieu = 'le'; };
-      document.getElementById('ogBo').onclick = function () { for (var k = 0; k < n0; k++) document.getElementById('og' + k).value = ''; this.classList.add('on'); this.textContent = '✓ Không tính ngày'; kieu = 'bo'; if (xn) { xn.classList.remove('on'); xn.textContent = 'Trả công lẻ'; } };
+      if (xn) xn.onclick = function () { if (!best) for (var k = 0; k < 4; k++) document.getElementById('og' + k).value = raw.le && raw.le[k] ? raw.le[k] : ''; xn.classList.add('on'); xn.textContent = '✓ Trả công lẻ'; document.getElementById('ogBo').classList.remove('on'); kieu = 'le'; };
+      var boLe = document.getElementById('ogBoLe');   // 02/11: BEST bỏ xác nhận công lẻ
+      if (boLe) boLe.onclick = function () { boLe.classList.add('on'); boLe.textContent = '✓ Bỏ trả công lẻ'; document.getElementById('ogBo').classList.remove('on'); kieu = 'boLe'; };
+      document.getElementById('ogBo').onclick = function () { for (var k = 0; k < n0; k++) document.getElementById('og' + k).value = ''; this.classList.add('on'); this.textContent = '✓ Không tính ngày'; kieu = 'bo'; if (xn) { xn.classList.remove('on'); xn.textContent = 'Trả công lẻ'; } if (boLe) { boLe.classList.remove('on'); boLe.textContent = 'Bỏ trả công lẻ'; } };
     }
     document.getElementById('bsHuy').onclick = function () { sh.remove(); };
     if (!sua) return;
@@ -1621,6 +1625,16 @@ textarea.inp{font-family:inherit}
       var cu = raw.v.map(function (x) { return x === 0 && !best ? 0 : x; }), moi = sua ? oDoc() : null;
       var chuan = function (x) { x = String(x === undefined || x === null ? '' : x).trim(); return best ? x : (x === '' || Number(x.replace(',', '.')) === 0 ? '' : String(Number(x.replace(',', '.')))); };
       var doiGio = sua && moi.some(function (x, k) { return chuan(x) !== chuan(cu[k]); });
+      if (best && sua && (kieu === 'le' || kieu === 'boLe') && !doiGio) {   // 02/11: BEST trả / bỏ trả công lẻ – giờ vào/ra giữ nguyên, máy chủ ghi ô HC + sổ CONG_LE
+        sh.remove(); h.dongBo[sv] = 1; veLich(h, T);
+        if (nd) apiT({ v: 'baoSai', cty: S.cty, r: h.p.r, s: sv, nd: nd, loai: 'gc' }).then(function () { }, function () { });
+        apiT({ v: 'suaNgay', cty: S.cty, r: h.p.r, s: sv, cu: raw.v, moi: raw.v, kieu: kieu, gio: kieu === 'le' && raw.le ? raw.le[0] : '' }).then(function (o) {
+          delete h.dongBo[sv]; veLich(h, T);
+          if (o.loi) { toastLoi('Chưa lưu được ' + ddmm(serialDate(sv)) + ': ' + o.loi); return; }
+          toast(kieu === 'le' ? 'Đã trả công lẻ ' + ddmm(serialDate(sv)) : 'Đã bỏ trả công lẻ ' + ddmm(serialDate(sv))); lamMoiHs(h);
+        }, function (e) { delete h.dongBo[sv]; veLich(h, T); toastLoi('Chưa lưu được ' + ddmm(serialDate(sv)) + ': ' + e.message); });
+        return;
+      }
       if (!doiGio && !nd) { if (sua) { sh.remove(); return; } m.textContent = 'Ghi rõ giờ đúng hoặc lý do.'; return; }
       if (!sua && nd.length < 3) { m.textContent = 'Ghi rõ giờ đúng hoặc lý do.'; return; }
       sh.remove();
@@ -3668,6 +3682,9 @@ textarea.inp{font-family:inherit}
   }
   function ccCheNoi(t) { t.querySelectorAll('[data-che]').forEach(function (b) { b.onclick = function () { CCS.theMo = b.getAttribute('data-che') === '1'; var lg = theLogoNap(); if (!lg.complete) lg.onload = function () { ccVe(); }; ccVe(); window.scrollTo(0, 0); }; }); }
   var BAN_MOI = [
+    { so: 103, ds: [['BEST – bảng công: ngày về sớm (công lẻ, chưa tính lương) có nút "Trả công lẻ" như HOJEONG. BEST đồng ý trả thì bấm nút, ngày đó được tính tiền theo giờ (đơn giá ở bảng cơ chế), phiếu tuần hiện đúng ngày và số tiền.', ''],
+      ['Ngày đã trả công lẻ có nút "Bỏ trả công lẻ" nếu bấm nhầm. Sửa giờ vào/ra ngày đó thì xác nhận cũ tự bỏ, cần thì xác nhận lại.', ''],
+      ['Sale trả / bỏ trả công lẻ BEST thì chủ nhận thông báo như HOJEONG.', 'chu']] },
     { so: 102, ds: [['Thẻ HOJEONG: chọn ảnh chân dung mà app tưởng là mặt sau CCCD thì không bị chặn nữa – bấm "Vẫn dùng làm ảnh thẻ".', '']] },
     { so: 99, ds: [['Tiền & công nợ → Lịch thu tiền: hạn thu tính đúng theo hợp đồng từng công ty và ngày xuất hóa đơn (HOJEONG ngày 20 tháng sau tháng xuất hóa đơn, BEST 30 ngày làm việc, CHAOFENG 15 ngày, ATUM 60 ngày). Kỳ chưa có hóa đơn ghi "Chưa có HĐ", ngày bên trái là hạn ước theo lịch xuất hóa đơn thường lệ.', 'chu'],
       ['Giá trị hóa đơn HOJEONG tính VAT 0% đúng như hóa đơn.', 'chu']] },
