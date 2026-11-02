@@ -13,7 +13,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
 <script src="config.js"></script>
-<script>window.PB = { so: 101, luc: "01/11 00:40" };</script>
+<script>window.PB = { so: 102, luc: "02/11 23:12" };</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap">
 <style>
@@ -3568,7 +3568,8 @@ textarea.inp{font-family:inherit}
       ccMo(f).then(function (cv) {
         var r = null; try { r = CC.xuLy(cv); } catch (er) { }
         var chanDung = cv.height > cv.width * 1.15 && r && r.tim && r.tim.nguon === 'ca anh';   // ảnh dọc không tìm thấy khung thẻ: ảnh chân dung
-        if (r && r.ro && !chanDung && r.mat === 'sau') { toast('Đây là mặt sau CCCD. Hãy chọn ảnh mặt trước hoặc ảnh chân dung.'); return; }
+        // 02/11: không chặn cứng – ảnh selfie (da, tóc, áo tối) có thể bị đoán nhầm là mặt sau CCCD; cho sale tự quyết
+        if (r && r.ro && !chanDung && r.mat === 'sau') { toastNut('Ảnh này giống mặt sau CCCD nên chưa dùng. Nếu là ảnh chân dung, bấm:', 'Vẫn dùng làm ảnh thẻ', function () { e.anh = cv; delete e.anhThe; e.tb = ''; ccVe(); }, 12000); return; }
         if (r && r.ro && !chanDung && r.mat === 'truoc') {   // ảnh mặt trước CCCD: nắn thẳng rồi cắt phần chân dung, đọc luôn họ tên
           e.anhThe = r.the; delete e.anh; e.tb = ''; ccVe();
           toastNut('Đã cắt ảnh chân dung từ CCCD', 'Dùng nguyên ảnh', function () { e.anh = cv; delete e.anhThe; ccVe(); }, 6000);
@@ -3667,6 +3668,7 @@ textarea.inp{font-family:inherit}
   }
   function ccCheNoi(t) { t.querySelectorAll('[data-che]').forEach(function (b) { b.onclick = function () { CCS.theMo = b.getAttribute('data-che') === '1'; var lg = theLogoNap(); if (!lg.complete) lg.onload = function () { ccVe(); }; ccVe(); window.scrollTo(0, 0); }; }); }
   var BAN_MOI = [
+    { so: 102, ds: [['Thẻ HOJEONG: chọn ảnh chân dung mà app tưởng là mặt sau CCCD thì không bị chặn nữa – bấm "Vẫn dùng làm ảnh thẻ".', '']] },
     { so: 99, ds: [['Tiền & công nợ → Lịch thu tiền: hạn thu tính đúng theo hợp đồng từng công ty và ngày xuất hóa đơn (HOJEONG ngày 20 tháng sau tháng xuất hóa đơn, BEST 30 ngày làm việc, CHAOFENG 15 ngày, ATUM 60 ngày). Kỳ chưa có hóa đơn ghi "Chưa có HĐ", ngày bên trái là hạn ước theo lịch xuất hóa đơn thường lệ.', 'chu'],
       ['Giá trị hóa đơn HOJEONG tính VAT 0% đúng như hóa đơn.', 'chu']] },
     { so: 98, ds: [['Tổng quan → Vendor & sale: khối mới "Trả lương ngày 05/xx" ghi tổng phải trả và từng nhân viên (lương tháng trước + nợ cũ nếu còn). Khối hiện từ mùng 1 đến mùng 5; ghi "Lương sale" trong sổ thu chi đủ số thì tự ẩn; quá mùng 5 chưa trả đủ thì hiện đỏ "quá hạn".', 'chu'],
