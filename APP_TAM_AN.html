@@ -2379,6 +2379,7 @@ textarea.inp{font-family:inherit}
     var CHINH_MD = { sang: 50, tp: 60, net: 60 };   // mặc định: 0..100 (sáng 50 = giữ nguyên)
     function lamDep(cv, o) {   // o = { sang, tp, net }; ảnh nhỏ (xem trước) tự thu bán kính làm nét
       o = o || CHINH_MD;
+      if (o.nguyen) return cv;   // 03/11: ảnh chụp màn hình VNeID đã nét – giữ nguyên màu
       var W = cv.width, H = cv.height, x = cv.getContext('2d'), im = x.getImageData(0, 0, W, H), d = im.data, n = W * H, L = new Float32Array(n), i, ch;
       for (i = 0; i < n; i++) L[i] = 0.299 * d[i * 4] + 0.587 * d[i * 4 + 1] + 0.114 * d[i * 4 + 2];
       // 1) khử bóng: cân độ sáng nền
@@ -2484,7 +2485,33 @@ textarea.inp{font-family:inherit}
       return c;
     }
     function copy(cv) { var c = document.createElement('canvas'); c.width = cv.width; c.height = cv.height; c.getContext('2d').drawImage(cv, 0, 0); return c; }
-    return { CHINH_MD: CHINH_MD, xep: xep, lamDep: lamDep, timThe: timThe, xuLy: xuLy, ghep: ghep, xoay: xoay, phanLoai: phanLoai, MW: MW, MH: MH, GAP: GAP };
+    // 03/11: ảnh chụp màn hình VNeID (nền trắng, 1–2 thẻ xếp dọc, mép thẳng) -> [4 góc từng thẻ trên ảnh gốc, trên xuống]; không phải -> null
+    function tachVN(cv) {
+      var W0 = cv.width, H0 = cv.height; if (H0 < W0 * 1.6) return null;
+      var k = 400 / W0, w = 400, h = Math.round(H0 * k), c = document.createElement('canvas'); c.width = w; c.height = h;
+      var x = c.getContext('2d'); x.drawImage(cv, 0, 0, w, h); var d = x.getImageData(0, 0, w, h).data;
+      function px(xx, y) { var i = (y * w + xx) * 4; return [d[i], d[i + 1], d[i + 2]]; }
+      function trang(v) { return v[0] > 235 && v[1] > 235 && v[2] > 235; }
+      function lech(a, b) { return Math.abs(a[0] - b[0]) + Math.abs(a[1] - b[1]) + Math.abs(a[2] - b[2]); }
+      function tb(x0, x1, y) { var r = [0, 0, 0], n = 0, xx; for (xx = x0; xx <= x1; xx++) { var v = px(xx, y); r[0] += v[0]; r[1] += v[1]; r[2] += v[2]; n++; } return [r[0] / n, r[1] / n, r[2] / n]; }
+      var XS = [0.1, 0.5, 0.9].map(function (f) { return Math.round(w * f); }), on = [], y;   // dòng thuộc thẻ: ít nhất 2/3 điểm dò khác nền trắng
+      for (y = 0; y < h; y++) { var nen = tb(1, 4, y), dem = 0; XS.forEach(function (X) { if (lech(tb(X - 2, X + 2, y), nen) > 8) dem++; }); on.push(trang(nen) && dem >= 2); }
+      var bang = [], s0 = -1;
+      for (y = 0; y <= h; y++) { var v = y < h && on[y]; if (v && s0 < 0) s0 = y; if (!v && s0 >= 0) { if (y - s0 > w * 0.35) bang.push([s0, y - 1]); s0 = -1; } }
+      if (!bang.length || bang.length > 2) return null;
+      var out = [];
+      for (var b = 0; b < bang.length; b++) {
+        var y0 = bang[b][0], y1 = bang[b][1], ym = Math.round((y0 + y1) / 2), nen2 = tb(1, 4, ym), x0 = 0, x1 = w - 1;
+        while (x0 < w / 2 && lech(px(x0, ym), nen2) <= 8) x0++;
+        while (x1 > w / 2 && lech(px(x1, ym), nen2) <= 8) x1--;
+        var rr = (x1 - x0 + 1) / (y1 - y0 + 1);
+        if (x1 - x0 < w * 0.7 || rr < 1.4 || rr > 1.75) return null;   // không đúng khổ thẻ: không phải ảnh VNeID
+        for (y = y0; y <= y1; y += 4) if (!trang(tb(1, 4, y))) return null;   // mép trái phải là nền trắng tinh (ảnh chụp màn hình)
+        out.push([[x0 / k, y0 / k], [(x1 + 1) / k, y0 / k], [(x1 + 1) / k, (y1 + 1) / k], [x0 / k, (y1 + 1) / k]]);
+      }
+      return out;
+    }
+    return { CHINH_MD: CHINH_MD, tachVN: tachVN, xep: xep, lamDep: lamDep, timThe: timThe, xuLy: xuLy, ghep: ghep, xoay: xoay, phanLoai: phanLoai, MW: MW, MH: MH, GAP: GAP };
   })();
   // ---------- 21/10: tab CCCD – chọn ảnh 2 mặt trong album -> tự cắt, nắn, ghép từng cặp -> in mỗi người 1 tờ A4 -> lưu thư mục CCCD trên Drive ----------
   var CCS = { ds: [], tt: {}, jpg: {}, dang: null, doi: null, hang: [], chay: 0, docHang: [], docChay: 0, kho: null, anh: {} }, ccId = 0;
@@ -2624,6 +2651,11 @@ textarea.inp{font-family:inherit}
     });
   }
   function ccNho(cv, w) { var c = document.createElement('canvas'); c.width = w; c.height = Math.round(w * cv.height / cv.width); c.getContext('2d').drawImage(cv, 0, 0, c.width, c.height); return c.toDataURL('image/jpeg', 0.8); }
+  function ccTachVN(cv) {   // 03/11: ảnh chụp màn hình VNeID -> từng mặt (cắt đúng khung thẻ); ảnh thường -> [xuLy cả ảnh]
+    var q = null; try { q = CC.tachVN(cv); } catch (e) { q = null; }
+    if (!q) return [CC.xuLy(cv)];
+    return q.map(function (g) { var r = CC.xuLy(cv, g); r.vn = 1; return r; });
+  }
   function ccDat(x, r) { x.the = r.the; x.mat = r.mat; x.ro = r.ro; x.q = r.q; x.v++; x.tb = ccNho(r.the, 420); x.qrXong = 0; }
   function ccNap(files, xong) {
     files = [].slice.call(files || []).filter(function (f) { return !f.type || /^image\//.test(f.type); });
@@ -2635,7 +2667,9 @@ textarea.inp{font-family:inherit}
       CCS.dang.i = i; ccVe();
       setTimeout(function () {
         ccMo(files[i]).then(function (cv) {
-          var x = { id: ++ccId, v: 0, file: files[i], doc: 'cho', tam: files[i].tamId || '', docSan: files[i].docSan && files[i].docSan.so ? files[i].docSan : null }; ccDat(x, CC.xuLy(cv)); CCS.ds.push(x); moi.push(x); buoc(i + 1);
+          var ds0 = ccTachVN(cv), xs = ds0.map(function (r, j) { var x = { id: ++ccId, v: 0, file: files[i], doc: 'cho', tam: j ? '' : files[i].tamId || '', docSan: files[i].docSan && files[i].docSan.so ? files[i].docSan : null }; ccDat(x, r); if (r.vn) x.chinh = { sang: 50, tp: 0, net: 0, nguyen: 1 }; return x; });
+          if (xs.length === 2) { xs[0].cap = xs[1].id; xs[1].cap = xs[0].id; xs.forEach(function (x) { x.tay = 1; x.ro = true; }); if (xs[0].mat === xs[1].mat) { xs[0].mat = 'truoc'; xs[1].mat = 'sau'; } }   // 2 mặt cùng 1 ảnh VNeID = 1 người
+          xs.forEach(function (x) { CCS.ds.push(x); moi.push(x); }); buoc(i + 1);
         }, function () { loi++; buoc(i + 1); });
       }, 30);
     })(0);
@@ -3606,7 +3640,7 @@ textarea.inp{font-family:inherit}
     fi.onchange = function () {
       var f = fi.files[0]; if (!f) return;
       ccMo(f).then(function (cv) {
-        var r = null; try { r = CC.xuLy(cv); } catch (er) { }
+        var r = null; try { r = ccTachVN(cv).filter(function (z, j, a) { return z.mat === 'truoc' || a.length === 1; })[0] || null; } catch (er) { }   // 03/11: ảnh VNeID 2 mặt -> lấy mặt trước
         var chanDung = cv.height > cv.width * 1.15 && r && r.tim && r.tim.nguon === 'ca anh';   // ảnh dọc không tìm thấy khung thẻ: ảnh chân dung
         // 02/11: không chặn cứng – ảnh selfie (da, tóc, áo tối) có thể bị đoán nhầm là mặt sau CCCD; cho sale tự quyết
         if (r && r.ro && !chanDung && r.mat === 'sau') { toastNut('Ảnh này giống mặt sau CCCD nên chưa dùng. Nếu là ảnh chân dung, bấm:', 'Vẫn dùng làm ảnh thẻ', function () { e.anh = cv; delete e.anhThe; e.tb = ''; ccVe(); }, 12000); return; }
@@ -3710,6 +3744,7 @@ textarea.inp{font-family:inherit}
   }
   function ccCheNoi(t) { t.querySelectorAll('[data-che]').forEach(function (b) { b.onclick = function () { CCS.theMo = b.getAttribute('data-che') === '1'; var lg = theLogoNap(); if (!lg.complete) lg.onload = function () { ccVe(); }; ccVe(); window.scrollTo(0, 0); }; }); }
   var BAN_MOI = [
+    { so: 105, ds: [['In CCCD và Thẻ HOJEONG: chọn ảnh chụp màn hình VNeID (cả 2 mặt trong 1 ảnh) thì app tự cắt từng mặt, tự ghép thành 1 người, giữ nguyên màu ảnh.', '']] },
     { so: 104, ds: [['Thẻ HOJEONG: tích người là ô mã thẻ tự điền mã đề xuất (ưu tiên mã cũ in thẻ mà người đó không đi làm, rồi đến số tiếp theo). Sửa được nếu muốn.', ''],
       ['App tự biết mã đã dùng ở thẻ in bằng app, file Form thẻ Excel trên Drive, bảng công và vân tay. Gõ trùng mã người khác thì app báo ngay dưới ô mã.', '']] },
     { so: 103, ds: [['BEST – bảng công: ngày về sớm (công lẻ, chưa tính lương) có nút "Trả công lẻ" như HOJEONG. BEST đồng ý trả thì bấm nút, ngày đó được tính tiền theo giờ (đơn giá ở bảng cơ chế), phiếu tuần hiện đúng ngày và số tiền.', ''],
