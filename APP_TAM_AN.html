@@ -653,6 +653,7 @@ textarea.inp{font-family:inherit}
 .ccm.trong{aspect-ratio:1.585;border:2px dashed var(--edge);border-radius:8px;align-items:center;justify-content:center;gap:2px;cursor:pointer}.ccm.trong b{font-size:14px;color:var(--blue)}
 .ccgg{display:grid;grid-template-columns:1fr 1fr;gap:10px;max-height:52vh;overflow:auto;margin:8px 0}
 .ccdm{display:block;padding:4px 0;font-size:14px;color:var(--warn)}
+.thmg{font-size:12px;line-height:1.35}.thmg:empty{display:none}.thmg .warn{color:var(--bad);font-weight:600}
 .cct{font-size:13px;color:var(--muted)}.cct.ok{color:var(--good)}.cct.warn{color:var(--warn)}.cct.bad{color:var(--bad)}.cct a{color:var(--blue)}
 .ccso .inp{flex:1;min-width:0;margin:0}
 .ccnut .btn{flex:1}
@@ -3478,9 +3479,45 @@ textarea.inp{font-family:inherit}
   }
   // ---- 31/10: lịch sử thẻ đã in (sheet THE_HOJEONG + ảnh chân dung trên Drive) để in lại không phải làm từ đầu ----
   function theTenC(s) { return String(s || '').normalize('NFC').replace(/\s+/g, ' ').trim().toUpperCase(); }
-  function theTrung(ds) {   // mã đã cấp cho người khác
-    var m = {}; (CCS.thLs || []).forEach(function (x) { m[x.ma] = x; });
-    return ds.map(function (e) { var cu = m[String(e.ma)]; return cu && theTenC(cu.ten) !== theTenC(e.ten) ? { e: e, cu: cu } : null; }).filter(Boolean);
+  function theTrung(ds) {   // mã đã cấp cho người khác (thẻ đã in, bảng công, vân tay, Form thẻ Excel, trùng trong lượt này)
+    var m = {}, D = (CCS.maThe && CCS.maThe.dung) || {}, lu = {}; (CCS.thLs || []).forEach(function (x) { m[x.ma] = x; });
+    return ds.map(function (e) {
+      var ma = String(e.ma), cu = m[ma], d = D[ma], tr = lu[ma]; lu[ma] = e;
+      if (tr && tr !== e) return { e: e, cu: { ten: tr.ten, mo: 'cũng trong lượt in này' } };
+      if (cu && theTenC(cu.ten) !== theTenC(e.ten)) return { e: e, cu: cu };
+      if (d && d.t && theTenC(d.t) !== theTenC(e.ten)) return { e: e, cu: { ten: d.t, mo: d.n } };
+      return null;
+    }).filter(Boolean);
+  }
+  // 03/11: mã đề xuất 44xxx – máy chủ gom mã đã dùng (thẻ in bằng app, Form thẻ Excel, bảng công, vân tay mọi phòng ban) + mã trả về kho
+  function theMaTai(ep) {
+    if (CCS.maDang || (CCS.maThe && !ep && Date.now() - CCS.maThe.tai < 300000)) return;
+    CCS.maDang = 1;
+    apiT({ v: 'theMa', im: 1, moi: ep ? 1 : 0 }).then(function (o) {
+      CCS.maDang = 0; if (!o || o.loi || !o.dung) return;
+      o.tai = Date.now(); CCS.maThe = o;
+      var ae = document.activeElement;
+      if (S.tab === 'cc' && CCS.theMo && !document.querySelector('.sheet') && !(ae && /INPUT|TEXTAREA/.test(ae.tagName))) ccVe();
+    }, function () { CCS.maDang = 0; });
+  }
+  function theGanMa(ds) {   // người đã tích mà chưa có mã: điền mã đề xuất (kho trước, rồi lớn nhất + 1); bỏ tích thì trả mã đề xuất lại
+    var M = CCS.maThe; if (!M) return;
+    var dang = {}, D = M.dung || {}, kho0 = M.kho || [];
+    ds.forEach(function (e) { if (e.maGY && !e.chon) { e.ma = ''; delete e.maGY; } if (e.ma) dang[e.ma] = 1; });
+    (CCS.thLs || []).forEach(function (x) { dang[x.ma] = 1; });
+    var kho = kho0.filter(function (m) { return !dang[m]; }), nx = (Number(M.max) || 44000) + 1;
+    ds.forEach(function (e) {
+      if (!e.chon || e.ma || e.maTay) return;
+      var m = kho.shift();
+      if (!m) { while (dang[String(nx)] || D[String(nx)]) nx++; m = String(nx++); }
+      e.ma = m; e.maGY = kho0.indexOf(m) >= 0 ? 'kho' : 'moi'; dang[m] = 1;
+    });
+  }
+  function theMaGhiChu(e) {   // dòng nhỏ dưới ô mã
+    var D = (CCS.maThe && CCS.maThe.dung) || {}, d = e.ma ? D[e.ma] : null;
+    if (d && d.t && theTenC(d.t) !== theTenC(e.ten)) return '<span class="warn">Mã ' + esc(e.ma) + ' đang là của ' + esc(d.t) + (d.n ? ' (' + esc(d.n) + ')' : '') + '</span>';
+    if (e.maGY) return 'Mã đề xuất' + (e.maGY === 'kho' ? ' – mã cũ in thẻ nhưng người đó không đi làm' : ' – số tiếp theo') + ', sửa được';
+    return '';
   }
   function theAnhLuu(e) {   // ảnh chân dung đúng tỉ lệ ô ảnh trên thẻ (29,6 × 44,6 mm) -> JPEG 360 × 542
     var n = theAnhNguon(e); if (!n) return '';
@@ -3491,8 +3528,8 @@ textarea.inp{font-family:inherit}
     var gui = ds.map(function (e) { var o = { ma: String(e.ma), ten: e.ten, so: e.so || (e.p && e.p.so) || '', bp: e.bp }; if (!(e.anhGoc && e.anh === e.anhGoc)) o.anh = theAnhLuu(e); return o; });
     apiT({ v: 'theGhi', ds: gui, kho: theKho(), pdf: pdf ? 1 : 0, im: 1 }).then(function (o) {
       if (o && o.loi) { toastLoi('Lịch sử thẻ chưa ghi được: ' + o.loi); return; }
-      ds.forEach(function (e) { if (e.anh && !e.anhGoc) e.anhGoc = e.anh; });
-      theLsTai(1);
+      ds.forEach(function (e) { if (e.anh && !e.anhGoc) e.anhGoc = e.anh; delete e.maGY; });
+      theLsTai(1); theMaTai(1);
     }, function (er) { toastLoi('Lịch sử thẻ chưa ghi được: ' + er.message); });
   }
   function theLsTai(ep) {
@@ -3552,7 +3589,7 @@ textarea.inp{font-family:inherit}
     var hay = Object.keys(dem).sort(function (a, b) { return dem[b] - dem[a]; })[0], la = ds.filter(function (e) { return String(e.ma).length !== Number(hay); });
     var tr = theTrung(ds);
     if (!la.length && !tr.length) { tiep(); return; }
-    var sh = moSheet('<h3>Kiểm tra mã thẻ</h3><div class="meta">' + tr.map(function (x) { return 'Mã <b>' + esc(x.e.ma) + '</b> đã cấp cho <b>' + esc(x.cu.ten) + '</b> (in ' + esc(x.cu.gan) + '), nay gõ cho ' + esc(x.e.ten) + '.'; }).join('<br>') + (tr.length && la.length ? '<br>' : '') + la.map(function (e) { return '<b>' + esc(e.ma) + '</b> (' + esc(e.ten) + ') có ' + String(e.ma).length + ' số'; }).join('<br>') + (la.length ? '<br>Các mã khác có ' + hay + ' số.' : '') + ' Có gõ nhầm không?</div><button class="btn" id="tkS">Sửa lại</button><button class="btn ghost" id="tkV">Vẫn làm thẻ</button>');
+    var sh = moSheet('<h3>Kiểm tra mã thẻ</h3><div class="meta">' + tr.map(function (x) { return 'Mã <b>' + esc(x.e.ma) + '</b> đã cấp cho <b>' + esc(x.cu.ten) + '</b> (' + esc(x.cu.mo || ('in ' + x.cu.gan)) + '), nay gõ cho ' + esc(x.e.ten) + '.'; }).join('<br>') + (tr.length && la.length ? '<br>' : '') + la.map(function (e) { return '<b>' + esc(e.ma) + '</b> (' + esc(e.ten) + ') có ' + String(e.ma).length + ' số'; }).join('<br>') + (la.length ? '<br>Các mã khác có ' + hay + ' số.' : '') + ' Có gõ nhầm không?</div><button class="btn" id="tkS">Sửa lại</button><button class="btn ghost" id="tkV">Vẫn làm thẻ</button>');
     sh.querySelector('#tkS').onclick = function () { sh.remove(); };
     sh.querySelector('#tkV').onclick = function () { sh.remove(); tiep(); };
   }
@@ -3595,6 +3632,7 @@ textarea.inp{font-family:inherit}
   }
   function ccVeThe(t) {
     var ds = theDs(), n = ds.filter(function (e) { return e.chon; }).length, h = ccChe();
+    theMaTai(); theGanMa(ds);
     if (!ds.length) h += '<div class="card cch">' + ICON.cc + '<b>Thẻ ra vào HOJEONG</b><div class="meta">Chọn ảnh CCCD ở mục In CCCD, rồi quay lại đây tích người cần làm thẻ. Người chưa có CCCD trong lượt thì bấm Thêm người.</div></div>';
     else h += '<div class="row thk"><span class="meta">Khổ giấy</span><div class="seg" id="thKho">' + ['A4', 'A5'].map(function (g) { return '<button data-tk="' + g + '"' + (theKho() === g ? ' class="on"' : '') + '>' + g + (g === 'A4' ? ' · 8 thẻ/tờ' : ' · 4 thẻ/tờ') + '</button>'; }).join('') + '</div></div>' +
       '<div class="meta" style="padding:0 2px">Tích người cần làm thẻ, gõ mã thẻ. Mỗi thẻ 8,5 × 6 cm, cần in màu.' + (theKho() === 'A5' ? ' Đặt giấy A5 vào khay; hộp in hiện khổ 5 × 7 inch là đúng.' : '') + '</div>';
@@ -3608,6 +3646,7 @@ textarea.inp{font-family:inherit}
         (dd ? '<div class="thf"><input class="inp" data-tt="' + esc(e.k) + '" placeholder="Họ và tên" value="' + esc(e.ten) + '" autocapitalize="characters">' +
           '<div class="row" style="gap:8px"><input class="inp" data-tm="' + esc(e.k) + '" inputmode="numeric" placeholder="Mã thẻ" value="' + esc(e.ma) + '" style="flex:1;min-width:0">' +
           '<div class="seg" style="flex:1.4">' + ['P', 'Q'].map(function (b) { return '<button data-tp="' + esc(e.k) + ':' + b + '"' + (e.bp === b ? ' class="on"' : '') + '>' + (b === 'P' ? 'Production' : 'Quality') + '</button>'; }).join('') + '</div></div>' +
+          '<div class="meta thmg" data-tg2="' + esc(e.k) + '">' + theMaGhiChu(e) + '</div>' +
           '<img class="thv" data-tv="' + esc(e.k) + '" src="' + theTb(e) + '" alt="">' +
           '<div class="row" style="justify-content:space-between"><button class="btn lk" data-ta="' + esc(e.k) + '" style="padding-left:0">Chọn ảnh khác</button>' + ((e.anh || e.anhThe) && e.p && e.p.t ? '<button class="btn lk" data-tg="' + esc(e.k) + '">Dùng ảnh trên CCCD</button>' : '') + '</div></div>' : '') + '</div>';
     }).join('');
@@ -3623,7 +3662,7 @@ textarea.inp{font-family:inherit}
     t.querySelectorAll('[data-tp]').forEach(function (b) { b.onclick = function () { var a = b.getAttribute('data-tp').split(':'); e_(a[0]).bp = a[1]; ccVe(); }; });
     function xemLai(k) { var im = t.querySelector('[data-tv="' + k + '"]'); clearTimeout(xemLai.h); xemLai.h = setTimeout(function () { if (im) im.src = theTb(e_(k)); }, 250); }
     t.querySelectorAll('[data-tt]').forEach(function (i) { i.oninput = function () { var e = e_(i.getAttribute('data-tt')); e.ten = i.value.toUpperCase(); e.sua = 1; xemLai(e.k); var hd = t.querySelector('[data-tc2="' + e.k + '"] b'); if (hd) hd.textContent = e.ten || 'Người thêm tay'; }; i.onblur = function () { i.value = e_(i.getAttribute('data-tt')).ten; }; });
-    t.querySelectorAll('[data-tm]').forEach(function (i) { i.oninput = function () { i.value = i.value.replace(/\D/g, '').slice(0, 10); var e = e_(i.getAttribute('data-tm')); e.ma = i.value; xemLai(e.k); }; });
+    t.querySelectorAll('[data-tm]').forEach(function (i) { i.oninput = function () { i.value = i.value.replace(/\D/g, '').slice(0, 10); var e = e_(i.getAttribute('data-tm')); e.ma = i.value; delete e.maGY; e.maTay = 1; xemLai(e.k); var g = t.querySelector('[data-tg2="' + e.k + '"]'); if (g) g.innerHTML = theMaGhiChu(e); }; });
     t.querySelectorAll('[data-tv]').forEach(function (im) { im.onclick = function () { ccXemTo(theVe(e_(im.getAttribute('data-tv')), 1004).toDataURL('image/jpeg', 0.9)); }; });
     document.getElementById('thThem').onclick = function () { var k = 'm' + (++CCS.theThem); CCS.the[k] = { k: k, chon: true, ten: '', ma: '', bp: 'P', sua: 1 }; theChonAnh(CCS.the[k]); ccVe(); };
     document.getElementById('thGui').onclick = theGui;
@@ -3671,7 +3710,9 @@ textarea.inp{font-family:inherit}
   }
   function ccCheNoi(t) { t.querySelectorAll('[data-che]').forEach(function (b) { b.onclick = function () { CCS.theMo = b.getAttribute('data-che') === '1'; var lg = theLogoNap(); if (!lg.complete) lg.onload = function () { ccVe(); }; ccVe(); window.scrollTo(0, 0); }; }); }
   var BAN_MOI = [
-    { so: 103, ds: [['BEST – bảng công: ngày về sớm (công lẻ, chưa tính lương) có nút "Trả công lẻ" như HOJEONG. BEST đồng ý trả thì bấm nút, ngày đó được tính tiền theo giờ (đơn giá ở bảng cơ chế), phiếu tuần hiện đúng ngày và số tiền.', ''],
+    { so: 103, ds: [['Thẻ HOJEONG: tích người là ô mã thẻ tự điền mã đề xuất (ưu tiên mã cũ in thẻ mà người đó không đi làm, rồi đến số tiếp theo). Sửa được nếu muốn.', ''],
+      ['App tự biết mã đã dùng ở thẻ in bằng app, file Form thẻ Excel trên Drive, bảng công và vân tay. Gõ trùng mã người khác thì app báo ngay dưới ô mã.', ''],
+      ['BEST – bảng công: ngày về sớm (công lẻ, chưa tính lương) có nút "Trả công lẻ" như HOJEONG. BEST đồng ý trả thì bấm nút, ngày đó được tính tiền theo giờ (đơn giá ở bảng cơ chế), phiếu tuần hiện đúng ngày và số tiền.', ''],
       ['Ngày đã trả công lẻ có nút "Bỏ trả công lẻ" nếu bấm nhầm. Sửa giờ vào/ra ngày đó thì xác nhận cũ tự bỏ, cần thì xác nhận lại.', ''],
       ['Sale trả / bỏ trả công lẻ BEST thì chủ nhận thông báo như HOJEONG.', 'chu']] },
     { so: 102, ds: [['Thẻ HOJEONG: chọn ảnh chân dung mà app tưởng là mặt sau CCCD thì không bị chặn nữa – bấm "Vẫn dùng làm ảnh thẻ".', '']] },
