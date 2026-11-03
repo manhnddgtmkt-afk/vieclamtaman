@@ -13,7 +13,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
 <script src="config.js"></script>
-<script>window.PB = { so: 105, luc: "03/11 00:11" };</script>
+<script>window.PB = { so: 106, luc: "03/11 22:40" };</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap">
 <style>
@@ -3755,6 +3755,7 @@ textarea.inp{font-family:inherit}
   }
   function ccCheNoi(t) { t.querySelectorAll('[data-che]').forEach(function (b) { b.onclick = function () { CCS.theMo = b.getAttribute('data-che') === '1'; var lg = theLogoNap(); if (!lg.complete) lg.onload = function () { ccVe(); }; ccVe(); window.scrollTo(0, 0); }; }); }
   var BAN_MOI = [
+    { so: 106, ds: [['Tổng quan: dòng vàng chỉ hiện khi có công ty đang làm chưa có số kỳ mới, ghi rõ tên công ty đó (trước đây báo nhầm vì đếm cả công ty đã dừng).', 'chu']] },
     { so: 105, ds: [['In CCCD và Thẻ HOJEONG: chọn ảnh chụp màn hình VNeID (cả 2 mặt trong 1 ảnh) thì app tự cắt từng mặt, tự ghép thành 1 người, giữ nguyên màu ảnh.', '']] },
     { so: 104, ds: [['Thẻ HOJEONG: tích người là ô mã thẻ tự điền mã đề xuất (ưu tiên mã cũ in thẻ mà người đó không đi làm, rồi đến số tiếp theo). Sửa được nếu muốn.', ''],
       ['App tự biết mã đã dùng ở thẻ in bằng app, file Form thẻ Excel trên Drive, bảng công và vân tay. Gõ trùng mã người khác thì app báo ngay dưới ô mã.', '']] },
@@ -5157,8 +5158,10 @@ textarea.inp{font-family:inherit}
       var co = o.thangCo || {};   // 31/10: tháng đã có số liệu (kỳ công bắt đầu trước tháng lịch, vd HOJEONG 26/10 -> kỳ T11) cũng hiện
       var ds = (o.thangDs && o.thangDs.length ? o.thangDs : [o.ky]).filter(function (x) { return x <= max || x === o.ky || !!co[x]; }).reverse();
       var thCo = Object.keys(co).sort(), thMoi = thCo[thCo.length - 1], thTruoc = thCo[thCo.length - 2];
-      var kyTam = o.ky && o.ky === thMoi && thTruoc && co[thMoi].length < co[thTruoc].length
-        ? '<div class="meta" style="color:#B26A00;margin:2px 0 6px">Kỳ đang chạy – mới có số của ' + esc(co[thMoi].join(', ')) + ', số tạm tính</div>' : '';
+      // 03/11: ghi tên công ty CHƯA có số kỳ mới (máy chủ đã bỏ công ty dừng giữa tháng trước khỏi danh sách)
+      var thieuCt = o.ky && o.ky === thMoi && thTruoc ? co[thTruoc].filter(function (c) { return co[thMoi].indexOf(c) < 0; }) : [];
+      var kyTam = thieuCt.length
+        ? '<div class="meta" style="color:#B26A00;margin:2px 0 6px">Kỳ T' + esc(String(thMoi).slice(-2)) + ' đang chạy – ' + esc(thieuCt.join(', ')) + ' chưa có số kỳ này</div>' : '';
       var nhom = S.tqNhom || 'ln';
       if (nhom === 'gl' && document.getElementById('glHost')) return;   // 24/10: đang ở Giả lập tài chính -> số Tổng quan mới không vẽ lại (giữ ô đang gõ)
       var than = nhom === 'gl' ? '<div id="glHost"></div>' : nhom === 'tien' ? tqNhomTien(o) : nhom === 'vs' ? tqNhomVS(o) : tqNhomLN(o);
