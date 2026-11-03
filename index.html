@@ -13,7 +13,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
 <script src="config.js"></script>
-<script>window.PB = { so: 106, luc: "03/11 22:40" };</script>
+<script>window.PB = { so: 107, luc: "03/11 23:53" };</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap">
 <style>
@@ -843,7 +843,7 @@ textarea.inp{font-family:inherit}
   }
   function api(q) {
     var tt = (q.im || q.lang) ? null : ttBat(q);   // 21/10: q.im = tải ngầm; q.lang = việc lâu chạy nền (nút tự báo đang làm) -> không hiện thanh chờ
-    return api0(q).then(function (o) { if (tt) ttTat(tt); return o; }, function (e) { if (tt) ttTat(tt); throw e; });
+    return (BEN_V[q.v] ? apiBen(q) : api0(q)).then(function (o) { if (tt) ttTat(tt); return o; }, function (e) { if (tt) ttTat(tt); throw e; });
   }
   function api0(q) {
     return new Promise(function (ok, hong) {
@@ -864,6 +864,35 @@ textarea.inp{font-family:inherit}
     });
   }
   function apiT(q) { q.t = S.t; return api(q); }
+  // 03/11: iPhone khoá màn hình / thoát ra app khác thì trang bị dừng, lệnh đang gửi máy chủ hỏng hoặc treo.
+  // Các lệnh CCCD dưới đây gửi lại không sinh trùng (đọc ảnh, tải ảnh, lưu: kho đã có số thì không lưu lại, chuyển ảnh gốc)
+  // -> bị ngắt thì chờ mở lại app rồi tự gửi lại; mở lại 45 giây vẫn chưa có trả lời thì gửi lại (trả lời nào về trước thì nhận)
+  var BEN_V = { cccdTamSoat: 1, cccdTamDs: 1, cccdTamAnh: 1, cccdDocNhieu: 1, cccdDoc: 1, cccdLuu: 1, cccdTamXong: 1 };
+  var NGAT = { lan: 0, cho: [], treo: [], tiep: 0 };
+  document.addEventListener('visibilitychange', function () {
+    if (document.hidden) { NGAT.lan++; return; }
+    var f = NGAT.cho; NGAT.cho = []; f.forEach(function (g) { setTimeout(g, 800); });
+    NGAT.treo.forEach(function (g) { g(); });
+  });
+  function apiBen(q) {
+    return new Promise(function (ok, hong) {
+      var lan = 0, xong = false, hen = null, moi = null;
+      function ket(f, v) { if (xong) return; xong = true; clearTimeout(hen); NGAT.treo = NGAT.treo.filter(function (g) { return g !== moi; }); if (lan > 1) { NGAT.tiep = Date.now(); if (typeof ccVe === 'function') setTimeout(ccVe, 0); } f(v); }
+      function gui() {
+        if (xong) return;
+        var lanNay = ++lan, ngat0 = NGAT.lan;
+        NGAT.treo = NGAT.treo.filter(function (g) { return g !== moi; });
+        moi = function () { if (NGAT.lan === ngat0 || xong) return; clearTimeout(hen); hen = setTimeout(function () { if (!xong && lan === lanNay && lan < 6) gui(); }, 45000); };
+        NGAT.treo.push(moi);
+        api0(q).then(function (o) { ket(ok, o); }, function (e) {
+          if (xong || lan !== lanNay) return;   // lần gửi cũ hỏng sau khi đã gửi lại: chờ lần mới
+          if ((NGAT.lan !== ngat0 || document.hidden) && lan < 6) { clearTimeout(hen); if (document.hidden) NGAT.cho.push(gui); else setTimeout(gui, 800); return; }
+          ket(hong, e);
+        });
+      }
+      gui();
+    });
+  }
   // 21/10: số đã tải lần trước giữ trong máy -> mở app / chuyển tab hiện ngay, số mới tải ngầm rồi thay
   function luuSo(k, o) { try { luu(k, o ? JSON.stringify(o) : null); } catch (e) { } }
   function docSo(k) { try { return JSON.parse(doc(k) || 'null'); } catch (e) { return null; } }
@@ -2671,6 +2700,7 @@ textarea.inp{font-family:inherit}
   function ccNap(files, xong) {
     files = [].slice.call(files || []).filter(function (f) { return !f.type || /^image\//.test(f.type); });
     if (!files.length) return;
+    ccThuc(1);
     CCS.dang = { i: 0, n: files.length }; ccVe();
     var loi = 0, moi = [];
     (function buoc(i) {
@@ -2697,7 +2727,33 @@ textarea.inp{font-family:inherit}
     return (CCS.jpg[kj] = 'data:image/jpeg;base64,' + btoa(s));
   }
   function ccGan() { try { return JSON.parse(doc('vlta_cccd') || '[]'); } catch (e) { return []; } }
+  // 03/11: giữ màn hình sáng khi đang xử lý CCCD (iPhone tắt màn hình / thoát app là app dừng). iPhone dùng thêm video im lặng
+  // vì app cài ra màn hình chính trên iOS cũ nhận lệnh giữ sáng mà không giữ thật
+  var THUC = { on: 0, wl: null, vd: null };
+  function ccBan() { return !!(CCS.soat || CCS.dang || CCS.chay || CCS.hang.length || CCS.ds.some(function (x) { return x.doc === 'dang'; })); }
+  function ccThuc(bat) {
+    if (!bat) {
+      if (!THUC.on) return; THUC.on = 0;
+      try { if (THUC.wl) THUC.wl.release(); } catch (e) { } THUC.wl = null;
+      try { if (THUC.vd) THUC.vd.pause(); } catch (e) { }
+      return;
+    }
+    THUC.on = 1;
+    if (navigator.wakeLock && !THUC.wl) navigator.wakeLock.request('screen').then(function (w) { if (!THUC.on) { w.release(); return; } THUC.wl = w; w.addEventListener('release', function () { if (THUC.wl === w) THUC.wl = null; }); }, function () { });
+    if (!navigator.wakeLock || document.documentElement.classList.contains('ios')) {
+      if (!THUC.vd) {
+        var v = THUC.vd = document.createElement('video');
+        v.setAttribute('playsinline', ''); v.setAttribute('muted', ''); v.muted = true; v.loop = true;
+        v.style.cssText = 'position:fixed;width:1px;height:1px;left:0;bottom:0;opacity:0.01;pointer-events:none;z-index:-1';
+        v.src = 'data:video/mp4;base64,AAAAIGZ0eXBpc29tAAACAGlzb21pc28yYXZjMW1wNDEAAANBbW9vdgAAAGxtdmhkAAAAAAAAAAAAAAAAAAAD6AAAD6AAAQAAAQAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAmt0cmFrAAAAXHRraGQAAAADAAAAAAAAAAAAAAABAAAAAAAAD6AAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAABAAAAAABAAAAAQAAAAAAAkZWR0cwAAABxlbHN0AAAAAAAAAAEAAA+gAAAAAAABAAAAAAHjbWRpYQAAACBtZGhkAAAAAAAAAAAAAAAAAABAAAABAABVxAAAAAAALWhkbHIAAAAAAAAAAHZpZGUAAAAAAAAAAAAAAABWaWRlb0hhbmRsZXIAAAABjm1pbmYAAAAUdm1oZAAAAAEAAAAAAAAAAAAAACRkaW5mAAAAHGRyZWYAAAAAAAAAAQAAAAx1cmwgAAAAAQAAAU5zdGJsAAAAtnN0c2QAAAAAAAAAAQAAAKZhdmMxAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAABAAEABIAAAASAAAAAAAAAABFUxhdmM2MC4zMS4xMDIgbGlieDI2NAAAAAAAAAAAAAAAGP//AAAALGF2Y0MBQsAK/+EAFWdCwAraewEQAAADABAAAAMAQPEiagEABGjOD8gAAAAQcGFzcAAAAAEAAAABAAAAFGJ0cnQAAAAAAAAFiAAABYgAAAAYc3R0cwAAAAAAAAABAAAACAAAIAAAAAAUc3RzcwAAAAAAAAABAAAAAQAAABxzdHNjAAAAAAAAAAEAAAABAAAACAAAAAEAAAA0c3RzegAAAAAAAAAAAAAACAAAAoUAAAAJAAAACQAAAAkAAAAJAAAACQAAAAkAAAAJAAAAFHN0Y28AAAAAAAAAAQAAA3EAAABidWR0YQAAAFptZXRhAAAAAAAAACFoZGxyAAAAAAAAAABtZGlyYXBwbAAAAAAAAAAAAAAAAC1pbHN0AAAAJal0b28AAAAdZGF0YQAAAAEAAAAATGF2ZjYwLjE2LjEwMAAAAAhmcmVlAAACzG1kYXQAAAJvBgX//2vcRem95tlIt5Ys2CDZI+7veDI2NCAtIGNvcmUgMTY0IHIzMTA4IDMxZTE5ZjkgLSBILjI2NC9NUEVHLTQgQVZDIGNvZGVjIC0gQ29weWxlZnQgMjAwMy0yMDIzIC0gaHR0cDovL3d3dy52aWRlb2xhbi5vcmcveDI2NC5odG1sIC0gb3B0aW9uczogY2FiYWM9MCByZWY9MSBkZWJsb2NrPTE6MDowIGFuYWx5c2U9MHgxOjB4MTExIG1lPWhleCBzdWJtZT0yIHBzeT0xIHBzeV9yZD0xLjAwOjAuMDAgbWl4ZWRfcmVmPTAgbWVfcmFuZ2U9MTYgY2hyb21hX21lPTEgdHJlbGxpcz0wIDh4OGRjdD0wIGNxbT0wIGRlYWR6b25lPTIxLDExIGZhc3RfcHNraXA9MSBjaHJvbWFfcXBfb2Zmc2V0PTAgdGhyZWFkcz0xIGxvb2thaGVhZF90aHJlYWRzPTEgc2xpY2VkX3RocmVhZHM9MCBucj0wIGRlY2ltYXRlPTEgaW50ZXJsYWNlZD0wIGJsdXJheV9jb21wYXQ9MCBjb25zdHJhaW5lZF9pbnRyYT0wIGJmcmFtZXM9MCB3ZWlnaHRwPTAga2V5aW50PTI1MCBrZXlpbnRfbWluPTIgc2NlbmVjdXQ9NDAgaW50cmFfcmVmcmVzaD0wIHJjX2xvb2thaGVhZD0xMCByYz1jcmYgbWJ0cmVlPTEgY3JmPTIzLjAgcWNvbXA9MC42MCBxcG1pbj0wIHFwbWF4PTY5IHFwc3RlcD00IGlwX3JhdGlvPTEuNDAgYXE9MToxLjAwAIAAAAAOZYiEBX///w9FAAFC34AAAAAFQZogFfUAAAAFQZpAFfUAAAAFQZpgFfUAAAAFQZqAFPUAAAAFQZqgFPUAAAAFQZrAFPUAAAAFQZrgEvU=';
+        document.body.appendChild(v);
+      }
+      try { var pr = THUC.vd.play(); if (pr && pr.catch) pr.catch(function () { }); } catch (e) { }
+    }
+  }
+  document.addEventListener('visibilitychange', function () { if (!document.hidden && THUC.on) { if (ccBan()) ccThuc(1); else ccThuc(0); } });
   function ccVe() {
+    if (THUC.on && !ccBan()) ccThuc(0);
     var t = document.getElementById('ccThan'); if (!t || S.tab !== 'cc') return;
     if (CCS.kho) { ccVeKho(t); return; }
     if (CCS.theMo && !CCS.dang) { ccVeThe(t); return; }
@@ -2708,9 +2764,9 @@ textarea.inp{font-family:inherit}
       h += '<div class="card"><div class="row sp"><b>Đang soát ảnh trong CCCD TẠM…</b><span class="meta num" id="ccSoatTg">' + Math.round((Date.now() - sv.t0) / 1000) + ' giây</span></div>' +
         '<div class="ccbar0"><i style="width:' + (sv.n ? Math.round(100 * sv.doc / sv.n) : 3) + '%"></i></div>' +
         '<div class="meta">' + (sv.n ? 'Đã đọc ' + sv.doc + '/' + sv.n + ' ảnh' : 'Máy chủ đang đọc số trên ảnh') + (sv.chuyen ? ' · ' + sv.chuyen + ' ảnh của người kho đã có → TRÙNG' : '') + '</div>' +
-        '<div class="meta">Mỗi lô 16 ảnh mất khoảng 20–30 giây. Có thể chuyển sang tab khác, xong app tự báo.</div></div>';
+        '<div class="meta">Mỗi lô 16 ảnh mất khoảng 20–30 giây. Có thể chuyển sang tab khác, xong app tự báo.</div>' + ccNhacThuc() + '</div>';
     } else if (CCS.dang) {
-      h += '<div class="card"><b>' + (CCS.dang.tai ? 'Đang tải ảnh từ CCCD TẠM ' + CCS.dang.i : 'Đang cắt và ghép ảnh ' + (CCS.dang.i + 1)) + '/' + CCS.dang.n + '…</b><div class="ccbar0"><i style="width:' + Math.round(100 * CCS.dang.i / CCS.dang.n) + '%"></i></div></div>';
+      h += '<div class="card"><b>' + (CCS.dang.tai ? 'Đang tải ảnh từ CCCD TẠM ' + CCS.dang.i : 'Đang cắt và ghép ảnh ' + (CCS.dang.i + 1)) + '/' + CCS.dang.n + '…</b><div class="ccbar0"><i style="width:' + Math.round(100 * CCS.dang.i / CCS.dang.n) + '%"></i></div>' + ccNhacThuc() + '</div>';
     } else if (!CCS.ds.length) {
       h += '<div class="card cch">' + ICON.cc + '<b>In CCCD người mới</b><div class="meta">Chọn cùng lúc ảnh mặt trước và mặt sau của từng người trong album. App tự cắt sát viền, nắn thẳng, ghép 2 mặt, in mỗi người 1 tờ A4 rồi lưu vào thư mục CCCD trên Drive. Không cần in thì bấm Lưu kho.</div>' +
         '<button class="btn" id="ccChon">Chọn ảnh trong album</button>' + (CCS.tamN ? '<button class="btn ghost" id="ccTam">Xử lý ảnh chờ trong CCCD TẠM (' + CCS.tamN + ')</button>' : CCS.tamN === 0 ? '<button class="btn ghost" disabled>Không còn ảnh chờ trong CCCD TẠM</button>' : '') + '<button class="btn ghost" id="ccKho">Tìm ảnh trong kho</button></div>' + ccKqHtml();
@@ -3052,6 +3108,7 @@ textarea.inp{font-family:inherit}
   function ccLuuKho() {   // lưu mọi người đã ghép chắc chắn vào thư mục năm sinh, không in
     var cap = ccCap(); if (!cap.length) return;
     if (CCS.ds.some(function (x) { return x.doc === 'cho' || x.doc === 'dang'; })) { toast('Đang đọc số để ghép đúng người, chờ chút.'); return; }
+    ccThuc(1);
     var luu = 0, co = 0, xem = 0, le = 0;
     cap.forEach(function (p) {
       var st = CCS.tt[p.k] || {};
@@ -3085,6 +3142,7 @@ textarea.inp{font-family:inherit}
     if (CCS.hang.length || CCS.chay) { toast('Đang lưu lên Drive, chờ xong rồi mở CCCD TẠM.'); return; }
     var con = ccCap().filter(function (p) { var st = CCS.tt[p.k] || {}; return p.t && p.s && !st.ok && !st.co; }).length;
     if (CCS.ds.length && con) { toast('Còn ' + con + ' người chưa lưu. Bấm Lưu kho (hoặc Lượt mới để bỏ) rồi mở CCCD TẠM.'); return; }
+    ccThuc(1);
     // 23/10: máy chủ soát trước (đọc số trên ảnh gốc): người kho đã có thì chuyển ảnh gốc sang ĐÃ XỬ LÝ, chỉ tải về người chưa có
     // 25/10: tiến độ nằm trong thẻ ở tab CCCD, đếm giây, không tự tắt; máy chủ mỗi lần đọc 1 lô 16 ảnh rồi báo về
     var tong = { chuyen: 0, soat: 0, so: {} }, lan = 0, sv = CCS.soat = { t0: Date.now(), n: CCS.tamN || 0, doc: 0, chuyen: 0 };
@@ -3110,6 +3168,10 @@ textarea.inp{font-family:inherit}
       CCS.tam = { n: lay.length };
       ccTamTai(lay);
     }
+  }
+  function ccNhacThuc() {
+    return Date.now() - NGAT.tiep < 30000 ? '<div class="meta" style="color:var(--warn,#B7791F)">Bị ngắt lúc khoá màn hình / thoát app – đang chạy tiếp.</div>'
+      : '<div class="meta">Màn hình được giữ sáng tới khi xong. Lỡ khoá máy hoặc thoát app: mở lại app là chạy tiếp.</div>';
   }
   function ccSoatGio() { var e = document.getElementById('ccSoatTg'); if (e && CCS.soat) e.textContent = Math.round((Date.now() - CCS.soat.t0) / 1000) + ' giây'; }
   // 25/10: kết quả lần xử lý CCCD TẠM gần nhất – giữ trên máy, hiện cố định ở tab CCCD
