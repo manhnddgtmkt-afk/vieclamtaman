@@ -13,7 +13,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
 <script src="config.js"></script>
-<script>window.PB = { so: 107, luc: "03/11 23:53" };</script>
+<script>window.PB = { so: 108, luc: "04/11 08:36" };</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap">
 <style>
@@ -2506,7 +2506,32 @@ textarea.inp{font-family:inherit}
       if (!q && t.nguon !== 'ca anh') { gn = noiLe(cv, gn); g = gn; }   // 23/10: không cắt lẹm vào thẻ
       var mat = nan(cv, gn, MW, MH), pl = phanLoai(mat);
       if (pl.xoay) mat = xoay(mat, 180);
-      return { the: mat, q: g, tim: t, mat: pl.mat, chac: pl.chac, f: pl.f, ro: pl.ro !== false };
+      return { the: mat, q: g, tim: t, mat: pl.mat, chac: pl.chac, f: pl.f, ro: pl.ro !== false, kem: q ? [] : danhGia(cv, t, g) };
+    }
+    // 04/11: chấm ảnh tự cắt – lý do khiến ảnh dễ lệch / dính nền / thiếu góc ([] = đạt). Chỉ đọc số đo của bước tìm khung, không đổi cách cắt.
+    // Thử 106 ảnh gốc CCCD TẠM: bắt 12/14 ảnh cắt hỏng (2 ảnh còn lại: 1 lộn ngược – app đã báo 'xem lại'; 1 ảnh chân dung – không có số nên không lưu), báo nhầm 4/92 ảnh tốt
+    function danhGia(cv, t, g) {
+      var W = cv.width, H = cv.height, ly = [];
+      if (t.nguon === 'ca anh') {
+        if (Math.abs(Math.max(W, H) / Math.min(W, H) / TL - 1) > 0.05) ly.push('không tìm thấy khung thẻ');
+        return ly;
+      }
+      var s = [], gl = 0, A = 0;
+      for (var i = 0; i < 4; i++) {
+        var a = g[(i + 3) % 4], b = g[i], c = g[(i + 1) % 4];
+        s.push(Math.hypot(c[0] - b[0], c[1] - b[1]));
+        var v1 = [a[0] - b[0], a[1] - b[1]], v2 = [c[0] - b[0], c[1] - b[1]];
+        var cs = (v1[0] * v2[0] + v1[1] * v2[1]) / Math.max(1e-6, Math.hypot(v1[0], v1[1]) * Math.hypot(v2[0], v2[1]));
+        gl = Math.max(gl, Math.abs(90 - Math.acos(Math.max(-1, Math.min(1, cs))) * 180 / Math.PI));
+        A += b[0] * c[1] - c[0] * b[1];
+      }
+      var ar = (s[0] + s[2]) / Math.max(1, s[1] + s[3]); ar = Math.max(ar, 1 / ar);
+      var fr = Math.abs(A) / 2 / (W * H), dm = t.diem || 0;
+      if (dm < 0.15) ly.push('khung thẻ không rõ');
+      if (fr < 0.1) ly.push('thẻ quá nhỏ hoặc chỉ bắt được 1 phần');
+      if (gl > 10) ly.push('khung méo');
+      if (Math.abs(ar / TL - 1) > 0.09 && dm < 0.3) ly.push('khung lệch tỉ lệ thẻ');
+      return ly;
     }
     function ghep(truoc, sau, o, rong) {   // rong: bề rộng ảnh (mặc định 1400 = bản in / lưu; nhỏ hơn để xem trước khi kéo thanh chỉnh)
       var W = rong || MW, Hm = Math.round(W / TL), G = Math.round(GAP * W / MW), c = document.createElement('canvas'); c.width = W; c.height = Hm * 2 + G;
@@ -2608,6 +2633,7 @@ textarea.inp{font-family:inherit}
       p.doc = [p.t, p.s].some(function (x) { return x && (x.doc === 'cho' || x.doc === 'dang'); });
       p.vt = Math.min(p.t ? vt[p.t.id] : 1e9, p.s ? vt[p.s.id] : 1e9);
       p.chac = !!(p.t && p.s && (p.tay || !p.goi));   // 2 mặt cùng số CCCD (hoặc đã ghép tay / bấm Đúng người)
+      p.kem = [p.t, p.s].filter(function (x) { return x && x.kem; }).map(function (x) { return (x.mat === 'truoc' ? 'mặt trước: ' : 'mặt sau: ') + x.kem.join(', '); }).join('; ');   // 04/11
     });
     return out.sort(function (a, b) { return a.vt - b.vt; });
   }
@@ -2696,7 +2722,7 @@ textarea.inp{font-family:inherit}
     if (!q) return [CC.xuLy(cv)];
     return q.map(function (g) { var r = CC.xuLy(cv, g); r.vn = 1; return r; });
   }
-  function ccDat(x, r) { x.the = r.the; x.mat = r.mat; x.ro = r.ro; x.q = r.q; x.v++; x.tb = ccNho(r.the, 420); x.qrXong = 0; }
+  function ccDat(x, r) { x.the = r.the; x.mat = r.mat; x.ro = r.ro; x.q = r.q; x.v++; x.tb = ccNho(r.the, 420); x.qrXong = 0; x.kem = r.kem && r.kem.length ? r.kem : null; }   // kem: ảnh tự cắt chưa chuẩn -> không tự lưu kho
   function ccNap(files, xong) {
     files = [].slice.call(files || []).filter(function (f) { return !f.type || /^image\//.test(f.type); });
     if (!files.length) return;
@@ -2787,13 +2813,14 @@ textarea.inp{font-family:inherit}
         else if (st.co || p.co) ln = '<div class="cct ok">Đã có trong kho · ' + esc(st.duong || p.co) + '</div>';
         else if (st.chuaSo) ln = '<div class="cct warn">Drive chưa đọc được số CCCD. Gõ số để lưu:</div><div class="row ccso"><input class="inp" inputmode="numeric" maxlength="12" placeholder="12 chữ số" data-k="' + esc(p.k) + '"><button class="btn sm" data-luu="' + esc(p.k) + '">Lưu</button></div>';
         else if (st.loi) ln = '<div class="cct bad">' + esc(st.loi) + ' <a href="#" data-thu="' + esc(p.k) + '">Thử lại</a></div>';
+        else if (p.kem) ln = '<div class="cct warn">Ảnh cắt chưa chuẩn (' + esc(p.kem) + ') – chưa lưu kho. Chạm ảnh → Chỉnh khung cắt, kéo 4 góc sát thẻ. Ảnh đã thẳng, sát thẻ thì bấm Ảnh ổn.</div><div class="row"><button class="btn sm" data-kemok="' + esc(p.k) + '">Ảnh ổn</button></div>';
         else if (!p.chac) ln = '<div class="cct warn">' + (p.goi === 'hh' ? 'Ghép theo ngày hết hạn trùng ngày sinh' : 'Chưa chắc đúng người (ghép theo thứ tự chọn ảnh)') + ' – xem 2 mặt có cùng 1 người không rồi bấm Đúng người.</div><div class="row"><button class="btn sm" data-dung="' + esc(p.k) + '">Đúng người</button></div>';
         else if (!p.so) ln = '<div class="cct warn">Chưa đọc được số · kiểm tra đúng người rồi bấm In hoặc Lưu kho</div>';
         else ln = '<div class="cct">Chưa lưu · bấm Lưu kho hoặc In</div>';
         var ten = st.ten || p.ten ? hoaDau(st.ten || p.ten) : 'Người ' + (n + 1), so = st.so || p.so;
         function o(x, nh) {
           if (!x) return '<button class="ccm trong" data-trong="' + esc(p.k) + '" data-mat="' + (nh === 'Mặt trước' ? 'truoc' : 'sau') + '"><b>+ ' + nh + '</b><span>Chạm để chọn ảnh</span></button>';
-          return '<button class="ccm' + (x.ro ? '' : ' xem') + (CCS.doi === x.id ? ' chon' : '') + '" data-id="' + x.id + '"><img src="' + x.tb + '" alt=""><span>' + nh + (x.ro ? '' : ' · xem lại') + '</span></button>';
+          return '<button class="ccm' + (x.ro && !x.kem ? '' : ' xem') + (CCS.doi === x.id ? ' chon' : '') + '" data-id="' + x.id + '"><img src="' + x.tb + '" alt=""><span>' + nh + (x.ro ? '' : ' · xem lại') + (x.kem ? ' · cắt lại?' : '') + '</span></button>';
         }
         return '<div class="card ccp"><div class="row sp"><div style="min-width:0"><b class="ell" style="display:block">' + esc(ten) + '</b>' + (so ? '<span class="meta num">' + esc(so) + '</span>' : '') + '</div>' +
           '<button class="ccx" data-xoa="' + esc(p.k) + '" aria-label="Bỏ người này">×</button></div>' +
@@ -2824,6 +2851,7 @@ textarea.inp{font-family:inherit}
     if ((b = document.getElementById('ccLuu'))) b.onclick = ccLuuKho;
     if ((b = document.getElementById('ccTam'))) b.onclick = ccTamMo;
     t.querySelectorAll('[data-dung]').forEach(function (e) { e.onclick = function () { ccDung(e.getAttribute('data-dung')); }; });
+    t.querySelectorAll('[data-kemok]').forEach(function (e) { e.onclick = function () { var p = ccCap().filter(function (x) { return x.k === e.getAttribute('data-kemok'); })[0]; if (p) [p.t, p.s].forEach(function (x) { if (x) x.kem = null; }); ccVe(); }; });
     ccDayDat(t); ccCheNoi(t);
     t.querySelectorAll('.ccm[data-id]').forEach(function (e) { e.onclick = function () { ccCham(Number(e.getAttribute('data-id'))); }; });
     t.querySelectorAll('[data-luu]').forEach(function (e) {
@@ -2998,6 +3026,7 @@ textarea.inp{font-family:inherit}
       cap.forEach(function (p) {
         var st = CCS.tt[p.k] || {};
         if (!p.t || !p.s || st.ok || st.co || st.dang) return;
+        if (p.kem) return;   // 04/11: ảnh cắt chưa chuẩn: vẫn in, không lưu kho
         if (p.co) { CCS.tt[p.k] = { co: 1, so: p.so, ten: p.ten, duong: p.co }; ccGanThem({ so: p.so, ten: p.ten, duong: p.co, id: p.coId }, p); ccTamXong(p, p.so); return; }   // kho đã có: không lưu lại
         ccXep(p.k, p.so, p.so ? 'đọc từ ảnh' : '');
       });
@@ -3109,19 +3138,20 @@ textarea.inp{font-family:inherit}
     var cap = ccCap(); if (!cap.length) return;
     if (CCS.ds.some(function (x) { return x.doc === 'cho' || x.doc === 'dang'; })) { toast('Đang đọc số để ghép đúng người, chờ chút.'); return; }
     ccThuc(1);
-    var luu = 0, co = 0, xem = 0, le = 0;
+    var luu = 0, co = 0, xem = 0, le = 0, kem = 0;
     cap.forEach(function (p) {
       var st = CCS.tt[p.k] || {};
       if (!p.t || !p.s) { le++; return; }
       if (st.ok || st.co || st.dang) return;
       if (!p.chac) { xem++; return; }
+      if (p.kem) { kem++; return; }
       if (p.co) { CCS.tt[p.k] = { co: 1, so: p.so, ten: p.ten, duong: p.co }; ccGanThem({ so: p.so, ten: p.ten, duong: p.co, id: p.coId }, p); ccTamXong(p, p.so, true); co++; return; }
       ccXep(p.k, p.so, p.so ? 'đọc từ ảnh' : ''); luu++;
     });
     ccVe();
     var m = [];
     if (luu) m.push('Đang lưu ' + luu + ' người'); if (co) m.push(co + ' người kho đã có');
-    if (xem) m.push(xem + ' người cần bấm Đúng người'); if (le) m.push(le + ' ảnh lẻ chưa có cặp');
+    if (xem) m.push(xem + ' người cần bấm Đúng người'); if (kem) m.push(kem + ' người ảnh cắt chưa chuẩn – chỉnh khung hoặc bấm Ảnh ổn'); if (le) m.push(le + ' ảnh lẻ chưa có cặp');
     toast(m.length ? m.join(' · ') : 'Không còn người nào cần lưu.');
   }
   function ccTamDem() {   // số ảnh chờ trong CCCD TẠM (hỏi ngầm, tối đa 1 lần/phút)
@@ -3817,6 +3847,7 @@ textarea.inp{font-family:inherit}
   }
   function ccCheNoi(t) { t.querySelectorAll('[data-che]').forEach(function (b) { b.onclick = function () { CCS.theMo = b.getAttribute('data-che') === '1'; var lg = theLogoNap(); if (!lg.complete) lg.onload = function () { ccVe(); }; ccVe(); window.scrollTo(0, 0); }; }); }
   var BAN_MOI = [
+    { so: 108, ds: [['CCCD: app tự chấm ảnh vừa cắt. Ảnh cắt chưa chuẩn (không thấy khung thẻ, khung mờ, thẻ quá nhỏ, khung méo) hiện dòng vàng "Ảnh cắt chưa chuẩn" và KHÔNG tự lưu vào kho – kể cả khi bấm In. Chạm ảnh → Chỉnh khung cắt kéo 4 góc sát thẻ là hết báo; thấy ảnh đã thẳng, sát thẻ thì bấm "Ảnh ổn".', ''], ['Nút xuất file CCCD gửi Đại Thành: ảnh trong CCCD TẠM cắt chưa chuẩn thì không tự ghép vào kho, ghi vào bảng người thiếu để xử lý trong app.', 'chu']] },
     { so: 106, ds: [['Tổng quan: dòng vàng chỉ hiện khi có công ty đang làm chưa có số kỳ mới, ghi rõ tên công ty đó (trước đây báo nhầm vì đếm cả công ty đã dừng).', 'chu']] },
     { so: 105, ds: [['In CCCD và Thẻ HOJEONG: chọn ảnh chụp màn hình VNeID (cả 2 mặt trong 1 ảnh) thì app tự cắt từng mặt, tự ghép thành 1 người, giữ nguyên màu ảnh.', '']] },
     { so: 104, ds: [['Thẻ HOJEONG: tích người là ô mã thẻ tự điền mã đề xuất (ưu tiên mã cũ in thẻ mà người đó không đi làm, rồi đến số tiếp theo). Sửa được nếu muốn.', ''],
