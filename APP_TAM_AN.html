@@ -2482,10 +2482,79 @@ textarea.inp{font-family:inherit}
       for (var lan = 0; lan < 8 && P.some(function (p) { return p[0] < -0.01 * w || p[0] > 1.01 * w || p[1] < -0.01 * h || p[1] > 1.01 * h; }); lan++) { f = f.map(function (x) { return x * 0.7; }); P = moRong(g, f); }   // không nới ra ngoài ảnh
       return P;
     }
+    // 04/11: bám mép thẻ thật – từ khung đã tìm, dò từng cạnh trong ±7% bề ngang thẻ, xoay ±6°, lấy đường có độ chênh sáng 2 bên mạnh nhất
+    // (mép thẻ / nền). Chỉ đổi cạnh khi đường mới rõ hơn hẳn đường cũ → ảnh đang cắt đúng giữ nguyên. Sửa ảnh thẻ trên nền sáng (đá, giấy) bị nắn xiên.
+    function bamMep(cv, q) {
+      var n = nho(cv, 1400), w = n.w, h = n.h, s = n.s, L = new Float32Array(w * h), i, k;
+      for (i = 0; i < w * h; i++) L[i] = 0.299 * n.d[i * 4] + 0.587 * n.d[i * 4 + 1] + 0.114 * n.d[i * 4 + 2];
+      function I(x, y) { if (x < 0) x = 0; if (y < 0) y = 0; if (x > w - 1.001) x = w - 1.001; if (y > h - 1.001) y = h - 1.001; var x0 = x | 0, y0 = y | 0, fx = x - x0, fy = y - y0, o = y0 * w + x0; return (L[o] * (1 - fx) + L[o + 1] * fx) * (1 - fy) + (L[o + w] * (1 - fx) + L[o + w + 1] * fx) * fy; }
+      var P = q.map(function (p) { return [p[0] * s, p[1] * s]; }), cx = 0, cy = 0;
+      P.forEach(function (p) { cx += p[0] / 4; cy += p[1] / 4; });
+      function diem(mx, my, tx, ty, nx, ny, len) {
+        var v = [], j;
+        for (j = 0; j < 80; j++) { var u = (j / 79 - 0.5) * 0.84 * len, x = mx + tx * u, y = my + ty * u; v.push(Math.abs(I(x + nx * 1.5, y + ny * 1.5) - I(x - nx * 1.5, y - ny * 1.5))); }
+        v.sort(function (a, b) { return a - b; }); return v[40];
+      }
+      var lines = [], doi = false;
+      for (k = 0; k < 4; k++) {
+        var a = P[k], b = P[(k + 1) % 4], dx = b[0] - a[0], dy = b[1] - a[1], len = Math.hypot(dx, dy), tx = dx / len, ty = dy / len;
+        var nx = -ty, ny = tx, mx = (a[0] + b[0]) / 2, my = (a[1] + b[1]) / 2;
+        if ((mx - cx) * nx + (my - cy) * ny < 0) { nx = -nx; ny = -ny; }   // pháp tuyến hướng ra ngoài
+        var span = Math.hypot(P[(k + 2) % 4][0] - b[0], P[(k + 2) % 4][1] - b[1]), R = Math.max(3, 0.07 * span);
+        var goc = diem(mx, my, tx, ty, nx, ny, len), best = { sc: goc, m: [mx, my], t: [tx, ty] }, ung = [];
+        for (var d = -R; d <= R; d += 1) for (var ag = -6; ag <= 6; ag += 0.5) {
+          var c = Math.cos(ag * Math.PI / 180), sn = Math.sin(ag * Math.PI / 180), ux = tx * c - ty * sn, uy = tx * sn + ty * c, vx = -uy, vy = ux;
+          if (vx * nx + vy * ny < 0) { vx = -vx; vy = -vy; }
+          var px = mx + nx * d, py = my + ny * d, sc = diem(px, py, ux, uy, vx, vy, len);
+          ung.push({ sc: sc, m: [px, py], t: [ux, uy], d: d });
+          if (sc > best.sc) best = ung[ung.length - 1];
+        }
+        if (best.sc > Math.max(12, goc * 1.15)) doi = true; else best = { sc: goc, m: [mx, my], t: [tx, ty] };
+        lines.push(best);
+      }
+      if (!doi) return q;
+      var out = [];
+      for (k = 0; k < 4; k++) {
+        var l1 = lines[(k + 3) % 4], l2 = lines[k], det = l1.t[0] * (-l2.t[1]) - (-l2.t[0]) * l1.t[1];
+        if (Math.abs(det) < 1e-6) return q;
+        var rx = l2.m[0] - l1.m[0], ry = l2.m[1] - l1.m[1], u1 = (rx * (-l2.t[1]) - (-l2.t[0]) * ry) / det;
+        out.push([(l1.m[0] + l1.t[0] * u1) / s, (l1.m[1] + l1.t[1] * u1) / s]);
+      }
+      var A0 = 0, A1 = 0; for (k = 0; k < 4; k++) { A0 += q[k][0] * q[(k + 1) % 4][1] - q[(k + 1) % 4][0] * q[k][1]; A1 += out[k][0] * out[(k + 1) % 4][1] - out[(k + 1) % 4][0] * out[k][1]; }
+      if (!(Math.abs(A1) > 0.8 * Math.abs(A0) && Math.abs(A1) < 1.25 * Math.abs(A0))) return q;   // khung mới khác quá nhiều: giữ khung cũ
+      return out;
+    }
+    // 04/11: đo độ nghiêng dòng chữ trên mặt thẻ đã nắn (nửa trên, nửa dưới – bắt cả thẻ hình thang). Trả độ lớn nhất, có dấu.
+    function nghiengChu(the) {
+      var n = nho(the, 700), w = n.w, h = n.h, g = new Float32Array(w * h), i, x, y;
+      for (i = 0; i < w * h; i++) g[i] = 0.299 * n.d[i * 4] + 0.587 * n.d[i * 4 + 1] + 0.114 * n.d[i * 4 + 2];
+      var S = new Float64Array((w + 1) * (h + 1)), r = 12;   // ảnh tích phân → trung bình cục bộ
+      for (y = 0; y < h; y++) { var rs = 0; for (x = 0; x < w; x++) { rs += g[y * w + x]; S[(y + 1) * (w + 1) + x + 1] = S[y * (w + 1) + x + 1] + rs; } }
+      var px = [], py = [], m = Math.round(0.057 * h);
+      for (y = m; y < h - m; y++) for (x = m; x < w - m; x++) {
+        var x0 = Math.max(0, x - r), x1 = Math.min(w, x + r + 1), y0 = Math.max(0, y - r), y1 = Math.min(h, y + r + 1);
+        var mean = (S[y1 * (w + 1) + x1] - S[y0 * (w + 1) + x1] - S[y1 * (w + 1) + x0] + S[y0 * (w + 1) + x0]) / ((x1 - x0) * (y1 - y0));
+        if (g[y * w + x] < mean - 15) { px.push(x - w / 2); py.push(y); }
+      }
+      function goc(lo, hi) {
+        var best = 0, bv = -1, H = new Float64Array(h + 2 * w);
+        for (var a = -6; a <= 6.001; a += 0.25) {
+          H.fill(0); var tn = Math.tan(a * Math.PI / 180), off = w;
+          for (var j = 0; j < px.length; j++) if (py[j] >= lo && py[j] < hi) { var b = Math.round(py[j] + px[j] * tn) + off; if (b >= 0 && b < H.length) H[b]++; }
+          var v = 0, mu = 0, c = 0; for (var t = 1; t < H.length; t++) { var dd = H[t] - H[t - 1]; mu += dd; v += dd * dd; c++; }
+          v = v / c - (mu / c) * (mu / c);
+          if (v > bv) { bv = v; best = a; }
+        }
+        return best;
+      }
+      var a1 = goc(0, h / 2 + 10), a2 = goc(h / 2 - 10, h);
+      return Math.abs(a1) >= Math.abs(a2) ? a1 : a2;
+    }
     function xuLy(cv, q) {
       var t = q ? { q: xep(q), nguon: 'tay' } : timThe(cv);
       if (!q) {
         t.q = xep(lamSat(cv, t.q, t.nguon === 'ca anh'));
+        if (t.nguon !== 'ca anh') t.q = xep(bamMep(cv, t.q));
         var ccx = (t.q[0][0] + t.q[1][0] + t.q[2][0] + t.q[3][0]) / 4, ccy = (t.q[0][1] + t.q[1][1] + t.q[2][1] + t.q[3][1]) / 4;
         t.q = t.q.map(function (p) { return [ccx + (p[0] - ccx) * 0.988, ccy + (p[1] - ccy) * 0.985]; });   // lẹm vào 0,6–0,8 % cho sạch vệt nền sát mép (lề thẻ trống, không có chữ)
       }
@@ -2495,7 +2564,10 @@ textarea.inp{font-family:inherit}
       if (!q && t.nguon !== 'ca anh') { gn = noiLe(cv, gn); g = gn; }   // 23/10: không cắt lẹm vào thẻ
       var mat = nan(cv, gn, MW, MH), pl = phanLoai(mat);
       if (pl.xoay) mat = xoay(mat, 180);
-      return { the: mat, q: g, tim: t, mat: pl.mat, chac: pl.chac, f: pl.f, ro: pl.ro !== false, kem: q ? [] : danhGia(cv, t, g) };
+      var kem = q ? [] : danhGia(cv, t, g), ng = 0;
+      try { ng = nghiengChu(mat); } catch (e) { }
+      if (Math.abs(ng) > 1) kem.push('ảnh nghiêng ' + String(Math.abs(ng)).replace('.', ',') + '°');   // 04/11: chuẩn chung – dòng chữ nghiêng quá 1° thì không lưu kho
+      return { the: mat, q: g, tim: t, mat: pl.mat, chac: pl.chac, f: pl.f, ro: pl.ro !== false, kem: kem, ng: ng };
     }
     // 04/11: chấm ảnh tự cắt – lý do khiến ảnh dễ lệch / dính nền / thiếu góc ([] = đạt). Chỉ đọc số đo của bước tìm khung, không đổi cách cắt.
     // Thử 106 ảnh gốc CCCD TẠM: bắt 12/14 ảnh cắt hỏng (2 ảnh còn lại: 1 lộn ngược – app đã báo 'xem lại'; 1 ảnh chân dung – không có số nên không lưu), báo nhầm 4/92 ảnh tốt
@@ -2565,7 +2637,7 @@ textarea.inp{font-family:inherit}
       }
       return out;
     }
-    return { CHINH_MD: CHINH_MD, tachVN: tachVN, xep: xep, lamDep: lamDep, timThe: timThe, xuLy: xuLy, ghep: ghep, xoay: xoay, phanLoai: phanLoai, MW: MW, MH: MH, GAP: GAP };
+    return { CHINH_MD: CHINH_MD, tachVN: tachVN, xep: xep, lamDep: lamDep, timThe: timThe, xuLy: xuLy, ghep: ghep, xoay: xoay, phanLoai: phanLoai, nghiengChu: nghiengChu, MW: MW, MH: MH, GAP: GAP };
   })();
   // ---------- 21/10: tab CCCD – chọn ảnh 2 mặt trong album -> tự cắt, nắn, ghép từng cặp -> in mỗi người 1 tờ A4 -> lưu thư mục CCCD trên Drive ----------
   var CCS = { ds: [], tt: {}, jpg: {}, dang: null, doi: null, hang: [], chay: 0, docHang: [], docChay: 0, kho: null, anh: {} }, ccId = 0;
@@ -3948,6 +4020,7 @@ textarea.inp{font-family:inherit}
   }
   function ccCheNoi(t) { t.querySelectorAll('[data-che]').forEach(function (b) { b.onclick = function () { CCS.theMo = b.getAttribute('data-che') === '1'; var lg = theLogoNap(); if (!lg.complete) lg.onload = function () { ccVe(); }; ccVe(); window.scrollTo(0, 0); }; }); }
   var BAN_MOI = [
+    { so: 111, ds: [['CCCD: ảnh tự cắt bám đúng mép thẻ hơn – thẻ chụp trên nền sáng (sàn đá, giấy trắng) không còn bị nắn xiên.', ''], ['Chuẩn chung cho mọi ảnh vào kho: dòng chữ trên thẻ nghiêng quá 1° thì hiện dòng vàng "Ảnh cắt chưa chuẩn (ảnh nghiêng …)" và không tự lưu kho. Chạm ảnh → Chỉnh khung cắt kéo 4 góc đúng mép thẻ là hết báo.', '']] },
     { so: 110, ds: [['CCCD → Tìm ảnh trong kho: mở ra không còn điền sẵn năm sinh, giới tính của lần tìm trước – gõ tên là tìm ngay.', '']] },
     { so: 109, ds: [['CCCD → Tìm ảnh trong kho: ô mới trên cùng "Gõ tên, năm sinh hoặc số CCCD". Gõ là ra ngay (không chờ máy chủ), không cần gõ dấu, gõ đầu chữ cũng được: "huong 1995", "ng t hoa", "0241950". Mỗi ảnh hiện họ tên + ngày sinh. Cả kho đã được soát, đủ họ tên có dấu và ngày sinh.', ''], ['Ảnh lưu mới từ app tự thêm họ tên, ngày sinh vào danh bạ và có ảnh nhỏ ngay; máy đọc được tên đầy đủ hơn thì tự cập nhật (tên đã sửa tay thì giữ nguyên).', ''], ['Xem to một CCCD có nút "Sửa tên / ngày sinh": thấy tên sai thì sửa ngay, danh bạ của mọi máy cập nhật theo.', '']] },
     { so: 108, ds: [['CCCD: app tự chấm ảnh vừa cắt. Ảnh cắt chưa chuẩn (không thấy khung thẻ, khung mờ, thẻ quá nhỏ, khung méo) hiện dòng vàng "Ảnh cắt chưa chuẩn" và KHÔNG tự lưu vào kho – kể cả khi bấm In. Chạm ảnh → Chỉnh khung cắt kéo 4 góc sát thẻ là hết báo; thấy ảnh đã thẳng, sát thẻ thì bấm "Ảnh ổn".', ''], ['Nút xuất file CCCD gửi Đại Thành: ảnh trong CCCD TẠM cắt chưa chuẩn thì không tự ghép vào kho, ghi vào bảng người thiếu để xử lý trong app.', 'chu']] },
