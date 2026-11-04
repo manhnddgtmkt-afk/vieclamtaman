@@ -13,7 +13,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
 <script src="config.js"></script>
-<script>window.PB = { so: 112, luc: "04/11 14:28" };</script>
+<script>window.PB = { so: 113, luc: "04/11 15:08" };</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap">
 <style>
@@ -800,7 +800,7 @@ textarea.inp{font-family:inherit}
   // ---------- gọi máy chủ ----------
   // ---------- thanh tiến trình (ước tính theo thời gian thường mất của từng việc) ----------
   var VIEC_TG = { hoi: [3, 'Đang kiểm tra'], vao: [4, 'Đang đăng nhập'], toi: [3, 'Đang mở'], ds: [3, 'Đang tải danh sách'], phieu: [4, 'Đang tính phiếu lương'],
-    phieuTuan: [5, 'Đang tính phiếu các tuần'], tangCuong: [8, 'Đang ghi xác nhận tăng cường'], vtXem: [8, 'Đang đọc file vân tay'], dsTra: [2, ''], ghiUT: [7, 'Đang ghi vào sổ ứng/trả'], suaUT: [7, 'Đang sửa sổ ứng/trả'], cho: [3, ''], choGui: [3, ''], choHoan: [2, ''], choBo: [3, ''], utGan: [4, 'Đang tải ứng / trả'], themNguoi: [5, 'Đang thêm vào danh sách'], thuNhap: [4, 'Đang tải thu nhập'],
+    phieuTuan: [5, 'Đang tính phiếu các tuần'], tangCuong: [8, 'Đang ghi xác nhận tăng cường'], vtXem: [8, 'Đang đọc file vân tay'], dsTra: [2, ''], ghiUT: [7, 'Đang ghi vào sổ ứng/trả'], ntGhi: [4, 'Đang ghi nguồn tuyển'], suaUT: [7, 'Đang sửa sổ ứng/trả'], cho: [3, ''], choGui: [3, ''], choHoan: [2, ''], choBo: [3, ''], utGan: [4, 'Đang tải ứng / trả'], themNguoi: [5, 'Đang thêm vào danh sách'], thuNhap: [4, 'Đang tải thu nhập'],
     quy: [7, 'Đang tải sổ thu chi'], ghiSo: [7, 'Đang ghi sổ thu chi'], tq: [4, 'Đang tải báo cáo'], capNhat: [30, 'Đang cập nhật'], doiPin: [3, 'Đang lưu mã PIN'], ra: [1, ''] };
   var TT = { viec: [], el: null, t: null };
   function ttBat(q) {
@@ -1651,6 +1651,7 @@ textarea.inp{font-family:inherit}
     document.getElementById('bsHuy').onclick = function () { sh.remove(); };
     if (!sua) return;
     document.getElementById('bsOk').onclick = function () {
+      if (ntCan(h.p, 'sửa bảng công', function () { document.getElementById('bsOk') && document.getElementById('bsOk').click(); })) return;   // 04/11
       var nd = document.getElementById('bsNd').value.trim(), m = document.getElementById('bsM');
       var cu = raw.v.map(function (x) { return x === 0 && !best ? 0 : x; }), moi = sua ? oDoc() : null;
       var chuan = function (x) { x = String(x === undefined || x === null ? '' : x).trim(); return best ? x : (x === '' || Number(x.replace(',', '.')) === 0 ? '' : String(Number(x.replace(',', '.')))); };
@@ -1777,6 +1778,7 @@ textarea.inp{font-family:inherit}
         '<button class="btn" id="tcOk">' + (bo ? 'Bỏ xác nhận' : 'Xác nhận thanh toán') + '</button><button class="btn ghost" id="tcThoi">Thôi</button>');
       document.getElementById('tcThoi').onclick = function () { sh.remove(); };
       document.getElementById('tcOk').onclick = function () {
+        if (ntCan(h.p, 'xác nhận tăng cường', function () { var x = document.getElementById('tcOk'); if (x) x.click(); })) return;   // 04/11
         var b = this; b.disabled = true; b.textContent = 'Đang ghi…';
         apiT({ v: 'tangCuong', cty: S.cty, r: h.p.r, mon: o.mon, bo: bo ? 1 : 0 }).then(function (k) {
           if (k.loi) { b.disabled = false; b.textContent = bo ? 'Bỏ xác nhận' : 'Xác nhận thanh toán'; toastLoi(k.loi); return; }
@@ -1814,6 +1816,11 @@ textarea.inp{font-family:inherit}
     if (!bc || !bl) return;
     if (o.chan) { bc.disabled = bl.disabled = true; bl.textContent = 'Phiếu lệch – chưa xuất'; return; }
     bc.disabled = bl.disabled = false;
+    var pX = S.hs && S.hs.p;   // 04/11: chưa có nguồn tuyển -> bấm nút là mở hộp chọn nguồn, chọn xong bấm lại để xuất
+    if (pX && pX.r > 0 && pX.ng === '') {
+      bc.onclick = bl.onclick = function () { ntMo(pX, 'xuất phiếu lương', function () { ganXuat(o); }); };
+      return;
+    }
     setTimeout(function () { chupPhieu(o).catch(function () { }); }, 400);   // chụp sẵn để bấm là gửi được ngay (iPhone đòi bấm trực tiếp)
     bc.onclick = function () {
       if (!navigator.clipboard || !window.ClipboardItem) { toast('Máy này không cho sao chép ảnh, dùng nút Lưu / Gửi ảnh.'); return; }
@@ -1888,8 +1895,46 @@ textarea.inp{font-family:inherit}
     return sh;
   }
 
+  // ---------- 04/11: nguồn tuyển bắt buộc – thao tác trên người chưa có nguồn tuyển (cột AY bảng công) thì chọn nguồn ngay tại chỗ ----------
+  function ntCan(p, viec, tiep) {   // true = đã mở hộp chọn nguồn (người gọi dừng lại)
+    if (!p || !(p.r > 0) || p.ng !== '') return false;
+    ntMo(p, viec, tiep); return true;
+  }
+  function ntMo(p, viec, tiep) {
+    var c = S.cty, d = S.data[c] || {};
+    var sh = moSheet('<h3>Chọn nguồn tuyển</h3><div class="meta ell">' + esc(hoaDau(p.ten)) + (p.ma ? ' · mã ' + esc(p.ma) : '') + '</div>' +
+      '<div class="note warn" style="margin:10px 0">Người này chưa có nguồn tuyển trên bảng công. Chọn nguồn tuyển rồi mới ' + esc(viec) + ' được.</div>' +
+      '<div id="ntL"><div class="meta">Đang tải danh sách nguồn tuyển…</div></div><div class="msg" id="ntM"></div><button class="btn ghost" id="ntThoi">Thôi</button>');
+    document.getElementById('ntThoi').onclick = function () { sh.remove(); };
+    function ve(ds) {
+      var goi = kd(p.sale || ''), toi = kd(S.toi && S.toi.saleTen || '');
+      var xep = ds.slice().sort(function (a, b) { function h(x) { var k = kd(x.t); return k === goi ? 0 : (k === toi ? 1 : 2); } return h(a) - h(b); });
+      var l = document.getElementById('ntL'); if (!l) return;
+      l.innerHTML = xep.length ? xep.map(function (x) { return '<button class="btn ghost ntB" data-t="' + esc(x.t) + '">' + esc(hoaDau(x.t)) + (x.ven ? ' · Vendor' : '') + '</button>'; }).join('')
+        : '<div class="note bad">Bảng NGUỒN TUYỂN (sheet CO_CHE) của ' + esc(c) + ' đang trống.</div>';
+      l.querySelectorAll('.ntB').forEach(function (b) {
+        b.onclick = function () {
+          var t = b.getAttribute('data-t'), m = document.getElementById('ntM');
+          l.querySelectorAll('.ntB').forEach(function (x) { x.disabled = true; }); b.textContent = 'Đang ghi…'; m.textContent = '';
+          apiT({ v: 'ntGhi', cty: c, r: p.r, ten: p.ten, nguon: t }).then(function (k) {
+            if (k.loi) { m.textContent = k.loi; ve(ds); return; }
+            p.ng = k.nguon;
+            ((S.data[c] || {}).ds || []).forEach(function (x) { if (x.r === p.r && kd(x.ten) === kd(p.ten)) x.ng = k.nguon; });
+            luuDs(); sh.remove();
+            toast((k.da ? 'Người này đã có nguồn tuyển ' : 'Đã ghi nguồn tuyển ') + hoaDau(k.nguon) + ' cho ' + hoaDau(p.ten) + (viec === 'xuất phiếu lương' ? ' – bấm lại nút để xuất phiếu.' : ''));
+            if (tiep) tiep();
+          }, function (e) { m.textContent = e.message; ve(ds); });
+        };
+      });
+    }
+    if (d.nguon && d.nguon.length) ve(d.nguon);
+    else apiT({ v: 'ntDs', cty: c }).then(function (o) { if (o.loi) { document.getElementById('ntL').innerHTML = '<div class="note bad">' + esc(o.loi) + '</div>'; return; } d.nguon = o.ds || []; ve(d.nguon); },
+      function (e) { var l = document.getElementById('ntL'); if (l) l.innerHTML = '<div class="note bad">' + esc(e.message) + '</div>'; });
+  }
+
   // ---------- ghi ứng / trả lương ----------
   function moGhiUT(p, loai, pc) {
+    if (ntCan(p, loai === 'tra' ? 'ghi trả lương' : 'ghi ứng tiền', function () { moGhiUT(p, loai, pc); })) return;   // 04/11
     var tra = loai === 'tra';
     if (tra && !pc) pc = choCua(S.cty, p.ten)[0];   // người này đang có phiếu đã gửi chờ ghi chuyển
     var sh = moSheet('<h3>' + (tra ? 'Ghi trả lương' : 'Ghi ứng tiền') + '</h3><div class="meta" style="display:flex;gap:6px"><span class="ell">' + esc(hoaDau(p.ten)) + '</span><span style="flex:0 0 auto">· còn <b>' + vnd(p.con) + '</b></span></div>' +
@@ -1914,6 +1959,7 @@ textarea.inp{font-family:inherit}
       if (!confirmLan(btn, (tra ? 'Trả ' : 'Ứng ') + vnd(so) + ' cho ' + p.ten + ' – bấm lần nữa để ghi')) return;
       btn.disabled = true; btn.textContent = 'Đang ghi…';
       apiT({ v: 'ghiUT', cty: S.cty, r: p.r, loai: tra ? 'tra' : 'ung', so: so, nguoiTra: nt, ghiChu: [tra && pc && /^Tuần /.test(pc.tuan || '') ? 'Ghi từ phiếu lương ' + pc.tuan.replace(/^Tuần/, 'tuần') : '', document.getElementById('gg').value.trim()].filter(Boolean).join(' · ') }).then(function (o) {
+        if (o.canNguon) { btn.disabled = false; btn.textContent = 'Ghi'; p.ng = ''; ntMo(p, tra ? 'ghi trả lương' : 'ghi ứng tiền', function () { var g = document.getElementById('gok'); if (g) g.click(); }); return; }   // 04/11
         if (o.loi) { btn.disabled = false; btn.textContent = 'Ghi'; m.textContent = o.loi; return; }
         sh.remove(); toast('Đã ghi ' + (tra ? 'trả lương ' : 'ứng ') + vnd(so));
         PC = {}; var r = p.r;
@@ -4048,6 +4094,7 @@ textarea.inp{font-family:inherit}
   }
   function ccCheNoi(t) { t.querySelectorAll('[data-che]').forEach(function (b) { b.onclick = function () { CCS.theMo = b.getAttribute('data-che') === '1'; var lg = theLogoNap(); if (!lg.complete) lg.onload = function () { ccVe(); }; ccVe(); window.scrollTo(0, 0); }; }); }
   var BAN_MOI = [
+    { so: 113, ds: [['Nguồn tuyển bắt buộc: người chưa có nguồn tuyển trên bảng công thì khi xuất phiếu lương, ghi ứng / trả lương, sửa bảng công hoặc xác nhận tăng cường, app hiện hộp chọn nguồn tuyển ngay tại chỗ. Chọn xong là làm tiếp.', ''], ['Trên Google Sheet: phải chọn Nguồn tuyển (bảng công, cột AY) hoặc SALE (DANH_SACH, cột I) trước, rồi mới gõ được họ tên.', ''], ['Thêm người mới trên app: bắt buộc chọn sale tuyển.', '']] },
     { so: 112, ds: [['CCCD: app bắt thêm lỗi khung cắt sai – khung lấy cả nền nhà, chữ trên thẻ bị xoay dọc. Ảnh như vậy hiện dòng vàng "Ảnh cắt chưa chuẩn" và không tự lưu vào kho; chạm ảnh → Chỉnh khung cắt để kéo lại 4 góc.', ''], ['Ảnh chờ trong CCCD TẠM: lấy cả ảnh nằm trong thư mục con (vd thư mục "cc"), trước đây bị bỏ sót.', '']] },
     { so: 111, ds: [['CCCD: ảnh tự cắt bám đúng mép thẻ hơn – thẻ chụp trên nền sáng (sàn đá, giấy trắng) không còn bị nắn xiên.', ''], ['Chuẩn chung cho mọi ảnh vào kho: dòng chữ trên thẻ nghiêng quá 1° thì hiện dòng vàng "Ảnh cắt chưa chuẩn (ảnh nghiêng …)" và không tự lưu kho. Chạm ảnh → Chỉnh khung cắt kéo 4 góc đúng mép thẻ là hết báo.', '']] },
     { so: 110, ds: [['CCCD → Tìm ảnh trong kho: mở ra không còn điền sẵn năm sinh, giới tính của lần tìm trước – gõ tên là tìm ngay.', '']] },
@@ -4781,6 +4828,12 @@ textarea.inp{font-family:inherit}
   }
 
   // ---------- thêm người ----------
+  function ntChon(sales) {   // 04/11: danh sách chọn = bảng NGUỒN TUYỂN (CO_CHE) chữ hoa + giá trị đang có ở cột SALE
+    var co = {}, out = [];
+    (((S.data[S.cty] || {}).nguon) || []).forEach(function (x) { var t = String(x.t || '').toUpperCase(); if (t && !co[kd(t)]) { co[kd(t)] = 1; out.push(t); } });
+    Object.keys(sales).sort().forEach(function (t) { if (!co[kd(t)]) { co[kd(t)] = 1; out.push(t); } });
+    return out;
+  }
   function moThemNguoi() {
     var hn = new Date(), iso = hn.getFullYear() + '-' + ('0' + (hn.getMonth() + 1)).slice(-2) + '-' + ('0' + hn.getDate()).slice(-2);
     var sales = {}; Object.keys(S.data).forEach(function (k) { (S.data[k].ds || []).forEach(function (p) { if (p.sale) sales[String(p.sale).toUpperCase()] = 1; }); });
@@ -4792,7 +4845,7 @@ textarea.inp{font-family:inherit}
       '<div class="g2"><div><label class="lb">Giới tính</label><select class="inp" id="tGt"><option value=""></option><option>Nam</option><option>Nữ</option></select></div><div><label class="lb">SĐT</label><input class="inp" id="tSdt" type="tel" inputmode="numeric"></div></div>' +
       '<div><label class="lb">Số CCCD</label><input class="inp" id="tCccd" inputmode="numeric" placeholder="12 số"></div>' +
       '<div><label class="lb">Địa chỉ</label><input class="inp" id="tDc"></div>' +
-      (laSale ? '' : '<div><label class="lb">Sale tuyển</label><select class="inp" id="tSale"><option value="">(chưa rõ)</option>' + Object.keys(sales).sort().map(function (s) { return '<option value="' + esc(s) + '">' + esc(hoaDau(s)) + '</option>'; }).join('') + '</select></div>') +
+      (laSale ? '' : '<div><label class="lb">Sale tuyển (nguồn tuyển) *</label><select class="inp" id="tSale"><option value="">– Chọn –</option>' + ntChon(sales).map(function (s) { return '<option value="' + esc(s) + '">' + esc(hoaDau(s)) + '</option>'; }).join('') + '</select></div>') +
       '<div><label class="lb">Ghi chú</label><input class="inp" id="tGhi"></div>' +
       '<div class="meta ell">Lên bảng công từ lần cập nhật tới</div>' +
       '<div class="msg" id="tm"></div><button class="btn" id="tok">Thêm</button><button class="btn ghost" id="thuy">Thôi</button>');
@@ -4803,6 +4856,7 @@ textarea.inp{font-family:inherit}
       var x = { ten: gv('tTen'), ma: gv('tMa'), ca: gv('tCa'), ns: ngayVN(gv('tNs')), nvao: ngayVN(gv('tNv')), gt: gv('tGt'), sdt: gv('tSdt'), cccd: gv('tCccd'), dc: gv('tDc'), sale: gv('tSale'), ghi: gv('tGhi') };
       var m = document.getElementById('tm'), btn = this;
       if (x.ten.length < 4) { m.textContent = 'Nhập đủ họ và tên.'; return; }
+      if (!laSale && !x.sale) { m.textContent = 'Chọn sale tuyển (nguồn tuyển).'; return; }   // 04/11
       if (x.cccd && x.cccd.replace(/\D/g, '').length !== 12) { m.textContent = 'Số CCCD phải đủ 12 số.'; return; }
       btn.disabled = true; btn.textContent = 'Đang thêm…';
       apiT({ v: 'themNguoi', cty: S.cty, nguoi: x }).then(function (o) {
