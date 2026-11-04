@@ -3505,7 +3505,7 @@ textarea.inp{font-family:inherit}
   // ---- tìm trong kho ----
   function ccKhoMo() {
     var l = {}; try { l = JSON.parse(doc('vlta_cc_kho') || '{}'); } catch (e) { }
-    CCS.kho = { gioi: l.gioi || '', tu: l.tu || '', den: l.den || '', duoi: '', q: '', ds: [], tong: -1, trang: -1, dang: 0, chon: {} };
+    CCS.kho = { gioi: '', tu: '', den: '', duoi: '', q: '', ds: [], tong: -1, trang: -1, dang: 0, chon: {} };   // 04/11: không điền sẵn năm sinh / giới tính lần trước
     dbNap(function () { var k = CCS.kho; if (k && k.q) ckTenLoc(); });
     ccVe(); window.scrollTo(0, 0);
     setTimeout(function () { var e = document.getElementById('ckTen'); if (e && !('ontouchstart' in window)) e.focus(); }, 50);
@@ -3948,6 +3948,7 @@ textarea.inp{font-family:inherit}
   }
   function ccCheNoi(t) { t.querySelectorAll('[data-che]').forEach(function (b) { b.onclick = function () { CCS.theMo = b.getAttribute('data-che') === '1'; var lg = theLogoNap(); if (!lg.complete) lg.onload = function () { ccVe(); }; ccVe(); window.scrollTo(0, 0); }; }); }
   var BAN_MOI = [
+    { so: 110, ds: [['CCCD → Tìm ảnh trong kho: mở ra không còn điền sẵn năm sinh, giới tính của lần tìm trước – gõ tên là tìm ngay.', '']] },
     { so: 109, ds: [['CCCD → Tìm ảnh trong kho: ô mới trên cùng "Gõ tên, năm sinh hoặc số CCCD". Gõ là ra ngay (không chờ máy chủ), không cần gõ dấu, gõ đầu chữ cũng được: "huong 1995", "ng t hoa", "0241950". Mỗi ảnh hiện họ tên + ngày sinh. Cả kho đã được soát, đủ họ tên có dấu và ngày sinh.', ''], ['Ảnh lưu mới từ app tự thêm họ tên, ngày sinh vào danh bạ và có ảnh nhỏ ngay; máy đọc được tên đầy đủ hơn thì tự cập nhật (tên đã sửa tay thì giữ nguyên).', ''], ['Xem to một CCCD có nút "Sửa tên / ngày sinh": thấy tên sai thì sửa ngay, danh bạ của mọi máy cập nhật theo.', '']] },
     { so: 108, ds: [['CCCD: app tự chấm ảnh vừa cắt. Ảnh cắt chưa chuẩn (không thấy khung thẻ, khung mờ, thẻ quá nhỏ, khung méo) hiện dòng vàng "Ảnh cắt chưa chuẩn" và KHÔNG tự lưu vào kho – kể cả khi bấm In. Chạm ảnh → Chỉnh khung cắt kéo 4 góc sát thẻ là hết báo; thấy ảnh đã thẳng, sát thẻ thì bấm "Ảnh ổn".', ''], ['Nút xuất file CCCD gửi Đại Thành: ảnh trong CCCD TẠM cắt chưa chuẩn thì không tự ghép vào kho, ghi vào bảng người thiếu để xử lý trong app.', 'chu']] },
     { so: 106, ds: [['Tổng quan: dòng vàng chỉ hiện khi có công ty đang làm chưa có số kỳ mới, ghi rõ tên công ty đó (trước đây báo nhầm vì đếm cả công ty đã dừng).', 'chu']] },
