@@ -13,7 +13,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
 <script src="config.js"></script>
-<script>window.PB = { so: 116, luc: "04/11 16:28" };</script>
+<script>window.PB = { so: 117, luc: "05/11 17:21" };</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap">
 <style>
@@ -2469,7 +2469,7 @@ textarea.inp{font-family:inherit}
       return { mat: E > 0.01 ? 'truoc' : 'sau', xoay: 0, chac: false, ro: false, f: f };   // không nhận ra: để nguyên, đánh dấu xem lại
     }
     // ---- làm đẹp cho máy in laser: cân sáng (khử bóng nhẹ) + kéo giãn mức xám + làm nét nhẹ ----
-    var CHINH_MD = { sang: 50, tp: 60, net: 60 };   // mặc định: 0..100 (sáng 50 = giữ nguyên)
+    var CHINH_MD = { sang: 50, tp: 50, net: 50 };   // 05/11: thanh chỉnh bản in, 50 = mức C tự động theo từng ảnh (trước 50 / 60 / 60 cho lamDep cũ)
     function lamDep(cv, o) {   // o = { sang, tp, net }; ảnh nhỏ (xem trước) tự thu bán kính làm nét
       o = o || CHINH_MD;
       if (o.nguyen) return cv;   // 03/11: ảnh chụp màn hình VNeID đã nét – giữ nguyên màu
@@ -2675,13 +2675,207 @@ textarea.inp{font-family:inherit}
       if (Math.abs(ar / TL - 1) > 0.09 && dm < 0.3) ly.push('khung lệch tỉ lệ thẻ');
       return ly;
     }
-    function ghep(truoc, sau, o, rong) {   // rong: bề rộng ảnh (mặc định 1400 = bản in / lưu; nhỏ hơn để xem trước khi kéo thanh chỉnh)
+    // ---- 05/11: ảnh LƯU KHO = ảnh màu, tự cân bằng trắng theo từng ảnh (không kéo tương phản gắt làm cháy mặt người);
+    // ảnh mất hẳn 1 màu (chụp dưới đèn xanh...) thì tô màu theo thẻ mẫu cùng loại, giữ nguyên độ sáng tối của ảnh thật.
+    // ảnh IN = đen trắng rõ nét (mức C anh duyệt 05/11): chọn cách pha màu cho chữ đậm / hoa văn nền mờ, khử bóng,
+    // mặt người xử lý riêng, bù máy laser in đậm. Thanh chỉnh 50 = mức C, kéo lệch thì cộng / trừ quanh mức đó.
+    var MAU_W = 56, MAU_H = 35, MAU_MAU = {c21t: "ubq9xsfJycjHxsPBwsDAwcTDwL/FycrKycrJx8bIyMnHyMjKysvMzM3NzczJwrq3tbOtrK2rqqq5ub3AwMK/w7u5vL26tLW2u8C/w8bHyszKzMzLzM3QzMvRzM7Tzs/NysTEycu+xci4ube3trOuqbe5rLCtsLa2sK6vsrexrr3CvcHMyMXIyczLzM/MzNHLzc/Mys7JxdLQxb67t7u8wLe0tLGzs7OjtrissbGsvLGwr7GxtLrAxMKro6ausaGjsqO2pqiwoqOgoJ2TrJKYoouClci9i4uDe4OJe6Oyspy2tqeur6ivrJqXkqS8ur++vq+ps7a8rqi7rryuubS+s7awvLG6w7G8tLi8vL6Db1ZmWHhypbSznba4s7i6sK2bkaSVkqyxuby7u7/Ex8TAkpyVnq2cn6KojJmdlZrFy8rAw7i7xJRiYWNphWiot7eftrWptrOwrJSSkJCQqrO8vbq9w8nAp6misqysoKCjrqeprZeNoouOwb66xby7e1VVbWppY6K3uKO1s6+xr7iYn5WbkJ6ZvL22vLzCxMKioqmjpLCwt6Olpqysj4yWkau+vry7vb+NZmF0UFlRl7W5o7O1t7Cpq6ulsLurp6uwvL7ExMTDybOurrW1urm/uKOhq6makpimtcK8u7jBv4pcXnNsZmWMvLSlsLO8vraqp5SgnJyZtrW1w8W8vrO/xMvAyci/ucLFv6idnaGjjKGZsJ2vt8bAhmZZTlxiUpW1vqOwucS9vrexqqiuqquvtbi6va66mq6quLu0rLClqr2xppOPdXyLq5aRfo+XusOlnomVqa2Xr7/Mo660w8i+u7q0rrWwsLa3u7m+trrFwrzCt77At7ezvcCysaynop+/qa6yra/Axri5ua2zt6uhu8GnrrfEyczFwcO/uMO2v72+wb/GysrFyszJx8bCw7V4gZTKu7K9wb26vbm3s7vCtLzGsbCxwKStrp6ts8fZ2dvZ2NnZ2Nna3N3TxJiQlaWXlJWFm4aNl21tksGoqL7Gxse9t7azrrC6vLizsb3GrqSwpq2ottna29vZ1tbY2tzc3dK/wMLCycrIyrvExMTHyMvJzcitvMbSwb64s66sq8Sysrmnq6+toqeTrKS429vb16iEjqe92Nzd0bu8xcPHzsm1sZnDr62rqpGqvKeapZOjpIWtramkqqO4vaqpqbScu46tp73c3daef3h0hIO4293OvpGmqKC4xIeAeYR7c3+Dj46KfKd2VGyCX56qqKWuxLGxp6+6w6S4lq6nwN3btoh5bX+RkpTU3M/BtLrEvr3JnpJ3oJWgnamrpqyumI1vlIx0pamkpKyrrK+mpqPCpbCnrqfJ3tqcem9wl6Kok8ncz8CnuLCnpLessLCzsbDDz9bV1dXUz6uatL+zqKKnrbCmrrWhnaijqpevrs/e1YqFnLO1uLOLttrLt6ClnaKdtbiwtKysrMnS1NXW1tXSypiYqaqloqihv7ipraKur6inm662z93LmK+vu7qwtJan08S4mZysp5y7o72frqbAsam2ub3B1NLOrpeeqqaiop6Xpaenoq/AqKehr7nP3cSupqXBu5qvp6rRw7WDfoaGdn2NqZ+SdLqJfn+HlKTV1MqsopusqqOip6q3r7Wgprypop2tttDc0MPFxczLx8i/xtTCrJmlr62vtLqusr2ruLOsxtC4xL2yvKWdj5KqqqarsK2yra2pp6O1nam4093YxMK/ur3Gv8fV1sCphH2GoJCfuKCbqqKqoa7SyJd5kImgg2Zwi62tqaeotrGjrrW+or2fqLjS29zKvcPBxcG80tjYvrO7vbzDvsTLycbIvLfJz8rHuL/Bw72xoZ6hs6yyxrG3sZuhtbinvqenu9Td3NG4qaGnsr7V2NrCnnuEjYiCspmauMh3i6vLnoeCm4OMkpR9dYaFdp+9d2pigWxraoe8wqO31dzdwKu4tbi1mcfX2cWxrrm6usLFw8TMy8C5x8nFvsC/rqOipqCapKOnnqWblIOkoaCMnau+orvY3MCfp6yuq66Woc7XwKidqrOwrLayrr69vLGzsrbHxb6yqaOks7azt7WoqKaknZ64s5anq52juNjNrKuytbCrrZuFrM+9o4uNpYyYsrOzp6qysaiZqr2ytKqrpqm1r7ayqLGnnZiwm6qdmK21n6XA0L63p7y6sKeupH2mrbq5an+dpaO1oIx7oJ+NkKqbeH6bfXqEi4y0vK6yqqSanLOjopeapbOXpcLJwLuvvr2xq7mwlKKlurOOjaCxkba4p5OeuKWapKmYkpiNlY6Vf7q0sratoJictrygprCam5mow8fBwb/JtbS5ppqao624m4eRiZWMlJ6XoLOOnKWxppugiJ6dp6Wan5Krj4+gkY6ToYSWk56ho67AqKycnZNz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", c21s: "vr6+vLy8vb/By87Ozc3NzcjHxsfHyMrIwL6+wcTFycrNz8/Ozs/Ozs3Mzc7MzM7NysjBt7Owrq3AwMTFxsXBxsjHxsrK0NDK0tTU0dHUys7N1NbX1Nbf5ePh4N/j6uvr7u3o7u7t6Oni5Org28ytrMnHxK2ks6Cms6eksZ6gwr2wrLO2qa6mp5ykztDQ0oyWm5GWi4u45Orr6+Xr6sidmYiVrJei37mpy8nFqqi6rrW7q7C9sLTCsLC+rK7R0dLQzMrMzM/TjX+GhYd+fYOo6e3s5um9loiLg4GPg3/Yv6jGxsS+v8TBycnHyc3JzdLSyMzUzNXSzs3NyszT09OWd3l8e3h8f4XJ7e7mypKKfXeGg3qAetLBqb7Bx7e7vsC6wsfIwcnHxcjUz83D08O+urvAvb3Cx3x3dW+Afnprg5jp7uSijH19eXh1eoJ4zcSqwsTIraKrvLGwrbmyu8K7uMW+u7a5qqWllaOfoaW4g3dtXm12b3R2grvt5JKFf3d2aG51fXXHyKvCxMfIyM7M0tHRzcetu6aspqWmnK2VlJ6ZzMzK19mLfnRoZGReaG9zq+zhi39scnpqbXqFfsbLrL/Cx8vPzMrLzqmorbazo6+mk5mdoJSSpKSOppXW2pt1bmRoWGVmb3SX6NiHemtmX2xecH2Fwc2su8DKz83NzczP0rytrLKqn6WkoJ6bn5Wakp/FzNDUnH59bldXbnB3fIbT04eDb3BzaW5tfoLDz628v8rKyszMwsLAtbizu72+vLqbjpeYl7K5tcbN1NORhnxqcm16bnR+gtrRjHp4b3F2d32BhLzPr7y/yMfGx7uqsaappaujw8rOo6q3rbCspcjQz87IzaWMg3t/gHt6eX2R48mIendzdXdmdnN9tdGvub7GxsrDur3Bubi9wbix0KuqrI2lkaCmp83PxLnTnYODhX1+fXd9g63t3ZOMe3h8b3V9hHe+06q0usjMzsG6x8/DzMfMwLLOn5p+y6jKlLKexcay0tWUgIqHh4WAk4yExe3kr4mLgIV/eXeAir7UqLS8yc7OwLC3vr/Mtbmuq8ieinyZjqeOrLWyr8vS07KZj5estqCKiJ/n7OXTpYuNkpiBiKKPv9WlqrTK0M/Cq7a8u8avs7WtyZSDeo1pe1dck57Lyc3T3dDDyeDLwMrS3+zt5OPOxcfd5eXaz9Xg16OmtMzM0r60wcm9ybvEuK/Oo5qvi4F4noSFx8nPy8rOzsi/ws7DucS7wb+yt722tbfCvb7BvMS0n7zDys7Lx660uLGssbSurtK9p7CstKivd7DIz9TRyszKr3l6lX2Hg6G5oqCgoJRnbYWBiHmCraydvsbJy8rCtKyjp6WhqqfKztC3nqeynYSPx8bO0MzHvcGxmpWPlYOLtbSdn6Sdm3eGjYWOj5WnopK1vsjDu7i7vsPEvMXOy8zKzc/Mta+zqqXHycjIxcLAvLy4tLSpqaezrpienJ2enqexpKeqrq+fkbK5w7q2u8HDw8XIzNPR0tTV1szV1NfBsMvNz8nFxsi/vL6/rKajpJ2hnJmfrLCwr7G2u8fCwLiPxsjIxcTDxcrHys7O0L2fqLSnh7arpaGXxYejnZzJzMrJysfFwsK/wL+8vry6vr/AvsG/w7+9t4jJycjHx8rJyM3P0M/Rw66KopimwLSjpKbBsaWqh8rLysbGxcTCwcO9vcC+ur/BvL/Avb/Cvb65icLHysbAxsnFydDMz8rDx7LDvcbPtsPCwMS1tcCqubS/ybK1s5qxqbC4qbKsurahxb68ta68vsCHy8rOxKCUo5CJnlujpIymmaOmks2QmZR7paavmqKgmJS8kZKQlpOcla6HkIF7oIuhoYWrjL3EwIbQ0M+/qpu+l6yTqL21o7O5tau6vaaqpJmtppy2l56zqrezpaWvqZKwpYaXlpOjmMGjr5Sdv723htLR0LevpaWksKmky8C7yrG+ua+uo7amoca1t8S4qb2tubjKrL22qb6tsbuqubO3w7K/oJbEvr+JztDPoJadpKWrvZmcooiymLqtoqWnr7qXn5KJp2+OdmmThp2he62Fkqp3po2CrX+en36UdsHCw4rQztC6rr3Cqr/Jqcu7rb/DtcDEx6bA0KHKvc69qrqvvcDDx7XCtLTEsr6zrcCtvb+1vKSducG8isvMz6mnsaO2obWiyKu8tKG8vqnOqba3nKSpsLOlvKG0taS6o6iwmLCfnK6WraGdtJuiqJG/vreHzsfGlq6CiZiIhoaipZa+pZaWn7qSkZVljXCJl4iilZCgg5qahKCFjpZ+mIOKk3yQjYiYhLq/t4bJxcnDxL7Av8XFuc7Ny8fEwMaxycbAxMS+wcbIyMO+v8O9vre7wsC+ub+6rqyvsru0trK2v7+6hcLBwsPCwsXJy83Oz8zIycnKyMrIyMjLzs/QzcjCwr7Av7+6urW3v76+vbSurqyzsLKys7O5vbmCvsLAwMPDx8fIy8zOy8rIycfHxsjIysvNzc3MycjDwLu5uLy5u7m+vbq4tbOzsq2qsLKzuLq9tHmVqLG0srK5vLu6u7/AwL/BwsC/v8LBwL6/wcC6ub27t7Czt7atp66uqqKlqKynoqSopJyeoZ+DdQMDAQAAAAEAAAAAAAAAAQAA/v////8AAAAAAAAAAP///wABAAEAAAD//wAAAAAAAAEBAAD//wABAgH9+/v7+/v6+/z9/v//AAEBAgMCAgICAgECAgIB/v39/v7+/v3+/v7+/P7+/f39/v39/f3+AAD9/Pn6+/r7+vr6+/z8/f////8AAQABAAEBAAEDAwH//////v79/f7+//78/v7+/f39/fz8/P3/APr6+vv7+vv7+/z8/f3+//8AAQEBAgMDAwQEAwQDAf////////7+/v7+/vz+/v7+/fz9/Pz8/P4A+vr6+vr6+/v7+/z9/v7///8AAAIDAwQEBAQEAgIB/wAAAAAAAP///v7+/P7////+/fz8/Pz7/gD6+vr7+vr7+/v7/P39/v7///8AAQICAwQEBAMCAgEAAAAAAAAA//////78/v////79/fz8/Pv+APr6+/v8+/v7+vv7/P3+/v8A////AP8AAgMDAwMCAQAAAAAAAAAA//7//vz///////39/Pz8+/4A+/v6+vr6+/v7+/v9/f39/v7+//7///8AAAMEAwH//wAAAAAAAAAA///+/P7+///+/fz8/Pz8/f/7+/r6+vr6+vv7/P38/f3+/v7+/v//AAAAAAAAAgD/AAAAAP8AAAAA//78/v7//v/+/fz8/Pz9APv7+vr6+vr6+/z8/Pz8/f7+////AAH/AP4AAgMCAf8A/wAAAAAAAAD//vz+/v7+/f39/fz8/P0A+vr6+vr6+/r6+/z9/v7+//8CCxAREQ0FAgECAwIA/wAAAAAAAAAAAP/+/P7////+/f38/Pz8/QD6+fn6+vr9AgIDAwQDAwIBAxMUEBISEhMIAwIDAgD///8AAP8AAAAA//79/v///////vz8/Pz9APn5+vr6+gIDAwMEAgIEBAAPEhQdFRwYEhIFAwMDAP///wAAAAAAAAD//vz//////wD//fz8/P0A+Pj5+vr6AQMDBAMDAgQEBBUQHQoRCRsSFAkEAwEA//////8AAAAAAP///f//////AP///f38/QD5+fn6+vkBAwQEAwMDBAQHFxAdEAgOHxIRCwMDAQD///////8A///////9//////////7+/fz9APn5+vr6+gIDBAQDBAMEAwUXCiAdDREcDBQKAwMCAf7////+/////v7+/vz+/v/+/v39/fz8/P0A+fn5+vr6AgQDAwMEAwQDAxUQEiEeHhINFQcDAgMBAP///v39/Pr6+fj18/Pz9PX29vb19vX09gH6+vn5+voCBQUFBQUFBQMACxMREg8TEBENBAIBAQIBAQD9/Pz7+fr39vDu7+7x+ff19/b39fH0Afr6+fn5+f0BAgMDAwMDAAABDBUTERcVDAQDAgICAgEBAP79+/n4+Pf27+/w7vH29PT19PXy7/MB9/f49/b29/j4+fr8/f7+/wEBBAsNCwYCAgICAgECAAD//v37+Pf19PPu7e3s7e/w8O/v8PDw8gDx8/Ty8vP19vX2+Pn7/P39/v7+/////wD////////+/v37+/n28/Hu7evp6uzu7u3u7+/y8fHzAPv7+/v6+vr7+vv8/f7+//8AAAAAAQABAQEBAQECAQEBAf/+/v38+/n49/f29vf29vX29vb19fYA/Pz9/f38/Pz9/f///wAAAAEBAQECAgICAgIBAgICAgIBAAD//v38+/r5+Pj4+ff4+Pj49/f2+QD8/P39/fz9/f39//7/AAEAAQEBAQEBAQICAQICAQICAQEA///+/fz6+vr5+fn6+fn5+fn59vb5AP39/fz9/P39/v7//v//AAAAAAAAAP8AAQAA/wD/AAD//wD//v79/fv7+/v7+/r7+vr6+vn29/kB/fz8/P38/f39/f7+/v////8A//8AAAEBAQEBAQAA///////+/v79+/r7+vr7+vr6+vr6+fb29wD9/Pz8/Pz8/f39/v7//wD//////wABAAEBAQIBAQEA///////+/fz7+vr6+fn5+fr6+vn59/f4AP38/Pz9/P38/f3+/v//AP////8AAQEAAAAAAAAAAQAA//////79/Pz7+/r6+vn6+vr6+vr4+PkA/Pz8/P39/Pz9/f7+////AP///wEBAQABAAABAQEBAQD//////v38+vr6+fn5+fr6+vn5+ff3+AD8/Pz8/fz8/P39/v7///8AAP8AAQABAQEBAQEBAQEBAP////7+/fz7+vn5+fn5+vr5+fn4+Pj4APv7/P39/Pz9/f7+/v7//wABAQEBAQABAQEAAAABAAEBAQD//v79/Pv6+vn6+fn5+Pn5+fn4+PgB/Pz8/Pz9/f38/f3+/v8AAQIBAgECAgAAAQD//wEBAQEAAP/+/v38+vr6+Pj4+Pf49/f39/j4+AD8+/v8+/z8/Pz8/f7+/wABAQECAgICAgEAAAABAwICAQD////9/Pv6+vn49/j49/f39vf3+Pj4AP38/Pz8/Pz7+/z9/v7/AAABAQICAgEBAQEBAAEBAQEBAQD//v79+/v6+fj49/j49vf3+Pj39/kBBQL//v7+/v39/f7+/v///wAAAgIBAQICAgEAAQEA/wABAP/+/v38+/v7+vr6+vr7+/v7+/v8AAP//////v7+/v//AAAAAAAA/v7+//7//wD//////v7+/v7+/v7+/v7+/v7+/v7+/v///v79/f39/QD//v79/v8AAQEBAwUGBwgICgsMCwsLDg0MDA0NCwIBAQAAAAABAQAAAAEBAQICAQEBAQICAP38///++/r8+vv9/Pz+/f8FBQUGBggGBgUHBggMERAOAP7+/v/+/gD///8AAQEAAQD//wECAQME//3+/v7+/v///wEBAQIEBAYGCAoJCg0PERASEhIUEQ0A/v7+/v3+/v8AAAABAAAA/v///wH/AQMA/f7+/v7+/v8AAQIBAwUGBwgKCgoLDhATEhMTEhERDgD9/f3+/v79/gAA/wEA///+/v7//wAAAgD9/v7+/Pz9/f3+AAD/AwUFBgkICAgMDg8RERERDxAM//39/f79/v39/v8AAP/+////////AAACAP3+/v76+fv8+/v8//wAAwIABAQEBAgECAwLDA0ODgsA/v39/v79/f39/wAA//7//v7/////AAIA/f7+/v7+/v4AAQECAf4BAAEAAAIBBAMFBQgRExUQDQD9/f39/f39/f3+AAH///3+/v7///8AAQD9/v7+/v7//gEA/Pz+///+AQH9/gAEAgUIBwYJChENAP7+/v79/f39/v8AAP///v79/v7///8BAP3+/v7+/v7+AAIB/vz+//7+AAIBAQQEAgQGCBESFA8B/v7+/f39/f7+/gAA/v/+/v7+/v///wEA/v7+/v7+/v4BAwMCAwMFBgcHCAkKDAoKDA8OEhQSDAD+/v7+/v7+/v3+AAD//v///v//////AQD//v7+/v7+BhMWFBQWFhQNDQ0QDA0NDg8RERIUFBELAP7+/v7+/v3+/f7/AP////////7//v8BAAD9/v7+/v8SGhkZGxsaGxMNDg4OEA8SExISExQTEQ4B/v7+/v7+/v79/wAB///+///+/////wEB//39/v7+/xMbGhweHhwcEwwPDQ4ODw4SEhISEhESDAD+//7+/v7+/v7+/wD///////7+//7/AQH//v7+/v7/ExoaGx0cGhwTDQ0LDgwLDxISEhIRExENAP7+/v////7+///+//////8A//8AAP8BAgD9/v7+/v8UGxsdHh0cHBMNDgoQDwkLDgoQEBMUEQwB/wD/AAD/////////AP///wABAQECAQICAP79/v7+ABYdHh4fHh4eEw0ODhAREBAQDRAUFRETEg4MDAkIBgYHAwUEAwIB//38+/37/Pz8/P3//v7+/v4BFRwbHBwcHRwSDA0ODhARExENExYSDw8SEBARAAEDAQP7AwUGBAD/+u/w9PL08PH5+//+/v7+/v4GERMTExUWEg0NDQ4PERITEA8VFhMRERIUExIICQcIBQAFBQYEAf/78vT19PTz9fj6/f39/f39/v4BAwQGBwgKDA4ODw8RExIPEBUVFRUWFRUXExISDxIOCggGBgQA/v36/Pz6+fr6+vv9/Pz8+/v9/gADBAYHBwkLDQ0ODg8PDA4RFhUTFhgWFBgXFhIXFxQQDQkHBAD+/fz8+vr8/fz7/f0BAP7+/v7/AQEDAwQHBwYHCAgHCgkJCQcKCQkKCg4NDQ0LDAsKCQcFBAMCAP///v7+/v7+/v3+/QAA///+/wAAAQIDBAYGBgUHBgcJCAcHBwkICAgGCgsLCwsKCQgHBgQEAgEAAP///v7+/v/+//79AAD//v4AAAABAwMEBQYHBggHBwgJCAcJCQcICAcJCQoJCQgIBgUEBAMBAQD//v7+/v7+/v7///0BAAAAAAAAAAABAAIDBAQEBQYFBgYFBQUGBQYFBQYGBQYHBAUEAwMDAgD//v3+/f79/f7+///+/AIBAAABAAEAAQECAwUFBQYFBQYGBQYGBggHBgcGBgYFBgYFBQYFBAMDAAD//v7+/v7+/v7//v79AQEAAAEAAQEBAgIFBQYGBgYGBQUHBwUHCAgJBwgHBgQFBgYIBgUEAwIBAf///v/+/v7+/v////0CAQAA/wAAAAABAQMDBAUFBgUFBgYHBgUFBAYGBQYEAgUFBQYEBAMBAQAA/v7+/v7+/v7+/////QIBAAH//wAAAQICBAUFBgcGBgcICAgIBwgICAgHCAcHBgYIBwYGBAMDAQEA//7+/v/+//7////9AQEBAP///wAAAgIEBAUGBgYGBggGBwcGBwgHCAcIBwcGBQcFBQQDAwIBAP/+/v7+/v7+/v////wCAP/+////AP//AAIEBQYGBQUFBwYGBQQFBQYGBgYHBwcGBwUFBAIDAQD//v7+/v7+/v7+/////AEAAP8A/wABAgICAwUGBwcHBwgICgkHBggHBgcJCgoLCAoJCQgFAgQDAgH///4A/////v/////9Af//////AAABAgIDBQYHBwcJCQoKCgkHCAcICgoLCwsKCgoJCAYDAwIBAQD///////////////0B/////wAAAQICAgMGBgcHCAoJCQkJCAgICAgJCgsLCwwKCQgGBQMDAgIBAAD/////////AAAA/P3+//8AAAAAAQICAwQFBQYGCAYHBwcHCQgHCAkJCAgICQgGBgUFBAMCAQAA///+/v7//wD///77", c24t: "6dTQ0c3e0czV2tja2trX2djV2t3b2tvg5ebl5eXl6OXk5+Xn5+zo5eXi3uLj49jb1s7Nx8jKx9HCy8XJz9HBv8HOz9rY0eDh2+Do49re5Ofm5ejp5ufq5ejn5Ons6ejs8ujl3dvU2dvXzMvGzMjHxsHEycLFwreurbzL0d7h4MmmlpS7l5uTsoaxk4y7oZOchoyCja53i6eMeITu4tvU1dDO0cvMy8fKwsLIwLm0aUFbT53S2d3e1cK10tLUv7LHtsfTqsjAz7nFure/0uTX5t7e3uHf29/X1+TQ5c7KyMrKysjEvHw3cZQ7SrfO29nZ2t7h5+PQlqGfpMiftKTBoqa5nKrF7+nv5ubi29vm7NfRzN7OzcvIyb/BwsSgbVU8PEhQqMLd3dvd3+nJj4+HoJmjgpCJfZmqjK59mZWRlurl49/g2dTU2dXSzdzh4sjLw8HFz5SEZml+SJR93eDZ3tri4eSkmqarmrGy26mgnqm/p5KQmaLR6OXm3t3j2NTa6t7Pzc7TzszExMG/u65+vryZo7/R2N/k4uPk5NDSzNHS1NLS1dC4rre1qKekt97m4+Xg2uLXztLS09XH09DMzM7IxsnHo3ZuYnGWyNPT5eDj4eDk5+Xn6Onn5url5tvAvrG4w66mvsnf4+Hq4OHh08fO3NDM4sjV1dDKyMfRrr/NuMbS0tbU1Nzh5uberdaV0sfP5K29zY2Xi5OEpaSp3OLe3+Pf4uHey9jh6cPR5+rV2tfR1NLQ1Nnc2tvZ3Nrc3t3i5rfMvHuljrzStr6unZqWjaCw2uXj5ODf3ezk1d/b0s7Mx8XV1tXRzMzKycrLyczLy8nGwdrd5uPm4r3P3a/HwMW3xazKz62xp+Ho6Obi497Y49ff3enM38rjxsrXz8fAv8DBwsKqdpzCwL654ubc4+Pi5eW/q6u6xbu3rbjcwK+45+rt5ePi39zc5Obc1dPZ1erRyczKx8HAwsK6izMhOZPBvbvg1NbW4+Ln4Ojf3t/n3ubt6ujqzbvX6ejk5uPg2tvf2tjV4s/M0NHL08rHwsHBqjcbJhsXOq6+uuCYnHSDioWAqKiAhJuon6ionK+WlpGhk6G2n6CdnL3i4+PnzODU3dDeyMjBwcI7GypEHBsRTb664NzBy+HPwNnJwNrBx9TMv8LNv+/w08nn6eLi39nbztjY19LT2OTky+DIyMHCmQxBfopsJQ4nv7rjno6BloyPfZaIVo6DqYymfqme7fDsuKjO6Ojf3Ny+yrXb29fQ1NvL2tHIwsJxJ3iGn4llEhu+uuDPr8neza3NwrTTudDc08i+1eTv7+/tsqjK4NnZ2tHa1NHZ0NXF3sfPy8rCwmdTX3CPeXI6Eau75LnM0LrHsMbSya/OytHL0NLT5uzq7OvTrKbN3NbW0s7NzNLP0Nfgx87MycPEdW1QcIdcVG08u7vjtanBrLeeq8O5pr/GvMu9uLbp7+3s69m5sr/b1tLQ1tPc2MrL09rMzsvLxMSPgIqDlZCWgHXAvOPQ4abdu7zdxNuux9DOysXp7+7s7ujszcbHqdzZ1dPbztXfxtTPz8/R0s7ExINrgWJnf4FqocG8453Wm5SzsYZf4paReJCUXcfk6unp5+bbwMa03NfU2M/Y2c3L2drR1tTUysTErnJpXGR6c4S0wr3fzriw1NnV1rHk0dHQx8PYzuPo5OTp5Na8savO2NTo4t7lz8nR58XdzdrJwsO8dWVcXmxxpr/AvODc3+Li5ODo6eHk397j4OPi5OXg4ebUvcOxmMvHztrUyNPMs6auxczizMjBwK5gWl9mZF2Vv7674IeEh7SIgpSphqWNhLOtlJqyn5yUt6mouL2chaCFfL2hjb+EeqHEwsnKxcDEsYJkZWptWLTEvbrhzrPKu8jIsMjMzLvj4uDk2eHh1cO7safJ0dzh2tnW0c7RycbGw6qlvMXMy825u25zc3KPxNHGvN/JoKyBnIWaqYeckOTk4ePZusa/trm5zN7d39vY2dfSzN/GtbC0utDNwcvNz721toaEn8TK0MXB3MTYv9LR1tXi2uTY3dupt6fFp5WVksvj4d/b2uLX0czJ0N/CxNW3xsfI2tnQ0cjK0s3Ux87c19LfnpKUppq6uJugpJyc3Kelncirhom3z+Hl5ODf1dPQybrGya/OxsW/wcjIxtPk4d7a3+TQz9HU19ng4uXj5OHn5OLi5OTm4+TWx9PP5d/a5eDj3NnXxNjj3My7v8XRy8mgyamTqtTZ2uLr5dTPz9bS1tzh3ebj5Ofj4eLg4+bg5t3R3Ofi4+Ti4+He0MTH07bZw8m/2NLJx7HIraCk1Ofg3djb5czQz9TX1Nze4+Li4eTi6OHh4+Lm4+Tk6ebj5Obh39vT3+Hd0cvJyOHGxM3FuM7Z3OXa2djQ3ebh38vT0tPX2N3c4d3c3t/g4ODk3N7f3d/f4N7g393e4tjZ29LT4MvL0MXFxcXV+vHw7+/w8PDv7+/v7+/w7+/v7+/v7/Dv7+/v8PDw8PDw8PDw8PDw8PDv8PDx8fDx8fHy8fHy9fz///////////////////////////////////////////////7+/v7+/v7///////////////////37+/v7/fv6+/39/Pr6+/0CAwIEBAQEA//+///////+/v////8B//8A//7+//79/f36+vn5+fn7+fv6+vz9+vr6/Pz9+fn+AP8AAQIFBAH///8AAP//AP////////8AAAEA//79/P39/Pv6+vn6+fn5+fv5+/wACAkD/f39/wABBAcHBAYFBQMGAwUFAQQEAwYFBgYDBwYECAkJAP/+/Pz7+/r6+vr5+vn6+vn6BiUvKS4Q//7/AAACAgICAQIEAQMAAQIBAQABAgIDAgECAQAAAAD//f7+/P3++//7+fr6+/r6+/8ePCQUOTAF/f7///8AAP//AQQDBQMABAMDAAQDAgQDAQAAAP/+/v39/wD9/Pv9+/r6+fr7+/v8DCU0Ojk3LxAE/v////8AAAUFBQIEAgUFBQYEAgQCBgQFBgYA//7+/v38+/z9+/r8/f35+vz7+vwSGycnHzAYGAD//v7/AAD/AwUFAwQCAgACBAQDAAMFBQQEAQD///79/vz7/AD++vr7+/r6+/r5+v4LGgUDFA8C+/7/AP//AAAAAAEAAAIBAAAAAAD//wAAAP//AP7+/v3//fv7/Pv8+vv7+vr8+/v7/A0jJiglFQH//wABAgIAAQMDAwQCAAAA//////4A/v/9/v7//v7/AP////v5+/78+v76/f39/Pv7/gcFBggA/gMDAgMDBQUFCBEGFQgMBwIPCwkQERQODwH/Af/+/v7//v/+/fv8/v/4+v4A/f7////+/v7///8CAwICAgMEBAMNDw4fFh8NBxAOFBQVExUMAv////7+/v4A//3+/fv7+vr5+/z8/wQEBAQEBAQEBAQEBAMBAQIBAAEKBwMIBgQBCAQKBAUGAQgA/////v/+/f/9/v3/+/z7/vn5+/j/BAUFBQUFBQUFBQUFBAEA//8A////AAICAQEBAwMC//79/v8AAP/+/v79/f///fz8/fv/+/n69f8FBQUFBQUFBQUFBQUEAAAAAQEA//8AAP8AAP//AAD/Af7+/wEA/////v7+/v38/f77+vv7+vv1/wUFBQUFBQUFBQUFBQQABAUIBgYIBgQDBAYDAgICAwMDBAMDBAQDAgICAwMA//7+//v+/f37/fX/BQUFBQUFBQUFBQUFBAD+//////////////8AAP8AAAECAgD/AAD+/v79/f0AAP38+/3+//v+9QAFBQUFBQUFBQUFBQUEAP7////+/v///////v7+/wAAAQMDAv79/v///v39/wAA/f38+/z8+v37AQUFBQUFBQUFBQUFBQQA/f7+////AP///////wAAAQECAgICAf7+///+/f79AAD8/vz9+/77/P8BBQUFBQUFBQUFBQUFBAABAAADAQQDAQIDAf8AAAADBAMDAwQDAP7+//7+/f38/Pz8+/z/APr8/wEFBQUFBQUFBQUFBQUEAAIDAQUDBQMCAwQCAAEBAwMEAgICAwH//v79/v79/f78//77+/7/+/v+AgUFBQUFBQUFBQUFBQQA/v/////+///+////AAD/AAEBAQIBAv///v3+/v39//3+/vz9+/z8/P8BBQUFBQUFBQUFBQUFBAD///7///7///7///////8AAAEAAAAAAP7+/f7+/f78/f78/P7//P79AAEFBQUFBQUFBQUFBQUE//////8A/v/////+/v7/////AAAAAP/+/v7+/v7+AQD/APz7/AH6/vwBAgUFBQUFBQUFBQUFBQT///8AAAD/AP8A//8A//8AAAAAAP8A//7//v4A/wAB/v/9+/37/Pn9Af8BBQUFBQUFBQUFBQUFBP8FCAYCBgcFAwgEBAUBAgMDAQMDA//+/f7+AgYGBQUAAgL9AAD7+v0A/gEFBQUFBQUFBQUFBQUE//4AAP/////+AP///wD/AAD////+//79/v7/AP7+/v38/PsA/vn9//v+AwUFBQUFBQUFBQUFBQT//v///////v////7/AP8A//////7+/v7//gD//v79+/v/+/77+vsA+/4DBQUFBQUFBQUFBQUFBf8AAAABAf//AQAAAAD///////7///7+AAAA//4A/fz6+gAA/fr++vr7AAIFBQUFBQUFBQUFBQUEAAMFBAQFAAEDAwMDAv///wD//////wD/AAD///38+/z9/fz7/fv5+vz/AAUFBQUFBQUFBQUFBQQA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", c24s: "8/HN1+Lb0tjR5evu6PHv7ff3+LK70Mbe0crvwMDO3vn39/f29/b59/z5/Pz9/fz7+/78+fr7/ffv6paHqJuJs7mcoLTIprSlq7DSwsOKib63orqalYDD+/X29/r59fj4+PrgutrQ79fE6un8t7j+/O/o4+Pl2e3j6tr3+fn15Pn39vLz+Pb39/by7Pb2/Pn89/f6+Pv29/n6/bdtoIDJomOinqNzdv758uWcp6eLrK++iaLMvJWLtcGRo5C69/b29vf1+/v59/b69fj6/Pn49/r9uYKagYiRfaueln6B/vft5sWtpazKz7y1yb7exLS/4NPGx9z39fX39vX6/Pj59fr19Pn6+fj3+Pven4WagGB7hamwrKH+/e3q5+ns5+3y+Pj1+Pr09vr5+/r6+fr19Pb39vfz9/r3/Pj09fb1+Pj3+/6im8qXgoV0m5Gem/356ua7wMnDztTYvtffzMzt3Ojw9OXp5eT09/b19fr7+/n89/f59fv4+vr7zMCap2eemYqGp6Gh/fnz5qKZspWBr6ygnMWfoOfNtrXOzrm90/b39fX2+vz69vn49/z5/Pf6+vzJZI9eorN+d5KOjo7+/Ozn1/Ht8eX38vPv8/n39vf4+/z4+Pj39fb19/b4+vn69vn3+fr8+Pj7/N2Oj5iKZXqFnpuMi/775+Kok4C5trDV+/P19/f89/r6+Pr5+vr49vf49vf29/n2+fb49fr39vv9xZO+cWiJiLlwmn6i/fjp38PCxeLJw93s7vj49vf5+/r4+fv7+vb09/j49/z4+Pv78/f49ff1+PyzhmC8eGeOjmtdi3L++Ozj5N/v/Oe1s6i0sLa64fb59/DB0OvAz9DoyM7cvu7T3uzV5uXp8/b1/MvGlW0+jJhhd4F5Zf796eDf4u3srpi2qZmss6Go+vr17Jaes66ikc+lrsCL4sOyxMfCvbrz9vf8rmKMkG2Wk4BkXG96/fjd4uLy8uirm7WWqbK3qKv69/j0ycTfwcbYv8jOydf5+fX58vj4/Pb18/quYH5rqph+jXtzbqv+9uLa6uzu76Kku6jSrrOqlPf6+/OjcKqHgquao5qerfn8+Pf09/T59vXz+vfu8vj5+/T49fTz+P723Nno9eXrsbLNs7yv0byo+f3o2NHmt9TW2tDR1svN3Orn4Ofr1e7q9fT2+PT08/Px7/L6/frq9vLe2+X56OSZmrWrza63sZj19deEmayxlYvDmpK2k76Kr8Oomam6k5nr9fD06Ovo49/i6+nx9vfn8d/Z4fPp5Kuw0rjWudXBpvT387zJr7vItr3EvcLj9vL19/P4+fv28vvu8/Hl5Ovh5N3z7eTt+fvm5c3o3fb3qp63qKyot6ui+/j0vpihk4+djqWBqdD4/Pz38vf2/PHz+/L66+rh4ODe1+32+eXi7e3z1Njr4uW5iKiXnJuVj6T5z7rdr8/L09TJ2/f8+vj29vLz9fP17fH4+vXn6uff4tza7O7t9+jg8eXYz9bb3uPZ0tbN3efc7O+CjLyggobGiXuqmJ+pmruoqKCeupCnn6K38OPn4N7b2+H22uPp/PbV3NjW1NTl3+Lq6uLt9/jz9/Lt+Pf49/f38vb49/f4+fn2+Pj48/X39ffy6+jp6+fk5ufl4eXj5eXq6Ori4+bs5+Pp7e/19PX5+fr6+vv7+vr5+vr5+fr6+vj5+vn29/j19vXy8PH08/Ly7e/x9fHv8u3x8O/w7/L58vT3+Pf4+fv6+/v7+/v6+vr7+vv6+vr5+fn5+Pn5+Pj5+Pj39fL08/Ht8O3s7O3r7PDu7+7y8PD19PTz9/T2+Pj5+Pr7+vr5+fn5+Pn4+fj3+Pj4+Pb49/b19/Lx9PLv7u7r6e3s6+3p6/Pt7PLv6+/18PX48/b59vj7+vr5+vj4/Pj4+Pj29vr29/n19vj39vb18vP27O7y7Onr7+no8uvw8e/t8/Lu8/Tz8/n09/r4+Pz8+fr6+Pr8+vf5+fX5+vf3+Pj2+fn1+Pf08vTy8PLw6e/t5+zu7Ojw8PHy8evt7e308vX3+fn6+/v6+vb4+Pf49/X4+Pn6+fj39/X29vLz8/D09PLy8e/w7+rn5ujt6+7v7urs7+jp6+3z8PH0+Pr6+fb29/bz9fX29PP1+fb39fXy8vXw8e/w8e7q8fLv7+zm5erj4Ons6+7t6+rr5fDx7e/t8ff39/n49vT28/X48vXy8/X29vb29fLx8vLz8uzv7e7w7/Dt6Obj5+Hp5ejt7ebn6+ro7uzq8e/u8vb39vXy9fT19/bz9PTw8fX09fTw8PLx8fPx7u/q6Ovu6uzl4+fl4+jo6evq6eno5uTm6ero6vHx8fX28/Tz8fHx8vLu8PPy8PP08fDw7+/w7vDr6uvu6evo6efo5N/j3+Po6Ori5+Tn5eTm5evq7erv8vXv8vDy8O7w7vDv8O3v8vLw7e7t8O3s6u3q6Ojl6Orn4OTf5OHg4uLf4eDl5urr5Obn7evr6+jr6+/w7/Ly7+/v8vDv7u7s6ezu7vDx7+3s8O7m5+fi4+Hj4OLi5OTj4ujf4t/h6ejq6+3p5+nq6vDv7u7s8fLy8fLx8Ozu7PDy7e7q8fLx7/Dv7efj5+jp4eDb4OXk5P38AP/9///8/fz9/f/////+/f3+/v7+/P3+/v///v38/Pv8/Pv7/fv9/f7+/v///v7//vz9/f/8/PoGBQMEBwEAAwMCAQICBAIC//3+/v/+/f7//////v38+/v8/fv8/Pz9/wAAAAAAAAAA/wAA//38+vr6+vn7+vv+/v7+/v/+/v39/Pz7+/v7+/z8/P39/fv8/fz+/Pv8/P8AAAAAAAAAAAAAAAD//Pz5/P39/v3+/f8A//4A/////////vv7+/v8/P3+/fz8/Pz9/f78/Pz9/gAAAAAAAAAAAAAAAP/8/Pr8/Pz9/P3+/v////////7///7++/v7/Pv7/P79/fz9+/38/fz7+/z9AAAAAAAAAAAAAAAA//78+/n5+/v7/f7+/f7+/v7//v79/fz8+/z7/Pv8/Pz9/P78/Pz7+/v8/P3/AAAAAAAAAAAAAAD//Pv7AAEAAgEBAAICAQEC/wH////////9/Pz8+/v9/v79/vz7/fz++/39/f8AAAAAAAAAAAAAAP/8/PsDBwQJCgcFBwcDBgUAAQICAgECAf/8+/v7+/3+/f39/Pz+/f38/f39AAAAAAAAAAAAAAAAAP78+vv9/f79/v39/f3///7+/v7+/Pz8+/v7+/v8/f39/Pz8/Pz9/vz8/f4AAAAAAAAAAAAAAAD//vv6/v///v7+/v79/f7///7+/f39/Pz9/Pv8+/z8/P39/Pz8/Pz9+/z9/gAAAAAAAAAAAAAAAP/9+vn8/f3+/v39/P3+/v7//v79/f38/f38/Pv7/Pz+/f3+/fz8/Pz7+/3+AAAAAAAAAAAAAAAA//36+vv7/P79//8BAQICAAD+/vz/AwP/AwEA/QEAAAQAAAD//wD+//z8/f7/AAAAAAAAAAAAAAD//vv6+vv8/P/+/gABAP78///+/QAICAMEBggBBQQDBwACAwEBAgMD/Pz8/gAAAAAAAAAAAAAAAP/8+vv6/P37//z7AP/9+/r8//7+/v////79/v3+/f7+/P38/Pz8/f78/Pz+AAAAAAAAAAAAAAAA//z7+vz8/PwA+/n8+fz7+vz+//7+/wAA///+//7////9/v79/Pz9/fz7/P3///8AAP///////////fv6/P38/P/7+fz9/Pn6/f//AAIB/gEA//4AAAADAQAA///////+/v39/f39/v7+/f39/v/9+/z7+/r8/fv7//36+/j6+/z9/v4BCAgDAwYFAQQFAgYDBwQBBAUEAwYE//39/v39/f37+/z6+/z9+vv7+fv9/Pv++vj49vj3+f3//v4A///+/v7+/v3+/v39/f38/f7//fz+/f39/f39/Pz7/fz5+v3++vv4+/v+/gH8+vr5+vn6/v/+/v////////7//wD//f7+/f39/f79/P39/v39/v37/Pz8/f76+fr8/vn6/Pz8//76/Pv9/f4C/wIDAQMCAP8BAf/+///+/v/+/v39/v79/v/+/f39/fz9+/v8/Pz7+fv8+vn6+vr8/f39/f///v7/CQcEBggIAwkIAgUEAwMCAgIFAwIDAgMDAv79/f39/Pz9/fn5+v79+Pn49/f3+fn5+vv7/P7+/v7///7+/f79/f38/P38/Pz8/P39/Pz8/Pz8/Pz8/Pz7+/r6+vj5+vr6/Pr6+fr6+vr5+/v9/f3+/v39/fz8/fz8/Pz8/Pz8/fz8/P38/Pz8/Pz9/f38/v79/fz8/P39/f39/v7+/v7+//7////////////+/v7+/v7+/v7+/v7+/v7+/v7+/v/+/////////////v7+/v7+/v7+//7+/v7+///////////////+/v7//v7+//7+//7//v7+//7////////////////+/v7//v7//v7//v7+/v3+/////////////////v/+//7+/v////7//////////////wD///8A//7+/v/+/v/+/v7+/v7+/v////8A///////////+///+//////////////////////8AAP///wD//////v3+//79/v7//////v4AAAAA////////////////////////////////AP//AP///////////v/+/v7+/v7+//7//v/+/v////////////////////8A/v//AAD//wD//wAAAP8AAAD///////////7///3+/v7+/v////7+//8A////AAD//////////wD//wAAAAD/AP8AAAAA/wAAAP//AAAA///+/v/+/v7//v7//v///v7//v////8AAP///wAA/wAAAAAAAAAAAAAAAP8AAP8AAAAA//8AAP////3+//7+/v/+/v/+/v///v//AP///wAA//8AAAAAAP8AAAAAAAAAAAAAAAAAAAD///////////////7+/v7+/////v///////v8A////AAAAAAAAAAAA/wAAAQAAAAAAAAAA//8AAQAA/////v//AP7+//7+/v7//v7+/v7//////v///wAAAAEAAAAAAAD/AAEBAAAAAQEAAAAAAAAAAQAA//8A/////v7+//7+/v///f/+/v///v///v//AAAAAAABAAAAAAAAAQEAAAEBAAAAAQAAAAAAAQH//wD/AP///v7//////vj4+vr5+/n8/v/+AAIDBggKBwcICQwJBQQDBQgKCw4ODg4PDwsPCAkGBQQDAQEAAAD///8A///97ezw7+z09vP09/r5+Pf7/AQJBwUFCAoGAwUDAwUHDg4OCwsQDQ0MCAIBAQEBAAAAAAAAAAAA/v79/f39/f3+//8AAQECBQcKCAwNDw8OEA8NDgwHCQcPCwgLBw4PDAoEAQAAAAAAAAAAAAAAAP///f7+/v/+////AAABAQEDBAMCBQcPERAPDw4IBwgMDgsOCgkGDA4OCQUBAAAAAAAAAAAAAAAA///9/v7+/v7//wD/AAEBAgMEAwQGBw8QEA8PEAsGCgoMCQ8MCwkNEA8NBwEAAAAAAAAAAAAAAAAA/v79/f7+/v////8AAgMEBAYHCAgLCg8PEA4PDQ8MCgwHDQ4NDw8PDAwIAQAAAAAAAAAAAAAA///+/vX09vT4+fr2+fz6+gL+AwQFAwQECg0NDQ8PCQcHCAYODwkOCA4JCQgBAAAAAAAAAAAAAAD////98O3x6unx8vDw9/Hz/v77+/0A/QAFDQ8PDxAJBgkLCgwNBwgHDQkIBwEAAAAAAAAAAAAAAAAA/v7+/v7+/f////8AAQIDBQUFBgsLDQ8PDw8ODgsJCAsNDA4NCQUODAcFAQAAAAAAAAAAAAAAAP/+/v////////8A/wEBAwMFBgcJCg0LCg4QDg4NDQ0LCg4MDw0OCA4OCQUAAAAAAAAAAAAAAAAA//79/v7/////////AAIDAwYFCQsKCgkJDQ8PDw0MBgsKCAkODA0OEBALBwAAAAAAAAAAAAAAAAD//v3+/v//AA0RDxMSFBMFBgYLA/r7AvwAAwkAAgL5AgEABAYBCAQMDgsHAQAAAAAAAAAAAAAAAAD+/f3+/v8TMjo1MTc5NhwEBQkC8O/8+PbyAPf5+vEB/vr/APz6+QwMDAYBAAAAAAAAAAAAAAD///79/f///iE8QzdBQ0ZBKwUHCAcDAgQHCAgJBwkIBgsKDQwPDQsFDg4PBwEAAAAAAAAAAAAAAAD//v3+////Hj1EPE4/QT8mBQQHBgMCAgMDBQUFBAMECQUHCg4ODAoOEA8IAwICAQAAAAAAAP8AAP/9/f7//v8gPkc7Sj9HRCYEAwH8/wYBAgUJBAID/P8BAwMEBwYGCQoKCwkIBwUDAgD///8AAP////79/v/+/ho4QTlNP0NDKAYGAPDw+/v19QD69/70+vH6Afj1+Pn1+gQLDAgLBwUDAf///////////v3+//7+IEJLP09CTkotBQYIAgQDBwgGBQkJBgkMCwsKDgoIBAoOBw4LCgsHBQMBAP///v////7+/f7+//8eO0I5OztCPykEBggEAwMFBAYFBQQBBAoHBgoOCwwFDg4HDAcMCgcFAwEA//8A//7+///9/f7+/gopNTAwMTEuEQP8+wH8AAMGAgMHBwICBQgGCgkKCwcMCwYDBg0KBwUDAQD///////7//v39/f7+/gEEAwQFBQUFBO7y+fTw8f3y8v339/v7/vz+9fwA+/38+fsJDgoHBQMBAP/+/v4A//79/f38/P7+/v7//wABAgQGBQMGBgkHCgsLCwwLDAsLDA4JCgwPDg0NDA4OCwgFAwIB///+/v7+/v/+/v7+/v7+/v4AAAECAwYHCAkKCwkNDAwMCwsMCwoLDAwKDA8ODQ4NCwoIBgMDAgD///////7//////v7//////wAAAQIDAwMEBgcHBgYGBgUFBgYGBgUFBgYGBgYGBgUEBAMDAgIA///////+/v7//v7//v/+////AAABAgMDAwQFBQYGBAUGBQUGBQUGBQUGBgYGBgYFBQQEBQMCAgD////+///+/v/+///+//7+//8AAAECAwMEBAMEBQYDBQUEBgYFBQYGBAUFBAYGBQUGBAQDAgECAAD//////v7//v////7///7/////AAIBAgMEAwMFBQQEBQMFBQMEBQUDBAUEBAUEAwUDAwMDAgIA//////7+/v7//v///v///v7//wAAAQECAwMCAwQEBQQFBQQFBQMDBAQEBAQEBQUFBgQEAwICAQAA///////+/v/+/v7+/////v//AAECAgIDAgIDBQYEBQYFBQYGBQUDBQQEBAUFBQUGBQQDAwIBAAD////+/v3+/v7+//7///7+////AQIDAwMDAwMFBwYGBQMFBQYFBQMDBAQFBQYGBgQDAwMDAgEAAP///v7+/v7//v/+/v7+/v7//wEBAgMDAwMDBQcFBQUDBAUFBQYGBQMDBAYHBQYFBAQEAwMCAQD///7//v7//v7+//7+/v7+/v7//wEDAwQDAwMGBQYGBgUHBgYGBgYFAwMFBgcHBwYFBQUEAwICAP///v7//v7+/v7+/v7+/v7+//8AAQIDAwMDAgUFBgUFBggHBgYGBgUFBQYHBwcGCAYFBAMDAwIA///+/v7+/v3+/v7+/f7+/v7//wABAgMDBAUFBQYGBQQEBgUFBQUGBwYHBwYGBQYGBQQDAwMDAQD///79/v7+/v7+/v79/f7+/v//AAIDAwMFAwUGBgcEBAQFBAUEBgcGBQUGBwYFBQUFAwMDAwIBAP///f3+/v7+"};   // thẻ mẫu: độ sáng + màu a/b (Lab) thu nhỏ 56 × 35; c21 = thẻ chip 2021, c24 = Căn cước 2024; t trước, s sau
+    var MAU_GIAI = {};
+    function mauLay(k) {
+      if (MAU_GIAI[k]) return MAU_GIAI[k];
+      var s = atob(MAU_MAU[k]), n = MAU_W * MAU_H, a = new Float32Array(n), b = new Float32Array(n);
+      for (var i = 0; i < n; i++) { var u = s.charCodeAt(n + i), v = s.charCodeAt(2 * n + i); a[i] = u > 127 ? u - 256 : u; b[i] = v > 127 ? v - 256 : v; }
+      return (MAU_GIAI[k] = { a: a, b: b });
+    }
+    function phanVi(arr, ps, buoc) {   // phân vị (0..1) trên mẫu thưa của mảng
+      buoc = buoc || 1; var m = [], i; for (i = 0; i < arr.length; i += buoc) m.push(arr[i]);
+      m.sort(function (x, y) { return x - y; });
+      return ps.map(function (p) { return m.length ? m[Math.min(m.length - 1, Math.max(0, Math.floor(p * (m.length - 1))))] : 0; });
+    }
+    function denVung(g, W, H, x0, x1, y0, y1, md) {   // tỉ lệ điểm tối (< 55% độ sáng giữa ảnh) trong 1 vùng
+      var k = 0, n = 0; for (var y = Math.floor(y0 * H); y < y1 * H; y += 2) for (var x = Math.floor(x0 * W); x < x1 * W; x += 2) { n++; if (g[y * W + x] < 0.55 * md) k++; }
+      return n ? k / n : 0;
+    }
+    function loaiThe(cv) {   // mặt trước đã nắn -> 'c21' (thẻ chip 2021: có mã QR góc trên phải) | 'c24'
+      var W = cv.width, H = cv.height, d = cv.getContext('2d').getImageData(0, 0, W, H).data, g = new Float32Array(W * H);
+      for (var i = 0; i < W * H; i++) g[i] = (d[i * 4 + 1] + d[i * 4 + 2]) / 2;
+      return denVung(g, W, H, 0.84, 0.97, 0.03, 0.30, phanVi(g, [0.5], 7)[0]) > 0.09 ? 'c21' : 'c24';
+    }
+    function kenhMat(d, n) {   // -> chỉ số các kênh còn dùng được (kênh mất màu: phân vị 97 < 42% kênh sáng nhất)
+      var p = [0, 1, 2].map(function (c) { var m = []; for (var i = c; i < n * 4; i += 4 * 9) m.push(d[i]); m.sort(function (a, b) { return a - b; }); return m[Math.floor(m.length * 0.97)] || 0; });
+      var mx = Math.max(p[0], p[1], p[2]);
+      return { p: p, tot: [0, 1, 2].filter(function (c) { return p[c] >= 0.42 * mx; }) };
+    }
+    function toMau(cv, k, tot) {   // ảnh mất màu: độ sáng từ các kênh còn tốt + màu a/b của thẻ mẫu k
+      var W = cv.width, H = cv.height, x = cv.getContext('2d'), im = x.getImageData(0, 0, W, H), d = im.data, n = W * H, i, g = new Float32Array(n);
+      for (i = 0; i < n; i++) { var s = 0; for (var j = 0; j < tot.length; j++) s += d[i * 4 + tot[j]]; g[i] = s / tot.length; }
+      var pv = phanVi(g, [0.01, 0.99], 7), lo = pv[0], hi = Math.max(lo + 40, pv[1]);
+      var M = k ? mauLay(k) : null;
+      function f(t) { return t > 0.008856 ? Math.cbrt(t) : 7.787 * t + 16 / 116; }
+      function fi(t) { var t3 = t * t * t; return t3 > 0.008856 ? t3 : (t - 16 / 116) / 7.787; }
+      function g2(c) { return c <= 0.0031308 ? 12.92 * c : 1.055 * Math.pow(c, 1 / 2.4) - 0.055; }
+      for (var y = 0; y < H; y++) {
+        var fy = Math.min(MAU_H - 1.001, Math.max(0, (y + 0.5) * MAU_H / H - 0.5)), y0 = Math.floor(fy), ty = fy - y0;
+        for (var xx = 0; xx < W; xx++) {
+          var p = y * W + xx, v = Math.max(0, Math.min(1, (g[p] - lo) / (hi - lo) * 0.96)), lin = v <= 0.04045 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4);
+          var L = 116 * f(lin) - 16, A = 0, B = 0;
+          if (M) {
+            var fx = Math.min(MAU_W - 1.001, Math.max(0, (xx + 0.5) * MAU_W / W - 0.5)), x0 = Math.floor(fx), tx = fx - x0, q = y0 * MAU_W + x0;
+            A = (M.a[q] * (1 - tx) + M.a[q + 1] * tx) * (1 - ty) + (M.a[q + MAU_W] * (1 - tx) + M.a[q + MAU_W + 1] * tx) * ty;
+            B = (M.b[q] * (1 - tx) + M.b[q + 1] * tx) * (1 - ty) + (M.b[q + MAU_W] * (1 - tx) + M.b[q + MAU_W + 1] * tx) * ty;
+            var mo2 = Math.min(1, L / 35); A *= mo2; B *= mo2;   // chữ đen giữ đen, không ám màu
+          }
+          var FY = (L + 16) / 116, X = 0.95047 * fi(FY + A / 500), Y = fi(FY), Z = 1.08883 * fi(FY - B / 200);
+          var R = 3.2406 * X - 1.5372 * Y - 0.4986 * Z, G = -0.9689 * X + 1.8758 * Y + 0.0415 * Z, Bl = 0.0557 * X - 0.204 * Y + 1.057 * Z;
+          d[p * 4] = 255 * g2(Math.max(0, Math.min(1, R))); d[p * 4 + 1] = 255 * g2(Math.max(0, Math.min(1, G))); d[p * 4 + 2] = 255 * g2(Math.max(0, Math.min(1, Bl)));
+        }
+      }
+      x.putImageData(im, 0, 0); return cv;
+    }
+    function lamMau(cv, o, loai, mat) {   // ảnh 1 mặt thẻ đã nắn -> ảnh màu lưu kho (sửa tại chỗ); loai: 'c21'|'c24' (lấy từ mặt trước, có thể là hàm), mat: 't'|'s' – để tô màu ảnh mất màu
+      if (o && o.nguyen) return cv;   // ảnh chụp màn hình VNeID: giữ nguyên
+      var W = cv.width, H = cv.height, x = cv.getContext('2d'), im = x.getImageData(0, 0, W, H), d = im.data, n = W * H, i, c;
+      var km = kenhMat(d, n);
+      if (km.tot.length < 3) { var lt0 = typeof loai === 'function' ? loai() : loai; return toMau(cv, lt0 && MAU_MAU[lt0 + (mat || 't')] ? lt0 + (mat || 't') : null, km.tot.length ? km.tot : [0, 1, 2]); }
+      // 1) cân bằng trắng: các điểm sáng nhất trên thẻ (nền thẻ) phải trắng trung tính
+      var L = new Float32Array(n); for (i = 0; i < n; i++) L[i] = 0.299 * d[i * 4] + 0.587 * d[i * 4 + 1] + 0.114 * d[i * 4 + 2];
+      var lt = phanVi(L, [0.85], 5)[0], s = [0, 0, 0], m = 0;
+      for (i = 0; i < n; i += 3) if (L[i] >= lt && L[i] < 254) { s[0] += d[i * 4]; s[1] += d[i * 4 + 1]; s[2] += d[i * 4 + 2]; m++; }
+      var k = [1, 1, 1];
+      if (m > 50) { var tb = [s[0] / m, s[1] / m, s[2] / m], T = Math.min(245, Math.max(tb[0], tb[1], tb[2])); k = tb.map(function (v) { return Math.max(0.75, Math.min(2.2, T / Math.max(1, v))); }); }
+      // 2) mức sáng nhẹ: điểm đen theo phân vị 0,5 % (chỉ kéo 70 %), không đường cong chữ S
+      var lo = phanVi(L, [0.005], 5)[0] * 0.7, sc = 255 / Math.max(120, 255 - lo);
+      for (i = 0; i < n; i++) for (c = 0; c < 3; c++) d[i * 4 + c] = Math.max(0, Math.min(255, (d[i * 4 + c] * k[c] - lo) * sc));
+      // 3) làm nét nhẹ trên độ sáng (bỏ dao động nhỏ để không nổi hạt)
+      var Y = new Float32Array(n); for (i = 0; i < n; i++) Y[i] = 0.299 * d[i * 4] + 0.587 * d[i * 4 + 1] + 0.114 * d[i * 4 + 2];
+      var B1 = mo(Y, W, H, Math.max(1, Math.round(W / 1400)));
+      for (i = 0; i < n; i++) { var dl = Y[i] - B1[i]; if (Math.abs(dl) < 2) continue; dl *= 0.5; for (c = 0; c < 3; c++) d[i * 4 + c] = Math.max(0, Math.min(255, d[i * 4 + c] + dl)); }
+      x.putImageData(im, 0, 0); return cv;
+    }
+    var VUNG_MAT = [0.02, 0.30, 0.285, 0.93];   // vùng ảnh chân dung trên mặt trước đã nắn (x0, y0, x1, y1)
+    function nenMo(g, W, H, k) {   // nền ảnh (đóng hình thái học + mờ) tính trên ảnh thu nhỏ k lần -> mảng cỡ gốc
+      var w = Math.ceil(W / k), h = Math.ceil(H / k), s = new Float32Array(w * h), t = new Float32Array(w * h), x, y, r = 4, j, v;
+      for (y = 0; y < h; y++) for (x = 0; x < w; x++) s[y * w + x] = g[Math.min(H - 1, y * k) * W + Math.min(W - 1, x * k)];
+      function loc(a, max) {   // lọc max / min ngang rồi dọc, bán kính r
+        var b = new Float32Array(w * h), c2 = new Float32Array(w * h);
+        for (y = 0; y < h; y++) for (x = 0; x < w; x++) { v = a[y * w + x]; for (j = -r; j <= r; j++) { var q = a[y * w + Math.min(w - 1, Math.max(0, x + j))]; if (max ? q > v : q < v) v = q; } b[y * w + x] = v; }
+        for (y = 0; y < h; y++) for (x = 0; x < w; x++) { v = b[y * w + x]; for (j = -r; j <= r; j++) { var q2 = b[Math.min(h - 1, Math.max(0, y + j)) * w + x]; if (max ? q2 > v : q2 < v) v = q2; } c2[y * w + x] = v; }
+        return c2;
+      }
+      t = mo(loc(loc(s, 1), 0), w, h, Math.max(2, Math.round(25 / k)));
+      var o = new Float32Array(W * H);
+      for (y = 0; y < H; y++) {
+        var fy = Math.min(h - 1.001, Math.max(0, y / k)), y0 = Math.floor(fy), ty = fy - y0;
+        for (x = 0; x < W; x++) { var fx = Math.min(w - 1.001, Math.max(0, x / k)), x0 = Math.floor(fx), tx = fx - x0, q3 = y0 * w + x0;
+          o[y * W + x] = (t[q3] * (1 - tx) + t[q3 + 1] * tx) * (1 - ty) + (t[q3 + w] * (1 - tx) + t[q3 + w + 1] * tx) * ty; }
+      }
+      return o;
+    }
+    function lamIn(cv, truoc, o) {   // 1 mặt thẻ -> đen trắng để in (sửa tại chỗ); truoc: có ảnh chân dung ở vùng VUNG_MAT
+      o = o || CHINH_MD;
+      var W = cv.width, H = cv.height, x = cv.getContext('2d'), im = x.getImageData(0, 0, W, H), d = im.data, n = W * H, i, c, sk = W / 1400;
+      var sang = o.sang == null ? 50 : o.sang, tp = o.tp == null ? 50 : o.tp, net = o.net == null ? 50 : o.net;
+      var gam = 0.82 * Math.pow(2, -(sang - 50) / 80), nenP = Math.max(0.2, Math.min(0.75, 0.45 - (tp - 50) / 50 * 0.2)), dam = 1.45 + (tp - 50) / 50 * 0.35, amt = 1.5 * net / 50;
+      var R = new Float32Array(n), G = new Float32Array(n), B = new Float32Array(n), Lm = new Float32Array(n);
+      for (i = 0; i < n; i++) { R[i] = d[i * 4]; G[i] = d[i * 4 + 1]; B[i] = d[i * 4 + 2]; Lm[i] = 0.299 * R[i] + 0.587 * G[i] + 0.114 * B[i]; }
+      // vùng mặt người (mềm mép)
+      var mm = null;
+      if (truoc) {
+        mm = new Float32Array(n);
+        for (var y = Math.floor(VUNG_MAT[1] * H); y < VUNG_MAT[3] * H; y++) for (var xx = Math.floor(VUNG_MAT[0] * W); xx < VUNG_MAT[2] * W; xx++) mm[y * W + xx] = 1;
+        mm = mo(mm, W, H, Math.max(2, Math.round(12 * sk)));
+      }
+      // 1) chọn cách pha màu: chữ đậm nhất, hoa văn nền ít gợn nhất (bỏ kênh hỏng)
+      var ung = { lum: function (j) { return Lm[j]; }, R: function (j) { return R[j]; }, G: function (j) { return G[j]; }, B: function (j) { return B[j]; },
+        RG: function (j) { return (R[j] + G[j]) / 2; }, GB: function (j) { return (G[j] + B[j]) / 2; }, RB: function (j) { return (R[j] + B[j]) / 2; } };
+      var tot = -1, best = 'lum';
+      Object.keys(ung).forEach(function (kk) {
+        var fn = ung[kk], m = [];
+        for (var j = 0; j < n; j += 11) if (!mm || mm[j] < 0.5) m.push(fn(j));
+        m.sort(function (a, b) { return a - b; });
+        var lo2 = m[Math.floor(m.length * 0.02)], md = m[Math.floor(m.length * 0.5)];
+        if (md - lo2 < 25) return;
+        var top = m.slice(Math.floor(m.length * 0.5)), mt = top[Math.floor(top.length / 2)], sd = 0;
+        for (var q = 0; q < top.length; q++) sd += (top[q] - mt) * (top[q] - mt);
+        sd = Math.sqrt(sd / Math.max(1, top.length));
+        var sc = (mt - lo2) / (sd + 4); if (sc > tot) { tot = sc; best = kk; }
+      });
+      var fb = ung[best], g = new Float32Array(n), w = new Float32Array(n);
+      for (i = 0; i < n; i++) {
+        g[i] = 0.75 * fb(i) + 0.25 * Lm[i];
+        var mx = Math.max(R[i], G[i], B[i]), mn = Math.min(R[i], G[i], B[i]), st = (mx - mn) / Math.max(1, mx);
+        w[i] = mx < 230 ? Math.max(0, Math.min(1, (st - 0.35) / 0.2)) : 0;   // nét in màu đậm (quốc huy, chữ đỏ, con dấu): giữ theo độ sáng thật
+      }
+      w = mo(w, W, H, 1);
+      for (i = 0; i < n; i++) g[i] = g[i] * (1 - w[i]) + Math.min(g[i], Lm[i] * 0.9) * w[i];
+      // 2) khử bóng: chia cho nền
+      var nen = nenMo(g, W, H, 4);
+      for (i = 0; i < n; i++) g[i] = Math.max(0, Math.min(255, g[i] / Math.max(1, nen[i]) * 235));
+      // 3) mức: điểm đen theo chữ, điểm trắng theo phân vị nền (hoa văn nền -> trắng), vùng tối đậm thêm
+      var mg = []; for (i = 0; i < n; i += 5) if (!mm || mm[i] < 0.5) mg.push(g[i]);
+      var pv = phanVi(mg, [0.015, nenP]), lo = pv[0], hi = pv[1], rg = Math.max(30, hi - lo);
+      for (i = 0; i < n; i++) { var v = Math.max(0, Math.min(1, (g[i] - lo) / rg)); if (v < 0.5) v = 0.5 * Math.pow(2 * v, dam); g[i] = v * 255; }
+      // 4) làm nét chữ
+      var bl = mo(g, W, H, Math.max(1, Math.round(sk)));
+      for (i = 0; i < n; i++) { var dd = g[i] - bl[i]; if (Math.abs(dd) < 3) dd = 0; g[i] = Math.max(0, Math.min(255, g[i] + amt * 1.2 * dd)); }
+      // 5) mặt người: độ sáng thật, tăng tương phản cục bộ vừa phải, sáng vùng trung gian
+      if (mm) {
+        var fm = []; for (y = Math.floor(VUNG_MAT[1] * H); y < VUNG_MAT[3] * H; y += 2) for (xx = Math.floor(VUNG_MAT[0] * W); xx < VUNG_MAT[2] * W; xx += 2) fm.push(Lm[y * W + xx]);
+        var pf = phanVi(fm, [0.005, 0.995]), flo = pf[0], frg = Math.max(30, pf[1] - pf[0]);
+        // CLAHE (cân bằng sáng cục bộ có giới hạn, 4 × 4 ô) trên khung ảnh chân dung – giống bản in thử mức C
+        var X0 = Math.floor(VUNG_MAT[0] * W), X1 = Math.min(W, Math.ceil(VUNG_MAT[2] * W)), Y0 = Math.floor(VUNG_MAT[1] * H), Y1 = Math.min(H, Math.ceil(VUNG_MAT[3] * H));
+        var RW = X1 - X0, RH = Y1 - Y0, F = new Uint8Array(RW * RH), T = 4, tw = RW / T, th = RH / T, clip = 1.2 + 0.6 * tp / 50, LUT = [];
+        for (y = 0; y < RH; y++) for (xx = 0; xx < RW; xx++) F[y * RW + xx] = Math.round(255 * Math.max(0, Math.min(1, (Lm[(y + Y0) * W + xx + X0] - flo) / frg)));
+        for (var ty = 0; ty < T; ty++) for (var tx = 0; tx < T; tx++) {
+          var hs = new Float32Array(256), ya = Math.round(ty * th), yb = Math.round((ty + 1) * th), xa = Math.round(tx * tw), xb = Math.round((tx + 1) * tw), ar = Math.max(1, (yb - ya) * (xb - xa));
+          for (y = ya; y < yb; y++) for (xx = xa; xx < xb; xx++) hs[F[y * RW + xx]]++;
+          var lim = Math.max(1, clip * ar / 256), ex = 0, j2;
+          for (j2 = 0; j2 < 256; j2++) if (hs[j2] > lim) { ex += hs[j2] - lim; hs[j2] = lim; }
+          var lu = new Float32Array(256), cs = 0;
+          for (j2 = 0; j2 < 256; j2++) { cs += hs[j2] + ex / 256; lu[j2] = Math.min(255, cs * 255 / ar); }
+          LUT.push(lu);
+        }
+        var Fo = new Float32Array(RW * RH);
+        for (y = 0; y < RH; y++) {
+          var gy = Math.max(0, Math.min(T - 1.001, (y + 0.5) / th - 0.5)), iy = Math.floor(gy), wy = gy - iy;
+          for (xx = 0; xx < RW; xx++) {
+            var gx = Math.max(0, Math.min(T - 1.001, (xx + 0.5) / tw - 0.5)), ix = Math.floor(gx), wx = gx - ix, v0 = F[y * RW + xx];
+            Fo[y * RW + xx] = (LUT[iy * T + ix][v0] * (1 - wx) + LUT[iy * T + ix + 1][v0] * wx) * (1 - wy) + (LUT[(iy + 1) * T + ix][v0] * (1 - wx) + LUT[(iy + 1) * T + ix + 1][v0] * wx) * wy;
+          }
+        }
+        var da = []; for (y = Math.round(RH * 0.25); y < RH * 0.62; y += 2) for (xx = Math.round(RW * 0.3); xx < RW * 0.7; xx += 2) da.push(Fo[y * RW + xx]);
+        var mdDa = Math.max(20, Math.min(240, phanVi(da, [0.5])[0])), muc = 185 * Math.pow(2, (sang - 50) / 60);   // giữa mặt về xám sáng vừa (185): không lóa, không bết đen, thanh Sáng tối dịch mức này
+        var gm2 = Math.max(0.5, Math.min(2.5, Math.log(Math.min(235, muc) / 255) / Math.log(mdDa / 255)));
+        for (j2 = 0; j2 < RW * RH; j2++) Fo[j2] = 255 * Math.pow(Math.max(0, Math.min(255, Fo[j2])) / 255, gm2);
+        var Fs = mo(Fo, RW, RH, Math.max(1, Math.round(sk)));
+        for (y = 0; y < RH; y++) for (xx = 0; xx < RW; xx++) {
+          var q4 = y * RW + xx, p4 = (y + Y0) * W + xx + X0, f2 = Math.max(0, Math.min(255, Fo[q4] + 0.6 * (Fo[q4] - Fs[q4])));
+          g[p4] = g[p4] * (1 - mm[p4]) + f2 * mm[p4];
+        }
+      }
+      // 6) bù máy laser in đậm: nâng nhẹ vùng trung gian
+      for (i = 0; i < n; i++) { var g0 = Math.max(0, Math.min(255, g[i])), u = 255 * Math.pow(g0 / 255, gam); if (mm && mm[i] > 0) u = u * (1 - mm[i]) + g0 * mm[i]; d[i * 4] = d[i * 4 + 1] = d[i * 4 + 2] = u; }
+      x.putImageData(im, 0, 0); return cv;
+    }
+    function inGhep(cv, o) {   // ảnh ghép trong kho (2 mặt xếp dọc) -> canvas đen trắng để in
+      var W = cv.width, Hm = Math.round(W / TL), G = Math.round(GAP * W / MW), c = document.createElement('canvas'); c.width = W; c.height = cv.height;
+      var x = c.getContext('2d'); x.fillStyle = '#fff'; x.fillRect(0, 0, W, cv.height);
+      function cat(y0, h) { var m = document.createElement('canvas'); m.width = W; m.height = h; m.getContext('2d').drawImage(cv, 0, y0, W, h, 0, 0, W, h); return m; }
+      if (Math.abs(cv.height - (2 * Hm + G)) > 0.03 * cv.height) { x.drawImage(lamIn(cat(0, cv.height), false, o), 0, 0); return c; }   // không đúng khổ ảnh ghép: xử lý cả ảnh, không tách vùng mặt
+      var tr = cat(0, Hm), sa = cat(Hm + G, Hm), p1 = phanLoai(tr), p2 = phanLoai(sa), dao = p1.mat === 'sau' && p2.mat === 'truoc';
+      var A = dao ? sa : tr, Bm = dao ? tr : sa, pA = dao ? p2 : p1;
+      lamIn(A, !(pA.chac && (pA.mat === 'sau' || pA.xoay === 180)), o); lamIn(Bm, false, o);   // nửa trên mặc định là mặt trước (cách ghép của app và Tool_CCCD)
+      x.drawImage(dao ? Bm : A, 0, 0); x.drawImage(dao ? A : Bm, 0, Hm + G);
+      return c;
+    }
+    function ghep(truoc, sau, o, rong, kieu) {   // kieu 'in' = đen trắng để in; mặc định = ảnh màu lưu kho   // rong: bề rộng ảnh (mặc định 1400 = bản in / lưu; nhỏ hơn để xem trước khi kéo thanh chỉnh)
       var W = rong || MW, Hm = Math.round(W / TL), G = Math.round(GAP * W / MW), c = document.createElement('canvas'); c.width = W; c.height = Hm * 2 + G;
-      var x = c.getContext('2d'); x.fillStyle = '#fff'; x.fillRect(0, 0, c.width, c.height);
+      var x = c.getContext('2d'); x.fillStyle = '#fff'; x.fillRect(0, 0, c.width, c.height); var loai = null;
+      function loaiF() { if (loai === null) loai = truoc ? loaiThe(truoc) : ''; return loai; }
       [[truoc, 0], [sau, Hm + G]].forEach(function (p) {
         if (p[0]) {
           var m = document.createElement('canvas'); m.width = W; m.height = Hm; var mx = m.getContext('2d'); mx.imageSmoothingQuality = 'high'; mx.drawImage(p[0], 0, 0, W, Hm);
-          x.drawImage(lamDep(m, o), 0, p[1]);
+          x.drawImage(kieu === 'in' ? lamIn(m, p[1] === 0, o) : lamMau(m, o, loaiF, p[1] === 0 ? 't' : 's'), 0, p[1]);
           var r = Math.round(W * 3.18 / 85.6);   // bo góc thẻ thật: phần nền lọt ở 4 góc tô trắng
           x.save(); x.beginPath(); x.rect(0, p[1], W, Hm);
           x.moveTo(r, p[1]); x.arcTo(W, p[1], W, p[1] + Hm, r); x.arcTo(W, p[1] + Hm, 0, p[1] + Hm, r); x.arcTo(0, p[1] + Hm, 0, p[1], r); x.arcTo(0, p[1], W, p[1], r); x.closePath();
@@ -2718,12 +2912,12 @@ textarea.inp{font-family:inherit}
       }
       return out;
     }
-    return { CHINH_MD: CHINH_MD, tachVN: tachVN, xep: xep, lamDep: lamDep, timThe: timThe, xuLy: xuLy, ghep: ghep, xoay: xoay, phanLoai: phanLoai, nghiengChu: nghiengChu, chuNgang: chuNgang, MW: MW, MH: MH, GAP: GAP };
+    return { CHINH_MD: CHINH_MD, tachVN: tachVN, xep: xep, lamDep: lamDep, lamMau: lamMau, lamIn: lamIn, inGhep: inGhep, loaiThe: loaiThe, timThe: timThe, xuLy: xuLy, ghep: ghep, xoay: xoay, phanLoai: phanLoai, nghiengChu: nghiengChu, chuNgang: chuNgang, MW: MW, MH: MH, GAP: GAP };
   })();
   // ---------- 21/10: tab CCCD – chọn ảnh 2 mặt trong album -> tự cắt, nắn, ghép từng cặp -> in mỗi người 1 tờ A4 -> lưu thư mục CCCD trên Drive ----------
   var CCS = { ds: [], tt: {}, jpg: {}, dang: null, doi: null, hang: [], chay: 0, docHang: [], docChay: 0, kho: null, anh: {} }, ccId = 0;
   // mức chỉnh ảnh (sáng tối / tương phản / độ nét): mức chung nhớ trên máy; người nào chỉnh riêng thì lưu trên 2 mặt của người đó
-  CCS.chinh = (function () { try { var o = JSON.parse(doc('vlta_cc_chinh') || 'null'); if (o && o.tp >= 0) return o; } catch (e) { } return { sang: CC.CHINH_MD.sang, tp: CC.CHINH_MD.tp, net: CC.CHINH_MD.net }; })();
+  CCS.chinh = (function () { try { var o = JSON.parse(doc('vlta_cc_chinh2') || 'null'); if (o && o.tp >= 0) return o; } catch (e) { } return { sang: CC.CHINH_MD.sang, tp: CC.CHINH_MD.tp, net: CC.CHINH_MD.net }; })();
   function ccOpt(p) { return (p.t && p.t.chinh) || (p.s && p.s.chinh) || CCS.chinh; }
   function veCCCD() {
     khung('In CCCD', 'Ghép 2 mặt · in A4 · lưu Drive', '', '<div id="ccThan" class="ccw"></div>');
@@ -2876,7 +3070,7 @@ textarea.inp{font-family:inherit}
       CCS.dang.i = i; ccVe();
       setTimeout(function () {
         ccMo(files[i]).then(function (cv) {
-          var ds0 = ccTachVN(cv), xs = ds0.map(function (r, j) { var x = { id: ++ccId, v: 0, file: files[i], doc: 'cho', tam: j ? '' : files[i].tamId || '', docSan: files[i].docSan && files[i].docSan.so ? files[i].docSan : null }; ccDat(x, r); if (r.vn) x.chinh = { sang: 50, tp: 0, net: 0, nguyen: 1 }; return x; });
+          var ds0 = ccTachVN(cv), xs = ds0.map(function (r, j) { var x = { id: ++ccId, v: 0, file: files[i], doc: 'cho', tam: j ? '' : files[i].tamId || '', docSan: files[i].docSan && files[i].docSan.so ? files[i].docSan : null }; ccDat(x, r); if (r.vn) x.chinh = { sang: 50, tp: 50, net: 50, nguyen: 1 }; return x; });
           if (xs.length === 2) { xs[0].cap = xs[1].id; xs[1].cap = xs[0].id; xs.forEach(function (x) { x.tay = 1; x.ro = true; }); if (xs[0].mat === xs[1].mat) { xs[0].mat = 'truoc'; xs[1].mat = 'sau'; } }   // 2 mặt cùng 1 ảnh VNeID = 1 người
           xs.forEach(function (x) { CCS.ds.push(x); moi.push(x); }); buoc(i + 1);
         }, function () { loi++; buoc(i + 1); });
@@ -2885,14 +3079,22 @@ textarea.inp{font-family:inherit}
   }
   function ccKj(p) { var o = ccOpt(p); return p.k + '|' + o.sang + ',' + o.tp + ',' + o.net; }
   function ccInKhoa(cap) { return 'cc#' + cap.map(ccKj).join('#'); }
-  function ccJpg(p) {   // ảnh ghép 1 người (1400 px, dpi 277 = in đúng 1,5 lần thẻ thật như Tool_CCCD)
-    var o = ccOpt(p), kj = ccKj(p);
-    if (CCS.jpg[kj]) return CCS.jpg[kj];
-    var u = CC.ghep(p.t ? p.t.the : null, p.s ? p.s.the : null, o).toDataURL('image/jpeg', 0.9), b = atob(u.slice(23)), a = new Uint8Array(b.length), i;
+  function ccJpgTu(c) {   // canvas -> dataURL JPEG, ghi 277 dpi (in đúng 1,5 lần thẻ thật như Tool_CCCD)
+    var u = c.toDataURL('image/jpeg', 0.9), b = atob(u.slice(23)), a = new Uint8Array(b.length), i;
     for (i = 0; i < b.length; i++) a[i] = b.charCodeAt(i);
     if (a[2] === 0xFF && a[3] === 0xE0 && a[6] === 0x4A && a[7] === 0x46) { a[13] = 1; a[14] = 1; a[15] = 21; a[16] = 1; a[17] = 21; }   // 277 dpi
     var s = ''; for (i = 0; i < a.length; i += 8192) s += String.fromCharCode.apply(null, a.subarray(i, i + 8192));
-    return (CCS.jpg[kj] = 'data:image/jpeg;base64,' + btoa(s));
+    return 'data:image/jpeg;base64,' + btoa(s);
+  }
+  function ccJpg(p) {   // ảnh ghép 1 người lưu kho: ảnh MÀU tự cân bằng trắng (1400 px, 277 dpi)
+    var o = ccOpt(p), kj = 'm|' + p.k + (o.nguyen ? '|n' : '');
+    if (CCS.jpg[kj]) return CCS.jpg[kj];
+    return (CCS.jpg[kj] = ccJpgTu(CC.ghep(p.t ? p.t.the : null, p.s ? p.s.the : null, o)));
+  }
+  function ccJpgIn(p) {   // bản in / gửi PDF: đen trắng rõ nét theo thanh chỉnh
+    var o = ccOpt(p), kj = ccKj(p);
+    if (CCS.jpg[kj]) return CCS.jpg[kj];
+    return (CCS.jpg[kj] = ccJpgTu(CC.ghep(p.t ? p.t.the : null, p.s ? p.s.the : null, o, 0, 'in')));
   }
   function ccGan() { try { return JSON.parse(doc('vlta_cccd') || '[]'); } catch (e) { return []; } }
   // 03/11: giữ màn hình sáng khi đang xử lý CCCD (iPhone tắt màn hình / thoát app là app dừng). iPhone dùng thêm video im lặng
@@ -2943,9 +3145,9 @@ textarea.inp{font-family:inherit}
       if (CCS.doi) h += '<div class="note warn ccdoi"><span>Chạm vào ảnh muốn đổi chỗ</span><button class="btn sm ghost" id="ccDoiThoi">Thôi</button></div>';
       var dangDoc = CCS.ds.filter(function (x) { return x.doc === 'cho' || x.doc === 'dang'; }).length;
       var cg = CCS.chinh, md = CC.CHINH_MD;
-      h += '<div class="card ccc"><button class="ccch" id="ccChinhMo"><span><b>Chỉnh ảnh in</b><small>Sáng ' + cg.sang + ' · Tương phản ' + cg.tp + ' · Nét ' + cg.net + ' · áp cho tất cả</small></span><span class="ch">' + (CCS.moChinh ? '▾' : '›') + '</span></button>' +
+      h += '<div class="card ccc"><button class="ccch" id="ccChinhMo"><span><b>Chỉnh ảnh in</b><small>' + ccChinhTom(cg) + '</small></span><span class="ch">' + (CCS.moChinh ? '▾' : '›') + '</span></button>' +
         (CCS.moChinh ? '<div class="ccxt"><img id="ccXemChung" alt=""><div class="meta" id="ccXemTen"></div></div>' + ccThanh('g', cg) +
-          '<div class="row" style="justify-content:space-between"><button class="btn lk" id="ccMd" style="padding-left:0">Về mặc định (' + md.sang + ' · ' + md.tp + ' · ' + md.net + ')</button></div>' : '') + '</div>';
+          '<div class="row" style="justify-content:space-between"><button class="btn lk" id="ccMd" style="padding-left:0">Về mức tự động</button></div>' : '') + '</div>';
       h += cap.map(function (p, n) {
         var st = CCS.tt[p.k] || {}, du = p.t && p.s, ln = '';
         if (!du) ln = '<div class="cct warn">' + (p.t ? 'Thiếu mặt sau' : 'Thiếu mặt trước') + ' – chạm ô trống để chọn ảnh' + (p.so && cap.some(function (q) { return q !== p && q.so === p.so; }) ? ', hoặc bấm × nếu là ảnh thừa.' : '. Chưa lưu Drive.') + ((p.t || p.s).tam ? ' Ảnh vẫn để trong CCCD TẠM.' : '') + '</div>';
@@ -3014,9 +3216,9 @@ textarea.inp{font-family:inherit}
       var p0 = cap.filter(function (p) { return p.t && p.s && !(p.t.chinh || p.s.chinh); })[0] || cap.filter(function (p) { return p.t && p.s; })[0] || cap[0];
       var img = document.getElementById('ccXemChung');
       document.getElementById('ccXemTen').textContent = p0 ? 'Xem trước: ' + (p0.ten ? hoaDau(p0.ten) : 'người đầu tiên') : '';
-      ccNoiThanh(t, 'g', CCS.chinh, function (o) { CCS.chinh = o; luu('vlta_cc_chinh', JSON.stringify(o)); ccSanHen(); var sm = document.querySelector('#ccChinhMo small'); if (sm) sm.textContent = 'Sáng ' + o.sang + ' · Tương phản ' + o.tp + ' · Nét ' + o.net + ' · áp cho tất cả'; }, img, p0);
-      img.onclick = function () { if (p0) ccXemTo(CC.ghep(p0.t ? p0.t.the : null, p0.s ? p0.s.the : null, ccOpt(p0)).toDataURL('image/jpeg', 0.9)); };
-      var mdb = document.getElementById('ccMd'); if (mdb) mdb.onclick = function () { CCS.chinh = { sang: CC.CHINH_MD.sang, tp: CC.CHINH_MD.tp, net: CC.CHINH_MD.net }; luu('vlta_cc_chinh', JSON.stringify(CCS.chinh)); ccVe(); };
+      ccNoiThanh(t, 'g', CCS.chinh, function (o) { CCS.chinh = o; luu('vlta_cc_chinh2', JSON.stringify(o)); ccSanHen(); var sm = document.querySelector('#ccChinhMo small'); if (sm) sm.textContent = ccChinhTom(o); }, img, p0);
+      img.onclick = function () { if (p0) ccXemTo(CC.ghep(p0.t ? p0.t.the : null, p0.s ? p0.s.the : null, ccOpt(p0), 0, 'in').toDataURL('image/jpeg', 0.9)); };
+      var mdb = document.getElementById('ccMd'); if (mdb) mdb.onclick = function () { CCS.chinh = { sang: CC.CHINH_MD.sang, tp: CC.CHINH_MD.tp, net: CC.CHINH_MD.net }; luu('vlta_cc_chinh2', JSON.stringify(CCS.chinh)); ccVe(); };
     }
     t.querySelectorAll('[data-g]').forEach(function (e) { e.onclick = function () { ccXemLon(gan[Number(e.getAttribute('data-g'))]); }; });
     ccGanNho(gan);
@@ -3067,6 +3269,11 @@ textarea.inp{font-family:inherit}
     ccVe();
     toastNut('Đã bỏ ' + (p.ten ? hoaDau(p.ten) : 'người này'), 'Hoàn tác', function () { bo.forEach(function (b) { CCS.ds.splice(Math.min(b.i, CCS.ds.length), 0, b.x); }); ccVe(); }, 5000);
   }
+  function ccChinhTom(o) {   // dòng tóm tắt mức chỉnh bản in
+    var md = CC.CHINH_MD;
+    if (o.sang === md.sang && o.tp === md.tp && o.net === md.net) return 'Bản in đen trắng tự chỉnh theo từng ảnh · áp cho tất cả';
+    return 'Sáng ' + o.sang + ' · Tương phản ' + o.tp + ' · Nét ' + o.net + ' (50 = tự động) · áp cho tất cả';
+  }
   function ccThanh(k, o) {   // 3 thanh kéo
     return [['sang', 'Sáng tối'], ['tp', 'Tương phản'], ['net', 'Độ nét']].map(function (x) {
       return '<label class="ccsl"><span>' + x[1] + '</span><input type="range" min="0" max="100" step="1" value="' + o[x[0]] + '" data-sl="' + k + ':' + x[0] + '"><b data-slv="' + k + ':' + x[0] + '">' + o[x[0]] + '</b></label>';
@@ -3074,7 +3281,7 @@ textarea.inp{font-family:inherit}
   }
   function ccNoiThanh(goc, k, o0, doi, img, p) {   // kéo thanh: cập nhật số + ảnh xem trước (ảnh nhỏ 700 px, chờ tay dừng 150 ms)
     var o = { sang: o0.sang, tp: o0.tp, net: o0.net }, hen = 0;
-    function ve() { if (!img || !p) return; img.src = CC.ghep(p.t ? p.t.the : null, p.s ? p.s.the : null, o, 700).toDataURL('image/jpeg', 0.85); }
+    function ve() { if (!img || !p) return; img.src = CC.ghep(p.t ? p.t.the : null, p.s ? p.s.the : null, o, 700, 'in').toDataURL('image/jpeg', 0.85); }
     goc.querySelectorAll('[data-sl^="' + k + ':"]').forEach(function (e) {
       var ten = e.getAttribute('data-sl').split(':')[1], v = goc.querySelector('[data-slv="' + k + ':' + ten + '"]');
       e.oninput = function () { o[ten] = Number(e.value); v.textContent = e.value; doi({ sang: o.sang, tp: o.tp, net: o.net }); clearTimeout(hen); hen = setTimeout(ve, 150); };
@@ -3091,7 +3298,7 @@ textarea.inp{font-family:inherit}
       '<button class="btn" id="crOk">Áp cho người này</button>' + (rieng ? '<button class="btn ghost" id="crChung">Theo mức chung</button>' : ''));
     var img = sh.querySelector('#crXem');
     ccNoiThanh(sh, 'r', moi, function (x) { moi = x; }, img, p);
-    img.onclick = function () { ccXemTo(CC.ghep(p.t ? p.t.the : null, p.s ? p.s.the : null, moi).toDataURL('image/jpeg', 0.9)); };
+    img.onclick = function () { ccXemTo(CC.ghep(p.t ? p.t.the : null, p.s ? p.s.the : null, moi, 0, 'in').toDataURL('image/jpeg', 0.9)); };
     sh.querySelector('#crD').onclick = function () { sh.remove(); };
     sh.querySelector('#crOk').onclick = function () { [p.t, p.s].forEach(function (x) { if (x) x.chinh = { sang: moi.sang, tp: moi.tp, net: moi.net }; }); sh.remove(); ccVe(); toast('Đã áp mức chỉnh riêng cho người này.'); };
     var c2 = sh.querySelector('#crChung'); if (c2) c2.onclick = function () { [p.t, p.s].forEach(function (x) { if (x) delete x.chinh; }); sh.remove(); ccVe(); };
@@ -3163,7 +3370,7 @@ textarea.inp{font-family:inherit}
     if (san) inGoi();   // trang in đã dựng sẵn: gọi in NGAY trong cú chạm (Safari không chặn)
     else toast('Đang chuẩn bị ' + cap.length + ' tờ…');
     setTimeout(function () {
-      var urls = san ? null : cap.map(ccJpg);
+      var urls = san ? null : cap.map(ccJpgIn);
       if (san) { } else if (pdf === 'gui') ccGui(Promise.resolve(urls), ccTenPdf(cap)); else if (pdf) ccPdfMo(urls); else inSan(urls, '', k, cap.length);
       cap.forEach(function (p) {
         var st = CCS.tt[p.k] || {};
@@ -3228,7 +3435,7 @@ textarea.inp{font-family:inherit}
     (function buoc() {
       if (S.tab !== 'cc' || ccInKhoa(ccCap()) !== k) return;   // đã đổi giữa chừng: lần vẽ sau hẹn lại
       if (i >= cap.length) { inDung(urls, '', k); return; }
-      urls.push(ccJpg(cap[i++])); setTimeout(buoc, 40);
+      urls.push(ccJpgIn(cap[i++])); setTimeout(buoc, 40);
     })();
   }
   function ccKhoKhoa(ds) { var o = CCS.chinh || {}; return 'kho#' + ds.map(function (g) { return g.id || g.so; }).join(',') + '#' + o.sang + ',' + o.tp + ',' + o.net; }
@@ -3452,8 +3659,7 @@ textarea.inp{font-family:inherit}
       return (CCS.anh[k] = { anh: o.anh, app: o.app });
     });
   }
-  function ccChinhAnh(a) {   // ảnh do app lưu đã được chỉnh sẵn; ảnh cũ trong kho thì áp mức "Chỉnh ảnh in" hiện tại
-    if (a.app) return Promise.resolve(a.anh);
+  function ccChinhAnh(a) {   // 05/11: ảnh kho là ảnh màu -> in / gửi PDF luôn ra bản đen trắng rõ nét theo thanh "Chỉnh ảnh in"
     var c = CCS.chinh, kj = c.sang + ',' + c.tp + ',' + c.net;
     if (a.in && a.in[kj]) return Promise.resolve(a.in[kj]);
     return new Promise(function (ok) {
@@ -3461,8 +3667,8 @@ textarea.inp{font-family:inherit}
       im.onload = function () {
         var cv = document.createElement('canvas'); cv.width = im.naturalWidth; cv.height = im.naturalHeight;
         cv.getContext('2d').drawImage(im, 0, 0);
-        try { CC.lamDep(cv, c); } catch (e) { }
-        a.in = {}; a.in[kj] = cv.toDataURL('image/jpeg', 0.92); ok(a.in[kj]);
+        var r = cv; try { r = CC.inGhep(cv, c); } catch (e) { }
+        a.in = a.in || {}; a.in[kj] = r.toDataURL('image/jpeg', 0.92); ok(a.in[kj]);
       };
       im.onerror = function () { ok(a.anh); };
       im.src = a.anh;
@@ -3786,9 +3992,17 @@ textarea.inp{font-family:inherit}
     Object.keys(CCS.the).forEach(function (k) { if (k[0] === 'm' || k[0] === 'k' || k[0] === 'h') out.push(CCS.the[k]); });
     return out;
   }
+  function theMau(c, ch) {   // 05/11: mặt trước -> bản màu đã cân bằng trắng (nhớ trên canvas, ảnh VNeID giữ nguyên)
+    if (!c || (ch && ch.nguyen)) return c;
+    if (c.__mau) return c.__mau;
+    var m = document.createElement('canvas'); m.width = c.width; m.height = c.height; m.getContext('2d').drawImage(c, 0, 0);
+    try { CC.lamMau(m, null, function () { return CC.loaiThe(c); }, 't'); } catch (er) { m = c; }
+    try { c.__mau = m; } catch (er) { }
+    return m;
+  }
   function theAnhNguon(e) {   // -> { cv, x, y, w, h } vùng ảnh chân dung
     if (e.anh) return { cv: e.anh, x: 0, y: 0, w: e.anh.width, h: e.anh.height, tay: 1 };
-    var c = e.anhThe || (e.p && e.p.t ? e.p.t.the : null); if (!c) return null;
+    var c = theMau(e.anhThe || (e.p && e.p.t ? e.p.t.the : null), e.p && e.p.t && e.p.t.chinh); if (!c) return null;
     return { cv: c, x: THE_R[0] * c.width, y: THE_R[1] * c.height, w: (THE_R[2] - THE_R[0]) * c.width, h: (THE_R[3] - THE_R[1]) * c.height };
   }
   function theVeAnh(x, n, X, Y, W, H) {   // vẽ phủ kín khung (cắt bớt phần thừa; ảnh tự chọn ưu tiên giữ phần trên – mặt người)
@@ -4101,6 +4315,7 @@ textarea.inp{font-family:inherit}
   }
   function ccCheNoi(t) { t.querySelectorAll('[data-che]').forEach(function (b) { b.onclick = function () { CCS.theMo = b.getAttribute('data-che') === '1'; var lg = theLogoNap(); if (!lg.complete) lg.onload = function () { ccVe(); }; ccVe(); window.scrollTo(0, 0); }; }); }
   var BAN_MOI = [
+    { so: 117, ds: [['CCCD – ảnh lưu vào kho: là ảnh màu, app tự cân bằng trắng theo từng ảnh (chụp dưới đèn vàng, đèn xanh hay trong bóng râm đều về màu tự nhiên) và không còn tăng tương phản gắt làm cháy mặt người. Ảnh bị mất hẳn một màu thì app tô lại màu theo thẻ mẫu cùng loại.', ''], ['In CCCD và Gửi PDF ra quán in: app tự tạo bản đen trắng rõ nét cho máy in laser – chữ và số đậm, hoa văn nền nhạt, mặt người được chỉnh sáng riêng để không lóa, không bết đen. Ảnh cũ trong kho khi in cũng được xử lý như vậy (ảnh trong kho giữ nguyên).', ''], ['Khối "Chỉnh ảnh in": mặc định là tự chỉnh theo từng ảnh; 3 thanh kéo dùng để chỉnh thêm cho bản in khi cần (50 = tự động). Thẻ HOJEONG lấy ảnh chân dung từ ảnh màu đã cân bằng trắng.', '']] },
     { so: 116, ds: [['Phiếu đối chiếu vendor: khoản của Quyền ở ATUM (tháng 9, tháng 10) nay có đủ từng công nhân, giờ làm, tiền ăn và đơn giá, lấy từ file lưu trữ ATUM. Dòng "Người cung ứng khác" là khoản gộp nên không xuất phiếu.', 'chu']] },
     { so: 115, ds: [['Tổng quan → Phải trả vendor: chạm vào một khoản (ví dụ Đức · Tháng 10) để xuất phiếu đối chiếu gửi vendor. Phiếu có dự kiến thanh toán, đơn giá vendor nhận, từng công nhân (ngày, giờ, tiền công, lương công nhân, vendor nhận) và lịch đi làm từng ngày. Bấm Chép ảnh hoặc Lưu / Gửi để gửi qua Zalo.', 'chu']] },
     { so: 114, ds: [['Tổng quan → Phải trả vendor: mỗi người cung ứng gom thành một dòng tổng tiền, ghi số khoản và hạn trả gần nhất. Chạm vào dòng để xem từng khoản theo tháng và hạn trả của khoản đó. Khoản của kỳ đang chạy ghi "Tạm tính". Danh sách xếp theo hạn trả gần nhất lên đầu.', 'chu']] },
