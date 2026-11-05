@@ -13,7 +13,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
 <script src="config.js"></script>
-<script>window.PB = { so: 118, luc: "05/11 17:29" };</script>
+<script>window.PB = { so: 119, luc: "05/11 19:26" };</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap">
 <style>
@@ -728,7 +728,7 @@ textarea.inp{font-family:inherit}
 .cck i{position:absolute;width:30px;height:30px;margin:-15px 0 0 -15px;border-radius:50%;background:rgba(47,107,255,.25);border:3px solid #2F6BFF;touch-action:none}
 #inCC{display:none}
 @media print{@page{size:A4 portrait;margin:0}html,body{background:#fff!important}body.dangIn>*:not(#inCC){display:none!important}body.dangIn #inCC{display:block!important}
-.inTr{width:100%;box-sizing:border-box;padding-top:65.7mm;display:flex;justify-content:center;align-items:flex-start;break-after:page;page-break-after:always}html.ios .inTr{padding-top:42mm}.inTr:last-child{break-after:auto;page-break-after:auto}.inTr img{width:128.4mm;height:auto;max-height:256mm}.inTr.the,html.ios .inTr.the{padding-top:12.5mm}.inTr.the img{width:178mm;max-height:none}.inTr.the5{padding-top:3.9mm}html.ios .inTr.the5{padding-top:0}.inTr.the5 img{width:120mm;max-height:none}}
+.inTr{width:100%;box-sizing:border-box;padding-top:65.7mm;display:flex;justify-content:center;align-items:flex-start;break-after:page;page-break-after:always}html.ios .inTr{padding-top:42mm}.inTr:last-child{break-after:auto;page-break-after:auto}.inTr img{width:128.4mm;height:auto;max-height:256mm}.inTr.the,html.ios .inTr.the{padding-top:15.5mm}.inTr.the img{width:172mm;max-height:none}.inTr.the5{padding-top:6.9mm}html.ios .inTr.the5{padding-top:0}.inTr.the5 img{width:114mm;max-height:none}}
 .vtThe{display:flex;align-items:center;gap:14px;width:100%;margin-top:12px;border:1.5px solid var(--tint);border-radius:18px;padding:12px 16px;background:var(--card);color:var(--fg);text-align:left}
 .vtThe .vtIc{width:40px;height:40px;border-radius:20px;background:var(--tint);color:var(--blue);display:grid;place-items:center;flex:none}.vtThe .vtIc svg{width:22px;height:22px}
 .vtTx{flex:1;min-width:0;display:flex;flex-direction:column;gap:1px}.vtTx b{font-size:16px;font-weight:600}.vtTx small{font-size:13px;color:var(--muted)}.vtTx small.cu{color:var(--warn);font-weight:600}
@@ -3758,7 +3758,7 @@ textarea.inp{font-family:inherit}
         '<div class="meta">Bấm In, trong bảng hiện ra chọn <b>In</b>, rồi chọn đúng máy in và khổ giấy như dòng trên.</div><button class="btn" id="gP">In</button><button class="btn lk" id="gK">Thôi</button>') :
         moSheet('<h3>PDF sẵn sàng</h3><div class="meta">' + esc(ten) + ' · ' + cl + '</div>' +
         (mb > 20 ? '<div class="note warn">File lớn, gửi email có thể bị chặn (thường giới hạn 25 MB). Nên chia làm nhiều lượt ít người hơn.</div>' : '') +
-        '<div class="meta">' + (bo ? (bo.kho === 'A5' ? 'Trang 5 × 7 inch, 4 thẻ một tờ, mỗi thẻ 8,5 × 6 cm. Dặn quán in màu trên giấy A5, in 100% (đúng kích thước), không chọn vừa trang.' : 'Khổ A4, 8 thẻ một tờ, mỗi thẻ 8,5 × 6 cm. Dặn quán in màu, in 100% (đúng kích thước), không chọn vừa trang.') : 'Mỗi người 1 trang A4, ảnh to gấp 1,5 lần thẻ thật. Ở quán in cứ in khổ A4 bình thường.') + '</div>' +
+        '<div class="meta">' + (bo ? (bo.kho === 'A5' ? 'Trang 5 × 7 inch, 4 thẻ một tờ, mỗi thẻ 8,2 × 5,7 cm. Dặn quán in màu trên giấy A5, in 100% (đúng kích thước), không chọn vừa trang.' : 'Khổ A4, 8 thẻ một tờ, mỗi thẻ 8,2 × 5,7 cm. Dặn quán in màu, in 100% (đúng kích thước), không chọn vừa trang.') : 'Mỗi người 1 trang A4, ảnh to gấp 1,5 lần thẻ thật. Ở quán in cứ in khổ A4 bình thường.') + '</div>' +
                 '<button class="btn" id="gP">Gửi PDF (Zalo, email…)</button><button class="btn lk" id="gK">Thôi</button>');
       function mo() {   // máy không có bảng chia sẻ: mở PDF để dùng nút chia sẻ của trình xem
         var u = URL.createObjectURL(o.bl), a = document.createElement('a'); a.href = u; a.target = '_blank'; a.download = ten; document.body.appendChild(a); a.click(); a.remove();
@@ -4050,7 +4050,8 @@ textarea.inp{font-family:inherit}
     x.imageSmoothingQuality = 'high'; x.drawImage(n.cv, sx, sy, sw, sh, X, Y, W, H);
   }
   // 31/10: thẻ 8,5 × 6 cm (trước 8,1 × 5,3): giữ bố cục cũ, phóng ngang SX, dọc SY; ô ảnh giữ tỉ lệ cũ (29,6 : 44,6) nên ảnh đã lưu dùng lại được
-  var THE_W = 85, THE_H = 60, THE_SX = 85 / 81, THE_SY = 60 / 53;
+  // 05/11: sale nhét bao thẻ khó -> giảm mỗi chiều 3 mm: 8,2 × 5,7 cm
+  var THE_W = 82, THE_H = 57, THE_SX = 82 / 81, THE_SY = 57 / 53;
   function theVe(e, rong) {   // 1 thẻ -> canvas; rong = bề rộng px (1004 = 300 dpi)
     var W = rong || 1004, u = W / THE_W, c = document.createElement('canvas'); c.width = W; c.height = Math.round(THE_H * u);
     var x = c.getContext('2d'), F = '"Times New Roman", Times, serif';
@@ -4088,11 +4089,11 @@ textarea.inp{font-family:inherit}
     x.strokeStyle = '#B8BEC8'; x.lineWidth = Math.max(1, mm(0.15)); x.strokeRect(x.lineWidth / 2, x.lineWidth / 2, c.width - x.lineWidth, c.height - x.lineWidth);
     return c;
   }
-  // trang A4: 2 cột × 4 hàng thẻ 8,5 × 6, khe 8 mm; khối 178 × 272 mm (gồm dòng nhắc) căn giữa ngang, cách trên 12,5 mm
-  var THE_TR = { trai: 16, tren: 12.5, rong: 178, cao: 272 };
+  // trang A4: 2 cột × 4 hàng thẻ 8,2 × 5,7, khe 8 mm; khối 172 × 266 mm (gồm dòng nhắc) căn giữa ngang, cách trên 15,5 mm
+  var THE_TR = { trai: 19, tren: 15.5, rong: 172, cao: 266 };
   // 31/10: khổ A5: 4 thẻ / tờ, thẻ xoay đứng (5,3 × 8,1 cm), 2 cột × 2 hàng, khe 6 mm; khối 112 × 168 mm.
   // Máy HP chỉ báo khổ 5 × 7 inch cho iPhone (không có A5) -> trang PDF / trang in đúng 5 × 7 inch (127 × 177,8 mm) để in 100%, giấy A5 vẫn đặt trong khay.
-  var THE_TR5 = { tren: 3.9, rong: 120, cao: 170 };   // 31/10: thẻ 8,5 × 6 đứng, 2 × 2 sát nhau (chung đường cắt), lề ~3,5–3,9 mm
+  var THE_TR5 = { tren: 6.9, rong: 114, cao: 164 };   // 05/11: thẻ 8,2 × 5,7 đứng, 2 × 2 sát nhau (chung đường cắt), căn giữa trang 5 × 7 inch, lề ~6,5–6,9 mm
   function theKho() { return doc('vlta_theKho') === 'A5' ? 'A5' : 'A4'; }
   function theBo() { return theKho() === 'A5' ? { rong: THE_TR5.rong, tren: THE_TR5.tren, kho: 'A5' } : { rong: THE_TR.rong, tren: THE_TR.tren }; }
   function theTrang5(ds) {
@@ -4116,7 +4117,7 @@ textarea.inp{font-family:inherit}
       var x = c.getContext('2d'); x.fillStyle = '#fff'; x.fillRect(0, 0, c.width, c.height);
       ds.slice(i, i + 8).forEach(function (e, j) { x.drawImage(theVe(e, Math.round(THE_W * k)), Math.round((j % 2) * (THE_W + 8) * k), Math.round(Math.floor(j / 2) * (THE_H + 8) * k)); });
       x.fillStyle = '#9AA1AC'; x.textAlign = 'center'; x.font = (7 * 25.4 / 72 * k) + 'px Arial, Helvetica, sans-serif';
-      x.fillText('In 100% (đúng kích thước, không thu phóng) · mỗi thẻ 8,5 × 6 cm', c.width / 2, (264 + 6) * k);
+      x.fillText('In 100% (đúng kích thước, không thu phóng) · mỗi thẻ 8,2 × 5,7 cm', c.width / 2, (4 * (THE_H + 8) - 8 + 6) * k);
       out.push(c.toDataURL('image/jpeg', 0.92));
     }
     return out;
@@ -4279,7 +4280,7 @@ textarea.inp{font-family:inherit}
     theMaTai(); theGanMa(ds);
     if (!ds.length) h += '<div class="card cch">' + ICON.cc + '<b>Thẻ ra vào HOJEONG</b><div class="meta">Chọn ảnh CCCD ở mục In CCCD, rồi quay lại đây tích người cần làm thẻ. Người chưa có CCCD trong lượt thì bấm Thêm người.</div></div>';
     else h += '<div class="row thk"><span class="meta">Khổ giấy</span><div class="seg" id="thKho">' + ['A4', 'A5'].map(function (g) { return '<button data-tk="' + g + '"' + (theKho() === g ? ' class="on"' : '') + '>' + g + (g === 'A4' ? ' · 8 thẻ/tờ' : ' · 4 thẻ/tờ') + '</button>'; }).join('') + '</div></div>' +
-      '<div class="meta" style="padding:0 2px">Tích người cần làm thẻ, gõ mã thẻ. Mỗi thẻ 8,5 × 6 cm, cần in màu.' + (theKho() === 'A5' ? ' Đặt giấy A5 vào khay; hộp in hiện khổ 5 × 7 inch là đúng.' : '') + '</div>';
+      '<div class="meta" style="padding:0 2px">Tích người cần làm thẻ, gõ mã thẻ. Mỗi thẻ 8,2 × 5,7 cm, cần in màu.' + (theKho() === 'A5' ? ' Đặt giấy A5 vào khay; hộp in hiện khổ 5 × 7 inch là đúng.' : '') + '</div>';
     h += ds.map(function (e) {
       var n0 = theAnhNguon(e), dd = e.chon;
       var nh = n0 ? (function () { var c = document.createElement('canvas'); c.width = 60; c.height = 90; theVeAnh(c.getContext('2d'), n0, 0, 0, 60, 90); return c.toDataURL('image/jpeg', 0.8); })() : '';
@@ -4354,6 +4355,7 @@ textarea.inp{font-family:inherit}
   }
   function ccCheNoi(t) { t.querySelectorAll('[data-che]').forEach(function (b) { b.onclick = function () { CCS.theMo = b.getAttribute('data-che') === '1'; var lg = theLogoNap(); if (!lg.complete) lg.onload = function () { ccVe(); }; ccVe(); window.scrollTo(0, 0); }; }); }
   var BAN_MOI = [
+    { so: 119, ds: [['Thẻ HOJEONG nhỏ lại 3 mm mỗi chiều: 8,2 × 5,7 cm (trước 8,5 × 6 cm) để nhét vào bao thẻ dễ hơn. Ảnh, chữ và mã thẻ thu nhỏ theo, bố cục giữ nguyên. Khổ A4 vẫn 8 thẻ một tờ, khổ A5 vẫn 4 thẻ một tờ.', '']] },
     { so: 118, ds: [['CCCD – ảnh lưu kho: ảnh có nền thẻ bị ám màu (xanh lè, tím, vàng do đèn hoặc camera) được tự kéo về gần màu thẻ thật, chữ đen và giấy trắng giữ nguyên.', '']] },
     { so: 117, ds: [['CCCD – ảnh lưu vào kho: là ảnh màu, app tự cân bằng trắng theo từng ảnh (chụp dưới đèn vàng, đèn xanh hay trong bóng râm đều về màu tự nhiên) và không còn tăng tương phản gắt làm cháy mặt người. Ảnh bị mất hẳn một màu thì app tô lại màu theo thẻ mẫu cùng loại.', ''], ['In CCCD và Gửi PDF ra quán in: app tự tạo bản đen trắng rõ nét cho máy in laser – chữ và số đậm, hoa văn nền nhạt, mặt người được chỉnh sáng riêng để không lóa, không bết đen. Ảnh cũ trong kho khi in cũng được xử lý như vậy (ảnh trong kho giữ nguyên).', ''], ['Khối "Chỉnh ảnh in": mặc định là tự chỉnh theo từng ảnh; 3 thanh kéo dùng để chỉnh thêm cho bản in khi cần (50 = tự động). Thẻ HOJEONG lấy ảnh chân dung từ ảnh màu đã cân bằng trắng.', '']] },
     { so: 116, ds: [['Phiếu đối chiếu vendor: khoản của Quyền ở ATUM (tháng 9, tháng 10) nay có đủ từng công nhân, giờ làm, tiền ăn và đơn giá, lấy từ file lưu trữ ATUM. Dòng "Người cung ứng khác" là khoản gộp nên không xuất phiếu.', 'chu']] },
