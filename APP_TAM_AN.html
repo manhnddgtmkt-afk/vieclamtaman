@@ -783,7 +783,7 @@ textarea.inp{font-family:inherit}
 .glVao svg{width:15px;height:15px;flex:none}
 .glBar{display:flex;align-items:center;gap:8px;margin:0 0 2px}.glBar .link{padding:4px 0;font-size:15px}.glBar b{margin-left:auto;font-size:15px;font-weight:600;color:var(--muted)}
 .vdoGhi{margin:0 2px 10px}.vdoC{display:flex;gap:12px;align-items:flex-start;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:10px}.vdoA{position:relative;flex:0 0 auto;width:78px;height:120px;border:0;padding:0;border-radius:12px;overflow:hidden;background:#1B2333;cursor:pointer}.vdoA img{width:100%;height:100%;object-fit:cover;display:block}.vdoPl{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:36px;height:36px;border-radius:50%;background:rgba(0,0,0,.45);color:#fff;display:grid;place-items:center}.vdoPl svg{width:20px;height:20px;margin-left:2px}.vdoG{position:absolute;right:5px;bottom:5px;background:rgba(0,0,0,.6);color:#fff;font-size:11px;font-weight:600;padding:1px 5px;border-radius:6px}.vdoI{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px}.vdoN{font-weight:700;font-size:15.5px}.vdoS{font-size:13px;font-weight:600;color:var(--blue)}.vdoS.ok{color:var(--good)}.vdoS.cu{color:var(--warn)}.vdoB{margin-top:6px}.vdoB .btn.sm{width:100%}.vdoTd{display:flex;flex-direction:column;gap:4px}.vdoBar{height:6px;border-radius:3px;background:var(--soft);overflow:hidden}.vdoBar i{display:block;height:100%;background:var(--cta);transition:width .3s}.vdoVw{margin:12px 0;background:#000;border-radius:12px;overflow:hidden;display:flex;justify-content:center}.vdoV{display:block;width:100%;max-height:62vh;border:0;background:#000}iframe.vdoV{height:62vh}
-.sheet.vdoFs{background:#000;align-items:stretch;flex-direction:column;z-index:60}.sheet.vdoFs>.vdoFw{background:#000;max-width:none;width:100%;height:100%;border-radius:0;padding:0;max-height:none;overflow:hidden;gap:0;display:flex;flex-direction:column}.vdoFt{display:flex;align-items:center;gap:12px;padding:calc(10px + env(safe-area-inset-top,0px)) 16px 10px;color:#fff}.vdoFt b{display:block;font-size:16px}.vdoFt small{display:block;font-size:12.5px;color:rgba(255,255,255,.65);margin-top:1px}.vdoFx{flex:none;border:0;background:rgba(255,255,255,.16);color:#fff;font-weight:600;font-size:15px;border-radius:999px;padding:8px 16px}.vdoFm{position:relative;flex:1;min-height:0;display:flex}.vdoFv{flex:1;width:100%;height:100%;border:0;background:#000;display:block}.vdoFc{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);color:rgba(255,255,255,.7);font-size:14px;pointer-events:none}.vdoFb{padding:10px 16px calc(12px + env(safe-area-inset-bottom,0px))}.vdoFn{color:rgba(255,255,255,.75);font-size:13.5px;text-align:center}
+.sheet.vdoFs{background:#000;align-items:stretch;flex-direction:column;z-index:60}.sheet.vdoFs>.vdoFw{background:#000;max-width:none;width:100%;height:100%;border-radius:0;padding:0;max-height:none;overflow:hidden;gap:0;display:flex;flex-direction:column}.vdoFt{display:flex;align-items:center;gap:12px;padding:calc(10px + env(safe-area-inset-top,0px)) 16px 10px;color:#fff}.vdoFt b{display:block;font-size:16px}.vdoFt small{display:block;font-size:12.5px;color:rgba(255,255,255,.65);margin-top:1px}.vdoFx{flex:none;border:0;background:rgba(255,255,255,.16);color:#fff;font-weight:600;font-size:15px;border-radius:999px;padding:8px 16px}.vdoFm{position:relative;flex:1;min-height:0;display:flex}.vdoFv{flex:1;width:100%;height:100%;border:0;background:#000;display:block}.vdoFc{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:center;gap:6px;color:#fff;text-align:center;pointer-events:none;background:rgba(0,0,0,.55);border-radius:14px;padding:14px 18px;max-width:80%}.vdoFc b{font-size:15px;font-weight:600}.vdoFc small{font-size:13px;color:rgba(255,255,255,.75)}.vdoFc.hidden{display:none}.vdoFs1{width:26px;height:26px;border-radius:50%;border:3px solid rgba(255,255,255,.25);border-top-color:#fff;animation:vdoQ 0.9s linear infinite}@keyframes vdoQ{to{transform:rotate(360deg)}}.vdoFp{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:72px;height:72px;border-radius:50%;border:0;background:rgba(0,0,0,.55);color:#fff;display:grid;place-items:center}.vdoFp svg{width:34px;height:34px;margin-left:4px}.vdoFp.hidden{display:none}.vdoFb .btn:disabled{opacity:1;color:rgba(255,255,255,.8);background:rgba(255,255,255,.12);border-color:transparent}.vdoFb{padding:10px 16px calc(12px + env(safe-area-inset-bottom,0px))}.vdoFn{color:rgba(255,255,255,.75);font-size:13.5px;text-align:center}
 </style>
 </head>
 <body>
@@ -4415,6 +4415,7 @@ textarea.inp{font-family:inherit}
   }
   function ccCheNoi(t) { t.querySelectorAll('[data-che]').forEach(function (b) { b.onclick = function () { CCS.theMo = b.getAttribute('data-che') === '1'; var lg = theLogoNap(); if (!lg.complete) lg.onload = function () { ccVe(); }; ccVe(); window.scrollTo(0, 0); }; }); }
   var BAN_MOI = [
+    { so: 127, ds: [{ i: '🎬', t: 'Xem trước video gọn hơn', m: 'Chạm vào ảnh của video là app tải video và phát ngay khi tải được đoạn đầu (khoảng 5–10 giây). Chỉ còn một bộ nút điều khiển của điện thoại, đang phát thì tự ẩn.', c: [['Lưu sau khi xem', 'Xem xong, video đã nằm sẵn trong máy: bấm [[Lưu vào máy]] ở dưới là lưu luôn, không phải tải lại.'], ['Không ưng thì đóng', 'Bấm [[Đóng]] ở góc trên, app dừng tải ngay, chỉ tốn phần đã xem. Nên dùng wifi vì video khá nặng.']] }] },
     { so: 126, ds: [{ i: '🎬', t: 'Xem trước video to hơn', m: 'Chạm vào ảnh của video là video mở to kín màn hình. Đang phát thì các nút điều khiển tự ẩn sau vài giây, chạm vào video để hiện lại.', c: [['Đóng hoặc tải', 'Bấm [[Đóng]] ở góc trên để quay lại danh sách, hoặc bấm [[Tải về]] ở dưới để tải video gốc.']] }] },
     { so: 125, ds: [{ i: '🔔', t: 'Thông báo thay đổi bảng công dễ đọc hơn', m: 'Mỗi thay đổi trên bảng công giờ được viết thành một câu đủ ý: ai bị sửa, sửa thành gì, người sửa là ai và sửa lúc nào. Chữ dài tự xuống dòng, không bị cắt.',
       c: [['Xem chi tiết', 'Chạm vào dòng để mở hồ sơ người đó. Dòng vẫn còn đó, chỉ mất khi bấm [[Đã xem]].'],
@@ -4682,19 +4683,87 @@ textarea.inp{font-family:inherit}
     el.querySelectorAll('[data-vdohuy]').forEach(function (b) { b.onclick = function () { var d = VDO.dang[b.getAttribute('data-vdohuy')]; if (d) d.huy(); }; });
   }
   function vdoVeNut(id) { var v = vdoTim(id), b = document.getElementById('vdoB_' + id); if (v && b) { b.innerHTML = vdoNut(v); vdoGan(b); } }
-  function vdoXem(v) {   // xem trước toàn màn hình (bản 126): trình phát Google Drive phủ kín màn, thanh trên Đóng, thanh dưới Tải về
-    var nguon = VDO.thang ? '<video class="vdoFv" controls playsinline autoplay' + (v.anh ? ' poster="' + v.anh + '"' : '') + ' src="' + esc(vdoUrl(v)) + '"></video>'
-      : '<iframe class="vdoFv" src="https://drive.google.com/file/d/' + encodeURIComponent(v.id) + '/preview" allow="autoplay; fullscreen" allowfullscreen></iframe>';
-    var co = !!VDO.file[v.id], dang = !!VDO.dang[v.id];
+  // bản 127: xem trước bằng trình phát của app – tải video gốc qua máy chủ, đủ ~8 MB đầu thì phát, tải tới đâu nối tới đó
+  // (MP4 CapCut có mục lục ở đầu file nên phần đầu phát được); xem hết là video đã nằm sẵn trong máy, bấm Lưu là xong
+  var VDO_XEM_DAU = 8 * 1048576, VDO_XEM_THEM = 4 * 1048576;
+  function vdoXem(v) {
+    if (VDO.thang) return vdoXemDrive(v);
     var sh = document.createElement('div'); sh.className = 'sheet vdoFs';
     sh.innerHTML = '<div class="vdoFw"><div class="vdoFt"><div style="min-width:0;flex:1"><b class="ell">' + esc(vdoTen(v)) + '</b><small class="ell">' + (v.dai ? vdoGiay(v.dai) + ' · ' : '') + vdoMB(v.kb) + ' · lên lúc ' + vdoLuc(v.tao) + '</small></div><button class="vdoFx" id="vxD">Đóng</button></div>' +
-      '<div class="vdoFm">' + nguon + '<span class="vdoFc">Đang mở video…</span></div>' +
-      '<div class="vdoFb">' + (dang ? '<div class="vdoFn">Video đang được tải về, xem tiến độ ở danh sách.</div>' : '<button class="btn" id="vxT">' + (co ? 'Lưu vào máy' : ((v.tai && v.tai.length) ? 'Tải lại' : 'Tải về') + ' · ' + vdoMB(v.kb)) + '</button>') + '</div></div>';
+      '<div class="vdoFm"><video class="vdoFv" playsinline controls preload="auto"' + (v.anh ? ' poster="' + v.anh + '"' : '') + '></video><div class="vdoFc" id="vxC"><span class="vdoFs1"></span><b>Đang tải để xem…</b><small></small></div><button class="vdoFp hidden" id="vxP" aria-label="Phát"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l11-6.5z" fill="currentColor"/></svg></button></div>' +
+      '<div class="vdoFb"><button class="btn" id="vxT"></button></div></div>';
     document.body.appendChild(sh);
-    var fr = sh.querySelector('.vdoFv'); fr.addEventListener(fr.tagName === 'IFRAME' ? 'load' : 'loadeddata', function () { var c = sh.querySelector('.vdoFc'); if (c) c.remove(); });
-    function dong() { try { if (fr.tagName === 'VIDEO') { fr.pause(); fr.removeAttribute('src'); fr.load(); } else fr.src = 'about:blank'; } catch (e) { } sh.remove(); }
+    VDO.xemId = v.id;
+    var vd = sh.querySelector('video'), nC = sh.querySelector('#vxC'), nP = sh.querySelector('#vxP'), nT = sh.querySelector('#vxT');
+    var url = null, coB = 0, full = false, choThem = false, dong0 = false, d = null, tuXem = false, loi = '';
+    function hienChu(t, phu) { if (!t) { nC.classList.add('hidden'); return; } nC.classList.remove('hidden'); nC.querySelector('b').textContent = t; nC.querySelector('small').textContent = phu || ''; }
+    function dau() { var f = VDO.file[v.id]; if (f) return { ds: [f], b: f.size, du: true }; return d ? d.dau() : { ds: [], b: 0, du: false }; }
+    function nut() {
+      var f = VDO.file[v.id];
+      if (f) { nT.disabled = false; nT.className = 'btn'; nT.textContent = 'Lưu vào máy · ' + vdoMB(f.size); return; }
+      nT.disabled = true; nT.className = 'btn ghost';
+      nT.textContent = loi ? 'Chưa tải được – đóng rồi mở lại để thử' : (d ? 'Đang tải video ' + Math.round((d.pct || 0) * 100) + '% · ' + vdoMB(d.co) + ' / ' + vdoMB(d.tong) : 'Đang tải video…');
+    }
+    function nap(p, t, phat) {   // thay nguồn phát bằng phần đã tải mới nhất, giữ chỗ đang xem
+      var cu = url; url = URL.createObjectURL(new Blob(p.ds, { type: v.mime || 'video/mp4' })); coB = p.b; full = p.du;
+      var xong1 = function () {
+        vd.removeEventListener('loadedmetadata', xong1);
+        try { if (t > 0.2) vd.currentTime = t; } catch (e) { }
+        if (phat) { var q = vd.play(); if (q && q.catch) q.catch(function () { nP.classList.remove('hidden'); }); }
+        if (cu) setTimeout(function () { URL.revokeObjectURL(cu); }, 3000);
+      };
+      vd.addEventListener('loadedmetadata', xong1);
+      vd.src = url;
+    }
+    function tToi() {   // xem được tới giây nào với phần đang nạp (ước theo dung lượng, chừa 2,5 giây)
+      if (full) return Infinity;
+      var dur = (vd.duration && isFinite(vd.duration)) ? vd.duration : (v.dai || 0) / 1000;
+      return dur * coB / (Number(v.kb) || 1) - 2.5;
+    }
+    function kiem() {
+      if (dong0) return;
+      var p = dau();
+      if (!url) {
+        if (p.du || p.b >= VDO_XEM_DAU) { hienChu(''); nap(p, 0, true); }
+        else if (!loi) hienChu('Đang tải để xem…', d ? Math.round(Math.min(1, p.b / VDO_XEM_DAU) * 100) + '%' : '');
+        return;
+      }
+      if (full) return;
+      if (choThem || vd.currentTime >= tToi()) {
+        if (p.du || p.b >= coB + VDO_XEM_THEM) { var phat = choThem || !vd.paused; choThem = false; hienChu(''); nap(p, vd.currentTime, phat); }
+        else if (!loi) { if (!vd.paused) { vd.pause(); choThem = true; } if (choThem) hienChu('Đang tải thêm…', ''); }
+      }
+    }
+    vd.addEventListener('timeupdate', kiem);
+    vd.addEventListener('seeking', function () { if (!full && vd.currentTime >= tToi()) { choThem = true; kiem(); } });
+    vd.addEventListener('waiting', function () { if (!full && url && vd.currentTime >= tToi()) { choThem = true; kiem(); } });   // 'waiting' lúc mới nạp nguồn thì bỏ qua
+    vd.addEventListener('ended', function () { if (!full) { choThem = true; kiem(); } });
+    vd.addEventListener('error', function () { if (!full) { choThem = true; kiem(); } else hienChu('Không phát được video này.', ''); });
+    vd.addEventListener('play', function () { nP.classList.add('hidden'); });
+    nP.onclick = function () { nP.classList.add('hidden'); var q = vd.play(); if (q && q.catch) q.catch(function () { }); };
+    function nghe(file, l) {
+      if (dong0) return;
+      if (l && l !== 'huy') { loi = l; hienChu('Chưa tải được video', l); }
+      nut(); kiem();
+    }
+    if (!VDO.file[v.id]) { tuXem = !VDO.dang[v.id]; d = vdoTaiVe(v, true); if (d) d.nghe.push(nghe); }
+    nut(); kiem();
+    function dong() {
+      dong0 = true; VDO.xemId = null;
+      if (d) { d.nghe = d.nghe.filter(function (f) { return f !== nghe; }); if (tuXem && VDO.dang[v.id] === d) d.huy(); }   // đóng khi chưa tải xong: dừng tải luôn
+      try { vd.pause(); vd.removeAttribute('src'); vd.load(); } catch (e) { }
+      if (url) URL.revokeObjectURL(url);
+      sh.remove();
+    }
     sh.querySelector('#vxD').onclick = dong;
-    var t = sh.querySelector('#vxT'); if (t) t.onclick = function () { dong(); if (VDO.file[v.id]) vdoLuu(v); else vdoTaiVe(v); };
+    nT.onclick = function () { if (!VDO.file[v.id]) return; try { vd.pause(); } catch (e) { } vdoLuu(v); dong(); };
+  }
+  function vdoXemDrive(v) {   // dự phòng (khi bật tải thẳng): trình phát Google Drive kín màn hình
+    var nguon = '<iframe class="vdoFv" src="https://drive.google.com/file/d/' + encodeURIComponent(v.id) + '/preview" allow="autoplay; fullscreen" allowfullscreen></iframe>';
+    var sh = document.createElement('div'); sh.className = 'sheet vdoFs';
+    sh.innerHTML = '<div class="vdoFw"><div class="vdoFt"><div style="min-width:0;flex:1"><b class="ell">' + esc(vdoTen(v)) + '</b><small class="ell">' + vdoMB(v.kb) + '</small></div><button class="vdoFx" id="vxD">Đóng</button></div><div class="vdoFm">' + nguon + '</div></div>';
+    document.body.appendChild(sh);
+    sh.querySelector('#vxD').onclick = function () { sh.remove(); };
   }
   function vdoKhucThang(v, tu, den, sig) {   // tải thẳng từ Google Drive (khóa chỉ đọc)
     return fetch(vdoUrl(v), { headers: { Range: 'bytes=' + tu + '-' + den }, signal: sig, cache: 'no-store' }).then(function (r) {
@@ -4709,12 +4778,14 @@ textarea.inp{font-family:inherit}
       return { b: a.buffer, du: false };
     });
   }
-  function vdoTaiVe(v) {
-    if (VDO.dang[v.id]) return;
-    if (VDO.file[v.id]) { vdoLuu(v); return; }
+  function vdoTaiVe(v, chiTai) {   // chiTai = gọi từ màn xem trước: không mở hộp Lưu, trả về d để màn xem nghe tiến độ
+    if (VDO.dang[v.id]) return VDO.dang[v.id];
+    if (VDO.file[v.id]) { if (!chiTai) vdoLuu(v); return null; }
     if (!doc('vlta_vdoWifi')) { luu('vlta_vdoWifi', '1'); toast('Video khá nặng (' + vdoMB(v.kb) + ') – nên dùng wifi để tải.'); }
     var tong = Number(v.kb) || 0, co = 0, huy = false, ac = null, mc = !(VDO.thang && VDO.khoa), loiThang = 0;
-    var d = VDO.dang[v.id] = { pct: 0, co: 0, tong: tong, huy: function () { huy = true; try { if (ac) ac.abort(); } catch (e) { } xong(null); } };
+    var d = VDO.dang[v.id] = { pct: 0, co: 0, tong: tong, nghe: [], huy: function () { huy = true; try { if (ac) ac.abort(); } catch (e) { } xong(null); },
+      dau: function () { var ds = [], b = 0; for (var i = 0; i < kq.length && kq[i]; i++) { ds.push(kq[i]); b += kq[i].byteLength; } return { ds: ds, b: b, du: b === tong && tong > 0 }; } };   // phần đầu đã tải liền mạch (để xem trước)
+    function bao(a, b) { d.nghe.slice().forEach(function (f) { try { f(a, b); } catch (e) { } }); }
     if (typeof ccThuc === 'function') ccThuc(1);
     vdoVeNut(v.id);
     function tdCap() { var e = document.querySelector('[data-vdotd="' + v.id + '"]'), b = document.querySelector('#vdoB_' + v.id + ' .vdoBar i'); if (e) e.innerHTML = vdoTdChu(d); if (b) b.style.width = Math.round(d.pct * 100) + '%'; }
@@ -4723,7 +4794,8 @@ textarea.inp{font-family:inherit}
       delete VDO.dang[v.id];
       if (!Object.keys(VDO.dang).length && typeof ccThuc === 'function' && !(typeof ccBan === 'function' && ccBan())) ccThuc(0);
       if (file) VDO.file[v.id] = file;
-      vdoVeNut(v.id);
+      vdoVeNut(v.id); bao(file || null, loi || (file ? '' : 'huy'));
+      if (VDO.xemId === v.id) return;   // đang mở màn xem trước: màn đó tự đổi nút Lưu / báo lỗi
       if (loi) { toastLoi('Chưa tải được video ' + vdoTen(v) + ': ' + loi); return; }
       if (!file) return;
       var sh = moSheet('<h3>Video đã tải xong</h3><div class="meta">' + esc(vdoTen(v)) + ' · ' + vdoMB(file.size) + '</div>' +
@@ -4757,20 +4829,21 @@ textarea.inp{font-family:inherit}
           if (k.b.byteLength !== den - tu + 1) throw new Error('Khúc tải thiếu byte');
           if (!kq[n]) { kq[n] = k.b; soXong++; co += k.b.byteLength; }
         }
-        d.co = co; d.pct = tong ? co / tong : 1; d.loi = ''; tdCap(); het();
+        d.co = co; d.pct = tong ? co / tong : 1; d.loi = ''; tdCap(); bao(); het();
       }).catch(function (e) {
         nha();
         if (huy || hong || l0 !== luot) return;
         if (!mc && soXong === 0 && ++loiThang >= 2) {   // tải thẳng không được (khóa / mạng chặn): nhờ máy chủ đọc hộ
           mc = true; try { ac.abort(); } catch (e2) { } ac = window.AbortController ? new AbortController() : { signal: undefined }; dangK = 0; chia(VDO_KHUC_MC); het(); return;
         }
-        if (lan < 6) { d.loi = 'Mạng chập chờn – đang thử lại…'; tdCap(); setTimeout(function () { motKhuc(n, lan + 1, l0); }, 1500 * (lan + 1)); return; }
+        if (lan < 6) { d.loi = 'Mạng chập chờn – đang thử lại…'; tdCap(); bao(); setTimeout(function () { motKhuc(n, lan + 1, l0); }, 1500 * (lan + 1)); return; }
         hong = true; try { ac.abort(); } catch (e3) { }
         xong(null, e && e.message ? e.message : 'mất kết nối');
       });
     }
     ac = window.AbortController ? new AbortController() : { signal: undefined };
     het();
+    return d;
   }
   function vdoLuu(v) {   // gọi NGAY trong cú chạm (iPhone chỉ mở bảng chia sẻ sau 1 lần bấm tay)
     var f = VDO.file[v.id]; if (!f) { vdoTaiVe(v); return; }
