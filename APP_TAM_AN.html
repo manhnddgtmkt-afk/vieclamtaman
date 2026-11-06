@@ -4415,6 +4415,7 @@ textarea.inp{font-family:inherit}
   }
   function ccCheNoi(t) { t.querySelectorAll('[data-che]').forEach(function (b) { b.onclick = function () { CCS.theMo = b.getAttribute('data-che') === '1'; var lg = theLogoNap(); if (!lg.complete) lg.onload = function () { ccVe(); }; ccVe(); window.scrollTo(0, 0); }; }); }
   var BAN_MOI = [
+    { so: 128, ds: [{ i: '🎬', t: 'Mục Video ghi rõ ai đã tải', m: 'Dòng đã tải ghi đúng tên người tải (ví dụ: Long đã tải 17:45), người tự tải thấy chữ Bạn. Bỏ dòng chú thích dài ở đầu mục, ngày tự xoá đã ghi riêng trên từng video.' }] },
     { so: 127, ds: [{ i: '🎬', t: 'Xem trước video gọn hơn', m: 'Chạm vào ảnh của video là app tải video và phát ngay khi tải được đoạn đầu (khoảng 5–10 giây). Chỉ còn một bộ nút điều khiển của điện thoại, đang phát thì tự ẩn.', c: [['Lưu sau khi xem', 'Xem xong, video đã nằm sẵn trong máy: bấm [[Lưu vào máy]] ở dưới là lưu luôn, không phải tải lại.'], ['Không ưng thì đóng', 'Bấm [[Đóng]] ở góc trên, app dừng tải ngay, chỉ tốn phần đã xem. Nên dùng wifi vì video khá nặng.']] }] },
     { so: 126, ds: [{ i: '🎬', t: 'Xem trước video to hơn', m: 'Chạm vào ảnh của video là video mở to kín màn hình. Đang phát thì các nút điều khiển tự ẩn sau vài giây, chạm vào video để hiện lại.', c: [['Đóng hoặc tải', 'Bấm [[Đóng]] ở góc trên để quay lại danh sách, hoặc bấm [[Tải về]] ở dưới để tải video gốc.']] }] },
     { so: 125, ds: [{ i: '🔔', t: 'Thông báo thay đổi bảng công dễ đọc hơn', m: 'Mỗi thay đổi trên bảng công giờ được viết thành một câu đủ ý: ai bị sửa, sửa thành gì, người sửa là ai và sửa lúc nào. Chữ dài tự xuống dòng, không bị cắt.',
@@ -4648,7 +4649,7 @@ textarea.inp{font-family:inherit}
     var tt = v.tai || [];
     if (tt.length) {
       var ten = [], da = {};
-      tt.forEach(function (x) { var t = x.ten === (S.toi && S.toi.ten) ? 'Bạn' : x.ten; if (!da[t]) { da[t] = 1; ten.push(t); } });
+      tt.forEach(function (x) { var t = (x.ban || (x.ban === undefined && x.ten === (S.toi && S.toi.ten))) ? 'Bạn' : x.ten; if (!da[t]) { da[t] = 1; ten.push(t); } });
       return '<div class="vdoS ok">✓ ' + esc(ten.join(', ')) + ' đã tải ' + vdoLuc(tt[tt.length - 1].luc) + '</div><div class="meta">Tự xoá ngày ' + vdoNgay(v.het) + '</div>';
     }
     var cu = Date.now() - v.tao > 2 * 86400000;
@@ -4664,7 +4665,7 @@ textarea.inp{font-family:inherit}
   function vdoVe(loi) {
     var el = document.getElementById('vdoThan'); if (!el || S.tab !== 'vdo') return;
     if (!VDO.ds) { el.innerHTML = loi ? '<div class="empty">' + esc(loi) + '<br><br><button class="btn sm" id="vdoThu">Thử lại</button></div>' : '<div class="list"><div class="sk"></div><div class="sk"></div></div>'; var b = document.getElementById('vdoThu'); if (b) b.onclick = function () { taiVideo(); }; return; }
-    var h = '<div class="meta vdoGhi">Video đã tải tự xoá sau ' + VDO.giu[0] + ' ngày, chưa ai tải tự xoá sau ' + VDO.giu[1] + ' ngày.</div>';
+    var h = '';   // bản 128: bỏ dòng chú thích chung (mỗi thẻ đã ghi ngày tự xoá của chính video đó)
     if (!VDO.ds.length) h += '<div class="empty">Chưa có video mới.<br>Video dựng xong sẽ tự hiện ở đây.</div>';
     h += '<div class="list">' + VDO.ds.map(function (v) {
       return '<div class="vdoC" data-id="' + esc(v.id) + '">' +
@@ -4850,7 +4851,7 @@ textarea.inp{font-family:inherit}
     function ghi() {
       delete VDO.file[v.id];   // giải phóng bộ nhớ (video nặng); cần lại thì bấm Tải lại
       apiT({ v: 'vdoTai', id: v.id, ten: v.ten, im: 1 }).then(function (o) { if (o && o.tai) { v.tai = o.tai; v.het = o.het; } luuSo('vlta_vdo', { ds: VDO.ds, khoa: VDO.khoa, giu: VDO.giu, luc: VDO.luc }); vdoVe(); vdoBadge(); }, function () { vdoVe(); });
-      v.tai = (v.tai || []).concat([{ ten: S.toi.ten, luc: Date.now() }]); if (v.tai.length === 1) v.het = Date.now() + VDO.giu[0] * 86400000;
+      v.tai = (v.tai || []).concat([{ ten: S.toi.ten, luc: Date.now(), ban: 1 }]); if (v.tai.length === 1) v.het = Date.now() + VDO.giu[0] * 86400000;
       vdoVe(); vdoBadge(); toast('Đã lưu video vào máy.');
     }
     if (navigator.canShare && navigator.share && navigator.canShare({ files: [f] })) {
