@@ -4410,6 +4410,7 @@ textarea.inp{font-family:inherit}
   }
   function ccCheNoi(t) { t.querySelectorAll('[data-che]').forEach(function (b) { b.onclick = function () { CCS.theMo = b.getAttribute('data-che') === '1'; var lg = theLogoNap(); if (!lg.complete) lg.onload = function () { ccVe(); }; ccVe(); window.scrollTo(0, 0); }; }); }
   var BAN_MOI = [
+    { so: 124, ds: [{ i: '🎬', t: 'Mục Video: xem trước và tải về ổn định hơn', m: 'Xem trước dùng trình phát của Google Drive nên phát được ngay, không phải chờ tải. Tải về đi qua máy chủ của công ty, không còn bị Google chặn khi nhiều người cùng tải.' }] },
     { so: 123, ds: [{ i: '⚡', t: 'Tải video nhanh hơn', m: 'Mục Video tải nhiều phần của video cùng lúc nên nhanh hơn trước. Mất sóng giữa chừng thì app tự tải tiếp phần còn thiếu, không phải tải lại từ đầu.' }] },
     { so: 121, ds: [{ i: '🎬', t: 'Mục Video ở thanh dưới', m: 'Video truyền thông đã dựng xong hiện ở mục Video. Có thể xem trước và lưu video về điện thoại để đăng hoặc gửi đi.',
       c: [['Xem trước', 'Chạm vào ảnh của video để xem.'],
@@ -4593,9 +4594,10 @@ textarea.inp{font-family:inherit}
   document.addEventListener('visibilitychange', function () { if (document.visibilityState === 'visible') kiemBanMoi(); });
   setInterval(kiemBanMoi, 600000); setTimeout(kiemBanMoi, 1500);   // mở lại app: số phút + phiếu quá 2 tiếng mới nhất
   // ---------- 06/11: tab Video – video dựng xong (Drive EDIT VIDEO/KET QUA): xem trước, tải về điện thoại ----------
-  var VDO = { ds: null, khoa: '', giu: [3, 7], luc: 0, file: {}, dang: {}, tai0: 0 };
+  var VDO = { ds: null, khoa: '', thang: 0, giu: [3, 7], luc: 0, file: {}, dang: {}, tai0: 0 };   // thang = 1: tải / xem thẳng từ Drive bằng khóa (đang tắt)
   (function () { var o = docSo('vlta_vdo'); if (o && o.ds) { VDO.ds = o.ds; VDO.khoa = o.khoa || ''; VDO.giu = o.giu || VDO.giu; VDO.luc = o.luc || 0; } })();
-  var VDO_KHUC = 8 * 1048576, VDO_KHUC_MC = 6 * 1048576;   // khúc tải thẳng từ Drive / khúc máy chủ đọc hộ
+  var VDO_KHUC = 8 * 1048576, VDO_KHUC_MC = 4 * 1048576, VDO_LUONG_MC = 4;   // khúc tải thẳng / khúc máy chủ đọc hộ, số luồng máy chủ
+  // 06/11 bản 124: tải thẳng từ Drive bằng khóa API bị Google chặn theo địa chỉ mạng ("automated queries") -> tải qua máy chủ (tài khoản chủ), xem trước bằng trình phát Google Drive
   function vdoMB(b) { var m = (Number(b) || 0) / 1048576; return (m >= 10 ? Math.round(m) : m.toFixed(1).replace('.', ',')) + ' MB'; }
   function vdoGiay(ms) { var s = Math.round((Number(ms) || 0) / 1000); return s ? Math.floor(s / 60) + ':' + ('0' + s % 60).slice(-2) : ''; }
   function vdoLuc(t) {   // 16:42 (hôm nay) / 16:42 05/11
@@ -4671,7 +4673,7 @@ textarea.inp{font-family:inherit}
   }
   function vdoVeNut(id) { var v = vdoTim(id), b = document.getElementById('vdoB_' + id); if (v && b) { b.innerHTML = vdoNut(v); vdoGan(b); } }
   function vdoXem(v) {   // xem trước: phát thẳng từ Drive (xem tới đâu tải tới đó), chưa tải cả file
-    var nguon = VDO.khoa ? '<video class="vdoV" controls playsinline preload="metadata"' + (v.anh ? ' poster="' + v.anh + '"' : '') + ' src="' + esc(vdoUrl(v)) + '"></video>'
+    var nguon = VDO.thang ? '<video class="vdoV" controls playsinline preload="metadata"' + (v.anh ? ' poster="' + v.anh + '"' : '') + ' src="' + esc(vdoUrl(v)) + '"></video>'
       : '<iframe class="vdoV" src="https://drive.google.com/file/d/' + encodeURIComponent(v.id) + '/preview" allow="autoplay" allowfullscreen></iframe>';
     var co = !!VDO.file[v.id], dang = !!VDO.dang[v.id];
     var sh = moSheet('<div class="row sp"><div style="min-width:0"><h3 class="ell">' + esc(vdoTen(v)) + '</h3><div class="meta ell">' + (v.dai ? vdoGiay(v.dai) + ' · ' : '') + vdoMB(v.kb) + ' · lên lúc ' + vdoLuc(v.tao) + '</div></div><button class="link" id="vxD">Đóng</button></div>' +
@@ -4699,7 +4701,7 @@ textarea.inp{font-family:inherit}
     if (VDO.dang[v.id]) return;
     if (VDO.file[v.id]) { vdoLuu(v); return; }
     if (!doc('vlta_vdoWifi')) { luu('vlta_vdoWifi', '1'); toast('Video khá nặng (' + vdoMB(v.kb) + ') – nên dùng wifi để tải.'); }
-    var tong = Number(v.kb) || 0, co = 0, huy = false, ac = null, mc = !VDO.khoa, loiThang = 0;
+    var tong = Number(v.kb) || 0, co = 0, huy = false, ac = null, mc = !(VDO.thang && VDO.khoa), loiThang = 0;
     var d = VDO.dang[v.id] = { pct: 0, co: 0, tong: tong, huy: function () { huy = true; try { if (ac) ac.abort(); } catch (e) { } xong(null); } };
     if (typeof ccThuc === 'function') ccThuc(1);
     vdoVeNut(v.id);
@@ -4725,7 +4727,7 @@ textarea.inp{font-family:inherit}
     function het() {
       if (huy || hong || d !== VDO.dang[v.id]) return;
       if (ks.length && soXong === ks.length) { xong(new File(kq, v.ten || 'video.mp4', { type: v.mime || 'video/mp4' })); return; }
-      while (dangK < (mc ? 2 : 3) && keTiep < ks.length) motKhuc(keTiep++, 0, luot);
+      while (dangK < (mc ? VDO_LUONG_MC : 3) && keTiep < ks.length) motKhuc(keTiep++, 0, luot);
     }
     function motKhuc(n, lan, l0) {
       if (huy || hong || l0 !== luot) return;
