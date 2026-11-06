@@ -4650,10 +4650,10 @@ textarea.inp{font-family:inherit}
     if (tt.length) {
       var ten = [], da = {};
       tt.forEach(function (x) { var t = (x.ban || (x.ban === undefined && x.ten === (S.toi && S.toi.ten))) ? 'Bạn' : x.ten; if (!da[t]) { da[t] = 1; ten.push(t); } });
-      return '<div class="vdoS ok">✓ ' + esc(ten.join(', ')) + ' đã tải ' + vdoLuc(tt[tt.length - 1].luc) + '</div><div class="meta">Tự xoá ngày ' + vdoNgay(v.het) + '</div>';
+      return '<div class="vdoS ok ell">✓ ' + esc(ten.join(', ')) + ' đã tải ' + vdoLuc(tt[tt.length - 1].luc) + '</div><div class="meta ell">Tự xoá ngày ' + vdoNgay(v.het) + '</div>';
     }
     var cu = Date.now() - v.tao > 2 * 86400000;
-    return '<div class="vdoS' + (cu ? ' cu' : '') + '">' + (cu ? 'Chưa ai tải' : 'Mới – chưa ai tải') + '</div><div class="meta">Tự xoá ngày ' + vdoNgay(v.het) + ' nếu không ai tải</div>';
+    return '<div class="vdoS' + (cu ? ' cu' : '') + '">' + (cu ? 'Chưa ai tải' : 'Mới – chưa ai tải') + '</div><div class="meta ell">Tự xoá ngày ' + vdoNgay(v.het) + '</div>';
   }
   function vdoNut(v) {
     var d = VDO.dang[v.id];
