@@ -637,10 +637,19 @@ textarea.inp{font-family:inherit}
 .q2dl{display:flex;gap:8px;flex-wrap:wrap}.q2dl span{display:flex;align-items:center;background:var(--soft);border-radius:10px;padding:6px 10px;font-size:13.5px;white-space:nowrap}.q2dl b{margin-left:4px}
 
 .bmds{margin:8px 0 0;padding-left:20px;font-size:15px;line-height:1.5}.bmds li{margin:4px 0}
-.bmoi>div.bmh{max-height:68vh;max-height:68dvh;padding:18px 18px 14px;position:relative}
+.bmoi>div.bmh{max-height:78vh;max-height:78dvh;padding:18px 18px 14px;position:relative}
 .bmh .bmx{position:absolute;top:8px;right:8px;width:36px;height:36px;border:0;background:none;font-size:24px;line-height:1;color:var(--muted)}
 .bmh .bmc{overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;flex:1;min-height:0;text-align:left}
 .bmh .btn{flex:none}
+.bmv{display:inline-block;vertical-align:middle;margin-left:6px;padding:2px 8px;border-radius:999px;background:var(--soft);color:var(--muted);font-size:12px;font-weight:600}
+.bmb{margin:10px 0 2px;padding:12px 14px;border-radius:14px;background:var(--card);border:1px solid var(--line)}
+.bmb+.bmb{margin-top:10px}
+.bmt{display:flex;align-items:center;gap:10px;font-size:16px;line-height:1.3}
+.bmn{flex:none;width:32px;height:32px;border-radius:10px;background:var(--tint);display:flex;align-items:center;justify-content:center;font-size:17px}
+.bmm{margin-top:6px;font-size:15px;line-height:1.5;color:var(--fg)}
+.bmct{margin-top:10px;padding-top:9px;border-top:1px solid var(--line);font-size:13px;font-weight:700;color:var(--blue);letter-spacing:.2px}
+.bmk{display:inline-block;padding:0 7px;border-radius:7px;background:var(--soft);border:1px solid var(--line);font-size:14px;font-weight:600;line-height:1.45;white-space:nowrap}
+.bmm i{font-style:italic;font-weight:600;white-space:nowrap}
 /* 21/10: tab CCCD */
 .ccw{display:flex;flex-direction:column;gap:14px}
 .cch{display:flex;flex-direction:column;align-items:center;text-align:center;gap:10px;padding:28px 20px}
@@ -769,6 +778,7 @@ textarea.inp{font-family:inherit}
 .glVao{display:inline-flex;align-items:center;gap:5px;flex:none;border:1px solid var(--line);background:var(--card);color:var(--blue);border-radius:999px;padding:5px 11px 5px 9px;font:inherit;font-size:13.5px;font-weight:600;white-space:nowrap;cursor:pointer}
 .glVao svg{width:15px;height:15px;flex:none}
 .glBar{display:flex;align-items:center;gap:8px;margin:0 0 2px}.glBar .link{padding:4px 0;font-size:15px}.glBar b{margin-left:auto;font-size:15px;font-weight:600;color:var(--muted)}
+.vdoGhi{margin:0 2px 10px}.vdoC{display:flex;gap:12px;align-items:flex-start;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:10px}.vdoA{position:relative;flex:0 0 auto;width:78px;height:120px;border:0;padding:0;border-radius:12px;overflow:hidden;background:#1B2333;cursor:pointer}.vdoA img{width:100%;height:100%;object-fit:cover;display:block}.vdoPl{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:36px;height:36px;border-radius:50%;background:rgba(0,0,0,.45);color:#fff;display:grid;place-items:center}.vdoPl svg{width:20px;height:20px;margin-left:2px}.vdoG{position:absolute;right:5px;bottom:5px;background:rgba(0,0,0,.6);color:#fff;font-size:11px;font-weight:600;padding:1px 5px;border-radius:6px}.vdoI{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px}.vdoN{font-weight:700;font-size:15.5px}.vdoS{font-size:13px;font-weight:600;color:var(--blue)}.vdoS.ok{color:var(--good)}.vdoS.cu{color:var(--warn)}.vdoB{margin-top:6px}.vdoB .btn.sm{width:100%}.vdoTd{display:flex;flex-direction:column;gap:4px}.vdoBar{height:6px;border-radius:3px;background:var(--soft);overflow:hidden}.vdoBar i{display:block;height:100%;background:var(--cta);transition:width .3s}.vdoVw{margin:12px 0;background:#000;border-radius:12px;overflow:hidden;display:flex;justify-content:center}.vdoV{display:block;width:100%;max-height:62vh;border:0;background:#000}iframe.vdoV{height:62vh}
 </style>
 </head>
 <body>
@@ -1166,9 +1176,9 @@ textarea.inp{font-family:inherit}
   // ---------- khung chính: thanh dưới theo vai trò ----------
   function cacTab() {
     var v = (S.toi || {}).vai;
-    if (v === 'chu') return [['ld', 'Lao động', 'ld'], ['cc', 'CCCD', 'cc'], ['quy', 'Thu chi', 'quy'], ['tq', 'Tổng quan', 'tq']];
-    if (v === 'ketoan') return [['ld', 'Lao động', 'ld'], ['cc', 'CCCD', 'cc'], ['quy', 'Thu chi', 'quy'], ['tn', 'Thu nhập', 'tn']];
-    return [['ld', 'Lao động', 'ld'], ['cc', 'CCCD', 'cc'], ['tn', 'Thu nhập', 'tn']];
+    if (v === 'chu') return [['ld', 'Lao động', 'ld'], ['cc', 'CCCD', 'cc'], ['vdo', 'Video', 'vdo'], ['quy', 'Thu chi', 'quy'], ['tq', 'Tổng quan', 'tq']];
+    if (v === 'ketoan') return [['ld', 'Lao động', 'ld'], ['cc', 'CCCD', 'cc'], ['vdo', 'Video', 'vdo'], ['quy', 'Thu chi', 'quy'], ['tn', 'Thu nhập', 'tn']];
+    return [['ld', 'Lao động', 'ld'], ['cc', 'CCCD', 'cc'], ['vdo', 'Video', 'vdo'], ['tn', 'Thu nhập', 'tn']];
   }
   var SVG0 = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">';
   var ICON = {
@@ -1176,6 +1186,7 @@ textarea.inp{font-family:inherit}
     quy: SVG0 + '<rect x="3" y="6" width="18" height="13" rx="2.5"/><path d="M3 10h18M16 15h2"/></svg>',
     tq: SVG0 + '<path d="M5 20V11M12 20V5M19 20v-6"/></svg>',
     tn: SVG0 + '<path d="M12 3l2.6 5.4 5.9.8-4.3 4.1 1 5.8L12 16.4 6.8 19.1l1-5.8L3.5 9.2l5.9-.8z"/></svg>',
+    vdo: SVG0 + '<rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="M10 9.2v5.6l4.8-2.8z"/></svg>',
     cc: SVG0 + '<rect x="3" y="5" width="18" height="14" rx="2.5"/><circle cx="8.5" cy="11" r="2"/><path d="M5.5 16c.6-1.5 1.7-2.2 3-2.2s2.4.7 3 2.2M14 10h4M14 13.5h4"/></svg>',
     goi: SVG0 + '<path d="M5 4h3.5l1.8 4.5-2.3 1.4a11 11 0 0 0 6.1 6.1l1.4-2.3L20 15.5V19a1.5 1.5 0 0 1-1.6 1.5A16 16 0 0 1 3.5 5.6 1.5 1.5 0 0 1 5 4z"/></svg>',
     zalo: SVG0 + '<path d="M4 5h16v11H9l-5 4z"/></svg>',
@@ -1190,11 +1201,11 @@ textarea.inp{font-family:inherit}
       '<nav class="nav">' + tabs.map(function (t) { return '<button data-t="' + t[0] + '" class="' + (S.tab === t[0] ? 'on' : '') + '">' + ICON[t[2]] + t[1] + '</button>'; }).join('') + '</nav>';
     document.getElementById('me').onclick = moTaiKhoan;
     document.querySelectorAll('.nav button').forEach(function (b) { b.onclick = function () { moTab(b.getAttribute('data-t')); }; });
-    capBadge();
+    capBadge(); vdoBadge();
   }
   function moTab(t) {
     S.tab = t; S.hs = null; S.utMo = 0; S.vtMo = 0; luu('vlta_tab', t); window.scrollTo(0, 0);
-    if (t === 'tn') veThuNhap(); else if (t === 'quy') veQuy(); else if (t === 'tq') veTQ(); else if (t === 'cc') veCCCD(); else { veDs(); taiDs(false, !!S.data[S.cty]); }   // đã có danh sách trong máy: tải ngầm
+    if (t === 'tn') veThuNhap(); else if (t === 'vdo') veVideo(); else if (t === 'quy') veQuy(); else if (t === 'tq') veTQ(); else if (t === 'cc') veCCCD(); else { veDs(); taiDs(false, !!S.data[S.cty]); }   // đã có danh sách trong máy: tải ngầm
   }
   function vaoApp() {
     var cs = S.toi.cty || [];
@@ -1250,14 +1261,14 @@ textarea.inp{font-family:inherit}
     cacTab().forEach(function (t, i) {
       setTimeout(function () {
         if (!S.t || S.tab === t[0]) return;
-        if (t[0] === 'tq') taiTQ({ im: 1 }); else if (t[0] === 'quy') taiQuy(false, false, true); else if (t[0] === 'tn') taiTN(false, true);
+        if (t[0] === 'tq') taiTQ({ im: 1 }); else if (t[0] === 'vdo') taiVideo(1); else if (t[0] === 'quy') taiQuy(false, false, true); else if (t[0] === 'tn') taiTN(false, true);
       }, i * 700);
     });
   }
   function taiNgam() {   // quay lại app / mỗi 3 phút: hỏi máy chủ có số mới không (không đổi thì không vẽ lại)
     if (!S.t || !S.toi || document.visibilityState !== 'visible') return;
     taiDs(false, true);
-    if (S.tab === 'tq') taiTQ({ im: 1 }); else if (S.tab === 'quy') taiQuy(false, false, true); else if (S.tab === 'tn') taiTN(false, true);
+    if (S.tab === 'tq') taiTQ({ im: 1 }); else if (S.tab === 'quy') taiQuy(false, false, true); else if (S.tab === 'tn') taiTN(false, true); else if (S.tab === 'vdo' && !Object.keys(VDO.dang).length) taiVideo(1);
   }
   setInterval(function () { if (Date.now() - (S.lucDs || 0) > 170000) taiNgam(); }, 30000);
   function tenSale(x) {   // "ĐỨC VEN" → "vendor Đức"; "HOÀ"/"HÒA" → "Hòa"
@@ -4399,7 +4410,13 @@ textarea.inp{font-family:inherit}
   }
   function ccCheNoi(t) { t.querySelectorAll('[data-che]').forEach(function (b) { b.onclick = function () { CCS.theMo = b.getAttribute('data-che') === '1'; var lg = theLogoNap(); if (!lg.complete) lg.onload = function () { ccVe(); }; ccVe(); window.scrollTo(0, 0); }; }); }
   var BAN_MOI = [
-    { so: 120, ds: [['CCCD – lưu ảnh trong kho về điện thoại dạng file ảnh (JPEG), không phải PDF. Xem to 1 người: bấm "Lưu ảnh về máy". Chọn nhiều người trong kho: bấm nút "Ảnh" ở thanh dưới (tối đa 20 người một lượt). Trong bảng hiện ra chọn "Lưu hình ảnh" để vào Ảnh, hoặc chọn Zalo để gửi thẳng. Ảnh là ảnh màu gốc trong kho, mỗi người 1 ảnh gồm 2 mặt.', '']] },
+    { so: 121, ds: [{ i: '🎬', t: 'Mục Video ở thanh dưới', m: 'Video truyền thông đã dựng xong hiện ở mục Video. Có thể xem trước và lưu video về điện thoại để đăng hoặc gửi đi.',
+      c: [['Xem trước', 'Chạm vào ảnh của video để xem.'],
+        ['Lưu video về điện thoại', 'Bấm [[Tải về]] → tải xong bấm [[Lưu vào máy]] → chọn *Lưu video*. Video vào thư viện Ảnh.'],
+        ['Lưu ý', 'Video đã có người tải thì cả nhóm đều thấy ai đã tải; muốn tải lần nữa bấm [[Tải lại]]. Video đã tải tự xoá sau 3 ngày, chưa ai tải tự xoá sau 7 ngày.']] }] },
+    { so: 120, ds: [{ i: '📷', t: 'Lưu ảnh CCCD về điện thoại', m: 'Giờ có thể lưu ảnh CCCD trong kho vào thư viện Ảnh của điện thoại, hoặc gửi thẳng qua Zalo. Mỗi người là 1 ảnh có đủ 2 mặt.',
+      c: [['Lưu 1 người', 'Mở ảnh người đó → bấm [[Lưu ảnh về máy]] → chọn *Lưu hình ảnh*.'],
+        ['Lưu nhiều người cùng lúc', 'Trong kho, chọn những người cần lưu (tối đa 20 người một lần) → bấm [[Ảnh]] ở thanh dưới → bấm [[Lưu / Gửi]] → chọn *Lưu hình ảnh*, hoặc chọn *Zalo* để gửi.']] }] },
     { so: 119, ds: [['Thẻ HOJEONG nhỏ lại 3 mm mỗi chiều: 8,2 × 5,7 cm (trước 8,5 × 6 cm) để nhét vào bao thẻ dễ hơn. Ảnh, chữ và mã thẻ thu nhỏ theo, bố cục giữ nguyên. Khổ A4 vẫn 8 thẻ một tờ, khổ A5 vẫn 4 thẻ một tờ.', '']] },
     { so: 118, ds: [['CCCD – ảnh lưu kho: ảnh có nền thẻ bị ám màu (xanh lè, tím, vàng do đèn hoặc camera) được tự kéo về gần màu thẻ thật, chữ đen và giấy trắng giữ nguyên.', '']] },
     { so: 117, ds: [['CCCD – ảnh lưu vào kho: là ảnh màu, app tự cân bằng trắng theo từng ảnh (chụp dưới đèn vàng, đèn xanh hay trong bóng râm đều về màu tự nhiên) và không còn tăng tương phản gắt làm cháy mặt người. Ảnh bị mất hẳn một màu thì app tô lại màu theo thẻ mẫu cùng loại.', ''], ['In CCCD và Gửi PDF ra quán in: app tự tạo bản đen trắng rõ nét cho máy in laser – chữ và số đậm, hoa văn nền nhạt, mặt người được chỉnh sáng riêng để không lóa, không bết đen. Ảnh cũ trong kho khi in cũng được xử lý như vậy (ảnh trong kho giữ nguyên).', ''], ['Khối "Chỉnh ảnh in": mặc định là tự chỉnh theo từng ảnh; 3 thanh kéo dùng để chỉnh thêm cho bản in khi cần (50 = tự động). Thẻ HOJEONG lấy ảnh chân dung từ ảnh màu đã cân bằng trắng.', '']] },
@@ -4515,14 +4532,24 @@ textarea.inp{font-family:inherit}
   function moiCuaToi(tu, den) {   // các bản trong (tu, den], chỉ dòng hợp vai người dùng
     var vai = (S.toi || {}).vai || '';
     return BAN_MOI.filter(function (b) { return b.so > tu && b.so <= den; }).sort(function (a, b) { return b.so - a.so; }).map(function (b) {
-      return { so: b.so, ds: b.ds.filter(function (x) { return !x[1] || x[1].split(',').indexOf(vai) >= 0; }).map(function (x) { return x[0]; }) };
+      return { so: b.so, ds: b.ds.filter(function (x) { var v = Array.isArray(x) ? x[1] : x.v; return !v || v.split(',').indexOf(vai) >= 0; }).map(function (x) { return Array.isArray(x) ? x[0] : x; }) };
     }).filter(function (b) { return b.ds.length; });
   }
   // 21/10: hộp luôn đóng được (nút ×, chạm nền tối, nút Đã hiểu luôn hiện); nội dung dài thì cuộn bên trong
+  // 06/11: mục mới dạng {i biểu tượng, t tiêu đề, m câu nói làm được gì, c [[tên cách dùng, các bước]], v vai}; trong bước: [[Nút trong app]], *Lựa chọn của điện thoại*
+  function bmChu(t) { return esc(t).replace(/\[\[(.+?)\]\]/g, '<span class="bmk">$1</span>').replace(/\*(.+?)\*/g, '<i>$1</i>'); }
+  function bmMuc(x) {
+    if (typeof x === 'string') return '<ul class="bmds"><li>' + esc(x) + '</li></ul>';
+    return '<div class="bmb">' + (x.i ? '<div class="bmt"><span class="bmn">' + esc(x.i) + '</span><b>' + esc(x.t) + '</b></div>' : '<div class="bmt"><b>' + esc(x.t) + '</b></div>') +
+      (x.m ? '<div class="bmm">' + bmChu(x.m) + '</div>' : '') +
+      (x.c || []).map(function (c) { return '<div class="bmct">' + esc(c[0]) + '</div><div class="bmm">' + bmChu(c[1]) + '</div>'; }).join('') + '</div>';
+  }
   function hopMoi(ds, tieu) {   // ghi đủ mọi điểm mới; dài thì cuộn bên trong hộp
     var d = document.createElement('div'); d.className = 'bmoi';
-    d.innerHTML = '<div class="bmh"><button class="bmx" aria-label="Đóng">×</button><h3>' + esc(tieu) + '</h3><div class="bmc">' + ds.map(function (b) {
-      return (ds.length > 1 ? '<div class="meta" style="margin-top:10px;font-weight:700">Bản ' + b.so + '</div>' : '') + '<ul class="bmds">' + b.ds.map(function (t) { return '<li>' + esc(t) + '</li>'; }).join('') + '</ul>';
+    d.innerHTML = '<div class="bmh"><button class="bmx" aria-label="Đóng">×</button><h3>' + esc(tieu) + (ds.length === 1 ? ' <span class="bmv">Bản ' + ds[0].so + '</span>' : '') + '</h3><div class="bmc">' + ds.map(function (b) {
+      var dt = b.ds.filter(function (x) { return typeof x !== 'string'; }), ch = b.ds.filter(function (x) { return typeof x === 'string'; });
+      return (ds.length > 1 ? '<div class="meta" style="margin-top:12px;font-weight:700">Bản ' + b.so + '</div>' : '') + dt.map(bmMuc).join('') +
+        (ch.length ? '<ul class="bmds">' + ch.map(function (t) { return '<li>' + esc(t) + '</li>'; }).join('') + '</ul>' : '');
     }).join('') + '</div><button class="btn" id="bmHieu">Đã hiểu</button></div>';
     document.body.appendChild(d);
     function dong() { d.remove(); }
@@ -4538,7 +4565,7 @@ textarea.inp{font-family:inherit}
     var ds = moiCuaToi(da, PB.so);
     luu('vlta_moi', String(PB.so));
     if (!ds.length || document.querySelector('.bmoi')) return;
-    hopMoi(ds, ds.length > 1 ? 'Có gì mới' : 'Bản ' + PB.so + ' có gì mới');
+    hopMoi(ds, 'Có gì mới');
   }
   function hienBanMoi(so) {
     if (BM.mo) return;
@@ -4564,6 +4591,168 @@ textarea.inp{font-family:inherit}
   }
   document.addEventListener('visibilitychange', function () { if (document.visibilityState === 'visible') kiemBanMoi(); });
   setInterval(kiemBanMoi, 600000); setTimeout(kiemBanMoi, 1500);   // mở lại app: số phút + phiếu quá 2 tiếng mới nhất
+  // ---------- 06/11: tab Video – video dựng xong (Drive EDIT VIDEO/KET QUA): xem trước, tải về điện thoại ----------
+  var VDO = { ds: null, khoa: '', giu: [3, 7], luc: 0, file: {}, dang: {}, tai0: 0 };
+  (function () { var o = docSo('vlta_vdo'); if (o && o.ds) { VDO.ds = o.ds; VDO.khoa = o.khoa || ''; VDO.giu = o.giu || VDO.giu; VDO.luc = o.luc || 0; } })();
+  var VDO_KHUC = 8 * 1048576, VDO_KHUC_MC = 6 * 1048576;   // khúc tải thẳng từ Drive / khúc máy chủ đọc hộ
+  function vdoMB(b) { var m = (Number(b) || 0) / 1048576; return (m >= 10 ? Math.round(m) : m.toFixed(1).replace('.', ',')) + ' MB'; }
+  function vdoGiay(ms) { var s = Math.round((Number(ms) || 0) / 1000); return s ? Math.floor(s / 60) + ':' + ('0' + s % 60).slice(-2) : ''; }
+  function vdoLuc(t) {   // 16:42 (hôm nay) / 16:42 05/11
+    var d = new Date(t), n = new Date(), hm = ('0' + d.getHours()).slice(-2) + ':' + ('0' + d.getMinutes()).slice(-2);
+    return d.toDateString() === n.toDateString() ? hm : hm + ' ' + ('0' + d.getDate()).slice(-2) + '/' + ('0' + (d.getMonth() + 1)).slice(-2);
+  }
+  function vdoNgay(t) { var d = new Date(t); return ('0' + d.getDate()).slice(-2) + '/' + ('0' + (d.getMonth() + 1)).slice(-2); }
+  function vdoTen(v) { return String(v.ten || '').replace(/\.(mp4|mov|m4v)$/i, '').replace(/_+/g, ' ').trim(); }
+  function vdoUrl(v) { return 'https://www.googleapis.com/drive/v3/files/' + encodeURIComponent(v.id) + '?alt=media&key=' + encodeURIComponent(VDO.khoa); }
+  function vdoTim(id) { return (VDO.ds || []).filter(function (v) { return v.id === id; })[0]; }
+  function vdoMoi() { return (VDO.ds || []).filter(function (v) { return !(v.tai && v.tai.length); }).length; }
+  function vdoBadge() {
+    var b = document.querySelector('.nav button[data-t="vdo"]'); if (!b) return;
+    var n = vdoMoi(), e = b.querySelector('.bd');
+    if (!n) { if (e) e.remove(); return; }
+    if (!e) { e = document.createElement('span'); e.className = 'bd'; b.appendChild(e); }
+    e.textContent = n > 99 ? '99+' : n;
+  }
+  function veVideo() {
+    khung('Video', 'Video đã dựng · xem trước rồi tải về máy', '', '<div id="vdoThan"></div>');
+    vdoVe(); taiVideo();
+  }
+  function taiVideo(im) {
+    if (VDO.tai0) return; VDO.tai0 = 1;
+    apiT({ v: 'vdoDs', im: (im || VDO.ds) ? 1 : 0 }).then(function (o) {
+      VDO.tai0 = 0;
+      if (o.loi) { if (!im && !VDO.ds) vdoVe(o.loi); return; }
+      var doi = !giongJ(o.ds, VDO.ds);
+      VDO.ds = o.ds || []; VDO.khoa = o.khoa || ''; VDO.giu = o.giu || VDO.giu; VDO.luc = o.luc || Date.now();
+      Object.keys(VDO.file).forEach(function (id) { if (!vdoTim(id)) delete VDO.file[id]; });   // video đã bị dọn: bỏ file trong máy
+      luuSo('vlta_vdo', { ds: VDO.ds, khoa: VDO.khoa, giu: VDO.giu, luc: VDO.luc });
+      if (doi || !im) vdoVe();
+      vdoBadge();
+    }, function (e) { VDO.tai0 = 0; if (!im && !VDO.ds) vdoVe(e.message); });
+  }
+  function vdoTrangThai(v) {   // dòng trạng thái: ai đã tải / chưa ai tải + ngày tự xoá
+    var tt = v.tai || [];
+    if (tt.length) {
+      var ten = [], da = {};
+      tt.forEach(function (x) { var t = x.ten === (S.toi && S.toi.ten) ? 'Bạn' : x.ten; if (!da[t]) { da[t] = 1; ten.push(t); } });
+      return '<div class="vdoS ok">✓ ' + esc(ten.join(', ')) + ' đã tải ' + vdoLuc(tt[tt.length - 1].luc) + '</div><div class="meta">Tự xoá ngày ' + vdoNgay(v.het) + '</div>';
+    }
+    var cu = Date.now() - v.tao > 2 * 86400000;
+    return '<div class="vdoS' + (cu ? ' cu' : '') + '">' + (cu ? 'Chưa ai tải' : 'Mới – chưa ai tải') + '</div><div class="meta">Tự xoá ngày ' + vdoNgay(v.het) + ' nếu không ai tải</div>';
+  }
+  function vdoNut(v) {
+    var d = VDO.dang[v.id];
+    if (d) return '<div class="vdoTd"><div class="vdoBar"><i style="width:' + Math.round(d.pct * 100) + '%"></i></div><div class="row sp"><span class="meta num" data-vdotd="' + esc(v.id) + '">' + vdoTdChu(d) + '</span><button class="btn lk" data-vdohuy="' + esc(v.id) + '">Huỷ</button></div></div>';
+    if (VDO.file[v.id]) return '<button class="btn sm" data-vdoluu="' + esc(v.id) + '">Lưu vào máy</button>';
+    return '<button class="btn sm' + ((v.tai && v.tai.length) ? ' ghost' : '') + '" data-vdotai="' + esc(v.id) + '">' + ((v.tai && v.tai.length) ? 'Tải lại' : 'Tải về') + '</button>';
+  }
+  function vdoTdChu(d) { return d.loi ? esc(d.loi) : (d.pct < 0.005 ? 'Đang bắt đầu tải…' : 'Đang tải ' + Math.round(d.pct * 100) + '% · ' + vdoMB(d.co) + ' / ' + vdoMB(d.tong)); }
+  function vdoVe(loi) {
+    var el = document.getElementById('vdoThan'); if (!el || S.tab !== 'vdo') return;
+    if (!VDO.ds) { el.innerHTML = loi ? '<div class="empty">' + esc(loi) + '<br><br><button class="btn sm" id="vdoThu">Thử lại</button></div>' : '<div class="list"><div class="sk"></div><div class="sk"></div></div>'; var b = document.getElementById('vdoThu'); if (b) b.onclick = function () { taiVideo(); }; return; }
+    var h = '<div class="meta vdoGhi">Video đã tải tự xoá sau ' + VDO.giu[0] + ' ngày, chưa ai tải tự xoá sau ' + VDO.giu[1] + ' ngày.</div>';
+    if (!VDO.ds.length) h += '<div class="empty">Chưa có video mới.<br>Video dựng xong sẽ tự hiện ở đây.</div>';
+    h += '<div class="list">' + VDO.ds.map(function (v) {
+      return '<div class="vdoC" data-id="' + esc(v.id) + '">' +
+        '<button class="vdoA" data-vdoxem="' + esc(v.id) + '" aria-label="Xem trước">' + (v.anh ? '<img src="' + v.anh + '" alt="">' : '') +
+        '<span class="vdoPl"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l11-6.5z" fill="currentColor"/></svg></span>' + (v.dai ? '<span class="vdoG num">' + vdoGiay(v.dai) + '</span>' : '') + '</button>' +
+        '<div class="vdoI"><div class="vdoN ell">' + esc(vdoTen(v)) + '</div><div class="meta ell">Lên lúc ' + vdoLuc(v.tao) + ' · ' + vdoMB(v.kb) + '</div>' + vdoTrangThai(v) +
+        '<div class="vdoB" id="vdoB_' + esc(v.id) + '">' + vdoNut(v) + '</div></div></div>';
+    }).join('') + '</div>';
+    el.innerHTML = h;
+    vdoGan(el);
+  }
+  function vdoGan(el) {
+    el.querySelectorAll('[data-vdoxem]').forEach(function (b) { b.onclick = function () { var v = vdoTim(b.getAttribute('data-vdoxem')); if (v) vdoXem(v); }; });
+    el.querySelectorAll('[data-vdotai]').forEach(function (b) { b.onclick = function () { var v = vdoTim(b.getAttribute('data-vdotai')); if (v) vdoTaiVe(v); }; });
+    el.querySelectorAll('[data-vdoluu]').forEach(function (b) { b.onclick = function () { var v = vdoTim(b.getAttribute('data-vdoluu')); if (v) vdoLuu(v); }; });
+    el.querySelectorAll('[data-vdohuy]').forEach(function (b) { b.onclick = function () { var d = VDO.dang[b.getAttribute('data-vdohuy')]; if (d) d.huy(); }; });
+  }
+  function vdoVeNut(id) { var v = vdoTim(id), b = document.getElementById('vdoB_' + id); if (v && b) { b.innerHTML = vdoNut(v); vdoGan(b); } }
+  function vdoXem(v) {   // xem trước: phát thẳng từ Drive (xem tới đâu tải tới đó), chưa tải cả file
+    var nguon = VDO.khoa ? '<video class="vdoV" controls playsinline preload="metadata"' + (v.anh ? ' poster="' + v.anh + '"' : '') + ' src="' + esc(vdoUrl(v)) + '"></video>'
+      : '<iframe class="vdoV" src="https://drive.google.com/file/d/' + encodeURIComponent(v.id) + '/preview" allow="autoplay" allowfullscreen></iframe>';
+    var co = !!VDO.file[v.id], dang = !!VDO.dang[v.id];
+    var sh = moSheet('<div class="row sp"><div style="min-width:0"><h3 class="ell">' + esc(vdoTen(v)) + '</h3><div class="meta ell">' + (v.dai ? vdoGiay(v.dai) + ' · ' : '') + vdoMB(v.kb) + ' · lên lúc ' + vdoLuc(v.tao) + '</div></div><button class="link" id="vxD">Đóng</button></div>' +
+      '<div class="vdoVw">' + nguon + '</div>' +
+      (dang ? '<div class="meta">Video đang được tải về, xem tiến độ ở danh sách.</div>' : '<button class="btn" id="vxT">' + (co ? 'Lưu vào máy' : ((v.tai && v.tai.length) ? 'Tải lại' : 'Tải về') + ' · ' + vdoMB(v.kb)) + '</button>'));
+    function dong() { var vd = sh.querySelector('video'); if (vd) { try { vd.pause(); vd.removeAttribute('src'); vd.load(); } catch (e) { } } sh.remove(); }
+    sh.querySelector('#vxD').onclick = dong;
+    sh.onclick = function (e) { if (e.target === sh) dong(); };
+    var t = sh.querySelector('#vxT'); if (t) t.onclick = function () { dong(); if (VDO.file[v.id]) vdoLuu(v); else vdoTaiVe(v); };
+  }
+  function vdoKhucThang(v, tu, den, sig) {   // tải thẳng từ Google Drive (khóa chỉ đọc)
+    return fetch(vdoUrl(v), { headers: { Range: 'bytes=' + tu + '-' + den }, signal: sig, cache: 'no-store' }).then(function (r) {
+      if (r.status !== 206 && r.status !== 200) { var e = new Error('Drive trả lỗi ' + r.status); e.ma = r.status; throw e; }
+      return r.arrayBuffer().then(function (b) { return { b: b, du: r.status === 200 }; });
+    });
+  }
+  function vdoKhucMC(v, tu, den) {   // dự phòng: máy chủ đọc hộ (chậm hơn)
+    return apiT({ v: 'vdoKhuc', id: v.id, tu: tu, den: den, im: 1 }).then(function (o) {
+      if (o.loi) throw new Error(o.loi);
+      var s = atob(o.b), a = new Uint8Array(s.length); for (var i = 0; i < s.length; i++) a[i] = s.charCodeAt(i);
+      return { b: a.buffer, du: false };
+    });
+  }
+  function vdoTaiVe(v) {
+    if (VDO.dang[v.id]) return;
+    if (VDO.file[v.id]) { vdoLuu(v); return; }
+    if (!doc('vlta_vdoWifi')) { luu('vlta_vdoWifi', '1'); toast('Video khá nặng (' + vdoMB(v.kb) + ') – nên dùng wifi để tải.'); }
+    var tong = Number(v.kb) || 0, phan = [], co = 0, huy = false, ac = null, mc = !VDO.khoa, loiThang = 0;
+    var d = VDO.dang[v.id] = { pct: 0, co: 0, tong: tong, huy: function () { huy = true; try { if (ac) ac.abort(); } catch (e) { } xong(null); } };
+    if (typeof ccThuc === 'function') ccThuc(1);
+    vdoVeNut(v.id);
+    function tdCap() { var e = document.querySelector('[data-vdotd="' + v.id + '"]'), b = document.querySelector('#vdoB_' + v.id + ' .vdoBar i'); if (e) e.innerHTML = vdoTdChu(d); if (b) b.style.width = Math.round(d.pct * 100) + '%'; }
+    function xong(file, loi) {
+      if (VDO.dang[v.id] !== d) return;
+      delete VDO.dang[v.id];
+      if (!Object.keys(VDO.dang).length && typeof ccThuc === 'function' && !(typeof ccBan === 'function' && ccBan())) ccThuc(0);
+      if (file) VDO.file[v.id] = file;
+      vdoVeNut(v.id);
+      if (loi) { toastLoi('Chưa tải được video ' + vdoTen(v) + ': ' + loi); return; }
+      if (!file) return;
+      var sh = moSheet('<h3>Video đã tải xong</h3><div class="meta">' + esc(vdoTen(v)) + ' · ' + vdoMB(file.size) + '</div>' +
+        '<div class="meta">' + (document.documentElement.classList.contains('ios') ? 'Bấm nút dưới, trong bảng hiện ra chọn <b>Lưu video</b> để lưu vào Ảnh.' : 'Bấm nút dưới để lưu video vào máy.') + '</div>' +
+        '<button class="btn" id="vtL">Lưu vào máy</button><button class="btn lk" id="vtK">Để sau</button>');
+      sh.querySelector('#vtL').onclick = function () { sh.remove(); vdoLuu(v); };
+      sh.querySelector('#vtK').onclick = function () { sh.remove(); };
+    }
+    function khuc(lan) {
+      if (huy) return;
+      if (co >= tong && tong) { xong(new File(phan, v.ten || 'video.mp4', { type: v.mime || 'video/mp4' })); return; }
+      if (document.hidden) { NGAT.cho.push(function () { khuc(lan); }); return; }   // khoá màn hình: mở lại app thì tải tiếp khúc đang dở
+      var tu = co, den = Math.min(tong, co + (mc ? VDO_KHUC_MC : VDO_KHUC)) - 1;
+      ac = (!mc && window.AbortController) ? new AbortController() : null;
+      (mc ? vdoKhucMC(v, tu, den) : vdoKhucThang(v, tu, den, ac && ac.signal)).then(function (k) {
+        if (huy) return;
+        if (k.du) { phan = [k.b]; co = tong = k.b.byteLength; d.tong = tong; }
+        else { if (k.b.byteLength !== den - tu + 1) throw new Error('Khúc tải thiếu byte'); phan.push(k.b); co += k.b.byteLength; }
+        d.co = co; d.pct = tong ? co / tong : 1; tdCap(); khuc(0);
+      }).catch(function (e) {
+        if (huy) return;
+        if (!mc && co === 0 && ++loiThang >= 2) { mc = true; khuc(0); return; }   // tải thẳng không được (khóa / mạng chặn): nhờ máy chủ đọc hộ
+        if (lan < 6) { d.loi = 'Mạng chập chờn – đang thử lại…'; tdCap(); setTimeout(function () { d.loi = ''; khuc(lan + 1); }, 1500 * (lan + 1)); return; }
+        xong(null, e && e.message ? e.message : 'mất kết nối');
+      });
+    }
+    khuc(0);
+  }
+  function vdoLuu(v) {   // gọi NGAY trong cú chạm (iPhone chỉ mở bảng chia sẻ sau 1 lần bấm tay)
+    var f = VDO.file[v.id]; if (!f) { vdoTaiVe(v); return; }
+    function ghi() {
+      delete VDO.file[v.id];   // giải phóng bộ nhớ (video nặng); cần lại thì bấm Tải lại
+      apiT({ v: 'vdoTai', id: v.id, ten: v.ten, im: 1 }).then(function (o) { if (o && o.tai) { v.tai = o.tai; v.het = o.het; } luuSo('vlta_vdo', { ds: VDO.ds, khoa: VDO.khoa, giu: VDO.giu, luc: VDO.luc }); vdoVe(); vdoBadge(); }, function () { vdoVe(); });
+      v.tai = (v.tai || []).concat([{ ten: S.toi.ten, luc: Date.now() }]); if (v.tai.length === 1) v.het = Date.now() + VDO.giu[0] * 86400000;
+      vdoVe(); vdoBadge(); toast('Đã lưu video vào máy.');
+    }
+    if (navigator.canShare && navigator.share && navigator.canShare({ files: [f] })) {
+      navigator.share({ files: [f] }).then(ghi, function (e) { if (e && e.name !== 'AbortError') { vdoTaiFile(f); ghi(); } });
+      return;
+    }
+    vdoTaiFile(f); ghi();
+  }
+  function vdoTaiFile(f) { var u = URL.createObjectURL(f), a = document.createElement('a'); a.href = u; a.download = f.name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(function () { URL.revokeObjectURL(u); }, 60000); }
+
   function capBadge() {
     var b = document.querySelector('.nav button[data-t="ld"]'); if (!b) return;
     var n = choCanLam().length + tbDs().length, e = b.querySelector('.bd');
