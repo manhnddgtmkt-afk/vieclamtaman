@@ -4410,6 +4410,7 @@ textarea.inp{font-family:inherit}
   }
   function ccCheNoi(t) { t.querySelectorAll('[data-che]').forEach(function (b) { b.onclick = function () { CCS.theMo = b.getAttribute('data-che') === '1'; var lg = theLogoNap(); if (!lg.complete) lg.onload = function () { ccVe(); }; ccVe(); window.scrollTo(0, 0); }; }); }
   var BAN_MOI = [
+    { so: 123, ds: [{ i: '⚡', t: 'Tải video nhanh hơn', m: 'Mục Video tải nhiều phần của video cùng lúc nên nhanh hơn trước. Mất sóng giữa chừng thì app tự tải tiếp phần còn thiếu, không phải tải lại từ đầu.' }] },
     { so: 121, ds: [{ i: '🎬', t: 'Mục Video ở thanh dưới', m: 'Video truyền thông đã dựng xong hiện ở mục Video. Có thể xem trước và lưu video về điện thoại để đăng hoặc gửi đi.',
       c: [['Xem trước', 'Chạm vào ảnh của video để xem.'],
         ['Lưu video về điện thoại', 'Bấm [[Tải về]] → tải xong bấm [[Lưu vào máy]] → chọn *Lưu video*. Video vào thư viện Ảnh.'],
@@ -4698,7 +4699,7 @@ textarea.inp{font-family:inherit}
     if (VDO.dang[v.id]) return;
     if (VDO.file[v.id]) { vdoLuu(v); return; }
     if (!doc('vlta_vdoWifi')) { luu('vlta_vdoWifi', '1'); toast('Video khá nặng (' + vdoMB(v.kb) + ') – nên dùng wifi để tải.'); }
-    var tong = Number(v.kb) || 0, phan = [], co = 0, huy = false, ac = null, mc = !VDO.khoa, loiThang = 0;
+    var tong = Number(v.kb) || 0, co = 0, huy = false, ac = null, mc = !VDO.khoa, loiThang = 0;
     var d = VDO.dang[v.id] = { pct: 0, co: 0, tong: tong, huy: function () { huy = true; try { if (ac) ac.abort(); } catch (e) { } xong(null); } };
     if (typeof ccThuc === 'function') ccThuc(1);
     vdoVeNut(v.id);
@@ -4717,25 +4718,45 @@ textarea.inp{font-family:inherit}
       sh.querySelector('#vtL').onclick = function () { sh.remove(); vdoLuu(v); };
       sh.querySelector('#vtK').onclick = function () { sh.remove(); };
     }
-    function khuc(lan) {
-      if (huy) return;
-      if (co >= tong && tong) { xong(new File(phan, v.ten || 'video.mp4', { type: v.mime || 'video/mp4' })); return; }
-      if (document.hidden) { NGAT.cho.push(function () { khuc(lan); }); return; }   // khoá màn hình: mở lại app thì tải tiếp khúc đang dở
-      var tu = co, den = Math.min(tong, co + (mc ? VDO_KHUC_MC : VDO_KHUC)) - 1;
-      ac = (!mc && window.AbortController) ? new AbortController() : null;
-      (mc ? vdoKhucMC(v, tu, den) : vdoKhucThang(v, tu, den, ac && ac.signal)).then(function (k) {
-        if (huy) return;
-        if (k.du) { phan = [k.b]; co = tong = k.b.byteLength; d.tong = tong; }
-        else { if (k.b.byteLength !== den - tu + 1) throw new Error('Khúc tải thiếu byte'); phan.push(k.b); co += k.b.byteLength; }
-        d.co = co; d.pct = tong ? co / tong : 1; tdCap(); khuc(0);
+    // chia khúc, tải song song (tải thẳng 3 luồng, máy chủ đọc hộ 2 luồng); khúc lỗi thử lại tối đa 6 lần; khoá màn hình thì chờ mở lại
+    var ks = [], kq = [], soXong = 0, dangK = 0, keTiep = 0, hong = false, luot = 0;
+    function chia(c) { ks = []; for (var a = 0; a < tong; a += c) ks.push([a, Math.min(tong, a + c) - 1]); kq = new Array(ks.length); keTiep = 0; soXong = 0; co = 0; luot++; }
+    chia(mc ? VDO_KHUC_MC : VDO_KHUC);
+    function het() {
+      if (huy || hong || d !== VDO.dang[v.id]) return;
+      if (ks.length && soXong === ks.length) { xong(new File(kq, v.ten || 'video.mp4', { type: v.mime || 'video/mp4' })); return; }
+      while (dangK < (mc ? 2 : 3) && keTiep < ks.length) motKhuc(keTiep++, 0, luot);
+    }
+    function motKhuc(n, lan, l0) {
+      if (huy || hong || l0 !== luot) return;
+      if (document.hidden) { NGAT.cho.push(function () { motKhuc(n, lan, l0); }); return; }   // khoá màn hình: mở lại app thì tải tiếp khúc đang dở
+      dangK++;
+      var tu = ks[n][0], den = ks[n][1], tha = false;
+      function nha() { if (!tha) { tha = true; if (l0 === luot) dangK--; } }
+      (mc ? vdoKhucMC(v, tu, den) : vdoKhucThang(v, tu, den, ac.signal)).then(function (k) {
+        nha();
+        if (huy || hong || l0 !== luot) return;
+        if (k.du) {   // máy chủ trả cả file một lần (không nhận Range)
+          if (k.b.byteLength !== tong) throw new Error('Video tải về không đủ dung lượng');
+          kq = [k.b]; ks = [[0, tong - 1]]; keTiep = 1; soXong = 1; co = tong;
+        } else {
+          if (k.b.byteLength !== den - tu + 1) throw new Error('Khúc tải thiếu byte');
+          if (!kq[n]) { kq[n] = k.b; soXong++; co += k.b.byteLength; }
+        }
+        d.co = co; d.pct = tong ? co / tong : 1; d.loi = ''; tdCap(); het();
       }).catch(function (e) {
-        if (huy) return;
-        if (!mc && co === 0 && ++loiThang >= 2) { mc = true; khuc(0); return; }   // tải thẳng không được (khóa / mạng chặn): nhờ máy chủ đọc hộ
-        if (lan < 6) { d.loi = 'Mạng chập chờn – đang thử lại…'; tdCap(); setTimeout(function () { d.loi = ''; khuc(lan + 1); }, 1500 * (lan + 1)); return; }
+        nha();
+        if (huy || hong || l0 !== luot) return;
+        if (!mc && soXong === 0 && ++loiThang >= 2) {   // tải thẳng không được (khóa / mạng chặn): nhờ máy chủ đọc hộ
+          mc = true; try { ac.abort(); } catch (e2) { } ac = window.AbortController ? new AbortController() : { signal: undefined }; dangK = 0; chia(VDO_KHUC_MC); het(); return;
+        }
+        if (lan < 6) { d.loi = 'Mạng chập chờn – đang thử lại…'; tdCap(); setTimeout(function () { motKhuc(n, lan + 1, l0); }, 1500 * (lan + 1)); return; }
+        hong = true; try { ac.abort(); } catch (e3) { }
         xong(null, e && e.message ? e.message : 'mất kết nối');
       });
     }
-    khuc(0);
+    ac = window.AbortController ? new AbortController() : { signal: undefined };
+    het();
   }
   function vdoLuu(v) {   // gọi NGAY trong cú chạm (iPhone chỉ mở bảng chia sẻ sau 1 lần bấm tay)
     var f = VDO.file[v.id]; if (!f) { vdoTaiVe(v); return; }
