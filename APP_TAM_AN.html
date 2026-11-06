@@ -679,7 +679,7 @@ textarea.inp{font-family:inherit}
 .thx{border:1px dashed var(--edge);font-size:11px;color:var(--muted);padding:0}
 .thf{display:flex;flex-direction:column;gap:8px}.thf .inp{margin:0}.thf .seg button{padding:7px 4px;font-size:13.5px}
 .thv{width:100%;max-width:420px;align-self:center;border-radius:6px;box-shadow:0 1px 4px rgba(0,0,0,.15)}
-.ccday .ccgui{flex:none;width:48px;padding:0;display:flex;align-items:center;justify-content:center}.ccday #ccMoi,.ccday #ccLuu{flex:none;width:auto;padding-left:11px;padding-right:11px}@media (max-width:385px){.ccday{gap:6px}.ccday .btn{font-size:14px}.ccday #ccMoi,.ccday #ccLuu{padding-left:9px;padding-right:9px}}.ccday .ccgui svg{width:22px;height:22px}
+.ccday .ccgui{flex:none;width:48px;padding:0;display:flex;align-items:center;justify-content:center}.ccday #ccMoi,.ccday #ccLuu{flex:none;width:auto;padding-left:11px;padding-right:11px}@media (max-width:385px){.ccday{gap:6px}.ccday .btn{font-size:14px}.ccday #ccMoi,.ccday #ccLuu{padding-left:9px;padding-right:9px}}.ccday .ccgui svg{width:22px;height:22px}.ccday .ccg2{flex-direction:column;gap:1px;width:52px}.ccday .ccg2 svg{width:20px;height:20px}.ccday .ccg2 small{font-size:11px;line-height:1;font-weight:600}
 .ccw .it .ch{color:var(--faint);font-size:20px;flex:none}
 .ccg img,.ccg .ccg0{width:64px;height:40px;object-fit:cover;object-position:top;border-radius:6px;flex:none;background:var(--soft);display:block}
 .cckl{display:flex;flex-direction:column;gap:12px;padding:16px}
@@ -3761,22 +3761,75 @@ textarea.inp{font-family:inherit}
       };
     }, function (e) { ccTd(''); toastLoi(e && e.message ? e.message : 'Không tạo được PDF.'); });
   }
+  // ---- 06/11: lưu ảnh CCCD trong kho về điện thoại: đúng ảnh màu trong kho (giữ nguyên từng byte, không nén lại), 1 người = 1 file JPEG ghép 2 mặt ----
+  var ICON_ANH = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2.5"/><circle cx="8.5" cy="8.5" r="1.6"/><path d="m21 15-4.5-4.5L8 19"/></svg>';
+  var CC_ANH_TOI_DA = 20;
+  function ccTenAnh(g) {   // CCCD_Phung_Van_Huy_024086012300.jpg
+    var t = g.ten ? String(hoaDau(g.ten)).normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/đ/g, 'd').replace(/Đ/g, 'D').replace(/[^A-Za-z0-9]+/g, '_').replace(/^_|_$/g, '') : '';
+    return 'CCCD_' + [t, g.so].filter(Boolean).join('_') + '.jpg';
+  }
+  function ccAnhFile(u, ten) {   // dataURL JPEG -> File (giữ nguyên byte ảnh kho)
+    var b = atob(String(u).split(',')[1] || ''), a = new Uint8Array(b.length); for (var i = 0; i < b.length; i++) a[i] = b.charCodeAt(i);
+    var bl = new Blob([a], { type: 'image/jpeg' });
+    try { return new File([bl], ten, { type: 'image/jpeg' }); } catch (e) { bl.name = ten; return bl; }
+  }
+  function ccAnhNk(ds) {   // nhật ký: ai lưu ảnh của ai (không chặn, lỗi bỏ qua)
+    apiT({ v: 'cccdLuuMay', ds: ds.map(function (g) { return (g.ten ? hoaDau(g.ten) + ' ' : '') + (g.so || ''); }).join('; ').slice(0, 1800), n: ds.length }).catch(function () { });
+  }
+  function ccAnhTai(fs) {   // máy không có bảng chia sẻ: tải từng file về
+    fs.forEach(function (f, i) {
+      setTimeout(function () {
+        var u = URL.createObjectURL(f), a = document.createElement('a'); a.href = u; a.download = f.name; document.body.appendChild(a); a.click(); a.remove();
+        setTimeout(function () { URL.revokeObjectURL(u); }, 60000);
+      }, i * 350);
+    });
+  }
+  function ccAnhChiaSe(ds, us) {   // gọi NGAY trong cú chạm (iPhone chỉ mở bảng chia sẻ sau 1 lần bấm tay)
+    var fs = us.map(function (u, i) { return ccAnhFile(u, ccTenAnh(ds[i])); });
+    if (navigator.canShare && navigator.canShare({ files: fs })) {
+      navigator.share({ files: fs }).then(function () { ccAnhNk(ds); }, function (e) { if (e && e.name !== 'AbortError') { ccAnhTai(fs); ccAnhNk(ds); } });
+      return;
+    }
+    ccAnhTai(fs); ccAnhNk(ds);
+  }
+  function ccAnhLuu(ds) {   // chọn nhiều người trong kho -> tải ảnh xong mới hiện nút Lưu (cú chạm mới)
+    if (!ds.length) return;
+    if (ds.length > CC_ANH_TOI_DA) { toast('Mỗi lượt lưu tối đa ' + CC_ANH_TOI_DA + ' ảnh (đang chọn ' + ds.length + ' người). Bỏ chọn bớt rồi lưu làm nhiều lượt.'); return; }
+    var n = ds.length, xong = 0, i = 0, us = new Array(n);
+    ccTd('Đang lấy ảnh 0/' + n + '…');
+    function mot() {
+      if (i >= n) return Promise.resolve();
+      var j = i++;
+      return ccLayAnh(ds[j]).then(function (a) { us[j] = a.anh; xong++; ccTd('Đang lấy ảnh ' + xong + '/' + n + '…'); return mot(); });
+    }
+    Promise.all([mot(), mot(), mot()]).then(function () {
+      ccTd('');
+      var kb = us.reduce(function (t, u) { return t + Math.round(String(u).length * 0.75); }, 0) / 1048576;
+      var sh = moSheet('<h3>' + n + ' ảnh CCCD sẵn sàng</h3><div class="meta">Ảnh màu gốc trong kho, mỗi người 1 ảnh gồm 2 mặt · ' + (kb < 1 ? Math.max(1, Math.round(kb * 1024)) + ' KB' : kb.toFixed(1).replace('.', ',') + ' MB') + '</div>' +
+        '<div class="meta">' + (document.documentElement.classList.contains('ios') ? 'Bấm nút dưới, trong bảng hiện ra chọn <b>Lưu ' + (n > 1 ? n + ' hình ảnh' : 'hình ảnh') + '</b> để lưu vào Ảnh, hoặc chọn Zalo để gửi thẳng.' : 'Bấm nút dưới, trong bảng hiện ra chọn nơi lưu hoặc ứng dụng để gửi (Zalo…).') + '</div>' +
+        '<button class="btn" id="laL">Lưu / Gửi ' + (n > 1 ? n + ' ảnh' : 'ảnh') + '</button>' + (document.documentElement.classList.contains('ios') ? '' : '<button class="btn ghost" id="laT">Tải file về máy</button>') + '<button class="btn lk" id="laK">Thôi</button>');
+      sh.querySelector('#laL').onclick = function () { sh.remove(); ccAnhChiaSe(ds, us); };
+      var bt = sh.querySelector('#laT'); if (bt) bt.onclick = function () { sh.remove(); ccAnhTai(us.map(function (u, k) { return ccAnhFile(u, ccTenAnh(ds[k])); })); ccAnhNk(ds); };
+      sh.querySelector('#laK').onclick = function () { sh.remove(); };
+    }, function (e) { ccTd(''); toastLoi(e && e.message ? e.message : 'Không lấy được ảnh.'); });
+  }
   function ccXemLon(g, kt) {   // g: {so, ten, id, duong}; kt: ô trong kho (để chọn / bỏ chọn)
     var k = CCS.kho, chon = !!(kt && k && k.chon[g.so]);
     var sh = moSheet('<div class="row sp"><div style="min-width:0"><h3 class="ell">' + esc(g.ten ? hoaDau(g.ten) : g.so) + '</h3><div class="meta ell">' + esc((g.ten ? g.so + ' · ' : '') + (g.duong || '')) + '</div></div><button class="link" id="xlD">Đóng</button></div>' +
       '<div class="ccxl"><img id="xlA" alt=""' + (g.nho && kt ? ' src="' + g.nho + '"' : '') + '><span class="meta" id="xlT">Đang tải ảnh…</span></div>' + ccMay(0) +
-      '<button class="btn" id="xlIn" disabled>In tờ này</button><button class="btn ghost" id="xlG" disabled>Chia sẻ PDF</button><button class="btn ghost" id="xlThe" disabled>Làm thẻ HOJEONG</button>' + (kt ? '<button class="btn ghost" id="xlC">' + (chon ? 'Bỏ chọn' : 'Chọn để in cùng người khác') + '</button>' : '') + (g.so ? '<button class="btn lk" id="xlSua">Sửa tên / ngày sinh</button>' : ''));
+      '<button class="btn" id="xlIn" disabled>In tờ này</button><button class="btn ghost" id="xlG" disabled>Chia sẻ PDF</button><button class="btn ghost" id="xlAnh" disabled>Lưu ảnh về máy</button><button class="btn ghost" id="xlThe" disabled>Làm thẻ HOJEONG</button>' + (kt ? '<button class="btn ghost" id="xlC">' + (chon ? 'Bỏ chọn' : 'Chọn để in cùng người khác') + '</button>' : '') + (g.so ? '<button class="btn lk" id="xlSua">Sửa tên / ngày sinh</button>' : ''));
     var img = sh.querySelector('#xlA'), tt = sh.querySelector('#xlT'), nIn = sh.querySelector('#xlIn');
     sh.querySelector('#xlD').onclick = function () { sh.remove(); };
-    var nG = sh.querySelector('#xlG'), nT = sh.querySelector('#xlThe');
+    var nG = sh.querySelector('#xlG'), nT = sh.querySelector('#xlThe'), nA = sh.querySelector('#xlAnh'), aGoc = null;
     nT.onclick = function () { sh.remove(); theTuKho([g]); };
     ccLayAnh(g).then(function (a) {
-      img.src = a.anh; tt.remove(); nG.disabled = nT.disabled = false;
+      img.src = a.anh; tt.remove(); nG.disabled = nT.disabled = false; aGoc = a.anh; if (g.so || g.ten) nA.disabled = false;
       var k = ccKhoKhoa([g]);   // dựng sẵn trang in: bấm In là mở hộp in ngay
       Promise.resolve(a).then(ccChinhAnh).then(function (u) { return inDung([u], '', k); }).then(function () { nIn.disabled = false; }, function () { nIn.disabled = false; });
     }, function (e) { tt.textContent = e.message; tt.style.color = 'var(--bad)'; });
     nIn.onclick = function () { sh.remove(); ccInDs([g]); };
     nG.onclick = function () { sh.remove(); ccGui(ccLayDs([g]), ccTenPdf([g])); };
+    nA.onclick = function () { if (aGoc) ccAnhChiaSe([g], [aGoc]); };
     var c = sh.querySelector('#xlC');
     if (c) c.onclick = function () { sh.remove(); kt(); };
     var sb = sh.querySelector('#xlSua');
@@ -3925,7 +3978,7 @@ textarea.inp{font-family:inherit}
       '<div class="ckn"><label>Số cuối CCCD</label><input class="inp" id="ckDuoi" inputmode="numeric" maxlength="12" placeholder="không bắt buộc" value="' + esc(k.duoi) + '"></div>' +
       '<button class="btn" id="ckTim"' + (k.dang ? ' disabled' : '') + '>' + (k.dang === 1 ? 'Đang tìm…' : 'Tìm theo năm sinh') + '</button></div>';
     h += '<div id="ckKq">' + ckKqHtml(k) + '</div>';
-    h += '<div class="ccday">' + ccMay(0) + '<button class="btn ghost" id="ckLai">Quay lại</button><button class="btn ghost ccgui" id="ckGui" aria-label="Chia sẻ PDF">' + ICON_GUI + '</button><button class="btn" id="ckIn"></button></div><div class="ccdem"></div>';
+    h += '<div class="ccday">' + ccMay(0) + '<button class="btn ghost" id="ckLai">Quay lại</button><button class="btn ghost ccgui ccg2" id="ckGui" aria-label="Chia sẻ PDF">' + ICON_GUI + '<small>PDF</small></button><button class="btn ghost ccgui ccg2" id="ckAnh" aria-label="Lưu ảnh về máy">' + ICON_ANH + '<small>Ảnh</small></button><button class="btn" id="ckIn"></button></div><div class="ccdem"></div>';
     t.innerHTML = h;
     ccDayDat(t); ckBar();
     document.getElementById('ckDong').onclick = document.getElementById('ckLai').onclick = function () { CCS.kho = null; ccVe(); window.scrollTo(0, 0); };
@@ -3942,6 +3995,7 @@ textarea.inp{font-family:inherit}
     function daChon() { return Object.keys(k.chon).map(function (so) { return k.chon[so]; }).sort(function (a, b) { return a.nam - b.nam || (a.so < b.so ? -1 : 1); }); }
     document.getElementById('ckIn').onclick = function () { ccInDs(daChon()); };
     document.getElementById('ckGui').onclick = function () { var ds = daChon(); if (ds.length) ccGui(ccLayDs(ds), ccTenPdf(ds)); };
+    document.getElementById('ckAnh').onclick = function () { ccAnhLuu(daChon()); };
     k.daChon = daChon;
     ckKqGan(k);
   }
@@ -3999,8 +4053,9 @@ textarea.inp{font-family:inherit}
   function ckBar() {
     var k = CCS.kho, b = document.getElementById('ckIn'); if (!k || !b) return;
     var n = Object.keys(k.chon).length;
-    b.disabled = !n; b.textContent = n ? 'In ' + n + ' tờ đã chọn' : 'Chưa chọn ai';
+    b.disabled = !n; b.textContent = n ? 'In ' + n + ' tờ' : 'Chưa chọn ai';
     var g = document.getElementById('ckGui'); if (g) g.disabled = !n;
+    var ga = document.getElementById('ckAnh'); if (ga) ga.disabled = !n;
     var tb = document.getElementById('ckThe'); if (tb) tb.textContent = n ? 'Làm thẻ (' + n + ')' : 'Làm thẻ';
   }
   // ---- 22/10: thẻ ra vào HOJEONG (mẫu "Form thẻ.xlsx"): thẻ 8,1 × 5,3 cm, 8 thẻ / A4, in màu (PDF ra quán in) ----
@@ -4344,6 +4399,7 @@ textarea.inp{font-family:inherit}
   }
   function ccCheNoi(t) { t.querySelectorAll('[data-che]').forEach(function (b) { b.onclick = function () { CCS.theMo = b.getAttribute('data-che') === '1'; var lg = theLogoNap(); if (!lg.complete) lg.onload = function () { ccVe(); }; ccVe(); window.scrollTo(0, 0); }; }); }
   var BAN_MOI = [
+    { so: 120, ds: [['CCCD – lưu ảnh trong kho về điện thoại dạng file ảnh (JPEG), không phải PDF. Xem to 1 người: bấm "Lưu ảnh về máy". Chọn nhiều người trong kho: bấm nút "Ảnh" ở thanh dưới (tối đa 20 người một lượt). Trong bảng hiện ra chọn "Lưu hình ảnh" để vào Ảnh, hoặc chọn Zalo để gửi thẳng. Ảnh là ảnh màu gốc trong kho, mỗi người 1 ảnh gồm 2 mặt.', '']] },
     { so: 119, ds: [['Thẻ HOJEONG nhỏ lại 3 mm mỗi chiều: 8,2 × 5,7 cm (trước 8,5 × 6 cm) để nhét vào bao thẻ dễ hơn. Ảnh, chữ và mã thẻ thu nhỏ theo, bố cục giữ nguyên. Khổ A4 vẫn 8 thẻ một tờ, khổ A5 vẫn 4 thẻ một tờ.', '']] },
     { so: 118, ds: [['CCCD – ảnh lưu kho: ảnh có nền thẻ bị ám màu (xanh lè, tím, vàng do đèn hoặc camera) được tự kéo về gần màu thẻ thật, chữ đen và giấy trắng giữ nguyên.', '']] },
     { so: 117, ds: [['CCCD – ảnh lưu vào kho: là ảnh màu, app tự cân bằng trắng theo từng ảnh (chụp dưới đèn vàng, đèn xanh hay trong bóng râm đều về màu tự nhiên) và không còn tăng tương phản gắt làm cháy mặt người. Ảnh bị mất hẳn một màu thì app tô lại màu theo thẻ mẫu cùng loại.', ''], ['In CCCD và Gửi PDF ra quán in: app tự tạo bản đen trắng rõ nét cho máy in laser – chữ và số đậm, hoa văn nền nhạt, mặt người được chỉnh sáng riêng để không lóa, không bết đen. Ảnh cũ trong kho khi in cũng được xử lý như vậy (ảnh trong kho giữ nguyên).', ''], ['Khối "Chỉnh ảnh in": mặc định là tự chỉnh theo từng ảnh; 3 thanh kéo dùng để chỉnh thêm cho bản in khi cần (50 = tự động). Thẻ HOJEONG lấy ảnh chân dung từ ảnh màu đã cân bằng trắng.', '']] },
