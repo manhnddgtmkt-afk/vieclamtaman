@@ -13,7 +13,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
 <script src="config.js"></script>
-<script>window.PB = { so: 129, luc: "06/11 17:49" };</script>
+<script>window.PB = { so: 129, luc: "06/11 17:59" };</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap">
 <style>
@@ -760,6 +760,17 @@ textarea.inp{font-family:inherit}
 .tbHd{padding:0 14px 8px;font-size:12.5px;color:var(--muted)}.tbR2{flex-direction:column;align-items:stretch;gap:6px}.tbR2 .tbM{width:100%}.tbF{display:flex;align-items:center;gap:10px}.tbF .tbS{flex:1;min-width:0;white-space:normal;line-height:1.4}.tbF .tbX{padding:6px 12px}.tbF .nw{white-space:nowrap}
 .tbCu .tbC{color:var(--muted)}.tbCu .tbC b{color:var(--fg)}.tbXl{background:var(--card)}.tbkCu{border-color:var(--edge)}
 .tbGon{width:100%;margin-top:12px;display:flex;align-items:center;gap:8px;padding:11px 14px;border:1.5px solid var(--edge);border-radius:14px;background:var(--card);color:var(--muted);font-size:13.5px;text-align:left}.tbGon span{flex:1;min-width:0}.tbGon i{font-style:normal;color:var(--blue)}
+.tbDay{padding:7px 14px 6px;font-size:12.5px;font-weight:600;color:var(--muted);background:var(--soft)}
+.tbP{padding:11px 14px 12px;border-top:1px solid var(--soft)}.tbDay+.tbP{border-top:0}
+.tbPh{display:flex;align-items:baseline;gap:10px;width:100%;border:0;background:none;padding:0;text-align:left;color:var(--fg);white-space:normal}
+.tbPh b{flex:1;min-width:0;font-size:15.5px;font-weight:700;line-height:1.3}.tbMeta{flex:none;max-width:52%;text-align:right;font-size:12.5px;line-height:1.35;color:var(--muted)}.tbMeta .nw,.tbL .nw{white-space:nowrap}
+.tbI{display:block;width:100%;border:0;background:none;padding:0;margin-top:8px;text-align:left;color:var(--fg);white-space:normal}.tbI+.tbI{margin-top:12px}
+.tbL{display:flex;align-items:center;flex-wrap:wrap;gap:4px 8px}.tbKy{font-size:13px;color:var(--muted);line-height:1.35}
+.tbTg{font-size:12px;font-weight:600;line-height:1.5;padding:1px 8px;border-radius:6px;white-space:nowrap}.tbTg.g{background:var(--good-bg);color:var(--good)}.tbTg.b{background:var(--tint);color:var(--blue)}.tbTg.w{background:var(--warn-bg);color:var(--warn)}.tbTg.d{background:var(--bad-bg);color:var(--bad)}.tbTg.x{background:var(--soft);color:var(--muted)}
+.tbCa{display:block;font-size:14.5px;line-height:1.45;margin-top:4px;overflow-wrap:anywhere}.tbCa b{font-weight:700}.tbCa .nw{white-space:nowrap}
+.tbWhy{display:block;font-size:13px;line-height:1.4;color:var(--muted);margin-top:2px}
+.tbAct{display:flex;justify-content:flex-end;margin-top:10px}.tbAct .tbX{padding:6px 14px}
+.tbGon{white-space:normal}.tbThem{white-space:normal}
 .tbX{flex:none;border:1.5px solid var(--edge);background:var(--card);color:var(--blue);border-radius:12px;padding:8px 12px;font-weight:600;font-size:13px}
 .tbThem{width:100%;border:0;border-top:1px solid var(--soft);background:var(--soft);color:var(--blue);padding:11px;font-weight:600;font-size:14px}
 .vtFile{background:var(--card);border-radius:16px;overflow:hidden}
@@ -4426,6 +4437,7 @@ textarea.inp{font-family:inherit}
   }
   function ccCheNoi(t) { t.querySelectorAll('[data-che]').forEach(function (b) { b.onclick = function () { CCS.theMo = b.getAttribute('data-che') === '1'; var lg = theLogoNap(); if (!lg.complete) lg.onload = function () { ccVe(); }; ccVe(); window.scrollTo(0, 0); }; }); }
   var BAN_MOI = [
+    { so: 130, ds: [{ i: '🔔', t: 'Thông báo thay đổi bảng công gọn mắt hơn', m: 'Các thay đổi được gom theo ngày sửa, mỗi người một khối: tên người ở dòng đầu, bên phải ghi ai sửa và lúc mấy giờ. Bên dưới là nhãn màu cho biết loại thay đổi, rồi đến câu nói rõ đã đổi gì, số tiền in đậm. Lý do nằm ở dòng chữ xám phía dưới.', c: [['Đánh dấu đã xem', 'Mỗi người có một nút [[Đã xem]] ở cuối khối, bấm là đánh dấu hết các thay đổi của người đó trong ngày.'], ['Bớt báo không cần thiết', 'Sửa giờ mà giờ không đổi (chỉ khác cách ghi số, ví dụ 7:58 và 07:58) thì không báo nữa.']], v: 'chu' }] },
     { so: 128, ds: [{ i: '🎬', t: 'Mục Video ghi rõ ai đã tải', m: 'Dòng đã tải ghi đúng tên người tải (ví dụ: Long đã tải 17:45), người tự tải thấy chữ Bạn. Bỏ dòng chú thích dài ở đầu mục, ngày tự xoá đã ghi riêng trên từng video.' }] },
     { so: 127, ds: [{ i: '🎬', t: 'Xem trước video gọn hơn', m: 'Chạm vào ảnh của video là app tải video và phát ngay khi tải được đoạn đầu (khoảng 5–10 giây). Chỉ còn một bộ nút điều khiển của điện thoại, đang phát thì tự ẩn.', c: [['Lưu sau khi xem', 'Xem xong, video đã nằm sẵn trong máy: bấm [[Lưu vào máy]] ở dưới là lưu luôn, không phải tải lại.'], ['Không ưng thì đóng', 'Bấm [[Đóng]] ở góc trên, app dừng tải ngay, chỉ tốn phần đã xem. Nên dùng wifi vì video khá nặng.']] }] },
     { so: 126, ds: [{ i: '🎬', t: 'Xem trước video to hơn', m: 'Chạm vào ảnh của video là video mở to kín màn hình. Đang phát thì các nút điều khiển tự ẩn sau vài giây, chạm vào video để hiện lại.', c: [['Đóng hoặc tải', 'Bấm [[Đóng]] ở góc trên để quay lại danh sách, hoặc bấm [[Tải về]] ở dưới để tải video gốc.']] }] },
@@ -5233,7 +5245,9 @@ textarea.inp{font-family:inherit}
   }
   // ---- thông báo cho chủ: bảng công sửa khác vân tay (đọc xong là ẩn) ----
   function laChu() { return !!(S.toi && S.toi.vai === 'chu'); }
-  function tbDs() { return laChu() && TB && TB.ds ? TB.ds.filter(function (x) { return x.loai !== 'Ghi nguồn tuyển'; }) : []; }   // 06/11: ghi nguồn lần đầu không cần chủ xem
+  function tbDs() { return laChu() && TB && TB.ds ? TB.ds.filter(tbCo) : []; }
+  function tbChuan(t) { return String(t || '').replace(/(^|[^\d])0(\d:)/g, '$1$2').replace(/\s+/g, ''); }
+  function tbCo(x) { return x.loai !== 'Ghi nguồn tuyển' && !(x.loai === 'Sửa giờ' && tbChuan(x.truoc) === tbChuan(x.sau)); }   // 06/11 bản 130: sửa giờ chỉ khác cách ghi (7:58 / 07:58) thì không báo   // 06/11: ghi nguồn lần đầu không cần chủ xem
   function taiTB() {
     if (!laChu()) return;
     apiT({ v: 'tb', im: 1 }).then(function (o) { if (o.loi) return; TB = o; capBadge(); veTB(); }, function () { });
@@ -5268,6 +5282,68 @@ textarea.inp{font-family:inherit}
     }
     return e(x.loai) + ' – ' + ten + ngay + (tr || sa ? ': ' + (tr ? 'từ ' + e(tr) + ' ' : '') + (sa ? 'thành ' + e(sa) : '') : '') + '.';
   }
+  // 06/11 bản 130: trình bày dạng thẻ – nhãn loại + kỳ, câu chính (số tiền in đậm), lý do chữ xám; câu vẫn đủ nghĩa
+  function tbTien(t) { return esc(t).replace(/(\d[\d.]*\s?đ)(?=$|[\s.,;)])/g, '<b class="nw">$1</b>'); }
+  function tbThe(x) {
+    var ng = tbNgay(x), tr = String(x.truoc || '').trim(), sa = String(x.sau || '').trim(), e = esc, ngay = ng ? 'Ngày ' + ng : '';
+    var giu = function (t) { var m = /^Giữ lại\s*–\s*(.*)$/.exec(t); return m ? 'mới có ' + m[1] : tbThuong(t); };
+    var vt = x.vt ? 'Máy ' + vtTen(x.cty) + ' ghi: ' + x.vt + '.' : '', truoc = tr ? 'Trước đó: ' + tr + '.' : '';
+    var r = function (tg, c, ky, cau, why) { return { tg: tg, c: c, ky: ky, cau: cau, why: why || '' }; };
+    switch (x.loai) {
+      case 'Thanh toán tăng cường': return r('Trả tiền', 'g', ng ? 'Tăng cường tuần ' + ng : 'Tăng cường',
+        'Chuyển sang ' + tbTien(tbThuong(sa).replace(/^thanh toán/, 'trả tiền').replace(/\s(\d[\d.]*\s?đ)$/, ': $1')),
+        tr ? 'Trước đó đang giữ lại vì ' + giu(tr) + '.' : '');
+      case 'Bỏ thanh toán tăng cường': return r('Bỏ trả tiền', 'd', ng ? 'Tăng cường tuần ' + ng : 'Tăng cường',
+        'Không trả tiền nữa, nay giữ lại vì ' + e(giu(sa)) + '.', tr ? 'Trước đó: ' + tbThuong(tr) + '.' : '');
+      case 'Trả công lẻ': return r('Trả công lẻ', 'b', ngay, 'Đã xác nhận trả công lẻ' + (sa ? ': ' + tbTien(sa) : '.'));
+      case 'Bỏ trả công lẻ': return r('Bỏ công lẻ', 'd', ngay, 'Không trả công lẻ ngày này nữa.', truoc);
+      case 'Sửa giờ': return r('Sửa giờ', 'w', ngay, 'Giờ cũ: ' + e(tr || 'trống') + '<br>Giờ mới: <b>' + e(sa || 'trống') + '</b>', vt);
+      case 'Xoá giờ': return r('Xoá giờ', 'd', ngay, 'Đã xoá giờ' + (tr ? ': ' + e(tr) : '') + '.', vt);
+      case 'Không tính ngày': return r('Không tính ngày', 'd', ngay, 'Ngày này không được tính công.', truoc);
+      case 'Sửa ứng/trả': var u1 = tbUt(tr), u2 = tbUt(sa);
+        return r('Sửa ứng/trả', 'w', '', 'Khoản cũ: ' + tbTien(u1[0] + u1[1]) + '<br>Khoản mới: ' + tbTien(u2[0] + u2[1]));
+      case 'Xoá ứng/trả': var u3 = tbUt(tr); return r('Xoá ứng/trả', 'd', '', 'Đã xoá khoản ' + tbTien(tbThuong(u3[0]) + u3[1]) + '.');
+      case 'Sửa nhiều ô một lúc': return r('Sửa nhiều ô', 'w', '', 'Đã sửa nhiều ô bảng công cùng lúc (vùng ' + e(sa) + ' trên Google Sheet).', 'Nên mở bảng công kiểm tra lại.');
+      case 'Đổi nguồn tuyển': return r('Đổi người tuyển', 'd', '', 'Từ ' + e(tr || 'trống') + ' sang <b>' + e(sa || 'trống') + '</b>.', 'Việc này làm thay đổi tiền thưởng của sale.');
+    }
+    return r(x.loai || 'Thay đổi', 'x', ngay, (tr ? 'Từ ' + e(tr) + ' ' : '') + (sa ? 'thành <b>' + e(sa) + '</b>' : '') + '.');
+  }
+  function tbAi(x) { return esc(hoaDau(x.ai) || 'Không rõ') + (x.tu === 'App' ? '' : ' · <span class="nw">Google Sheet</span>'); }
+  function tbNhom(ds) {   // gom theo ngày sửa, trong ngày gom theo người (giữ thứ tự mới trước)
+    var ngay = [], mN = {};
+    ds.forEach(function (x) {
+      var d = new Date(x.luc || 0), k = d.toDateString(), n = mN[k];
+      if (!n) { n = mN[k] = { d: d, ng: [], mP: {} }; ngay.push(n); }
+      var kp = kd(x.ten || ''), g = n.mP[kp];
+      if (!g) { g = n.mP[kp] = { ten: x.ten, ds: [] }; n.ng.push(g); }
+      g.ds.push(x);
+    });
+    return ngay;
+  }
+  function tbNhanNgay(d) {
+    var p = function (v) { return (v < 10 ? '0' : '') + v; }, dm = p(d.getDate()) + '/' + p(d.getMonth() + 1), h = new Date(), q = new Date(h.getTime() - 864e5);
+    if (d.toDateString() === h.toDateString()) return 'Hôm nay ' + dm;
+    if (d.toDateString() === q.toDateString()) return 'Hôm qua ' + dm;
+    return ['Chủ nhật', 'Thứ Hai', 'Thứ Ba', 'Thứ Tư', 'Thứ Năm', 'Thứ Sáu', 'Thứ Bảy'][d.getDay()] + ' ' + dm;
+  }
+  function tbGio(ms) { var d = new Date(ms), p = function (v) { return (v < 10 ? '0' : '') + v; }; return p(d.getHours()) + ':' + p(d.getMinutes()); }
+  function tbHtml(ds, daXem) {
+    return tbNhom(ds).map(function (n) {
+      return '<div class="tbDay">' + tbNhanNgay(n.d) + '</div>' + n.ng.map(function (g) {
+        var x0 = g.ds[0], ten = x0.ten === '(nhiều người)' ? 'Nhiều người' : hoaDau(g.ten);
+        var h = '<div class="tbP"><button class="tbPh" data-tb="' + esc(x0.id) + '"><b>' + esc(ten) + '</b><span class="tbMeta">' + tbAi(x0) + ' · <span class="nw">' + tbGio(x0.luc) + '</span></span></button>';
+        g.ds.forEach(function (x, i) {
+          var t = tbThe(x), them = '';
+          if (i > 0 && (x.ai !== x0.ai || x.tu !== x0.tu)) them = '<span class="tbKy">' + tbAi(x) + ' · <span class="nw">lúc ' + tbGio(x.luc) + '</span></span>';
+          else if (i > 0 && tbGio(x.luc) !== tbGio(x0.luc)) them = '<span class="tbKy nw">lúc ' + tbGio(x.luc) + '</span>';
+          h += '<button class="tbI" data-tb="' + esc(x.id) + '"><span class="tbL"><span class="tbTg ' + t.c + '">' + esc(t.tg) + '</span>' + (t.ky ? '<span class="tbKy nw">' + esc(t.ky) + '</span>' : '') + them + '</span>' +
+            '<span class="tbCa">' + t.cau + '</span>' + (t.why ? '<span class="tbWhy">' + esc(t.why) + '</span>' : '') + '</button>';
+        });
+        if (!daXem) h += '<div class="tbAct"><button class="tbX" data-x="' + esc(g.ds.map(function (x) { return x.id; }).join('|')) + '">Đã xem</button></div>';
+        return h + '</div>';
+      }).join('');
+    }).join('');
+  }
   function tbUt(t) {   // "Ứng 200.000 · 04/11 · Hòa · ghi chú" -> ["Ứng 200.000 đ", ", ngày 04/11, người trả Hòa, ghi chú: …"]
     var a = String(t || '').split(' · '), dau = /\d$/.test(a[0] || '') ? a[0] + ' đ' : (a[0] || '');
     return [dau, (a[1] ? ', ngày ' + a[1] : '') + (a[2] ? ', người trả ' + a[2] : '') + (a[3] ? ', ghi chú: ' + a.slice(3).join(' · ') : '')];
@@ -5288,28 +5364,24 @@ textarea.inp{font-family:inherit}
   function veTB() {
     var box = document.getElementById('tbBox'); if (!box) return;
     var ds = tbDs().filter(function (x) { return x.cty === S.cty; });
-    var cu = (laChu() && TB && TB.daXem ? TB.daXem : []).filter(function (x) { return x.cty === S.cty && x.loai !== 'Ghi nguồn tuyển'; });
+    var cu = (laChu() && TB && TB.daXem ? TB.daXem : []).filter(function (x) { return x.cty === S.cty && tbCo(x); });
     if (!ds.length && !cu.length) { box.innerHTML = ''; return; }
-    var dong = function (x, daXem) {
-      return '<div class="tbR tbR2' + (daXem ? ' tbCu' : '') + '"><button class="tbM" data-tb="' + esc(x.id) + '"><span class="tbC">' + tbCau(x) + '</span></button>' +
-        '<div class="tbF"><span class="tbS">' + tbPhu(x, daXem) + '</span>' + (daXem ? '' : '<button class="tbX" data-x="' + esc(x.id) + '">Đã xem</button>') + '</div></div>';
-    };
     var h = '';
     if (ds.length) {
       var hien = S.tbHet ? ds : ds.slice(0, 5);
       h += '<div class="tbk"><div class="tbk-h"><i class="tbDot"></i><b>Thay đổi cần xem lại · ' + ds.length + '</b>' + (ds.length > 1 ? '<button class="link" id="tbHet">Đã xem hết</button>' : '') + '</div>' +
-        '<div class="tbHd">Chạm vào từng dòng để mở hồ sơ người đó. Bấm Đã xem khi đã kiểm tra xong.</div>' +
-        hien.map(function (x) { return dong(x, 0); }).join('') +
+        '<div class="tbHd">Chạm vào tên hoặc từng thay đổi để mở hồ sơ. Bấm Đã xem khi đã kiểm tra xong.</div>' +
+        tbHtml(hien, 0) +
         (ds.length > hien.length ? '<button class="tbThem" id="tbThem">Xem thêm ' + (ds.length - hien.length) + ' thay đổi</button>' : '') +
         (cu.length ? '<button class="tbThem tbXl" id="tbXl">' + (S.tbXl ? 'Ẩn các thay đổi đã xem' : 'Xem lại ' + cu.length + ' thay đổi đã xem trong 7 ngày') + '</button>' : '') + '</div>';
-    } else h += '<button class="tbGon" id="tbXl"><span>Đã xem hết thay đổi · Xem lại ' + cu.length + ' thay đổi trong 7 ngày</span><i aria-hidden="true">' + (S.tbXl ? '▴' : '▾') + '</i></button>';
-    if (S.tbXl && cu.length) h += '<div class="tbk tbkCu"><div class="tbk-h"><b>Đã xem trong 7 ngày · ' + cu.length + '</b><button class="link" id="tbXlDong">Thu gọn</button></div>' + cu.map(function (x) { return dong(x, 1); }).join('') + '</div>';
+    } else if (!S.tbXl) h += '<button class="tbGon" id="tbXl"><span>Xem lại ' + cu.length + ' thay đổi đã xem trong 7 ngày</span><i aria-hidden="true">▾</i></button>';
+    if (S.tbXl && cu.length) h += '<div class="tbk tbkCu"><div class="tbk-h"><b>Đã xem trong 7 ngày · ' + cu.length + '</b><button class="link" id="tbXlDong">Thu gọn</button></div>' + tbHtml(cu, 1) + '</div>';
     box.innerHTML = h;
     var b1 = document.getElementById('tbHet'); if (b1) b1.onclick = function () { tbDaXem(ds.map(function (x) { return x.id; })); };
     var th = document.getElementById('tbThem'); if (th) th.onclick = function () { S.tbHet = 1; veTB(); };
     var xl = document.getElementById('tbXl'); if (xl) xl.onclick = function () { S.tbXl = S.tbXl ? 0 : 1; veTB(); };
     var xd = document.getElementById('tbXlDong'); if (xd) xd.onclick = function () { S.tbXl = 0; veTB(); };
-    box.querySelectorAll('[data-x]').forEach(function (b) { b.onclick = function () { tbDaXem([b.getAttribute('data-x')]); }; });
+    box.querySelectorAll('[data-x]').forEach(function (b) { b.onclick = function () { tbDaXem(b.getAttribute('data-x').split('|')); }; });
     box.querySelectorAll('[data-tb]').forEach(function (b) {
       b.onclick = function () {   // 06/11: chạm để mở hồ sơ, KHÔNG tự đánh dấu đã xem (trước đây chạm là mất)
         var id = b.getAttribute('data-tb'), x = ds.concat(cu).filter(function (y) { return y.id === id; })[0];
