@@ -13,7 +13,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
 <script src="config.js"></script>
-<script>window.PB = { so: 129, luc: "06/11 17:59" };</script>
+<script>window.PB = { so: 130, luc: "06/11 18:09" };</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap">
 <style>
@@ -571,6 +571,12 @@ textarea.inp{font-family:inherit}
 .q2viec summary{display:flex;gap:10px;align-items:center;padding:7px 0;border-top:1px solid rgba(180,110,0,.18);font-size:14px;cursor:pointer;list-style:none}
 .q2viec summary::-webkit-details-marker{display:none}
 .q2viec details:first-of-type summary{border-top:0}
+.q2viec .q2vi summary{border-top:0}.q2vi+.q2vi{border-top:1px solid rgba(180,110,0,.18)}
+.q2vp{padding:7px 0;font-size:14px;line-height:1.4;overflow-wrap:anywhere}
+.q2vu{display:flex;gap:10px;align-items:center;width:100%;padding:7px 0;border:0;background:none;color:inherit;font-size:14px;text-align:left;white-space:normal;cursor:pointer}.q2vu b{white-space:nowrap}.q2vu>i{font-style:normal;color:var(--warn);font-size:20px;line-height:1}
+.utBat{background:var(--card);border:1.5px solid var(--bad);border-radius:18px;margin-top:12px;overflow:hidden}.utBat .tbk-h b{color:var(--bad)}
+.utL{display:flex;align-items:center;gap:10px;padding:10px 14px;border-top:1px solid var(--soft)}.utL>span{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}.utL b{font-size:15px;font-weight:700;line-height:1.3}.utL small{font-size:13px;color:var(--muted);line-height:1.35}.utL .utLoi{color:var(--bad)}
+.utL .tbX{white-space:nowrap}.utL .nw,.ntS .nw{white-space:nowrap}.q2vw{line-height:1.35}.ntg{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:12px 0 4px}.ntg .btn{padding:12px 8px;white-space:normal}
 .q2viec summary span{flex:1;min-width:0}.q2viec summary b{white-space:nowrap;max-width:45%;overflow:hidden;text-overflow:ellipsis}
 .q2vt{display:flex;flex-direction:column;flex:1;min-width:0}.q2vt .ell{flex:none}.q2vs{font-size:12.5px;color:var(--muted);line-height:1.35;margin-top:1px;white-space:normal;overflow-wrap:anywhere}
 .q2viec-d{font-size:13px;color:var(--muted);padding:0 0 8px;white-space:pre-line}
@@ -1355,11 +1361,11 @@ textarea.inp{font-family:inherit}
     var loaiCb = {}; cb.forEach(function (p) { var t = lyDo(p); loaiCb[t] = (loaiCb[t] || 0) + 1; });
     var tenLoc = function (f) { return f === 'am' ? 'Nhận trước' : f === 'moi' ? 'Người mới' : /^cb:/.test(f) ? f.slice(3) : 'Cần kiểm tra'; };
     var luc = '<button class="link" id="capNhat" style="padding:0;font-size:13px">Cập nhật ' + (S.cty === 'BEST' ? 'chấm công' : 'vân tay') + '</button>';
-    hd.innerHTML = vtTheHtml() + '<div id="tbBox"></div><div id="lkBox"></div><div id="choBox"></div><div class="card hero"><div class="meta">Còn phải trả</div><div class="row" style="align-items:baseline;gap:4px 10px;flex-wrap:wrap"><span class="big num ' + (tong > 0 ? 'c-cam' : 'c-xanh') + '">' + vnd(tong) + '</span>' + (tong > 0 ? '<span class="pill warn">Trả vào thứ Tư</span>' : '<span class="pill good">Đã trả đủ</span>') + '</div>' +
+    hd.innerHTML = vtTheHtml() + '<div id="utBox"></div><div id="tbBox"></div><div id="lkBox"></div><div id="choBox"></div><div class="card hero"><div class="meta">Còn phải trả</div><div class="row" style="align-items:baseline;gap:4px 10px;flex-wrap:wrap"><span class="big num ' + (tong > 0 ? 'c-cam' : 'c-xanh') + '">' + vnd(tong) + '</span>' + (tong > 0 ? '<span class="pill warn">Trả vào thứ Tư</span>' : '<span class="pill good">Đã trả đủ</span>') + '</div>' +
       '<div class="meta ell">' + esc(canTra.length + ' người' + (d.ky ? ' · kỳ ' + String(d.ky).replace(/\/\d{4}$/, '') : '')) + '</div>' + diLamHtml(d) +
       (d.het ? '' : '<div class="meta">Bạn thấy những người bạn tuyển ở công ty này.</div>') + '</div>' +
       '<div id="ktBox"></div>';
-    ganVtThe(); veTB(); veLK(); taiLK();
+    ganVtThe(); veUTT(); taiUTT(); veTB(); veLK(); taiLK();
     hd.insertAdjacentHTML('beforeend', '<button class="ckt nghi" id="moUT"><span class="ell" style="flex:1">Ứng / trả gần đây</span><i>›</i></button>');
     document.getElementById('moUT').onclick = moUTTuDs;
     veCho();
@@ -4437,6 +4443,7 @@ textarea.inp{font-family:inherit}
   }
   function ccCheNoi(t) { t.querySelectorAll('[data-che]').forEach(function (b) { b.onclick = function () { CCS.theMo = b.getAttribute('data-che') === '1'; var lg = theLogoNap(); if (!lg.complete) lg.onload = function () { ccVe(); }; ccVe(); window.scrollTo(0, 0); }; }); }
   var BAN_MOI = [
+    { so: 131, ds: [{ i: '🧾', t: 'Ứng / trả ghi thiếu người trả: hiện rõ và bắt chọn', m: 'Khoản ứng hoặc trả lương nào chưa ghi ai là người đưa tiền thì hiện rõ tên người lao động, số tiền, ngày trả. Sale phụ trách người đó thấy một thẻ đỏ ở đầu mục Lao động và phải chọn người trả, chọn xong thẻ tự mất.', c: [['Chọn người trả', 'Bấm [[Chọn người trả]] → chọn tên người đã đưa tiền → bấm lại lần nữa để ghi.'], ['Xem các dòng bị lỗi', 'Vào Ứng / trả: các dòng bị lỗi nằm trên cùng, ghi rõ lỗi gì. Ở Tổng quan, chạm vào dòng ứng/trả trong Việc cần xử lý là mở thẳng mục này.'], ['Trên Google Sheet', 'Sổ ứng trả không cho ghi số tiền khi chưa chọn người trả ở cột G cùng dòng.']] }] },
     { so: 130, ds: [{ i: '🔔', t: 'Thông báo thay đổi bảng công gọn mắt hơn', m: 'Các thay đổi được gom theo ngày sửa, mỗi người một khối: tên người ở dòng đầu, bên phải ghi ai sửa và lúc mấy giờ. Bên dưới là nhãn màu cho biết loại thay đổi, rồi đến câu nói rõ đã đổi gì, số tiền in đậm. Lý do nằm ở dòng chữ xám phía dưới.', c: [['Đánh dấu đã xem', 'Mỗi người có một nút [[Đã xem]] ở cuối khối, bấm là đánh dấu hết các thay đổi của người đó trong ngày.'], ['Bớt báo không cần thiết', 'Sửa giờ mà giờ không đổi (chỉ khác cách ghi số, ví dụ 7:58 và 07:58) thì không báo nữa.']], v: 'chu' }] },
     { so: 128, ds: [{ i: '🎬', t: 'Mục Video ghi rõ ai đã tải', m: 'Dòng đã tải ghi đúng tên người tải (ví dụ: Long đã tải 17:45), người tự tải thấy chữ Bạn. Bỏ dòng chú thích dài ở đầu mục, ngày tự xoá đã ghi riêng trên từng video.' }] },
     { so: 127, ds: [{ i: '🎬', t: 'Xem trước video gọn hơn', m: 'Chạm vào ảnh của video là app tải video và phát ngay khi tải được đoạn đầu (khoảng 5–10 giây). Chỉ còn một bộ nút điều khiển của điện thoại, đang phát thì tự ẩn.', c: [['Lưu sau khi xem', 'Xem xong, video đã nằm sẵn trong máy: bấm [[Lưu vào máy]] ở dưới là lưu luôn, không phải tải lại.'], ['Không ưng thì đóng', 'Bấm [[Đóng]] ở góc trên, app dừng tải ngay, chỉ tốn phần đã xem. Nên dùng wifi vì video khá nặng.']] }] },
@@ -4990,7 +4997,9 @@ textarea.inp{font-family:inherit}
     document.getElementById('bk').onclick = function () { S.utMo = 0; veDs(); taiDs(false); };
     document.querySelectorAll('#utSeg button').forEach(function (b) { b.onclick = function () { S.cty = b.getAttribute('data-c'); luu('vlta_cty', S.cty); veUT(); if (!UTG[S.cty]) taiUT(); }; });
     var m = document.getElementById('utM'), h = '';
-    if (dsC.length) h += '<div class="sec" style="margin:6px 4px 8px">Phiếu đã gửi, chờ ghi chuyển · ' + dsC.length + '</div><div class="grp" id="utCho">' + dsC.map(choDong).join('') + '</div>';
+    var dsLoi = o ? o.ds.filter(function (x) { return x.loi; }) : [];   // 06/11: dòng có lỗi lên đầu, ghi rõ lỗi gì
+    if (dsLoi.length) h += '<div class="utBat" style="margin-top:4px"><div class="tbk-h"><i class="tbDot"></i><b>Dòng cần sửa · ' + dsLoi.length + '</b></div>' + dsLoi.map(function (x) { return utLoiDong(x); }).join('') + '</div>';
+    if (dsC.length) h += '<div class="sec" style="margin:' + (dsLoi.length ? 18 : 6) + 'px 4px 8px">Phiếu đã gửi, chờ ghi chuyển · ' + dsC.length + '</div><div class="grp" id="utCho">' + dsC.map(choDong).join('') + '</div>';
     else h += '<div class="note" style="margin-top:4px">Không có phiếu nào đang chờ ghi chuyển.</div>';
     if (!o) { m.innerHTML = h + '<div class="sk" style="height:120px;margin-top:16px"></div>'.repeat(2); var b0 = document.getElementById('utCho'); if (b0) ganChoDong(b0, dsC); return; }
     var nay = new Date(), t2 = new Date(nay.getFullYear(), nay.getMonth(), nay.getDate() - ((nay.getDay() + 6) % 7)), theoNg = {}, tong = 0;
@@ -5009,9 +5018,10 @@ textarea.inp{font-family:inherit}
     h += dsL.length ? '<div class="grp">' + dsL.slice(0, gioi).map(function (x) {
       var moi = xem && xem.id === o.id && x.dong > xem.dong, g = '';
       if (x.ngay !== ngTruoc) { ngTruoc = x.ngay; g = '<div class="gh">' + esc(x.ngay.replace(/\/\d{4}$/, '')) + '</div>'; }
-      return g + '<div class="it utIt" data-d="' + x.dong + '"><div style="min-width:0;flex:1"><div class="nm ell">' + (moi ? '<i class="moiDot"></i>' : '') + esc(hoaDau(x.ten)) + '</div><div class="sub ell">' + esc([x.loai, x.nguoi, x.ghi].filter(String).join(' · ')) + '</div></div><div class="amt num">' + vnd(x.so) + '</div></div>';
+      return g + '<div class="it utIt" data-d="' + x.dong + '"><div style="min-width:0;flex:1"><div class="nm ell">' + (moi ? '<i class="moiDot"></i>' : '') + esc(hoaDau(x.ten)) + '</div><div class="sub ell">' + (x.loi ? '<span class="c-do">' + esc(x.nt ? 'Chưa ghi người trả' : 'Có lỗi') + '</span> · ' : '') + esc([x.loai, x.nguoi, x.ghi].filter(String).join(' · ')) + '</div></div><div class="amt num">' + vnd(x.so) + '</div></div>';
     }).join('') + (gioi < dsL.length ? '<button class="it xt" id="utThem"><span class="link" style="padding:0">Xem thêm ' + (dsL.length - gioi) + ' dòng</span></button>' : '') + '</div>' : '<div class="empty">' + (utQ ? 'Không có dòng nào của tên này.' : 'Chưa có khoản ứng / trả nào trong kỳ.') + '</div>';
     m.innerHTML = h;
+    ganUtNt(m, dsLoi, S.cty);
     var bc = document.getElementById('utCho'); if (bc) ganChoDong(bc, dsC);
     var th = document.getElementById('utThem'); if (th) th.onclick = function () { S.utHet = 1; veUT(); };
     document.getElementById('utLm').onclick = function () { taiUT(); taiCho(); };
@@ -5023,6 +5033,69 @@ textarea.inp{font-family:inherit}
     });
     if (lon) luu(kx, JSON.stringify({ id: o.id, dong: lon }));   // lần sau mở: dòng ghi thêm sau lần này có chấm xanh
   }
+
+  // ---------- 06/11: dòng ứng / trả có lỗi (cột Lỗi của sổ UNG_TRA) – thiếu người trả thì sale phụ trách người đó phải chọn ----------
+  var UTT = {};
+  function utTien(x, hai) { var ng = x.ngay ? esc(x.ngay.replace(/\/\d{4}$/, '')) : ''; return esc(x.loai + ' ' + vnd(x.so)) + (ng ? (hai ? '<br>Ngày ' + ng : ' · ngày ' + ng) : ''); }   // trả HTML; hai = tách 2 dòng (thẻ có nút bên phải)
+  function utLoiCau(x) {
+    if (!x.nt) return x.loi.replace(/\.$/, '') + '.';
+    if (x.cua) return 'Chưa ghi người trả. Bạn là người phụ trách, chọn người đã đưa tiền.';
+    return 'Chưa ghi người trả. ' + (x.ptr ? hoaDau(x.ptr) + ' (sale phụ trách)' : 'Kế toán') + ' cần chọn người đã đưa tiền.';
+  }
+  function utLoiDong(x) {
+    return '<div class="utL"><span><b>' + esc(hoaDau(x.ten)) + '</b><small>' + utTien(x, 1) + '</small><small class="utLoi">' + esc(utLoiCau(x)) + '</small></span>' +
+      (x.nt && x.dien ? '<button class="tbX" data-nt="' + x.dong + '">Chọn người trả</button>' : '') + '</div>';
+  }
+  function ganUtNt(box, ds, cty) {
+    box.querySelectorAll('[data-nt]').forEach(function (b) {
+      var x = ds.filter(function (y) { return String(y.dong) === b.getAttribute('data-nt'); })[0];
+      if (x) b.onclick = function () { utChonNT(x, cty); };
+    });
+  }
+  function utChonNT(x, cty) {
+    var sh = moSheet('<h3>Ai đã đưa khoản tiền này?</h3><div class="meta">' + esc(hoaDau(x.ten)) + ' · ' + utTien(x) + '</div>' +
+      '<div class="ntg" id="ntg"><div class="meta">Đang tải danh sách…</div></div><div class="msg" id="ntm"></div><button class="btn ghost" id="ntT">Thôi</button>');
+    document.getElementById('ntT').onclick = function () { sh.remove(); };
+    apiT({ v: 'dsTra', cty: cty }).then(function (o) {
+      var g = document.getElementById('ntg'); if (!g) return;
+      var ds = (o.ds || []).slice(); if (o.toi) ds = [o.toi].concat(ds.filter(function (y) { return y !== o.toi; }));
+      g.innerHTML = ds.map(function (y) { return '<button class="btn ghost" data-n="' + esc(y) + '">' + esc(y) + '</button>'; }).join('') || '<div class="meta">File chưa có danh sách nhân viên trả tiền.</div>';
+      g.querySelectorAll('[data-n]').forEach(function (b) {
+        b.onclick = function () {
+          var nt = b.getAttribute('data-n');
+          if (!confirmLan(b, 'Bấm lần nữa: ' + nt + ' đã trả')) return;
+          g.querySelectorAll('button').forEach(function (c) { c.disabled = true; }); b.textContent = 'Đang ghi…';
+          apiT({ v: 'utNT', cty: cty, dong: x.dong, cu: { ngay: x.ngay, ten: x.ten, loai: x.loai, so: x.so }, nguoi: nt }).then(function (k) {
+            if (k.loi) { document.getElementById('ntm').textContent = k.loi; g.querySelectorAll('button').forEach(function (c) { c.disabled = false; }); b.textContent = nt; return; }
+            sh.remove(); toast(k.daCo ? 'Dòng này đã có người trả: ' + k.daCo : 'Đã ghi ' + nt + ' trả ' + vnd(x.so) + ' cho ' + hoaDau(x.ten));
+            delete UTG[cty]; delete UTT[cty];
+            if (S.utMo) taiUT(); taiUTT(1);
+          }, function (e) { document.getElementById('ntm').textContent = e.message; g.querySelectorAll('button').forEach(function (c) { c.disabled = false; }); b.textContent = nt; });
+        };
+      });
+    }, function (e) { var g = document.getElementById('ntg'); if (g) g.innerHTML = '<div class="msg">' + esc(e.message) + '</div>'; });
+  }
+  function taiUTT(ep) {   // thẻ bắt buộc trên tab Lao động: khoản ứng / trả thiếu người trả mà mình là người phụ trách
+    var cty = S.cty, c = UTT[cty];
+    if (!ep && c && Date.now() - c.luc < 60000) return;
+    apiT({ v: 'utThieu', cty: cty, im: 1 }).then(function (o) { if (o.loi) return; UTT[cty] = { luc: Date.now(), ds: o.ds || [] }; veUTT(); }, function () { });
+  }
+  function veUTT() {
+    var box = document.getElementById('utBox'); if (!box) return;
+    var ds = ((UTT[S.cty] || {}).ds || []);
+    if (!ds.length) { box.innerHTML = ''; return; }
+    var tra = ds.every(function (x) { return x.loai === 'Trả lương'; });
+    box.innerHTML = '<div class="utBat"><div class="tbk-h"><i class="tbDot"></i><b>' + (tra ? 'Trả lương' : 'Ứng / trả') + ' chưa ghi người trả · ' + ds.length + '</b></div>' +
+      '<div class="tbHd">Bạn là sale phụ trách những người này. Chọn người đã đưa tiền cho từng khoản, chọn xong thẻ này tự mất.</div>' +
+      ds.map(function (x) { return '<div class="utL"><span><b>' + esc(hoaDau(x.ten)) + '</b><small>' + utTien(x, 1) + '</small></span><button class="tbX" data-nt="' + x.dong + '">Chọn người trả</button></div>'; }).join('') + '</div>';
+    ganUtNt(box, ds, S.cty);
+  }
+  document.addEventListener('click', function (e) {   // 06/11: Việc cần xử lý (Tổng quan) -> mở Ứng / trả đúng công ty
+    var b = e.target && e.target.closest ? e.target.closest('[data-ut]') : null; if (!b) return;
+    var c = b.getAttribute('data-ut');
+    if (!(S.toi && S.toi.cty || []).some(function (y) { return y.ma === c; })) { toast('Bạn chưa được xem ' + c + '.'); return; }
+    S.cty = c; luu('vlta_cty', c); moTab('ld'); S.utQ = ''; S.utHet = 0; moUT();
+  });
 
   // ---------- 27/10: xem / sửa / xoá 1 dòng ứng / trả (chủ, kế toán: mọi dòng; sale: dòng mình ghi trên app trong hôm nay) ----------
   function utCam() { toast('Dòng này không phải bạn ghi trên app hôm nay – nhờ kế toán hoặc anh Mạnh sửa.'); }
@@ -6041,6 +6114,9 @@ textarea.inp{font-family:inherit}
   function boCP(x) { var y = String(x).replace(/^Chi phí\s+/i, ''); return y.charAt(0).toUpperCase() + y.slice(1); }
   function tqViec(v) {   // câu việc cần xử lý → [nhãn ngắn, số, câu đầy đủ]
     var m;
+    // 06/11: dòng ứng / trả có lỗi -> 1 dòng rõ ràng, chạm mở màn Ứng / trả (x[4] = công ty)
+    if ((m = /^(\S+): ứng\/trả – (\d+) (lần|dòng) (.+?)(?: \((.+)\))?$/i.exec(v))) return [m[1] + ' · ' + (m[3] === 'lần' ? 'Chưa ghi người trả' : 'Ứng/trả ' + m[4]), m[2] + ' ' + m[3], v, m[5] ? 'Của ' + m[5] : 'Chạm để xem và sửa', m[1]];
+    if ((m = /^(\S+): kiểm tra sheet UNG_TRA còn (\d+) dòng cảnh báo/i.exec(v))) return [m[1] + ' · Ứng/trả bị lỗi', m[2] + ' dòng', v, 'Chạm để xem dòng nào, lỗi gì', m[1]];
     if ((m = /^(\S+): kiểm tra (\d+) lao động (.+)$/i.exec(v))) return [m[1] + ' · ' + m[3].replace(/^[–-]\s*/, ''), m[2] + ' người', v];
     // 01/11 (anh chê chữ nhảy): "BEST: kiểm tra <tên> – <câu dài>" -> dòng 1 "BEST · Tên", dòng 2 câu (tự xuống dòng); không để câu dài ở cột số
     if ((m = /^(\S+): kiểm tra (.+?)\s+[–-]\s+(.+)$/i.exec(v))) return [m[1] + ' · ' + (/^UNG_TRA/.test(m[2]) ? m[2] : hoaDau(m[2])), '', v, m[3].replace(/^\S/, function (c) { return c.toUpperCase(); })];
@@ -6061,7 +6137,10 @@ textarea.inp{font-family:inherit}
     return '<div class="q2viec"><div class="q2viec-h">Việc cần xử lý · ' + o.viec.length + '</div>' + o.viec.map(function (v) {
       var x = tqViec(String(v).replace(/^\d+\.\s*/, ''));
       var trai = x[3] ? '<span class="q2vt"><span class="ell">' + esc(x[0]) + '</span><small class="q2vs">' + esc(x[3]) + '</small></span>' : '<span class="ell">' + esc(x[0]) + '</span>';
-      return '<details><summary>' + trai + (x[1] ? '<b class="num">' + esc(x[1]) + '</b>' : '') + '</summary><div class="q2viec-d">' + esc(x[2]) + '</div></details>';
+      if (x[4]) return '<button class="q2vi q2vu" data-ut="' + esc(x[4]) + '">' + trai + (x[1] ? '<b class="num">' + esc(x[1]) + '</b>' : '') + '<i aria-hidden="true">›</i></button>';   // 06/11: chạm mở Ứng / trả
+      if (!x[1] && !x[3] && x[2] === x[0]) return '<div class="q2vi q2vp">' + esc(x[0]) + '</div>';
+      if (x[3]) return '<div class="q2vi q2vu" style="cursor:default">' + trai.replace('<span class="ell">', '<span class="q2vw">') + (x[1] ? '<b class="num">' + esc(x[1]) + '</b>' : '') + '</div>';   // đã có dòng 2 giải thích: không mở ra lặp lại câu   // 06/11: câu ngắn hiện đủ 1 lần, không lặp khi mở
+      return '<details class="q2vi"><summary>' + trai + (x[1] ? '<b class="num">' + esc(x[1]) + '</b>' : '') + '</summary><div class="q2viec-d">' + esc(x[2]) + '</div></details>';
     }).join('') + '</div>';
   }
   // thác nước dạng thanh ngang: rows [nhãn, số (+ cộng / − trừ), 'moc'|''] ; thanh xám = đang có, xanh = cộng vào, đỏ = trừ đi
