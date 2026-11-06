@@ -13,7 +13,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
 <script src="config.js"></script>
-<script>window.PB = { so: 124, luc: "06/11 17:08" };</script>
+<script>window.PB = { so: 125, luc: "06/11 17:14" };</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap">
 <style>
@@ -756,6 +756,10 @@ textarea.inp{font-family:inherit}
 .tbN{display:flex;align-items:baseline;gap:8px;min-width:0}.tbN b{font-weight:600;font-size:15px;min-width:0}.tbN span{font-size:13px;color:var(--muted);white-space:nowrap}
 .tbG{font-size:14px;color:var(--muted)}.tbG b{color:var(--blue);font-weight:700}.tbMui{color:var(--faint)}
 .tbS{font-size:12.5px;color:var(--muted)}
+.tbC{font-size:14.5px;line-height:1.45;color:var(--fg);white-space:normal;overflow-wrap:anywhere}.tbC b{font-weight:700}.tbC .tbOk{color:var(--good)}.tbC .tbBad{color:var(--bad)}
+.tbHd{padding:0 14px 8px;font-size:12.5px;color:var(--muted)}.tbR2{flex-direction:column;align-items:stretch;gap:6px}.tbR2 .tbM{width:100%}.tbF{display:flex;align-items:center;gap:10px}.tbF .tbS{flex:1;min-width:0;white-space:normal;line-height:1.4}.tbF .tbX{padding:6px 12px}.tbF .nw{white-space:nowrap}
+.tbCu .tbC{color:var(--muted)}.tbCu .tbC b{color:var(--fg)}.tbXl{background:var(--card)}.tbkCu{border-color:var(--edge)}
+.tbGon{width:100%;margin-top:12px;display:flex;align-items:center;gap:8px;padding:11px 14px;border:1.5px solid var(--edge);border-radius:14px;background:var(--card);color:var(--muted);font-size:13.5px;text-align:left}.tbGon span{flex:1;min-width:0}.tbGon i{font-style:normal;color:var(--blue)}
 .tbX{flex:none;border:1.5px solid var(--edge);background:var(--card);color:var(--blue);border-radius:12px;padding:8px 12px;font-weight:600;font-size:13px}
 .tbThem{width:100%;border:0;border-top:1px solid var(--soft);background:var(--soft);color:var(--blue);padding:11px;font-weight:600;font-size:14px}
 .vtFile{background:var(--card);border-radius:16px;overflow:hidden}
@@ -4421,6 +4425,10 @@ textarea.inp{font-family:inherit}
   }
   function ccCheNoi(t) { t.querySelectorAll('[data-che]').forEach(function (b) { b.onclick = function () { CCS.theMo = b.getAttribute('data-che') === '1'; var lg = theLogoNap(); if (!lg.complete) lg.onload = function () { ccVe(); }; ccVe(); window.scrollTo(0, 0); }; }); }
   var BAN_MOI = [
+    { so: 125, ds: [{ i: '🔔', t: 'Thông báo thay đổi bảng công dễ đọc hơn', m: 'Mỗi thay đổi trên bảng công giờ được viết thành một câu đủ ý: ai bị sửa, sửa thành gì, người sửa là ai và sửa lúc nào. Chữ dài tự xuống dòng, không bị cắt.',
+      c: [['Xem chi tiết', 'Chạm vào dòng để mở hồ sơ người đó. Dòng vẫn còn đó, chỉ mất khi bấm [[Đã xem]].'],
+        ['Xem lại thay đổi đã xem', 'Bấm [[Xem lại … thay đổi đã xem trong 7 ngày]] ở cuối thẻ.'],
+        ['Bớt báo không cần thiết', 'Sale ghi người tuyển lần đầu thì không báo nữa. Chỉ báo khi người tuyển bị đổi từ sale này sang sale khác, vì việc đó làm thay đổi tiền thưởng.']], v: 'chu' }] },
     { so: 124, ds: [{ i: '🎬', t: 'Mục Video: xem trước và tải về ổn định hơn', m: 'Xem trước dùng trình phát của Google Drive nên phát được ngay, không phải chờ tải. Tải về đi qua máy chủ của công ty, không còn bị Google chặn khi nhiều người cùng tải.' }] },
     { so: 123, ds: [{ i: '⚡', t: 'Tải video nhanh hơn', m: 'Mục Video tải nhiều phần của video cùng lúc nên nhanh hơn trước. Mất sóng giữa chừng thì app tự tải tiếp phần còn thiếu, không phải tải lại từ đầu.' }] },
     { so: 121, ds: [{ i: '🎬', t: 'Mục Video ở thanh dưới', m: 'Video truyền thông đã dựng xong hiện ở mục Video. Có thể xem trước và lưu video về điện thoại để đăng hoặc gửi đi.',
@@ -5147,44 +5155,87 @@ textarea.inp{font-family:inherit}
   }
   // ---- thông báo cho chủ: bảng công sửa khác vân tay (đọc xong là ẩn) ----
   function laChu() { return !!(S.toi && S.toi.vai === 'chu'); }
-  function tbDs() { return laChu() && TB && TB.ds ? TB.ds : []; }
+  function tbDs() { return laChu() && TB && TB.ds ? TB.ds.filter(function (x) { return x.loai !== 'Ghi nguồn tuyển'; }) : []; }   // 06/11: ghi nguồn lần đầu không cần chủ xem
   function taiTB() {
     if (!laChu()) return;
     apiT({ v: 'tb', im: 1 }).then(function (o) { if (o.loi) return; TB = o; capBadge(); veTB(); }, function () { });
   }
   function tbDaXem(ids) {
     if (!ids.length) return;
+    var luc = Date.now();
+    TB.daXem = TB.ds.filter(function (x) { return ids.indexOf(x.id) >= 0; }).map(function (x) { var y = {}; for (var k in x) y[k] = x[k]; y.xem = luc; return y; }).concat(TB.daXem || []);
     TB.ds = TB.ds.filter(function (x) { return ids.indexOf(x.id) < 0; }); veTB(); capBadge();
     apiT({ v: 'tbXem', ids: ids, im: 1 }).then(function (o) { if (o.loi) toast(o.loi); }, function () { });
+  }
+  // 06/11: mỗi thay đổi viết thành câu đủ nghĩa (anh Mạnh không hiểu dạng "(trống) → Hòa", "ngày 01/01", chữ bị cắt)
+  function tbNgay(x) { var m = /^(\d{2})\/(\d{2})\/(\d{4})$/.exec(String(x.ngay || '')); return m && +m[3] >= 2020 ? m[1] + '/' + m[2] : ''; }
+  function tbThuong(t) { t = String(t || '').trim(); return t ? t.charAt(0).toLowerCase() + t.slice(1) : ''; }
+  function tbCau(x) {
+    var ten = '<b>' + esc(hoaDau(x.ten)) + '</b>', ng = tbNgay(x), tr = String(x.truoc || '').trim(), sa = String(x.sau || '').trim();
+    var e = function (t) { return esc(t); }, tuan = ng ? ' tuần ' + ng : '', ngay = ng ? ' ngày ' + ng : '';
+    var giu = function (t) { var m = /^Giữ lại\s*–\s*(.*)$/.exec(t); return m ? 'mới có ' + m[1] : tbThuong(t); };
+    switch (x.loai) {
+      case 'Thanh toán tăng cường': return 'Đã chuyển sang <b class="tbOk">trả tiền</b> tăng cường' + tuan + ' cho ' + ten + ': ' + e(tbThuong(sa)) + '.' + (tr ? ' Trước đó đang giữ lại vì ' + e(giu(tr)) + '.' : '');
+      case 'Bỏ thanh toán tăng cường': return 'Đã <b class="tbBad">bỏ trả tiền</b> tăng cường' + tuan + ' của ' + ten + (tr ? ' (trước đó: ' + e(tbThuong(tr)) + ')' : '') + '. Nay giữ lại vì ' + e(giu(sa)) + '.';
+      case 'Trả công lẻ': return 'Đã xác nhận <b class="tbOk">trả công lẻ</b>' + ngay + ' cho ' + ten + (sa ? ': ' + e(sa) : '') + '.';
+      case 'Bỏ trả công lẻ': return 'Đã <b class="tbBad">bỏ trả công lẻ</b>' + ngay + ' của ' + ten + (tr ? ' (trước đó: ' + e(tr) + ')' : '') + '.';
+      case 'Sửa giờ': return 'Đã <b>sửa giờ</b>' + ngay + ' của ' + ten + ': từ ' + e(tr || 'trống') + ' thành ' + e(sa || 'trống') + '.' + (x.vt ? ' Máy ' + vtTen(x.cty) + ' ghi: ' + e(x.vt) + '.' : '');
+      case 'Xoá giờ': return 'Đã <b class="tbBad">xoá giờ</b>' + ngay + ' của ' + ten + (tr ? ' (trước đó: ' + e(tr) + ')' : '') + '.' + (x.vt ? ' Máy ' + vtTen(x.cty) + ' ghi: ' + e(x.vt) + '.' : '');
+      case 'Không tính ngày': return 'Đã <b class="tbBad">bỏ không tính</b>' + ngay + ' của ' + ten + (tr ? ' (trước đó: ' + e(tr) + ')' : '') + '.';
+      case 'Sửa ứng/trả': var u1 = tbUt(tr), u2 = tbUt(sa), cung = u1[1] === u2[1];
+        return 'Đã <b>sửa khoản ứng/trả lương</b> của ' + ten + ': từ ' + e(u1[0] + (cung ? '' : u1[1])) + ' thành ' + e(u2[0] + (cung ? '' : u2[1])) + (cung && u1[1] ? ' (' + e(u1[1].replace(/^, /, '')) + ')' : '') + '.';
+      case 'Xoá ứng/trả': var u3 = tbUt(tr); return 'Đã <b class="tbBad">xoá khoản ứng/trả lương</b> của ' + ten + ': ' + e(u3[0] + u3[1]) + '.';
+      case 'Sửa nhiều ô một lúc': return 'Đã <b>sửa nhiều ô bảng công cùng lúc</b> (vùng ' + e(sa) + ' trên Google Sheet). Nên mở bảng công kiểm tra lại.';
+      case 'Đổi nguồn tuyển': return 'Đã <b class="tbBad">đổi người tuyển</b> của ' + ten + ': từ ' + e(tr) + ' sang ' + e(sa) + '. Việc này làm thay đổi tiền thưởng của sale.';
+    }
+    return e(x.loai) + ' – ' + ten + ngay + (tr || sa ? ': ' + (tr ? 'từ ' + e(tr) + ' ' : '') + (sa ? 'thành ' + e(sa) : '') : '') + '.';
+  }
+  function tbUt(t) {   // "Ứng 200.000 · 04/11 · Hòa · ghi chú" -> ["Ứng 200.000 đ", ", ngày 04/11, người trả Hòa, ghi chú: …"]
+    var a = String(t || '').split(' · '), dau = /\d$/.test(a[0] || '') ? a[0] + ' đ' : (a[0] || '');
+    return [dau, (a[1] ? ', ngày ' + a[1] : '') + (a[2] ? ', người trả ' + a[2] : '') + (a[3] ? ', ghi chú: ' + a.slice(3).join(' · ') : '')];
+  }
+  function tbPhu(x, daXem) {
+    return 'Người sửa: ' + esc(hoaDau(x.ai) || 'Không rõ') + ' · ' + (x.tu === 'App' ? 'trên app' : 'trên Google Sheet') + ' · <span class="nw">lúc ' + esc(gioPhut(x.luc)) + '</span>' + (daXem && x.xem ? ' · <span class="nw">Đã xem ' + esc(gioPhut(x.xem)) + '</span>' : '');
+  }
+  function tbMoNguoi(x) {
+    if (/ứng\/trả/.test(x.loai)) { S.utQ = x.ten; S.utHet = 0; moUT(); return; }   // 27/10: thông báo sửa / xoá ứng trả
+    if (x.ten === '(nhiều người)') { toast('Thay đổi nhiều người cùng lúc – mở bảng công trên Google Sheet để xem.'); return; }
+    var d = S.data[S.cty] || {}, p = (d.ds || []).filter(function (q) { return x.ma && q.ma === x.ma; })[0] || (d.ds || []).filter(function (q) { return kd(q.ten) === kd(x.ten); })[0];
+    var m = /^(\d{2})\/(\d{2})\/(\d{4})$/.exec(x.ngay || '');
+    if (!p) { toast('Không thấy ' + hoaDau(x.ten) + ' trong danh sách.'); return; }
+    if (m && +m[3] >= 2020 && /tăng cường/i.test(x.loai)) { moHs(p, { kieu: 'TUAN', mon: Math.round(Date.UTC(+m[3], +m[2] - 1, +m[1]) / 864e5) + 25569 }); return; }   // 28/10: mở đúng phiếu tuần
+    if (m && +m[3] >= 2020) S.moNgaySv = Math.round(Date.UTC(+m[3], +m[2] - 1, +m[1]) / 864e5) + 25569;
+    moHs(p, { kieu: 'LICH' });
   }
   function veTB() {
     var box = document.getElementById('tbBox'); if (!box) return;
     var ds = tbDs().filter(function (x) { return x.cty === S.cty; });
-    if (!ds.length) { box.innerHTML = ''; return; }
-    var hien = S.tbHet ? ds : ds.slice(0, 5);
-    box.innerHTML = '<div class="tbk"><div class="tbk-h"><i class="tbDot"></i><b>' + (ds.some(function (x) { return /ứng\/trả/.test(x.loai); }) ? 'Sale sửa bảng công / ứng trả' : 'Bảng công sửa khác ' + vtTen()) + ' · ' + ds.length + '</b><button class="link" id="tbHet">Đã xem hết</button></div>' +
-      hien.map(function (x) {
-        var nd = (x.truoc ? esc(x.truoc) + ' <span class="tbMui">→</span> ' : '') + '<b>' + esc(x.sau) + '</b>';
-        return '<div class="tbR"><button class="tbM" data-tb="' + esc(x.id) + '"><span class="tbN"><b class="ell">' + esc(hoaDau(x.ten)) + '</b><span class="num">' + (/tăng cường/i.test(x.loai) ? 'tuần ' : 'ngày ') + esc(String(x.ngay).replace(/\/\d{4}$/, '')) + '</span></span>' +
-          '<span class="tbG num ell">' + nd + '</span>' +
-          '<span class="tbS ell">' + esc([x.loai, x.vt ? 'máy ' + x.vt : '', hoaDau(x.ai), x.tu === 'App' ? 'trên app' : 'trên Sheet', gioPhut(x.luc)].filter(String).join(' · ')) + '</span></button>' +
-          '<button class="tbX" data-x="' + esc(x.id) + '">Đã xem</button></div>';
-      }).join('') +
-      (ds.length > hien.length ? '<button class="tbThem" id="tbThem">Xem thêm ' + (ds.length - hien.length) + ' ô</button>' : '') + '</div>';
-    document.getElementById('tbHet').onclick = function () { tbDaXem(ds.map(function (x) { return x.id; })); };
+    var cu = (laChu() && TB && TB.daXem ? TB.daXem : []).filter(function (x) { return x.cty === S.cty && x.loai !== 'Ghi nguồn tuyển'; });
+    if (!ds.length && !cu.length) { box.innerHTML = ''; return; }
+    var dong = function (x, daXem) {
+      return '<div class="tbR tbR2' + (daXem ? ' tbCu' : '') + '"><button class="tbM" data-tb="' + esc(x.id) + '"><span class="tbC">' + tbCau(x) + '</span></button>' +
+        '<div class="tbF"><span class="tbS">' + tbPhu(x, daXem) + '</span>' + (daXem ? '' : '<button class="tbX" data-x="' + esc(x.id) + '">Đã xem</button>') + '</div></div>';
+    };
+    var h = '';
+    if (ds.length) {
+      var hien = S.tbHet ? ds : ds.slice(0, 5);
+      h += '<div class="tbk"><div class="tbk-h"><i class="tbDot"></i><b>Thay đổi cần xem lại · ' + ds.length + '</b>' + (ds.length > 1 ? '<button class="link" id="tbHet">Đã xem hết</button>' : '') + '</div>' +
+        '<div class="tbHd">Chạm vào từng dòng để mở hồ sơ người đó. Bấm Đã xem khi đã kiểm tra xong.</div>' +
+        hien.map(function (x) { return dong(x, 0); }).join('') +
+        (ds.length > hien.length ? '<button class="tbThem" id="tbThem">Xem thêm ' + (ds.length - hien.length) + ' thay đổi</button>' : '') +
+        (cu.length ? '<button class="tbThem tbXl" id="tbXl">' + (S.tbXl ? 'Ẩn các thay đổi đã xem' : 'Xem lại ' + cu.length + ' thay đổi đã xem trong 7 ngày') + '</button>' : '') + '</div>';
+    } else h += '<button class="tbGon" id="tbXl"><span>Đã xem hết thay đổi · Xem lại ' + cu.length + ' thay đổi trong 7 ngày</span><i aria-hidden="true">' + (S.tbXl ? '▴' : '▾') + '</i></button>';
+    if (S.tbXl && cu.length) h += '<div class="tbk tbkCu"><div class="tbk-h"><b>Đã xem trong 7 ngày · ' + cu.length + '</b><button class="link" id="tbXlDong">Thu gọn</button></div>' + cu.map(function (x) { return dong(x, 1); }).join('') + '</div>';
+    box.innerHTML = h;
+    var b1 = document.getElementById('tbHet'); if (b1) b1.onclick = function () { tbDaXem(ds.map(function (x) { return x.id; })); };
     var th = document.getElementById('tbThem'); if (th) th.onclick = function () { S.tbHet = 1; veTB(); };
+    var xl = document.getElementById('tbXl'); if (xl) xl.onclick = function () { S.tbXl = S.tbXl ? 0 : 1; veTB(); };
+    var xd = document.getElementById('tbXlDong'); if (xd) xd.onclick = function () { S.tbXl = 0; veTB(); };
     box.querySelectorAll('[data-x]').forEach(function (b) { b.onclick = function () { tbDaXem([b.getAttribute('data-x')]); }; });
     box.querySelectorAll('[data-tb]').forEach(function (b) {
-      b.onclick = function () {
-        var x = ds.filter(function (y) { return y.id === b.getAttribute('data-tb'); })[0]; if (!x) return;
-        tbDaXem([x.id]);
-        if (/ứng\/trả/.test(x.loai)) { S.utQ = x.ten; S.utHet = 0; moUT(); return; }   // 27/10: thông báo sửa / xoá ứng trả
-        var d = S.data[S.cty] || {}, p = (d.ds || []).filter(function (q) { return x.ma && q.ma === x.ma; })[0] || (d.ds || []).filter(function (q) { return kd(q.ten) === kd(x.ten); })[0];
-        var m = /^(\d{2})\/(\d{2})\/(\d{4})$/.exec(x.ngay || '');
-        if (!p) { toast('Không thấy ' + hoaDau(x.ten) + ' trong danh sách.'); return; }
-        if (m && /tăng cường/i.test(x.loai)) { moHs(p, { kieu: 'TUAN', mon: Math.round(Date.UTC(+m[3], +m[2] - 1, +m[1]) / 864e5) + 25569 }); return; }   // 28/10: mở đúng phiếu tuần
-        if (m) S.moNgaySv = Math.round(Date.UTC(+m[3], +m[2] - 1, +m[1]) / 864e5) + 25569;
-        moHs(p, { kieu: 'LICH' });
+      b.onclick = function () {   // 06/11: chạm để mở hồ sơ, KHÔNG tự đánh dấu đã xem (trước đây chạm là mất)
+        var id = b.getAttribute('data-tb'), x = ds.concat(cu).filter(function (y) { return y.id === id; })[0];
+        if (x) tbMoNguoi(x);
       };
     });
   }
