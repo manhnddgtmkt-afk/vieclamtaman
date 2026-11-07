@@ -13,7 +13,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
 <script src="config.js"></script>
-<script>window.PB = { so: 143, luc: "07/11 18:06" };</script>
+<script>window.PB = { so: 144, luc: "07/11 18:08" };</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap">
 <style>
@@ -5093,7 +5093,7 @@ textarea.inp{font-family:inherit}
   }
   function vdoTabs() {   // [{k, ten, ds}] – Cá nhân, từng sale (video chờ duyệt), Chưa rõ sale (chỉ khi có)
     var ds = VDO.ds || [], tabs = [{ k: '_ca', ten: 'Cá nhân', ds: ds.filter(function (v) { return v.cua; }) }];
-    (VDO.nhom || []).forEach(function (n) { tabs.push({ k: n.k, ten: n.ten, ds: ds.filter(function (v) { return v.cho && v.k === n.k; }) }); });
+    (VDO.nhom || []).slice().sort(function (a, b) { return String(a.ten).localeCompare(String(b.ten), 'vi'); }).forEach(function (n) { tabs.push({ k: n.k, ten: n.ten, ds: ds.filter(function (v) { return v.cho && v.k === n.k; }) }); });
     ds.filter(function (v) { return v.cho && !tabs.some(function (t) { return t.k === v.k; }); }).forEach(function (v) { var t = tabs.filter(function (x) { return x.k === v.k; })[0]; if (!t) tabs.push({ k: v.k, ten: v.ai || v.k, ds: [v] }); else t.ds.push(v); });
     var ro = ds.filter(function (v) { return !v.cua && !v.cho && v.ro !== 1; });
     if (ro.length) tabs.push({ k: '_ro', ten: 'Chưa rõ', ds: ro });
