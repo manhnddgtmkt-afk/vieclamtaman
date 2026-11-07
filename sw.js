@@ -8,3 +8,18 @@ self.addEventListener('fetch', function (e) {
   if (e.request.method !== 'GET' || u.origin !== location.origin) return;
   e.respondWith(fetch(e.request.url, { cache: 'no-cache' }).then(function (r) { var c = r.clone(); caches.open(KHO).then(function (k) { k.put(e.request, c); }); return r; }).catch(function () { return caches.match(e.request); }));
 });
+// bản 140: thông báo đẩy (máy chủ báo video mới dựng xong) – nội dung đã mã hoá: {t: tiêu đề, m: lời, n: số video, tag, u: trang mở khi bấm}
+self.addEventListener('push', function (e) {
+  var d = {}; try { d = e.data ? e.data.json() : {}; } catch (x) { d = { m: e.data ? e.data.text() : '' }; }
+  var vc = [self.registration.showNotification(d.t || 'Tâm An', { body: d.m || 'Có video mới. Bấm để mở app.', icon: 'icon-192.png', badge: 'icon-192.png', tag: d.tag || 'vdo', renotify: true, data: { u: d.u || './?tab=vdo' } })];
+  try { if (d.n && self.navigator && self.navigator.setAppBadge) vc.push(self.navigator.setAppBadge(d.n).catch(function () { })); } catch (x) { }
+  e.waitUntil(Promise.all(vc));
+});
+self.addEventListener('notificationclick', function (e) {
+  e.notification.close();
+  var u = new URL((e.notification.data && e.notification.data.u) || './', self.registration.scope).href;
+  e.waitUntil(self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then(function (cs) {
+    for (var i = 0; i < cs.length; i++) if (cs[i].url.indexOf(self.registration.scope) === 0 && 'focus' in cs[i]) { cs[i].postMessage({ moTab: 'vdo' }); return cs[i].focus(); }
+    return self.clients.openWindow(u);
+  }));
+});
