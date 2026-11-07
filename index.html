@@ -13,7 +13,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
 <script src="config.js"></script>
-<script>window.PB = { so: 135, luc: "07/11 09:45" };</script>
+<script>window.PB = { so: 136, luc: "07/11 09:57" };</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap">
 <style>
@@ -4440,6 +4440,7 @@ textarea.inp{font-family:inherit}
   }
   function ccCheNoi(t) { t.querySelectorAll('[data-che]').forEach(function (b) { b.onclick = function () { CCS.theMo = b.getAttribute('data-che') === '1'; var lg = theLogoNap(); if (!lg.complete) lg.onload = function () { ccVe(); }; ccVe(); window.scrollTo(0, 0); }; }); }
   var BAN_MOI = [
+    { so: 136, ds: [{ i: '⬆️', t: 'Gửi nhiều clip một lần ổn định hơn', m: 'Sửa lỗi chọn nhiều clip một lúc nhưng app không nhận. Nếu iPhone vẫn không đưa clip vào app, app sẽ báo rõ để chọn lại ít clip hơn.' }] },
     { so: 134, ds: [{ i: '⬆️', t: 'Gửi clip quay: thấy rõ tiến độ', m: 'Chọn clip xong, hộp tự đóng và mục Video hiện ngay thẻ Đang gửi với phần trăm từng clip. Gửi xong thẻ báo ✓ Đã gửi xong, clip nào lỗi có nút Gửi lại.', c: [['Đang gửi có sang tab khác được không', 'Được. Khi đang gửi, nút [[Video]] ở thanh dưới hiện số phần trăm màu xanh để biết việc gửi vẫn đang chạy. Chỉ khi thoát app hoặc khoá màn hình thì việc gửi tạm dừng, mở lại app sẽ tự gửi tiếp.']] }] },
     { so: 133, ds: [{ i: '⬆️', t: 'Gửi clip quay lên kho dựng video', m: 'Quay xong không cần mở Drive: gửi clip ngay trong app, clip tự vào đúng mục của người gửi trong kho dựng video (ví dụ VLOG / HOA / 7.11) để máy dựng lấy làm.', c: [['Cách gửi', 'Vào [[Video]] → bấm [[Gửi clip quay]] → chọn loại (VLOG, TALK) → [[Chọn clip trong máy]] → chọn một hoặc nhiều clip. Giữ app mở tới khi các clip hiện ✓ Đã gửi.'], ['Giữ chất lượng gốc', 'Nếu iPhone hiện Đang nén video, bấm *Tùy chọn* ở đầu khung chọn ảnh rồi chọn *Hiện tại*. Nên dùng wifi vì clip nặng.'], ['Mất sóng giữa chừng', 'App tự gửi tiếp phần còn thiếu. Lỡ thoát app thì mở lại, chọn đúng clip đó, app gửi tiếp chỗ đang dở.']] }] },
     { so: 132, ds: [{ i: '🧾', t: 'Ứng / trả không phải chọn người trả nữa', m: 'Tiền ứng và trả lương luôn lấy từ quỹ công ty nên khi ghi ứng hoặc trả lương trên app không còn ô chọn người trả. Trên Google Sheet, cột Người trả ở sổ ứng trả đã được ẩn, dữ liệu cũ vẫn giữ nguyên.' },
@@ -4715,23 +4716,42 @@ textarea.inp{font-family:inherit}
     var sl = sh.querySelector('#guiSuaL'); if (sl) sl.onclick = guiSuaLoai;
     sh.querySelector('#guiF').onclick = function () { GUI.chonLoai = guiLoai(); guiO().click(); };   // ô chọn file nằm ngoài hộp (hộp vẽ lại không làm mất lượt chọn)
   }
-  function guiO() {   // ô chọn file cố định trong trang
-    var fi = document.getElementById('guiO');
-    if (fi) return fi;
-    fi = document.createElement('input'); fi.type = 'file'; fi.id = 'guiO'; fi.accept = 'video/*'; fi.multiple = true;
+  // bản 136: mỗi lần chọn tạo 1 ô chọn file mới, KHÔNG xoá giá trị ô cũ khi clip chưa gửi xong (iPhone có thể thu hồi file tạm);
+  // iPhone không trả clip về (chọn nhiều clip lỗi / huỷ) thì báo rõ + ghi nhật ký chẩn đoán
+  function guiO() {
+    var fi = document.createElement('input'); fi.type = 'file'; fi.accept = 'video/*'; fi.multiple = true; fi.className = 'guiO';
     fi.setAttribute('style', 'position:fixed;left:-9999px;top:0;width:1px;height:1px;opacity:0');
     document.body.appendChild(fi);
+    var nhan = false, lo = GUI.chonLoai || guiLoai(), moLuc = Date.now();
+    function bao(ly) {
+      toastLoi('iPhone chưa đưa clip vào app. Thử chọn ít clip hơn (hoặc từng clip một); khi chọn bấm Tùy chọn → Hiện tại.');
+      apiT({ v: 'vdoGuiLoi', ten: '(chọn clip)', loi: ly, may: navigator.userAgent + ' · bản ' + (typeof PB !== 'undefined' && PB.so), im: 1 }).then(function () { }, function () { });
+    }
+    function quayLai() {   // khung chọn ảnh đóng mà chưa có sự kiện chọn -> chờ thêm (iPhone còn đang chuẩn bị clip) rồi báo
+      if (document.hidden) return;
+      document.removeEventListener('visibilitychange', quayLai); window.removeEventListener('focus', quayLai);
+      setTimeout(function () {   // 40 giây sau khi khung chọn đóng vẫn chưa nhận clip: ghi chẩn đoán (không báo người dùng vì có thể họ đã bấm Huỷ)
+        if (nhan || !document.body.contains(fi)) return;
+        apiT({ v: 'vdoGuiLoi', ten: '(chọn clip)', loi: 'khung chọn đóng ' + Math.round((Date.now() - moLuc) / 1000) + ' giây, chưa có sự kiện chọn', may: navigator.userAgent + ' · bản ' + (typeof PB !== 'undefined' && PB.so), im: 1 }).then(function () { }, function () { });
+      }, 40000);
+    }
+    document.addEventListener('visibilitychange', quayLai); window.addEventListener('focus', quayLai);
+    fi.addEventListener('cancel', function () { nhan = true; fi.remove(); });
     fi.addEventListener('change', function () {
-      var fs = Array.prototype.slice.call(fi.files || []), lo = GUI.chonLoai || guiLoai(); fi.value = '';
-      if (!fs.length || !lo) return;
+      nhan = true;
+      var fs = Array.prototype.slice.call(fi.files || []);
+      apiT({ v: 'vdoGuiLoi', ten: '(chẩn đoán chọn clip)', loi: 'iPhone trả ' + fs.length + ' clip: ' + fs.map(function (f) { return (f.name || '?') + ' ' + vdoMB(f.size) + ' ' + (f.type || '?'); }).join(' | ').slice(0, 250), may: navigator.userAgent + ' · bản ' + (typeof PB !== 'undefined' && PB.so), im: 1 }).then(function () { }, function () { });
+      if (!fs.length) { fi.remove(); bao('change nhưng 0 file'); return; }
+      if (!lo) { fi.remove(); return; }
       var them = 0;
       fs.forEach(function (f) {
+        if (!f.size) return;
         if (GUI.hang.some(function (x) { return x.f.name === f.name && x.f.size === f.size && x.loai === lo && x.tt !== 'loi'; })) return;
-        GUI.hang.push({ f: f, ten: f.name || ('clip_' + Date.now() + '.mov'), kb: f.size, loai: lo, tt: 'cho', co: 0 }); them++;
+        GUI.hang.push({ f: f, ten: f.name || ('clip_' + Date.now() + '.mov'), kb: f.size, loai: lo, tt: 'cho', co: 0, o: fi }); them++;
       });
       if (GUI.sh) { GUI.sh.remove(); GUI.sh = null; }   // đóng hộp, tiến độ hiện ngay trên tab Video
       if (S.tab !== 'vdo') moTab('vdo');
-      if (them) toast('Đang gửi ' + them + ' clip');
+      if (them) toast('Đang gửi ' + them + ' clip'); else toast('Các clip này đã có trong danh sách gửi');
       guiTomTat(); guiChay();
       var c = document.getElementById('vdoGuiCard'); if (c && c.scrollIntoView) c.scrollIntoView({ block: 'start', behavior: 'smooth' });
     });
@@ -4819,6 +4839,7 @@ textarea.inp{font-family:inherit}
       if (typeof ccThuc === 'function' && !Object.keys(VDO.dang).length && !(typeof ccBan === 'function' && ccBan())) ccThuc(0);
       var xo = GUI.hang.filter(function (y) { return y.tt === 'xong' || y.tt === 'trung'; }).length, lo = GUI.hang.filter(function (y) { return y.tt === 'loi'; }).length;
       if (GUI.hang.length && GUI.baoXong !== GUI.hang.length + '|' + xo + '|' + lo) { GUI.baoXong = GUI.hang.length + '|' + xo + '|' + lo; if (lo) toastLoi(lo + ' clip chưa gửi được – vào mục Video bấm Gửi lại.'); else if (xo) toast('✓ Đã gửi xong ' + xo + ' clip'); }
+      document.querySelectorAll('input.guiO').forEach(function (o) { if (!GUI.hang.some(function (y) { return y.o === o && (y.tt === 'cho' || y.tt === 'gui' || y.tt === 'loi'); })) o.remove(); });   // clip lỗi còn giữ ô để Gửi lại
       guiVe(); guiTaiDs(); return;
     }
     GUI.chay = 1; if (typeof ccThuc === 'function') ccThuc(1);
