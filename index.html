@@ -13,7 +13,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
 <script src="config.js"></script>
-<script>window.PB = { so: 134, luc: "07/11 09:32" };</script>
+<script>window.PB = { so: 135, luc: "07/11 09:45" };</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap">
 <style>
@@ -4785,7 +4785,8 @@ textarea.inp{font-family:inherit}
         else p = fetch(x.url, { method: 'PUT', headers: { 'Content-Range': 'bytes ' + tu + '-' + den + '/' + x.kb }, body: x.f.slice(tu, den + 1) }).then(function (r) {
           if (r.status === 200 || r.status === 201) { x.co = x.kb; return; }
           if (r.status === 308) { var n = docRange(r); x.co = n === null ? den + 1 : n; return; }
-          var e = new Error('Drive trả lỗi ' + r.status); if (r.status === 404 || r.status === 410) e.het = 1; throw e;
+          return r.text().then(function (t) { var m = ''; try { var j = JSON.parse(t); m = j.error && (j.error.message || ''); } catch (e0) { m = String(t || '').slice(0, 120); }
+            var e = new Error('Drive trả lỗi ' + r.status + (m ? ': ' + m : '')); if (r.status === 404 || r.status === 410) e.het = 1; throw e; });
         });
         return p.then(function () { lan = 0; x.ghi = ''; guiVe(); return khuc(); }, function (e) {
           if (e && e.het) { guiPhienLuu(k, null); x.url = ''; return moPhien().then(khuc); }   // phiên hết hạn: mở phiên mới
@@ -4806,7 +4807,10 @@ textarea.inp{font-family:inherit}
         guiPhienLuu(k, null); x.tt = 'xong';
         apiT({ v: 'vdoGuiXong', ten: x.ten, kb: x.kb, tm: x.tm, im: 1 }).then(function () { }, function () { });
       });
-    }).catch(function (e) { x.tt = 'loi'; x.loi = 'Chưa gửi được: ' + (e && e.message ? e.message : 'mất kết nối'); });
+    }).catch(function (e) {
+      x.tt = 'loi'; x.loi = 'Chưa gửi được: ' + (e && e.message ? e.message : 'mất kết nối');
+      apiT({ v: 'vdoGuiLoi', ten: x.ten + ' (' + vdoMB(x.kb) + ')', loi: x.loi + (mc ? ' [máy chủ chuyển hộ]' : ''), may: navigator.userAgent, im: 1 }).then(function () { }, function () { });   // báo về nhật ký để tra nguyên nhân
+    });
   }
   function guiChay() {
     if (GUI.chay) return;
