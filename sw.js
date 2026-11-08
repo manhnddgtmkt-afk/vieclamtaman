@@ -1,6 +1,6 @@
 // Luôn hỏi máy chủ có bản mới chưa (bỏ qua bộ nhớ đệm 10 phút của GitHub Pages).
 // Giữ sẵn khung app để mở nhanh; luôn hỏi mạng trước (bản mới nhất), mất mạng mới dùng bản đã lưu. Số liệu không lưu ở đây.
-var KHO = 'vlta-v144', FILE = ['./', 'index.html', 'config.js', 'jsqr.js', 'manifest.json', 'icon-192.png', 'icon-512.png', 'apple-touch-icon.png'];
+var KHO = 'vlta-v145', FILE = ['./', 'index.html', 'config.js', 'jsqr.js', 'manifest.json', 'icon-192.png', 'icon-512.png', 'apple-touch-icon.png'];
 self.addEventListener('install', function (e) { e.waitUntil(caches.open(KHO).then(function (c) { return c.addAll(FILE); })); self.skipWaiting(); });
 self.addEventListener('activate', function (e) { e.waitUntil(caches.keys().then(function (ks) { return Promise.all(ks.filter(function (k) { return k !== KHO; }).map(function (k) { return caches.delete(k); })); })); self.clients.claim(); });
 self.addEventListener('fetch', function (e) {
@@ -19,7 +19,7 @@ self.addEventListener('notificationclick', function (e) {
   e.notification.close();
   var u = new URL((e.notification.data && e.notification.data.u) || './', self.registration.scope).href;
   e.waitUntil(self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then(function (cs) {
-    for (var i = 0; i < cs.length; i++) if (cs[i].url.indexOf(self.registration.scope) === 0 && 'focus' in cs[i]) { cs[i].postMessage({ moTab: 'vdo' }); return cs[i].focus(); }
+    for (var i = 0; i < cs.length; i++) if (cs[i].url.indexOf(self.registration.scope) === 0 && 'focus' in cs[i]) { cs[i].postMessage({ moTab: 'vdo', p: (/[?&]p=([a-z]+)/.exec(u) || [])[1] || '' }); return cs[i].focus(); }
     return self.clients.openWindow(u);
   }));
 });
