@@ -810,7 +810,6 @@ textarea.inp{font-family:inherit}
 .kbvC{display:flex;flex-direction:column;align-items:stretch;gap:6px;width:100%;text-align:left;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:12px 14px;color:var(--fg);font:inherit;white-space:normal;min-height:44px}
 .kbvH{display:flex;align-items:center;gap:8px;min-width:0}.kbvH b{flex:1;min-width:0;font-size:15.5px}.kbvPhu{flex:1}
 .kbvTag{flex:none;font-size:12px;font-weight:700;line-height:1.5;padding:1px 8px;border-radius:999px;background:var(--soft);color:var(--muted);white-space:nowrap}.kbvTag.moi{background:var(--tint);color:var(--blue)}.kbvTag.ok{background:var(--good-bg);color:var(--good)}.kbvTag.do{background:var(--bad-bg);color:var(--bad)}
-.kbvSao{flex:none;color:var(--warn);font-size:14px;letter-spacing:1px;white-space:nowrap}.kbvSao i{font-style:normal;color:var(--line)}
 .kbvGhim{font-size:14.5px;line-height:1.45;padding:8px 10px;border-radius:10px;background:var(--soft);white-space:normal;overflow-wrap:anywhere}
 .kbvXn1{font-size:13px;color:var(--warn);font-weight:600;white-space:normal}
 .kbvG{margin-top:14px}.kbvG>summary{list-style:none;display:flex;align-items:center;justify-content:space-between;gap:10px;min-height:48px;padding:10px 14px;background:var(--card);border:1px solid var(--line);border-radius:14px;font-weight:600;cursor:pointer}.kbvG>summary::-webkit-details-marker{display:none}.kbvG>summary::after{content:'\203A';flex:none;font-size:20px;line-height:1;color:var(--muted);transform:rotate(90deg);transition:transform .15s}.kbvG[open]>summary::after{transform:rotate(-90deg)}.kbvG>summary>.ell{flex:1}.kbvG[open]>summary{margin-bottom:8px}.kbvSum{display:flex;align-items:center;gap:8px;flex:none}.kbvSum .meta{font-weight:500}
@@ -819,9 +818,10 @@ textarea.inp{font-family:inherit}
 .kbvL{font-size:12.5px;font-weight:700;color:var(--muted);white-space:normal}.kbvLr{display:flex;align-items:center;justify-content:space-between;gap:10px}.kbvLr .btn.lk{padding:2px 0;flex:none}
 .kbvTx{white-space:normal;overflow-wrap:anywhere;font-size:15px;line-height:1.55}.kbvGhimT{font-size:16px;font-weight:600;line-height:1.4}
 .kbvD{display:flex;flex-direction:column;gap:1px;padding:5px 0}.kbvAi{font-size:14px}.kbvAi b{font-weight:700}.kbvAi i{color:var(--muted)}.kbvCanh{color:var(--muted);font-style:italic;font-size:14.5px;padding:4px 0}
-.kbvNut{display:flex;flex-direction:column;gap:8px}.kbvNut .btn{white-space:normal}.kbvBo{align-self:center}#kbvCham{display:flex;flex-direction:column}
+.kbvNut{display:flex;flex-direction:column;gap:8px}.kbvNut .btn{white-space:normal}.kbvBo{align-self:center}
 .kbvT .btn.lk,.kbvLr .btn.lk,.kbvTt .btn.lk{width:auto}.kbvBo{width:auto}
-.kbvSaoB{display:flex;gap:6px}.kbvSaoB button{flex:1;min-width:0;height:46px;border:1.5px solid var(--line);background:var(--card);border-radius:12px;font-size:24px;line-height:1;color:var(--line);padding:0}.kbvSaoB button.on{color:var(--warn);border-color:var(--warn)}
+.kbvNg{display:flex;flex-wrap:wrap;gap:6px 12px;align-items:center}.kbvNp{display:inline-flex;align-items:center;gap:6px;min-width:0}.kbvNp .ten{font-size:13.5px;font-weight:600}
+.kbvDa{font-weight:700;color:var(--good);text-align:center;padding:10px 0}.kbvSeg{margin:0}
 #ptr{position:fixed;left:50%;top:calc(env(safe-area-inset-top,0px) + 8px);z-index:40;transform:translate(-50%,-56px);opacity:0;display:flex;align-items:center;gap:8px;background:var(--card);color:var(--fg);border:1px solid var(--line);border-radius:999px;padding:8px 14px 8px 8px;box-shadow:0 4px 16px rgba(0,0,0,.14);font-size:14px;font-weight:600;white-space:nowrap;pointer-events:none}#ptr .ptrI{width:26px;height:26px;border-radius:50%;background:var(--cta);color:#fff;display:grid;place-items:center}#ptr .ptrI svg{width:18px;height:18px;transition:transform .15s}#ptr.quay .ptrI svg{display:none}#ptr.quay .ptrI{background:none;border:3px solid var(--line);border-top-color:var(--cta);box-sizing:border-box;animation:vdoQ .8s linear infinite}#ptr.xong .ptrI svg{display:none}#ptr.xong .ptrI{background:var(--good)}#ptr.xong .ptrI::after{content:'✓';font-size:15px;font-weight:700}
 </style>
 </head>
@@ -4539,8 +4539,9 @@ textarea.inp{font-family:inherit}
   }
   function ccCheNoi(t) { t.querySelectorAll('[data-che]').forEach(function (b) { b.onclick = function () { CCS.theMo = b.getAttribute('data-che') === '1'; var lg = theLogoNap(); if (!lg.complete) lg.onload = function () { ccVe(); }; ccVe(); window.scrollTo(0, 0); }; }); }
   var BAN_MOI = [
-    { so: 145, ds: [{ i: '🎬', t: 'Mục Content: kịch bản quay video mỗi ngày', m: 'Nút Video ở thanh dưới đổi thành Content, gồm 2 phần: Kịch bản và Video đã dựng. Mỗi ngày có kịch bản quay mới, bài nào chưa quay vẫn nằm lại cho tới khi quay xong. Xem video, tải video và gửi clip quay vẫn ở phần Video đã dựng như cũ.', c: [['Xem kịch bản', 'Bấm [[Content]] → phần [[Kịch bản]] → chạm vào một bài để xem bình luận ghim, lời thoại từng vai, đạo cụ và chú thích khi đăng. Bấm [[Chép]] để chép chú thích dán lên TikTok.'], ['Báo đã quay, đã đăng', 'Quay xong bấm [[Đã quay xong]]. Đăng lên mạng rồi thì mở lại bài, dán link video, bấm [[Lưu link · Đã đăng]]. Bấm nhầm thì chọn Hoàn tác ở cuối màn hình.'], ['Bài có dải vàng', 'Đó là thông tin chưa chắc chắn, không nói câu đó trong video.']] },
-      { i: '⭐', t: 'Chấm điểm kịch bản', m: 'Bài đã quay chưa chấm có nhãn đỏ Chưa chấm. Mở bài, chọn số sao, ghi một câu lý do rồi bấm Lưu điểm. Điểm và lý do ghi thẳng vào file kịch bản để Claude đọc trước khi viết bài mới.', c: [['Cách chấm', 'Bấm [[Content]] → [[Kịch bản]] → mở mục Đã quay → chạm bài → chọn sao → [[Lưu điểm]].']], v: 'chu' }] },
+    { so: 146, ds: [{ i: '🎬', t: 'Kịch bản riêng cho từng người', m: 'Mỗi người chỉ thấy bản kịch bản của chính mình. Báo đã quay hay đã đăng cũng chỉ đổi trạng thái bản của mình, không ảnh hưởng người kia.', c: [['Báo trạng thái', 'Mở bài → bấm [[Đã quay xong]]. Đăng lên mạng rồi thì mở lại bài → bấm [[Đã đăng]], không phải dán link. Bấm nhầm thì chọn Hoàn tác ở cuối màn hình.']] },
+      { i: '👀', t: 'Xem bản của từng người', m: 'Mở một bài sẽ có nút Bản Hòa và Bản Long để xem lời thoại và trạng thái của từng người. Phần chấm điểm đã bỏ.', v: 'chu' }] },
+    { so: 145, ds: [{ i: '🎬', t: 'Mục Content: kịch bản quay video mỗi ngày', m: 'Nút Video ở thanh dưới đổi thành Content, gồm 2 phần: Kịch bản và Video đã dựng. Mỗi ngày có kịch bản quay mới, bài nào chưa quay vẫn nằm lại cho tới khi quay xong. Xem video, tải video và gửi clip quay vẫn ở phần Video đã dựng như cũ.', c: [['Xem kịch bản', 'Bấm [[Content]] → phần [[Kịch bản]] → chạm vào một bài để xem bình luận ghim, lời thoại, đạo cụ và chú thích khi đăng. Bấm [[Chép]] để chép chú thích dán lên TikTok.'], ['Bài có dải vàng', 'Đó là thông tin chưa chắc chắn, không nói câu đó trong video.']] }] },
     { so: 143, ds: [{ i: '✅', t: 'Duyệt video trước khi gửi sale', m: 'Chủ: mục Video chia tab Cá nhân và từng sale. Video mới hoặc bản sửa lại nằm ở tab của sale, điện thoại báo Video chờ duyệt. Xem trước → bấm Duyệt (hoặc Duyệt tất cả). Duyệt xong video chuyển sang máy sale và máy sale báo có video mới. Sale chỉ thấy video đã được duyệt.' }] },
     { so: 142, ds: [{ i: '🔔', t: 'Thông báo của app', m: 'App cần bật thông báo mới dùng được: bấm Bật thông báo → Cho phép. Từ đó có video mới của bạn, điện thoại hiện thông báo như tin nhắn, bấm vào là mở thẳng mục Video. Kiểm tra hoặc gửi thử ở Tài khoản → Thông báo.' }] },
     { so: 141, ds: [{ i: '🔔', t: 'Máy báo khi có video mới', m: 'Video của bạn dựng xong, điện thoại hiện thông báo như tin nhắn, bấm vào là mở thẳng mục Video. iPhone cần mở app từ biểu tượng trên Màn hình chính.' }] },
@@ -5041,25 +5042,24 @@ textarea.inp{font-family:inherit}
     guiMot(x).then(function () { GUI.chay = 0; guiVe(); guiChay(); });
   }
 
-  // ---------- 09/11 bản 145: tab Content = Kịch bản (file Google Sheet kịch bản quay video hằng ngày) + Video đã dựng ----------
-  // Claude viết kịch bản vào Sheet; app đọc qua máy chủ. Sale: Đã quay xong / Đã đăng (kèm link) / Bỏ bài. Chủ: chấm 1–5 sao + lý do.
-  // Bài chưa quay không mất theo ngày: nằm lại tới khi quay; quá 7 ngày gom vào mục gập "Bài cũ chưa quay".
-  var KBV = { ds: null, chu: 0, file: '', luc: 0, tai0: 0, loi: '', phan: 'kb', sh: null, shK: '', sao: 0, moCu: 0, moDa: 0, cho: {} };
-  (function () { var o = docSo('vlta_kbv'); if (o && o.ds) { KBV.ds = o.ds; KBV.chu = o.chu || 0; KBV.file = o.file || ''; KBV.luc = o.luc || 0; } })();
+  // ---------- 09/11 bản 145 → 146: tab Content = Kịch bản (file Google Sheet kịch bản quay video hằng ngày) + Video đã dựng ----------
+  // Bản 146: mỗi bài có bản riêng từng người (r.ban = [{ai, ten, kb, ghim, tt, luc}]); sale chỉ nhận bản của mình, chủ nhận hết + nút chuyển người.
+  // Bấm Đã quay xong / Đã đăng / Bỏ là đổi trạng thái bản đó ngay (cột "Trạng thái – <Tên>"). Không chấm điểm, không dán link.
+  var KBV = { ds: null, chu: 0, file: '', luc: 0, tai0: 0, loi: '', phan: 'kb', sh: null, shK: '', ai: '', moCu: 0, moDa: 0, cho: {} };
+  (function () { var o = docSo('vlta_kbv2'); if (o && o.ds) { KBV.ds = o.ds; KBV.chu = o.chu || 0; KBV.file = o.file || ''; KBV.luc = o.luc || 0; } })();
   function kbvHom() { var d = new Date(); return d.getFullYear() + '-' + ('0' + (d.getMonth() + 1)).slice(-2) + '-' + ('0' + d.getDate()).slice(-2); }
   function kbvNgay(n) { var p = String(n || '').split('-'); return p.length === 3 ? p[2] + '/' + p[1] : ''; }
   function kbvTuoi(n) { var a = kbvHom().split('-'), b = String(n).split('-'); return Math.round((new Date(a[0], a[1] - 1, a[2]) - new Date(b[0], b[1] - 1, b[2])) / 864e5); }
-  function kbvChua(r) { return r.tt !== 'Đã quay' && r.tt !== 'Đã đăng'; }
+  function kbvChuaB(b) { return b.tt !== 'Đã quay' && b.tt !== 'Đã đăng'; }
+  function kbvChua(r) { return r.ban.some(kbvChuaB); }
   function kbvTim(k) { return (KBV.ds || []).filter(function (r) { return r.k === k; })[0]; }
-  function kbvLuu() { luuSo('vlta_kbv', { ds: KBV.ds, chu: KBV.chu, file: KBV.file, luc: KBV.luc }); }
-  function kbvMoi() {   // chấm đỏ: sale = bài chưa quay mình chưa xem; chủ = bài đã quay chưa chấm
-    var ds = KBV.ds || [];
-    if (KBV.chu) return ds.filter(function (r) { return !kbvChua(r) && !r.diem; }).length;
+  function kbvBan(r, ai) { return r.ban.filter(function (b) { return b.ai === ai; })[0] || r.ban[0]; }
+  function kbvLuu() { luuSo('vlta_kbv2', { ds: KBV.ds, chu: KBV.chu, file: KBV.file, luc: KBV.luc }); }
+  function kbvMoi() {   // chấm đỏ: bài chưa quay mà máy này chưa xem
     var xem = docSo('vlta_kbvXem') || [];
-    return ds.filter(function (r) { return kbvChua(r) && xem.indexOf(r.k) < 0; }).length;
+    return (KBV.ds || []).filter(function (r) { return kbvChua(r) && xem.indexOf(r.k) < 0; }).length;
   }
   function kbvDaXem() {
-    if (KBV.chu) return;
     var xem = docSo('vlta_kbvXem') || [], them = (KBV.ds || []).filter(kbvChua).map(function (r) { return r.k; }).filter(function (k) { return xem.indexOf(k) < 0; });
     if (them.length) { luuSo('vlta_kbvXem', xem.concat(them).slice(-400)); vdoBadge(); }
   }
@@ -5070,24 +5070,23 @@ textarea.inp{font-family:inherit}
       KBV.tai0 = 0;
       if (o.loi) { KBV.loi = o.loi; if (!KBV.ds) kbvVe(); return; }
       KBV.loi = '';
-      var doi = !giongJ(o.ds, KBV.ds) || KBV.chu !== (o.chu || 0);
-      KBV.ds = o.ds || []; KBV.chu = o.chu || 0; KBV.file = o.file || ''; KBV.luc = Date.now(); kbvLuu();
+      var ds = (o.ds || []).filter(function (r) { return r.ban && r.ban.length; });
+      var doi = !giongJ(ds, KBV.ds) || KBV.chu !== (o.chu || 0);
+      KBV.ds = ds; KBV.chu = o.chu || 0; KBV.file = o.file || ''; KBV.luc = Date.now(); kbvLuu();
       if (doi || !im) kbvVe();
       vdoBadge();
     }, function (e) { KBV.tai0 = 0; KBV.loi = e.message; if (!KBV.ds) kbvVe(); });
   }
-  function kbvSao(n) { n = Number(n) || 0; return n ? '<span class="kbvSao" aria-label="' + n + ' sao">' + '★★★★★'.slice(0, n) + '<i>' + '★★★★★'.slice(n) + '</i></span>' : ''; }
+  function kbvNhan(tt) { return tt === 'Đã đăng' ? '<span class="kbvTag ok">Đã đăng</span>' : tt === 'Đã quay' ? '<span class="kbvTag">Đã quay</span>' : ''; }
   function kbvThe(r) {
-    var moi = r.ngay >= kbvHom(), xong = !kbvChua(r), nhan = '', phu;
-    if (xong) nhan = r.tt === 'Đã đăng' ? '<span class="kbvTag ok">Đã đăng</span>' : '<span class="kbvTag">Đã quay</span>';
-    else if (moi) nhan = '<span class="kbvTag moi">Mới</span>';
-    else if (r.tt !== 'Chưa quay') nhan = '<span class="kbvTag">' + esc(r.tt) + '</span>';
-    var cham = KBV.chu && xong ? (r.diem ? kbvSao(r.diem) : '<span class="kbvTag do">Chưa chấm</span>') : '';
-    phu = [r.cho, xong ? (r.luc ? 'Quay ngày ' + vdoNgay(r.luc) : 'Bài ngày ' + kbvNgay(r.ngay)) : (moi ? '' : 'Bài ngày ' + kbvNgay(r.ngay))].filter(String).join(' · ');
+    var moi = r.ngay >= kbvHom(), xong = !kbvChua(r), mot = r.ban.length === 1, b0 = r.ban[0], nhan, phu;
+    nhan = mot ? (kbvChuaB(b0) ? (moi ? '<span class="kbvTag moi">Mới</span>' : (b0.tt !== 'Chưa quay' ? '<span class="kbvTag">' + esc(b0.tt) + '</span>' : '')) : kbvNhan(b0.tt)) : (moi && !xong ? '<span class="kbvTag moi">Mới</span>' : '');
+    phu = [r.cho, xong && mot && b0.luc ? 'Quay ngày ' + vdoNgay(b0.luc) : (moi && !xong ? '' : 'Bài ngày ' + kbvNgay(r.ngay))].filter(String).join(' · ');
+    var nguoi = mot ? '' : '<div class="kbvNg">' + r.ban.map(function (b) { return '<span class="kbvNp"><span class="ten">' + esc(b.ten) + '</span>' + (kbvChuaB(b) ? '<span class="kbvTag">' + esc(b.tt) + '</span>' : kbvNhan(b.tt)) + '</span>'; }).join('') + '</div>';
     return '<button class="kbvC" data-kbv="' + esc(r.k) + '">' +
       '<div class="kbvH"><b class="ell">Bài ' + esc(r.so) + ' · ' + esc(r.cty || 'Chưa ghi công ty') + '</b>' + nhan + '</div>' +
-      (cham ? '<div class="kbvH"><span class="meta ell kbvPhu">' + esc(phu) + '</span>' + cham + '</div>' : (phu ? '<div class="meta ell">' + esc(phu) + '</div>' : '')) +
-      (r.ghim ? '<div class="kbvGhim">' + esc(r.ghim) + '</div>' : '') +
+      (phu ? '<div class="meta ell">' + esc(phu) + '</div>' : '') + nguoi +
+      (b0.ghim ? '<div class="kbvGhim">' + esc(b0.ghim) + '</div>' : '') +
       (r.xn && !xong ? '<div class="kbvXn1">Có thông tin cần xác nhận trước khi quay</div>' : '') + '</button>';
   }
   function kbvVe() {
@@ -5099,15 +5098,13 @@ textarea.inp{font-family:inherit}
     }
     var ds = KBV.ds.slice().sort(function (a, b) { return a.ngay < b.ngay ? 1 : a.ngay > b.ngay ? -1 : (Number(a.so) || 0) - (Number(b.so) || 0); });
     var chua = ds.filter(kbvChua), gan = chua.filter(function (r) { return kbvTuoi(r.ngay) <= 7; }), cu = chua.filter(function (r) { return kbvTuoi(r.ngay) > 7; });
-    var da = ds.filter(function (r) { return !kbvChua(r); }).sort(function (a, b) { return (b.luc || 0) - (a.luc || 0) || (a.ngay < b.ngay ? 1 : -1); });
+    var lucR = function (r) { return Math.max.apply(null, r.ban.map(function (b) { return b.luc || 0; })); };
+    var da = ds.filter(function (r) { return !kbvChua(r); }).sort(function (a, b) { return lucR(b) - lucR(a) || (a.ngay < b.ngay ? 1 : -1); });
     var h = '<div class="kbvT"><b>Chưa quay · ' + chua.length + ' bài</b>' + (KBV.chu && KBV.file ? '<a class="btn lk" href="' + esc(KBV.file) + '" target="_blank" rel="noopener">Mở file kịch bản</a>' : '') + '</div>';
     if (!gan.length) h += '<div class="empty kbvTrong">' + (chua.length ? 'Không có bài mới trong 7 ngày gần đây.' : 'Đã quay hết kịch bản.') + '<br>Bài mới sẽ tự hiện ở đây mỗi ngày.</div>';
     else h += '<div class="list">' + gan.map(kbvThe).join('') + '</div>';
     if (cu.length) h += '<details class="kbvG" id="kbvCu"' + (KBV.moCu ? ' open' : '') + '><summary><span class="ell">Bài cũ chưa quay (quá 7 ngày)</span><span class="meta">' + cu.length + ' bài</span></summary><div class="list">' + cu.map(kbvThe).join('') + '</div></details>';
-    if (da.length) {
-      var nCham = KBV.chu ? da.filter(function (r) { return !r.diem; }).length : 0;
-      h += '<details class="kbvG" id="kbvDa"' + (KBV.moDa ? ' open' : '') + '><summary><span class="ell">Đã quay</span><span class="kbvSum">' + (nCham ? '<span class="kbvTag do">' + nCham + ' chưa chấm</span>' : '') + '<span class="meta">' + da.length + ' bài</span></span></summary><div class="list">' + da.map(kbvThe).join('') + '</div></details>';
-    }
+    if (da.length) h += '<details class="kbvG" id="kbvDa"' + (KBV.moDa ? ' open' : '') + '><summary><span class="ell">Đã quay</span><span class="meta">' + da.length + ' bài</span></summary><div class="list">' + da.map(kbvThe).join('') + '</div></details>';
     el.innerHTML = h;
     el.querySelectorAll('[data-kbv]').forEach(function (b) { b.onclick = function () { kbvMo(b.getAttribute('data-kbv')); }; });
     var c1 = document.getElementById('kbvCu'), c2 = document.getElementById('kbvDa');
@@ -5123,64 +5120,49 @@ textarea.inp{font-family:inherit}
       return '<div class="kbvCanh kbvTx">' + esc(d) + '</div>';
     }).join('');
   }
-  function kbvNut(r) {
-    if (kbvChua(r)) return '<button class="btn" data-kbvtt="Đã quay">Đã quay xong</button><button class="btn lk kbvBo" data-kbvtt="Bỏ">Bỏ bài này</button>';
-    var h = '<div class="kbvBox"><div class="kbvL">' + (r.tt === 'Đã đăng' ? 'Link video đã đăng' : 'Đã đăng lên mạng? Dán link video') + '</div>' +
-      '<input class="inp" id="kbvLink" type="url" inputmode="url" autocomplete="off" placeholder="https://www.tiktok.com/…" value="' + esc(r.link || '') + '">' +
-      '<button class="btn" data-kbvdang>' + (r.tt === 'Đã đăng' ? 'Lưu link' : 'Lưu link · Đã đăng') + '</button></div>';
-    return h + '<button class="btn lk" data-kbvtt="Chưa quay">Chuyển lại Chưa quay</button>';
-  }
-  function kbvCham(r) {
-    var d = KBV.sao || Number(r.diem) || 0;
-    return '<div class="kbvBox"><div class="kbvL">Chấm điểm kịch bản (Claude đọc điểm và lý do trước khi viết bài mới)</div><div class="kbvSaoB">' +
-      [1, 2, 3, 4, 5].map(function (i) { return '<button data-kbvsao="' + i + '"' + (i <= d ? ' class="on"' : '') + ' aria-label="' + i + ' sao">★</button>'; }).join('') + '</div>' +
-      '<textarea class="inp" id="kbvLy" rows="2" placeholder="Lý do, ví dụ: Mở đầu hay, đoạn cuối dài">' + esc(r.ly || '') + '</textarea>' +
-      '<button class="btn" data-kbvchamluu>' + (r.diem ? 'Lưu lại điểm' : 'Lưu điểm') + '</button></div>';
+  function kbvNut(b) {
+    if (kbvChuaB(b)) return '<button class="btn" data-kbvtt="Đã quay">Đã quay xong</button><button class="btn lk kbvBo" data-kbvtt="Bỏ">Bỏ bài này</button>';
+    if (b.tt === 'Đã quay') return '<button class="btn" data-kbvtt="Đã đăng">Đã đăng</button><button class="btn lk kbvBo" data-kbvtt="Chưa quay">Chuyển lại Chưa quay</button>';
+    return '<div class="kbvDa">✓ Đã đăng' + (b.luc ? ' · ' + vdoNgay(b.luc) : '') + '</div><button class="btn lk kbvBo" data-kbvtt="Chưa quay">Chuyển lại Chưa quay</button>';
   }
   function kbvChiTiet(r) {
+    var b = kbvBan(r, KBV.ai);
     var h = '<div class="row sp kbvTt"><div style="min-width:0;flex:1"><h3 class="ell">Bài ' + esc(r.so) + ' · ' + esc(r.cty || 'Chưa ghi công ty') + '</h3><div class="meta ell">' + esc(['Bài ngày ' + kbvNgay(r.ngay), r.cho].filter(String).join(' · ')) + '</div></div><button class="btn lk" data-kbvdong>Đóng</button></div>';
-    if (r.ghim) h += '<div class="kbvBox ghim"><div class="kbvL">Bình luận ghim (dán lên màn hình)</div><div class="kbvTx kbvGhimT">' + kbvDong(r.ghim) + '</div></div>';
-    if (r.xn) h += '<div class="kbvBox xn"><div class="kbvL">Cần xác nhận – chưa nói trong video</div><div class="kbvTx">' + kbvDong(r.xn) + '</div></div>';
-    h += '<div class="kbvBox"><div class="kbvL">Kịch bản</div>' + kbvLoi(r.kb) + '</div>';
+    if (r.ban.length > 1) h += '<div class="seg kbvSeg">' + r.ban.map(function (x) { return '<button data-kbvai="' + esc(x.ai) + '"' + (x.ai === b.ai ? ' class="on"' : '') + '><span class="ell">Bản ' + esc(x.ten) + '</span></button>'; }).join('') + '</div>';
+    h += '<div id="kbvBanT">' + kbvBanHtml(r, b) + '</div>';
     if (r.dc) h += '<div class="kbvBox"><div class="kbvL">Đạo cụ / lưu ý khi quay</div><div class="kbvTx">' + kbvDong(r.dc) + '</div></div>';
     if (r.cap) h += '<div class="kbvBox"><div class="kbvLr"><span class="kbvL">Chú thích khi đăng</span><button class="btn lk" data-kbvchep>Chép</button></div><div class="kbvTx">' + kbvDong(r.cap) + '</div></div>';
-    h += '<div id="kbvNut" class="kbvNut">' + kbvNut(r) + '</div>';
-    if (KBV.chu) h += '<div id="kbvCham">' + kbvCham(r) + '</div>';
+    h += '<div id="kbvNut" class="kbvNut">' + kbvNut(b) + '</div>';
     return h;
+  }
+  function kbvBanHtml(r, b) {
+    var h = '';
+    if (b.ghim) h += '<div class="kbvBox ghim"><div class="kbvL">Bình luận ghim (dán lên màn hình)</div><div class="kbvTx kbvGhimT">' + kbvDong(b.ghim) + '</div></div>';
+    if (r.xn) h += '<div class="kbvBox xn"><div class="kbvL">Cần xác nhận – chưa nói trong video</div><div class="kbvTx">' + kbvDong(r.xn) + '</div></div>';
+    return h + '<div class="kbvBox"><div class="kbvL">Kịch bản' + (r.ban.length > 1 ? ' – bản ' + esc(b.ten) : '') + '</div>' + kbvLoi(b.kb) + '</div>';
   }
   function kbvMo(k) {
     var r = kbvTim(k); if (!r) return;
-    KBV.sao = 0;
+    KBV.ai = r.ban[0].ai;
     var sh = moSheet(kbvChiTiet(r)); sh.classList.add('kbvSh'); KBV.sh = sh; KBV.shK = k;
     sh.querySelector('[data-kbvdong]').onclick = function () { sh.remove(); };
     var cp = sh.querySelector('[data-kbvchep]'); if (cp) cp.onclick = function () { kbvChep(r.cap); };
+    sh.querySelectorAll('[data-kbvai]').forEach(function (x) { x.onclick = function () {
+      KBV.ai = x.getAttribute('data-kbvai');
+      sh.querySelectorAll('[data-kbvai]').forEach(function (y) { y.classList.toggle('on', y === x); });
+      kbvVeCT(1);
+    }; });
     kbvGan(sh);
   }
   function kbvGan(sh) {
-    var k = KBV.shK, r = kbvTim(k); if (!r) return;
-    sh.querySelectorAll('[data-kbvtt]').forEach(function (b) { b.onclick = function () { kbvDoiTt(k, b.getAttribute('data-kbvtt')); }; });
-    var dg = sh.querySelector('[data-kbvdang]');
-    if (dg) dg.onclick = function () {
-      var l = (document.getElementById('kbvLink').value || '').trim();
-      if (!/^https?:\/\/\S+$/i.test(l)) { toastLoi('Dán link video đã đăng, bắt đầu bằng https://'); return; }
-      kbvGhi(k, r.tt === 'Đã đăng' ? { link: l } : { tt: 'Đã đăng', link: l }, r.tt === 'Đã đăng' ? 'Đã lưu link video' : 'Bài ' + r.so + ' đã chuyển sang Đã đăng');
-    };
-    sh.querySelectorAll('[data-kbvsao]').forEach(function (b) { b.onclick = function () {
-      KBV.sao = Number(b.getAttribute('data-kbvsao'));
-      sh.querySelectorAll('[data-kbvsao]').forEach(function (x) { x.classList.toggle('on', Number(x.getAttribute('data-kbvsao')) <= KBV.sao); });
-    }; });
-    var cl = sh.querySelector('[data-kbvchamluu]');
-    if (cl) cl.onclick = function () {
-      var d = KBV.sao || Number(r.diem) || 0, ly = (document.getElementById('kbvLy').value || '').trim();
-      if (!d) { toastLoi('Chọn số sao trước khi lưu.'); return; }
-      kbvGhi(k, { diem: d, ly: ly }, 'Đã lưu ' + d + ' sao cho bài ' + r.so);
-    };
+    var k = KBV.shK, ai = KBV.ai;
+    sh.querySelectorAll('[data-kbvtt]').forEach(function (b) { b.onclick = function () { kbvDoiTt(k, ai, b.getAttribute('data-kbvtt')); }; });
   }
-  function kbvVeCT() {   // vẽ lại phần nút trong hộp chi tiết (giữ nguyên chỗ đang cuộn)
+  function kbvVeCT(caBan) {   // vẽ lại phần nút (và phần lời thoại khi đổi người) trong hộp chi tiết, giữ chỗ đang cuộn
     var sh = KBV.sh, r = kbvTim(KBV.shK); if (!sh || !document.body.contains(sh) || !r) return;
-    var n = sh.querySelector('#kbvNut'), c = sh.querySelector('#kbvCham');
-    if (n) n.innerHTML = kbvNut(r);
-    if (c) c.innerHTML = kbvCham(r);
+    var b = kbvBan(r, KBV.ai), n = sh.querySelector('#kbvNut'), t = sh.querySelector('#kbvBanT');
+    if (caBan && t) t.innerHTML = kbvBanHtml(r, b);
+    if (n) n.innerHTML = kbvNut(b);
     kbvGan(sh);
   }
   function kbvChep(t) {
@@ -5188,35 +5170,32 @@ textarea.inp{font-family:inherit}
     try { navigator.clipboard.writeText(t).then(xong, function () { kbvChep2(t); xong(); }); } catch (e) { kbvChep2(t); xong(); }
   }
   function kbvChep2(t) { var a = document.createElement('textarea'); a.value = t; a.setAttribute('readonly', ''); a.style.cssText = 'position:fixed;top:-100px;opacity:0'; document.body.appendChild(a); a.select(); try { document.execCommand('copy'); } catch (e) { } a.remove(); }
-  function kbvDoiTt(k, tt) {
-    var r = kbvTim(k); if (!r || r.tt === tt) return;
-    var cu = r.tt;
-    kbvGhi(k, { tt: tt }, null, function () {
+  function kbvDoiTt(k, ai, tt) {
+    var r = kbvTim(k), b = r && r.ban.filter(function (x) { return x.ai === ai; })[0]; if (!b || b.tt === tt) return;
+    var cu = b.tt, ten = r.ban.length > 1 ? ' (bản ' + b.ten + ')' : '';
+    kbvGhi(r, b, tt, function () {
       if (tt === 'Bỏ' && KBV.sh) KBV.sh.remove();
-      toastNut(tt === 'Bỏ' ? 'Đã bỏ bài ' + r.so : 'Bài ' + r.so + ' đã chuyển sang ' + tt, 'Hoàn tác', function () { if (KBV.ds.indexOf(r) < 0) KBV.ds.push(r); kbvGhi(k, { tt: cu }, 'Đã trả lại như cũ'); }, 10000);
+      toastNut((tt === 'Bỏ' ? 'Đã bỏ bài ' + r.so : 'Bài ' + r.so + ' đã chuyển sang ' + tt) + ten, 'Hoàn tác', function () { kbvGhi(r, b, cu); }, 10000);
     });
   }
-  function kbvGhi(k, thay, bao, sau) {   // hiện ngay như đã lưu, máy chủ ghi ngầm; lỗi thì trả lại như cũ
-    var r = kbvTim(k); if (!r) return;
-    var cu = { tt: r.tt, link: r.link, diem: r.diem, ly: r.ly, luc: r.luc };
-    var q = { v: 'kbGhi', k: k, im: 1 };
-    Object.keys(thay).forEach(function (a) { q[a] = thay[a]; });
-    if (thay.tt !== undefined) q.cu = r.tt;
-    Object.keys(thay).forEach(function (a) { r[a] = a === 'diem' ? String(thay[a]) : thay[a]; });
-    if (thay.tt !== undefined && thay.tt !== cu.tt) r.luc = kbvChua(r) ? 0 : Date.now();
-    if (thay.tt === 'Bỏ') KBV.ds = KBV.ds.filter(function (x) { return x !== r; });
-    if (thay.diem !== undefined) KBV.sao = 0;
+  function kbvGhi(r, b, tt, sau) {   // hiện ngay như đã lưu, máy chủ ghi ngầm (đúng cột "Trạng thái – <người>"); lỗi thì trả lại như cũ
+    var cu = { tt: b.tt, luc: b.luc }, q = { v: 'kbGhi', k: r.k, ai: b.ai, tt: tt, cu: b.tt, im: 1 };
+    var dat = function (x) {   // đưa bản / bài về đúng chỗ trong danh sách theo trạng thái
+      if (x.tt === 'Bỏ') { r.ban = r.ban.filter(function (y) { return y !== b; }); }
+      else if (r.ban.indexOf(b) < 0) r.ban.push(b);
+      if (r.ban.length && KBV.ds.indexOf(r) < 0) KBV.ds.push(r);
+      if (!r.ban.length) KBV.ds = KBV.ds.filter(function (y) { return y !== r; });
+    };
+    b.tt = tt; b.luc = kbvChuaB(b) ? 0 : (tt !== cu.tt ? Date.now() : b.luc); dat(b);
     kbvVe(); vdoBadge(); kbvVeCT();
-    if (sau) sau(); else if (bao) toast(bao);
-    var tr = KBV.cho[k] || Promise.resolve();   // ghi cùng 1 bài lần lượt (bấm Hoàn tác ngay sau khi đổi không bị đảo thứ tự)
-    var p = tr.then(function () { return apiT(q); });
-    KBV.cho[k] = p.then(function () { }, function () { });
+    if (sau) sau(); else toast('Đã chuyển bài ' + r.so + ' sang ' + tt);
+    var p = (KBV.cho[r.k + b.ai] || Promise.resolve()).then(function () { return apiT(q); });   // ghi cùng 1 bản lần lượt
+    KBV.cho[r.k + b.ai] = p.then(function () { }, function () { });
     p.then(function (o) {
       if (o.loi) { var e = new Error(o.loi); e.moi = o.moi; throw e; }
       kbvLuu();
     }).catch(function (e) {
-      Object.keys(cu).forEach(function (a) { r[a] = cu[a]; });
-      if (KBV.ds.indexOf(r) < 0) KBV.ds.push(r);
+      b.tt = cu.tt; b.luc = cu.luc; dat(b);
       kbvVe(); vdoBadge(); kbvVeCT();
       toastLoi('Chưa lưu được: ' + ((e && e.message) || 'mất kết nối') + ' Đã trả lại như cũ.');
       if (e && e.moi) { KBV.tai0 = 0; kbvTai(1); }
