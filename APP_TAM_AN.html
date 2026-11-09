@@ -4539,6 +4539,7 @@ textarea.inp{font-family:inherit}
   }
   function ccCheNoi(t) { t.querySelectorAll('[data-che]').forEach(function (b) { b.onclick = function () { CCS.theMo = b.getAttribute('data-che') === '1'; var lg = theLogoNap(); if (!lg.complete) lg.onload = function () { ccVe(); }; ccVe(); window.scrollTo(0, 0); }; }); }
   var BAN_MOI = [
+    { so: 148, ds: [{ i: '🕘', t: 'Video sửa lại ghi đúng giờ sửa', m: 'Video được dựng lại (bản sửa) nay ghi Sửa lúc kèm giờ sửa mới nhất thay vì giờ lên lần đầu, và nằm trên cùng danh sách, nên biết ngay đâu là bản mới.', v: 'chu' }] },
     { so: 147, ds: [{ i: '🗑️', t: 'Xoá video trong mục Video đã dựng', m: 'Video không dùng thì xoá được ngay, video vào Thùng rác của Drive, trong 30 ngày vẫn lấy lại được.', c: [['Xoá từ danh sách', 'Giữ ngón tay lên thẻ video → [[Xoá video]].'], ['Xoá khi đang xem', 'Mở video → bấm chữ Xoá màu đỏ cạnh nút Duyệt video này.'], ['Xoá nhầm', 'Bấm Hoàn tác ở cuối màn hình trong 10 giây.']], v: 'chu' }] },
     { so: 146, ds: [{ i: '🎬', t: 'Kịch bản riêng cho từng người', m: 'Mỗi người chỉ thấy bản kịch bản của chính mình. Báo đã quay hay đã đăng cũng chỉ đổi trạng thái bản của mình, không ảnh hưởng người kia.', c: [['Báo trạng thái', 'Mở bài → bấm [[Đã quay xong]]. Đăng lên mạng rồi thì mở lại bài → bấm [[Đã đăng]], không phải dán link. Bấm nhầm thì chọn Hoàn tác ở cuối màn hình.']] },
       { i: '👀', t: 'Xem bản của từng người', m: 'Mở một bài sẽ có nút Bản Hòa và Bản Long để xem lời thoại và trạng thái của từng người. Phần chấm điểm đã bỏ.', v: 'chu' }] },
@@ -4753,6 +4754,7 @@ textarea.inp{font-family:inherit}
   // 06/11 bản 124: tải thẳng từ Drive bằng khóa API bị Google chặn theo địa chỉ mạng ("automated queries") -> tải qua máy chủ (tài khoản chủ), xem trước bằng trình phát Google Drive
   function vdoMB(b) { var m = (Number(b) || 0) / 1048576; return (m >= 10 ? Math.round(m) : m.toFixed(1).replace('.', ',')) + ' MB'; }
   function vdoGiay(ms) { var s = Math.round((Number(ms) || 0) / 1000); return s ? Math.floor(s / 60) + ':' + ('0' + s % 60).slice(-2) : ''; }
+  function vdoLucDong(v) { return v.mo && v.mo - v.tao > 600000 ? 'Sửa lúc ' + vdoLuc(v.mo) : 'Lên lúc ' + vdoLuc(v.tao); }   // 09/11: bên dựng ghi đè file -> hiện giờ sửa
   function vdoLuc(t) {   // 16:42 (hôm nay) / 16:42 05/11
     var d = new Date(t), n = new Date(), hm = ('0' + d.getHours()).slice(-2) + ':' + ('0' + d.getMinutes()).slice(-2);
     return d.toDateString() === n.toDateString() ? hm : hm + ' ' + ('0' + d.getDate()).slice(-2) + '/' + ('0' + (d.getMonth() + 1)).slice(-2);
@@ -5263,7 +5265,7 @@ textarea.inp{font-family:inherit}
       return '<div class="vdoC" data-id="' + esc(v.id) + '">' +
         '<button class="vdoA" data-vdoxem="' + esc(v.id) + '" aria-label="Xem trước">' + (v.anh ? '<img src="' + v.anh + '" alt="">' : '') +
         '<span class="vdoPl"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l11-6.5z" fill="currentColor"/></svg></span>' + (v.dai ? '<span class="vdoG num">' + vdoGiay(v.dai) + '</span>' : '') + '</button>' +
-        '<div class="vdoI"><div class="vdoN ell">' + esc(vdoTen(v)) + '</div>' + '' + '<div class="meta ell">Lên lúc ' + vdoLuc(v.tao) + ' · ' + vdoMB(v.kb) + '</div>' + vdoTrangThai(v) +
+        '<div class="vdoI"><div class="vdoN ell">' + esc(vdoTen(v)) + '</div>' + '' + '<div class="meta ell">' + vdoLucDong(v) + ' · ' + vdoMB(v.kb) + '</div>' + vdoTrangThai(v) +
         '<div class="vdoB" id="vdoB_' + esc(v.id) + '">' + vdoNut(v) + '</div></div></div>';
     }).join('') + '</div>';
     el.innerHTML = h;
@@ -5335,7 +5337,7 @@ textarea.inp{font-family:inherit}
   function vdoXem(v) {
     if (VDO.thang) return vdoXemDrive(v);
     var sh = document.createElement('div'); sh.className = 'sheet vdoFs';
-    sh.innerHTML = '<div class="vdoFw"><div class="vdoFt"><div style="min-width:0;flex:1"><b class="ell">' + esc(vdoTen(v)) + '</b><small class="ell">' + (v.dai ? vdoGiay(v.dai) + ' · ' : '') + vdoMB(v.kb) + ' · lên lúc ' + vdoLuc(v.tao) + '</small></div><button class="vdoFx" id="vxD">Đóng</button></div>' +
+    sh.innerHTML = '<div class="vdoFw"><div class="vdoFt"><div style="min-width:0;flex:1"><b class="ell">' + esc(vdoTen(v)) + '</b><small class="ell">' + (v.dai ? vdoGiay(v.dai) + ' · ' : '') + vdoMB(v.kb) + ' · ' + vdoLucDong(v).toLowerCase() + '</small></div><button class="vdoFx" id="vxD">Đóng</button></div>' +
       '<div class="vdoFm"><video class="vdoFv" playsinline controls preload="auto"' + (v.anh ? ' poster="' + v.anh + '"' : '') + '></video><div class="vdoFc" id="vxC"><span class="vdoFs1"></span><b>Đang tải để xem…</b><small></small></div><button class="vdoFp hidden" id="vxP" aria-label="Phát"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l11-6.5z" fill="currentColor"/></svg></button></div>' +
       '<div class="vdoFb"><button class="btn" id="vxT"></button>' + (VDO.chu ? '<button class="vdoFx2" id="vxX">Xoá</button>' : '') + '</div></div>';
     document.body.appendChild(sh);
