@@ -13,7 +13,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
 <script src="config.js"></script>
-<script>window.PB = { so: 152, luc: "12/11 10:35" };</script>
+<script>window.PB = { so: 153, luc: "12/11 16:29" };</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap">
 <style>
@@ -886,6 +886,10 @@ textarea.inp{font-family:inherit}
 .cqDong .inp{flex:1;min-width:0}
 .cqDong .btn{flex:none}
 .cau{white-space:normal;overflow-wrap:anywhere}
+.cqKq2 button{flex:1 1 calc(50% - 4px);justify-content:center;text-align:center}
+.cqDai{position:fixed;left:12px;right:12px;top:calc(8px + env(safe-area-inset-top,0px));z-index:60;display:flex;align-items:center;gap:8px;background:var(--warn-bg);color:var(--fg);border:1px solid var(--edge);border-radius:14px;padding:8px 8px 8px 14px;box-shadow:0 6px 20px rgba(0,0,0,.12);font-size:14px}
+.cqDai>span{flex:1;min-width:0}.cqDai .btn{flex:none;width:auto;margin:0}
+.cqDaiX{flex:none;border:0;background:none;color:var(--muted);font-size:22px;min-width:36px;min-height:36px;padding:0;cursor:pointer}
 </style>
 </head>
 <body>
@@ -1328,6 +1332,7 @@ textarea.inp{font-family:inherit}
     var cs = S.toi.cty || [], cs2 = cs.concat(S.toi.ctt || []);
     if (!S.cty || !cs2.some(function (c) { return c.ma === S.cty; })) S.cty = doc('vlta_cty') || (cs.filter(function (c) { return c.het; })[0] || cs[0] || {}).ma;
     if (!cs2.some(function (c) { return c.ma === S.cty; })) S.cty = (cs.filter(function (c) { return c.het; })[0] || cs[0] || {}).ma;   // 12/11: công ty đã nhớ không còn trong quyền
+    var uCty = ((/[?&]cty=([A-Za-z0-9_]+)/.exec(location.search) || [])[1] || '').toUpperCase(); if (uCty && cs2.some(function (c) { return c.ma === uCty; })) { S.cty = uCty; luu('vlta_cty', uCty); }   // b153: mở từ thông báo nhắc nhận việc (?tab=ld&cty=TREND)
     setTimeout(function () { (S.toi.ctt || []).forEach(function (c) { cqTai(c.ma, 1); }); }, 2500);   // 12/11: tải sẵn danh sách chính thức
     var t = (/[?&]tab=([a-z]+)/.exec(location.search) || [])[1] || doc('vlta_tab'); if (!cacTab().some(function (x) { return x[0] === t; })) t = 'ld';   // bản 140: mở từ thông báo (?tab=vdo)
     if (/[?&]tab=vdo/.test(location.search)) KBV.phan = /[?&]p=kb/.test(location.search) ? 'kb' : 'vdo';   // bản 145: thông báo kịch bản mở phần Kịch bản, thông báo video mở phần Video
@@ -4613,6 +4618,9 @@ textarea.inp{font-family:inherit}
   }
   function ccCheNoi(t) { t.querySelectorAll('[data-che]').forEach(function (b) { b.onclick = function () { CCS.theMo = b.getAttribute('data-che') === '1'; var lg = theLogoNap(); if (!lg.complete) lg.onload = function () { ccVe(); }; ccVe(); window.scrollTo(0, 0); }; }); }
   var BAN_MOI = [
+    { so: 153, ds: [{ i: '📅', t: 'Hẹn nhận việc', m: 'Người phỏng vấn xong hẹn ngày khác mới đi làm thì ghi kết quả Hẹn nhận việc kèm ngày hẹn. Người đó chỉ vào danh sách nhận việc khi đã thật sự đi làm. Mục Chờ nhận việc liệt kê những người đang hẹn.', c: [['Ghi hẹn', 'Chạm tên người phỏng vấn → [[Có đến]] → [[Hẹn nhận việc]] → chọn ngày hẹn → [[Lưu kết quả]].']] },
+      { i: '⏰', t: 'Nhắc xác nhận đã đi làm', m: '8 giờ sáng ngày hẹn, điện thoại người tuyển nhận thông báo, mở app có dải nhắc ở đầu màn hình. Đến 13 giờ chưa xác nhận thì chủ được báo.', c: [['Xác nhận', 'Bấm [[Xác nhận]] ở dải nhắc hoặc chạm tên ở ô Hẹn nhận việc → [[Đã đi làm]] hoặc [[Chưa đi làm]] (hẹn lại ngày khác / không đi làm nữa) → [[Lưu]].']] },
+      { i: '🔁', t: 'Trạng thái Đang làm, Tạm nghỉ, Đã nghỉ', m: 'Chạm tên người đã nhận việc để đổi trạng thái, chọn ngày nghỉ và lý do. App hiện số ngày đã làm trước khi lưu. Tạm nghỉ vẫn tính là đang làm, quá 3 ngày app nhắc gọi hỏi lại. Người làm 1 ngày rồi nghỉ coi như không nhận việc.', c: [['Đổi trạng thái', 'Chạm tên → ở mục Trạng thái chọn [[Tạm nghỉ]] hoặc [[Đã nghỉ]] → chọn ngày, lý do → [[Lưu]]. Đi làm lại thì chọn [[Đang làm]].']] }] },
     { so: 151, ds: [{ i: '🤝', t: 'Mục TREND: tuyển lao động chính thức', m: 'Tab Lao động có thêm nút TREND. Ở đây xem được số người đang làm so với 35 người Trend yêu cầu, lịch phỏng vấn hôm nay và các ngày tới, người đã nhận việc, người đã nghỉ, và chế độ lương thưởng để báo ứng viên.', c: [['Mở mục TREND', 'Tab [[Lao động]] → bấm [[TREND]] ở hàng chọn công ty.']] },
       { i: '🪪', t: 'Thêm lịch phỏng vấn bằng ảnh CCCD', m: 'Chụp hoặc chọn ảnh 2 mặt CCCD, app tự điền họ tên, số CCCD và ngày sinh, báo nếu người đó đã từng phỏng vấn hoặc đã nhận việc. Ảnh đủ 2 mặt rõ nét được lưu luôn vào kho CCCD.', c: [['Thêm lịch', 'Bấm [[Thêm lịch phỏng vấn]] → [[Chụp hoặc chọn ảnh CCCD]] → kiểm tra lại họ tên, số CCCD → chọn ngày, giờ → [[Lưu lịch phỏng vấn]].'], ['Gửi danh sách cho Trend', 'Bấm [[Gửi danh sách]] cạnh ngày phỏng vấn → chọn người đưa đón đi cùng → [[Chép để gửi Zalo]] → dán vào nhóm Zalo.']] },
       { i: '✅', t: 'Ghi kết quả phỏng vấn', m: 'Chạm vào tên người phỏng vấn để ghi có đến không, có nhận việc không và lý do. Ghi nhận việc thì app tự thêm người đó vào danh sách nhận việc. Lịch đã qua ngày mà chưa ghi kết quả luôn hiện ở ô vàng đầu trang.', c: [['Ghi kết quả', 'Chạm tên → chọn [[Có đến]] hoặc [[Không đến]] → chọn kết quả và lý do → [[Lưu kết quả]].'], ['Người nghỉ việc', 'Chạm tên trong mục Đang làm → [[Báo nghỉ việc]] → chọn ngày nghỉ, ghi lý do.']] },
@@ -5747,6 +5755,7 @@ textarea.inp{font-family:inherit}
   function capBadge() {
     var b = document.querySelector('.nav button[data-t="ld"]'); if (!b) return;
     var n = choCanLam().length + tbDs().length, e = b.querySelector('.bd');
+    try { n += cqNhacDs().length; } catch (er) { }   // b153: hẹn nhận việc chờ xác nhận
     if (!n) { if (e) e.remove(); return; }
     if (!e) { e = document.createElement('span'); e.className = 'bd'; b.appendChild(e); }
     e.textContent = n > 99 ? '99+' : n;
@@ -6562,6 +6571,7 @@ textarea.inp{font-family:inherit}
       if (o.giong) { if (cu) cu.luc = Date.now(); return; }
       o.luc = Date.now(); CQ.d[ma] = o; cqLuu();
       if (S.tab === 'ld' && S.cty === ma && !S.hs && !document.querySelector('.sheet')) cqVe();
+      cqDaiNhac();
     }, function (e) {
       CQ.dang[ma] = 0; if (im) return; toast(e.message);
       var l = document.getElementById('list'); if (l && S.cty === ma && !CQ.d[ma]) l.innerHTML = '<div class="empty">' + esc(e.message) + '<br><br><button class="btn sm" id="cqThuLai">Thử lại</button></div>';
@@ -6575,10 +6585,35 @@ textarea.inp{font-family:inherit}
     return d.nv.filter(function (p) { return p.tt === 'Đang làm' && p.du7 && p.du7 <= hn && !p.tra && !cqLaVen(d, p); })
       .sort(function (a, b) { return a.du7 < b.du7 ? -1 : 1; });
   }
+  // b153: hẹn nhận việc – lịch PV kết quả "Hẹn nhận việc", đến ngày hẹn (8h) thì xác nhận đã đi làm chưa
+  function cqCho(d) { return d.pv.filter(function (p) { return p.kq === 'Hẹn nhận việc'; }).sort(function (a, b) { return (a.hen || '9') < (b.hen || '9') ? -1 : (a.hen || '9') > (b.hen || '9') ? 1 : 0; }); }
+  function cqToiNhac(d, p) {   // người tuyển nhận nhắc người của mình; người của ven / chưa ghi -> chủ, kế toán, sale phụ trách; quá 13h chủ thấy hết
+    var toi = S.toi || {}, ql = toi.vai === 'chu' || toi.vai === 'ketoan' || (toi.phuTrach || []).indexOf(d.cty) >= 0;
+    if (toi.vai === 'chu' && new Date().getHours() >= 13) return true;
+    if (!p.ng || cqLoaiNg(d, p.ng) === 'Ven') return ql;
+    return kd(p.ng) === kd(toi.saleTen || '');
+  }
+  function cqNhacDs() {   // các lịch hẹn nhận việc đã tới ngày, chưa xác nhận, thuộc phần việc của tôi
+    var hn = cqHn(), out = [];
+    ((S.toi && S.toi.ctt) || []).forEach(function (c) { var d = CQ.d[c.ma]; if (d) cqCho(d).forEach(function (p) { if (p.hen && p.hen <= hn && cqToiNhac(d, p)) out.push({ ma: c.ma, p: p }); }); });
+    return out;
+  }
+  function cqDaiNhac() {   // dải nhắc ngắn khi mở app (không bắt nhập), đóng được
+    var ds = cqNhacDs(), cu = document.getElementById('cqDai');
+    try { capBadge(); } catch (e) { }
+    if (!ds.length || CQ.daiTat || (S.tab === 'ld' && laCQ(S.cty))) { if (cu) cu.remove(); return; }
+    var qh = ds.filter(function (x) { return x.p.hen < cqHn(); }).length;
+    var t = (ds.length === 1 ? ds[0].p.ten + ' hẹn nhận việc' + (qh ? ' ngày ' + cqDM(ds[0].p.hen) : ' hôm nay') : ds.length + ' người hẹn nhận việc' + (qh ? ', ' + qh + ' người quá ngày' : ' hôm nay')) + ', chưa xác nhận.';
+    if (!cu) { cu = document.createElement('div'); cu.id = 'cqDai'; cu.className = 'cqDai'; document.body.appendChild(cu); }
+    cu.innerHTML = '<span class="cau">' + esc(t) + '</span><button class="btn sm" id="cqDaiXn">Xác nhận</button><button class="cqDaiX" id="cqDaiX" aria-label="Đóng">×</button>';
+    cu.querySelector('#cqDaiX').onclick = function () { CQ.daiTat = 1; cu.remove(); };
+    cu.querySelector('#cqDaiXn').onclick = function () { cu.remove(); S.cty = ds[0].ma; luu('vlta_cty', S.cty); moTab('ld'); };
+  }
   function cqVe() {
     var ma = S.cty, d = CQ.d[ma], l = document.getElementById('list'), hd = document.getElementById('ldHead');
     if (!l || !hd) return;
     if (!d) { hd.innerHTML = ''; l.innerHTML = '<div class="sk"></div>'.repeat(5); return; }
+    var dai = document.getElementById('cqDai'); if (dai) dai.remove();
     var hn = cqHn(), k = kd(S.q).trim(), kso = String(S.q || '').replace(/\D/g, '');
     if (k) {   // đang tìm: kết quả ngay dưới ô tìm
       hd.innerHTML = '';
@@ -6593,12 +6628,22 @@ textarea.inp{font-family:inherit}
     var h = '<div class="card hero cqHero"><div class="meta">' + esc(d.ten) + ' · đang làm chính thức</div>' +
       '<div class="row" style="align-items:baseline;gap:4px 10px;flex-wrap:wrap"><span class="big num">' + (dem.dangLam || 0) + '</span>' + (muc ? '<span class="cqMuc">/ ' + muc + ' người Trend yêu cầu</span>' : '') + '</div>' +
       (muc ? '<div class="cqThanh" role="img" aria-label="Đạt ' + tl + '% mục tiêu"><i style="width:' + tl + '%"></i></div>' + (dem.dangLam >= muc ? '<div class="meta" style="color:var(--good)">Đã đủ số người Trend yêu cầu</div>' : '<div class="meta">Còn thiếu ' + (muc - dem.dangLam) + ' người</div>') : '') +
-      '<div class="g3 cqG3"><div><span>Đã nhận việc</span><b class="num">' + (dem.daNhan || 0) + '</b></div><div><span>Đã nghỉ</span><b class="num">' + (dem.nghi || 0) + '</b></div><div><span>Hẹn nhận việc</span><b class="num">' + (dem.hen || 0) + '</b></div></div>' +
+      (dem.tamNghi ? '<div class="meta">Trong đó ' + dem.tamNghi + ' người tạm nghỉ</div>' : '') +
+      '<div class="g3 cqG3"><div><span>Đã nhận việc</span><b class="num">' + (dem.daNhan || 0) + '</b></div><div><span>Đã nghỉ</span><b class="num">' + (dem.nghi || 0) + '</b></div><div><span>Chờ nhận việc</span><b class="num">' + (dem.cho || 0) + '</b></div></div>' +
       (d.het ? '' : '<div class="meta cau" style="margin-top:10px">Danh sách bên dưới chỉ gồm những người bạn tuyển.</div>') + '</div>';
     // 1. chưa ghi kết quả phỏng vấn (luôn mở, nổi bật)
     var cg = cqCanGhi(d);
     if (cg.length) h += '<div class="ktk cqKtk"><div class="ktk-h">⚠ Chưa ghi kết quả phỏng vấn · ' + cg.length + ' người</div>' + cg.map(function (p) {
       return '<button class="ktr" data-pv="' + p.r + '"><span class="ktr-a">' + esc(cqChuTat(p.ten)) + '</span><span class="ktr-t"><b class="ell">' + esc(p.ten) + '</b><span class="cau">' + esc(cqDM(p.ngay)) + ' lúc ' + esc(p.gio) + ' · ' + esc(p.den ? 'Đã đến' : 'Chưa ghi có đến không') + '</span></span><span class="ktr-s" style="color:var(--blue)">Ghi kết quả</span></button>';
+    }).join('') + '</div>';
+    // 1b. hẹn nhận việc: tới ngày thì xác nhận (nổi bật), chưa tới ngày thì danh sách chờ
+    var cho = cqCho(d), toiNgay = cho.filter(function (p) { return p.hen && p.hen <= hn; }), sapToi = cho.filter(function (p) { return !p.hen || p.hen > hn; });
+    if (toiNgay.length) h += '<div class="ktk cqKtk"><div class="ktk-h">Hẹn nhận việc · ' + toiNgay.length + ' người chờ xác nhận</div>' + toiNgay.map(function (p) {
+      var qh = p.hen < hn;
+      return '<button class="ktr" data-xn="' + p.r + '"><span class="ktr-a">' + esc(cqChuTat(p.ten)) + '</span><span class="ktr-t"><b class="ell">' + esc(p.ten) + '</b><span class="cau"' + (qh ? ' style="color:var(--bad)"' : '') + '>' + esc((qh ? 'Hẹn ' + cqDM(p.hen) + ', quá ngày' : 'Hẹn hôm nay') + ' · ' + cqTenNg(p.ng)) + '</span></span><span class="ktr-s">Xác nhận</span></button>';
+    }).join('') + '</div>';
+    if (sapToi.length) h += '<div class="sec dot cam ell" style="margin:18px 4px 8px">Chờ nhận việc · ' + sapToi.length + ' người</div><div class="grp">' + sapToi.map(function (p) {
+      return '<button class="it" data-xn="' + p.r + '"><div style="min-width:0;flex:1"><div class="nm ell">' + esc(p.ten) + '</div><div class="sub ell">' + esc(['Phỏng vấn ' + cqDM(p.ngay), cqTenNg(p.ng)].join(' · ')) + '</div></div><span class="pill warn">' + (p.hen ? 'Hẹn ' + esc(cqDM(p.hen)) : 'Chưa có ngày') + '</span></button>';
     }).join('') + '</div>';
     // 2. thưởng 7 ngày (người Tâm An tuyển, đã qua ngày dự kiến đủ 7 ngày, chưa trả)
     var b7 = cqBay(d);
@@ -6624,9 +6669,8 @@ textarea.inp{font-family:inherit}
           '<div class="grp">' + ds.map(function (p) { return cqDongPV(p); }).join('') + '</div>';
       });
     }
-    // 4. đang làm (mới nhận việc lên đầu), hẹn nhận việc
-    var hen = d.nv.filter(function (p) { return p.tt === 'Hẹn nhận việc'; }), lam = d.nv.filter(function (p) { return p.tt === 'Đang làm' || p.tt === 'Chưa có ngày nhận việc'; }).sort(function (a, b) { return a.nv > b.nv ? -1 : a.nv < b.nv ? 1 : 0; }), nghi = d.nv.filter(function (p) { return p.tt === 'Đã nghỉ'; });
-    if (hen.length) h += '<div class="sec" style="margin:18px 4px 8px">Hẹn nhận việc · ' + hen.length + '</div><div class="grp">' + hen.map(function (p) { return cqDongNV(d, p); }).join('') + '</div>';
+    // 4. đang làm (tạm nghỉ lên đầu, rồi mới nhận việc), đã nghỉ (gập)
+    var lam = d.nv.filter(function (p) { return p.tt !== 'Đã nghỉ'; }).sort(function (a, b) { var ta = a.tt === 'Tạm nghỉ' ? 0 : 1, tb = b.tt === 'Tạm nghỉ' ? 0 : 1; return ta !== tb ? ta - tb : (a.nv > b.nv ? -1 : a.nv < b.nv ? 1 : 0); }), nghi = d.nv.filter(function (p) { return p.tt === 'Đã nghỉ'; }).sort(function (a, b) { return a.nghi > b.nghi ? -1 : 1; });
     h += '<div class="sec dot xanh" style="margin:18px 4px 8px">Đang làm · ' + lam.length + '</div>' + (lam.length ? '<div class="grp">' + lam.map(function (p) { return cqDongNV(d, p); }).join('') + '</div>' : '<div class="empty" style="padding:14px 10px">Chưa có ai.</div>');
     if (nghi.length) h += CQ.moNghi ? '<div class="sec" style="margin:18px 4px 8px">Đã nghỉ · ' + nghi.length + '</div><div class="grp">' + nghi.map(function (p) { return cqDongNV(d, p); }).join('') + '</div>' :
       '<button class="ckt nghi" id="cqMoNghi"><span class="ell" style="flex:1;color:var(--muted)">Đã nghỉ · ' + nghi.length + ' người</span><i>›</i></button>';
@@ -6656,6 +6700,7 @@ textarea.inp{font-family:inherit}
   function cqChuTat(t) { return String(t || '').split(' ').slice(-2).map(function (w) { return w.charAt(0); }).join('').toUpperCase(); }
   function cqTtPV(p) {
     if (p.kq === 'Nhận việc') return '<span class="pill good">Nhận việc</span>';
+    if (p.kq === 'Hẹn nhận việc') return '<span class="pill warn">' + (p.hen ? 'Hẹn ' + esc(cqDM(p.hen)) : 'Hẹn nhận việc') + '</span>';
     if (p.kq === 'Không nhận việc') return '<span class="pill mo">Không nhận</span>';
     if (p.kq === 'Không đến') return '<span class="pill mo">Không đến</span>';
     if (p.den) return '<span class="pill warn">Đã đến</span>';
@@ -6666,12 +6711,13 @@ textarea.inp{font-family:inherit}
       esc([coNgay ? cqDM(p.ngay) + ' ' + p.gio : p.gio, p.ng ? tenSale(p.ng) : '', 'CCCD ' + cqSoCCCD(p.cccd), p.ly].filter(String).join(' · ')) + '</div></div>' + cqTtPV(p) + '</button>';
   }
   function cqDongNV(d, p) {
-    var tag = p.tt === 'Hẹn nhận việc' ? '<span class="pill warn">Hẹn ' + esc(cqDM(p.nv)) + '</span>' : (p.tra ? '<span class="pill good">' + (cqLaVen(d, p) ? 'Đã ứng cho ven' : 'Đã thưởng 7 ngày') + '</span>' : '');
+    var tag = p.tt === 'Tạm nghỉ' ? '<span class="pill ' + (p.tamNgay > 3 ? 'bad' : 'warn') + '">Tạm nghỉ' + (p.tamNgay ? ' ' + p.tamNgay + ' ngày' : '') + '</span>' : p.mot ? '<span class="pill bad">Làm 1 ngày</span>' :
+      p.tt === 'Hẹn nhận việc' ? '<span class="pill warn">Hẹn ' + esc(cqDM(p.nv)) + '</span>' : (p.tra ? '<span class="pill good">' + (cqLaVen(d, p) ? 'Đã ứng cho ven' : 'Đã thưởng 7 ngày') + '</span>' : '');
     return '<button class="it" data-nv="' + p.r + '"><div style="min-width:0;flex:1"><div class="nm ell">' + esc(p.ten) + '</div><div class="sub ell">' +
-      esc([p.tt === 'Đã nghỉ' ? 'Nghỉ từ ' + cqDM(p.nghi) : 'Nhận việc ' + cqDM(p.nv), cqTenNg(p.ng), p.dot].filter(String).join(' · ')) + '</div></div>' + tag + '</button>';
+      esc([p.tt === 'Đã nghỉ' ? 'Nghỉ từ ' + cqDM(p.nghi) + (p.soNg ? ', làm ' + p.soNg + ' ngày' : '') : p.tt === 'Tạm nghỉ' ? 'Tạm nghỉ từ ' + cqDM(p.nghi) : 'Nhận việc ' + cqDM(p.nv), cqTenNg(p.ng), p.dot].filter(String).join(' · ')) + '</div></div>' + tag + '</button>';
   }
   function cqGan(box, d) {
-    box.querySelectorAll('[data-pv]').forEach(function (b) { b.onclick = function () { var r = Number(b.getAttribute('data-pv')), p = d.pv.filter(function (x) { return x.r === r; })[0]; if (p) cqMoPV(p); }; });
+    box.querySelectorAll('[data-pv],[data-xn]').forEach(function (b) { b.onclick = function () { var r = Number(b.getAttribute('data-pv') || b.getAttribute('data-xn')), p = d.pv.filter(function (x) { return x.r === r; })[0]; if (p) { if (p.kq === 'Hẹn nhận việc') cqXacNhan(p); else cqMoPV(p); } }; });
     box.querySelectorAll('[data-nv]').forEach(function (b) { b.onclick = function () { var r = Number(b.getAttribute('data-nv')), p = d.nv.filter(function (x) { return x.r === r; })[0]; if (p) cqMoNV(p); }; });
     box.querySelectorAll('[data-gui]').forEach(function (b) { b.onclick = function () { cqGuiDs(d, b.getAttribute('data-gui')); }; });
   }
@@ -6810,7 +6856,7 @@ textarea.inp{font-family:inherit}
   // ---- cập nhật kết quả phỏng vấn ----
   function cqMoPV(p) {
     var d = CQ.d[S.cty]; if (!d) return;
-    var st = { den: p.kq === 'Không đến' ? 0 : (p.den || p.kq ? 1 : null), kq: p.kq === 'Không đến' ? '' : p.kq, ly: p.ly, ngayNV: p.ngay };
+    var st = { den: p.kq === 'Không đến' ? 0 : (p.den || p.kq ? 1 : null), kq: p.kq === 'Không đến' ? '' : p.kq, ly: p.ly, ngayNV: p.ngay, ngayHen: p.hen || cqCong(cqHn() > p.ngay ? cqHn() : p.ngay, 1) };
     var nvCo = d.nv.filter(function (y) { return y.cccd && y.cccd === p.cccd; })[0];
     if (nvCo && nvCo.nv) st.ngayNV = nvCo.nv;
     var ns = cqNamSinh(p.cccd);
@@ -6824,7 +6870,8 @@ textarea.inp{font-family:inherit}
     function ve() {
       var ly = d.cc.lydo || [], lyKD = ly.filter(function (s) { return /hẹn|liên lạc/i.test(s); }), lyKN = ly.filter(function (s) { return !/hẹn|liên lạc/i.test(s); });
       f.innerHTML = '<label class="lb" style="margin-top:12px">Có đến phỏng vấn không?</label><div class="seg" id="cqDen"><button data-d="1"' + (st.den === 1 ? ' class="on"' : '') + '>Có đến</button><button data-d="0"' + (st.den === 0 ? ' class="on"' : '') + '>Không đến</button></div>' +
-        (st.den === 1 ? '<label class="lb" style="margin-top:12px">Kết quả</label><div class="seg" id="cqKq"><button data-k="Nhận việc"' + (st.kq === 'Nhận việc' ? ' class="on"' : '') + '>Nhận việc</button><button data-k="Không nhận việc"' + (st.kq === 'Không nhận việc' ? ' class="on"' : '') + '>Không nhận việc</button><button data-k=""' + (!st.kq ? ' class="on"' : '') + '>Chưa rõ</button></div>' : '') +
+        (st.den === 1 ? '<label class="lb" style="margin-top:12px">Kết quả</label><div class="cqChips cqKq2" id="cqKq">' + [['Nhận việc', 'Nhận việc (đi làm luôn)'], ['Hẹn nhận việc', 'Hẹn nhận việc'], ['Không nhận việc', 'Không nhận việc'], ['', 'Chưa rõ']].map(function (x) { return '<button data-k="' + x[0] + '"' + (st.kq === x[0] ? ' class="on"' : '') + '>' + x[1] + '</button>'; }).join('') + '</div>' : '') +
+        (st.den === 1 && st.kq === 'Hẹn nhận việc' ? '<div><label class="lb" style="margin-top:12px">Ngày hẹn nhận việc</label><input class="inp" id="cqNgHen" type="date" min="' + esc(p.ngay) + '" value="' + esc(st.ngayHen) + '"></div><div class="meta cau" style="margin-top:6px">Đến ngày này lúc 8 giờ app nhắc ' + (p.ng ? 'người tuyển' : 'quản lý') + ' xác nhận đã đi làm chưa. Đi làm rồi mới vào danh sách nhận việc.</div>' : '') +
         (st.den === 1 && st.kq === 'Nhận việc' ? '<div><label class="lb" style="margin-top:12px">Ngày nhận việc</label><input class="inp" id="cqNgNV" type="date" value="' + esc(st.ngayNV) + '"></div>' + (p.ng ? '' : '<div class="note warn" style="margin-top:8px">Dòng này chưa có người tuyển. Ghi người tuyển trên Google Sheet trước rồi mới ghi nhận việc.</div>') +
           (nvCo ? '' : '<div class="meta" style="margin-top:6px">App sẽ thêm người này vào danh sách nhận việc.</div>') : '') +
         ((st.den === 1 && st.kq === 'Không nhận việc') || st.den === 0 ? '<label class="lb" style="margin-top:12px">Lý do</label><div class="cqChips" id="cqLy">' + (st.den === 0 ? lyKD : lyKN).map(function (s) { return '<button data-l="' + esc(s) + '"' + (st.ly === s ? ' class="on"' : '') + '>' + esc(s) + '</button>'; }).join('') + '</div><input class="inp" id="cqLyKhac" placeholder="Lý do khác" value="' + esc((st.den === 0 ? lyKD : lyKN).indexOf(st.ly) >= 0 ? '' : st.ly || '') + '" style="margin-top:8px">' : '') +
@@ -6834,6 +6881,7 @@ textarea.inp{font-family:inherit}
       f.querySelectorAll('#cqLy button').forEach(function (b) { b.onclick = function () { st.ly = st.ly === b.getAttribute('data-l') ? '' : b.getAttribute('data-l'); var k2 = f.querySelector('#cqLyKhac'); if (k2) k2.value = ''; f.querySelectorAll('#cqLy button').forEach(function (z) { z.classList.toggle('on', z.getAttribute('data-l') === st.ly); }); }; });
       var lk = f.querySelector('#cqLyKhac'); if (lk) lk.oninput = function () { if (lk.value.trim()) { st.ly = lk.value.trim(); f.querySelectorAll('#cqLy button').forEach(function (z) { z.classList.remove('on'); }); } };
       var nn = f.querySelector('#cqNgNV'); if (nn) nn.onchange = function () { st.ngayNV = nn.value; };
+      var nh = f.querySelector('#cqNgHen'); if (nh) nh.onchange = function () { st.ngayHen = nh.value; };
       var hl = f.querySelector('#cqHenLai'); if (hl) hl.onclick = function () { sh.remove(); cqThemPV({ ten: p.ten, cccd: p.cccd, sdt: p.sdt, ng: p.ng, gio: p.gio, ngay: cqCong(cqHn() < p.ngay ? p.ngay : cqHn(), 1) }); };
     }
     ve();
@@ -6842,12 +6890,15 @@ textarea.inp{font-family:inherit}
       if (st.den === null) { m.textContent = 'Chọn có đến hay không.'; return; }
       var kq = st.den === 0 ? 'Không đến' : st.kq;
       if (kq === 'Nhận việc' && !st.ngayNV) { m.textContent = 'Chọn ngày nhận việc.'; return; }
+      if (kq === 'Nhận việc' && st.ngayNV > cqHn()) { m.textContent = 'Chưa tới ngày nhận việc. Người hẹn ngày khác mới đi làm thì chọn Hẹn nhận việc.'; return; }
+      if (kq === 'Hẹn nhận việc' && (!st.ngayHen || st.ngayHen < p.ngay)) { m.textContent = 'Chọn ngày hẹn nhận việc (từ ngày phỏng vấn trở đi).'; return; }
       if (kq === 'Nhận việc' && !p.ng) { m.textContent = 'Dòng này chưa có người tuyển.'; return; }
       if (kq === 'Không nhận việc' && !st.ly) { m.textContent = 'Chọn hoặc gõ lý do không nhận việc.'; return; }
-      var q = { v: 'ctPvSua', r: p.r, khoa: { ten: p.ten, cccd: p.cccd, ngay: p.ngay }, den: st.den === 1, kq: kq, ly: kq === 'Nhận việc' ? '' : st.ly, ngayNV: kq === 'Nhận việc' ? st.ngayNV : '' };
+      var q = { v: 'ctPvSua', r: p.r, khoa: { ten: p.ten, cccd: p.cccd, ngay: p.ngay }, den: st.den === 1, kq: kq, ly: kq === 'Nhận việc' || kq === 'Hẹn nhận việc' ? '' : st.ly, ngayNV: kq === 'Nhận việc' ? st.ngayNV : '', ngayHen: kq === 'Hẹn nhận việc' ? st.ngayHen : '' };
       cqGhi(q, function (o) {
-        sh.remove(); p.den = q.den; p.kq = kq; p.ly = q.ly; cqVe();
-        toast(kq === 'Nhận việc' ? 'Đã ghi ' + p.ten + ' nhận việc ngày ' + cqDM(st.ngayNV) + (o.nvMoi ? ' và thêm vào danh sách nhận việc' : '') : 'Đã lưu kết quả phỏng vấn của ' + p.ten);
+        sh.remove(); p.den = q.den; p.kq = kq; p.ly = q.ly; if (kq === 'Hẹn nhận việc') p.hen = st.ngayHen; cqVe(); cqDaiNhac();
+        toast(kq === 'Nhận việc' ? 'Đã ghi ' + p.ten + ' nhận việc ngày ' + cqDM(st.ngayNV) + (o.nvMoi ? ' và thêm vào danh sách nhận việc' : '') : kq === 'Hẹn nhận việc' ? 'Đã ghi ' + p.ten + ' hẹn nhận việc ngày ' + cqDM(st.ngayHen) : 'Đã lưu kết quả phỏng vấn của ' + p.ten);
+        if (o.nvMoi) cqTai(S.cty);
       }, this);
     };
   }
@@ -6860,7 +6911,7 @@ textarea.inp{font-family:inherit}
     var h = '<h3 class="ell">' + esc(p.ten) + '</h3><div class="meta">' + esc([p.tt, p.dot, cqTenNg(p.ng)].filter(String).join(' · ')) + '</div>' +
       '<div class="cqKhoi">' + dong('CCCD', esc(p.cccd || '–')) + dong('Ngày sinh', esc(ns || (nsCc ? 'năm ' + nsCc.nam : '–')) + (lech ? ' <span class="pill bad">lệch năm sinh trên CCCD</span>' : '')) +
       dong('Mã nhân viên Trend', p.ma ? esc(p.ma) : '<span class="mo">Chưa có</span>') + dong('Phỏng vấn', esc(cqDM(p.pv, 1) || '–')) + dong('Nhận việc', esc(cqDM(p.nv, 1) || '–')) +
-      (p.nghi ? dong('Nghỉ từ', esc(cqDM(p.nghi, 1))) : '') + '</div>' +
+      (p.nghi ? dong(p.tt === 'Tạm nghỉ' ? 'Tạm nghỉ từ' : 'Nghỉ từ', esc(cqDM(p.nghi, 1))) : '') + dong('Số ngày đã làm', p.soNg + ' ngày' + (p.mot ? ' <span class="pill bad">Làm 1 ngày</span>' : '')) + (p.lyN ? dong('Lý do nghỉ', esc(p.lyN)) : '') + '</div>' +
       '<div class="cqKhoi">' + dong('Thưởng Trend', p.thT ? '<span class="tien">' + vnd(p.thT) + ' đ</span>' : '–') + dong('Thưởng Tâm An', typeof p.thA === 'number' ? '<span class="tien">' + vnd(p.thA) + ' đ</span>' : esc(p.thA || '–')) +
       dong('Dự kiến đủ 7 ngày', esc(cqDM(p.du7, 1) || '–')) + dong('Trend xác nhận 7 ngày', p.xn ? esc(p.xn) : '<span class="mo">Chưa có</span>') +
       dong(ven ? 'Tâm An đã ứng cho ven' : 'Đã trả thưởng 7 ngày', p.tra ? '<span class="tien" style="color:var(--good)">' + vnd(p.tra) + ' đ</span>' + (p.ngTra ? ' <span class="meta">' + esc(cqDM(p.ngTra)) + '</span>' : '') : '<span class="mo">Chưa</span>') + '</div>' +
@@ -6871,9 +6922,8 @@ textarea.inp{font-family:inherit}
     function ghiNv(f, gt, them, nut, sau) { var q = { v: 'ctNvSua', r: p.r, khoa: { ten: p.ten, cccd: p.cccd }, f: f, gt: gt }; for (var k in them || {}) q[k] = them[k]; return cqGhi(q, function () { sh.remove(); if (sau) sau(); }, nut); }
     var a = '';
     a += '<div class="cqDong"><input class="inp" id="cqMa" placeholder="Ví dụ VT000785" value="' + esc(p.ma) + '" autocapitalize="characters"><button class="btn sm" id="cqLuuMa">Lưu mã</button></div>';
-    if (p.tt === 'Đã nghỉ') a += '<button class="btn ghost" id="cqLamLai">Đi làm lại (bỏ ngày nghỉ)</button>';
-    else a += '<button class="btn ghost" id="cqBaoNghi">Báo nghỉ việc</button>';
-    if (ql && p.tt !== 'Hẹn nhận việc') {
+    a += '<label class="lb" style="margin-top:14px">Trạng thái</label><div class="seg" id="cqTT">' + ['Đang làm', 'Tạm nghỉ', 'Đã nghỉ'].map(function (t) { return '<button data-t="' + t + '"' + (p.tt === t ? ' class="on"' : '') + '>' + t + '</button>'; }).join('') + '</div>';
+    if (ql && p.tt === 'Đang làm') {
       if (!ven) a += '<div class="lb" style="margin-top:14px">Trend kiểm tra bảng công 7 ngày</div><div class="seg" id="cqXn"><button data-x="Đủ 7 ngày"' + (p.xn === 'Đủ 7 ngày' ? ' class="on"' : '') + '>Đủ 7 ngày</button><button data-x="Chưa đủ"' + (p.xn === 'Chưa đủ' ? ' class="on"' : '') + '>Chưa đủ</button><button data-x=""' + (!p.xn ? ' class="on"' : '') + '>Chưa trả lời</button></div>';
       if (!p.tra) {
         var duoc = ven || p.xn === 'Đủ 7 ngày';
@@ -6884,8 +6934,11 @@ textarea.inp{font-family:inherit}
     act.innerHTML = a;
     var $ = function (id) { return sh.querySelector('#' + id); };
     $('cqLuuMa').onclick = function () { var v = $('cqMa').value.trim().toUpperCase(); if (v === p.ma) { sh.remove(); return; } if (v && !/^[A-Z]{1,4}\d{3,8}$/.test(v)) { $('cqM').textContent = 'Mã nhân viên Trend có dạng VT000785.'; return; } ghiNv('ma', v, null, this, function () { p.ma = v; cqVe(); toast('Đã lưu mã ' + (v || '(trống)') + ' cho ' + p.ten); }); };
-    if ($('cqLamLai')) $('cqLamLai').onclick = function () { ghiNv('nghi', '', null, this, function () { p.nghi = ''; p.tt = 'Đang làm'; cqVe(); toast(p.ten + ' đã đi làm lại'); }); };
-    if ($('cqBaoNghi')) $('cqBaoNghi').onclick = function () { sh.remove(); cqBaoNghi(p); };
+    sh.querySelectorAll('#cqTT button').forEach(function (b) { b.onclick = function () {
+      var t = b.getAttribute('data-t'); if (t === p.tt) return;
+      if (t === 'Đang làm') ghiNv('tt', t, null, null, function () { p.tt = 'Đang làm'; p.nghi = ''; p.lyN = ''; p.mot = 0; p.tamNgay = 0; cqVe(); toast(p.ten + ' đã đi làm lại'); cqTai(S.cty); });
+      else { sh.remove(); cqDoiTT(p, t); }
+    }; });
     sh.querySelectorAll('#cqXn button').forEach(function (b) { b.onclick = function () { var v = b.getAttribute('data-x'); if (v === p.xn) return; ghiNv('xn', v, null, null, function () { p.xn = v; cqVe(); toast(v ? 'Đã ghi Trend: ' + v.toLowerCase() + ' – ' + p.ten : 'Đã xoá xác nhận của Trend'); cqMoNV(p); }); }; });
     if ($('cqTra')) $('cqTra').onclick = function () {
       var so = Number(String($('cqSoTra').value).replace(/\D/g, ''));
@@ -6898,19 +6951,83 @@ textarea.inp{font-family:inherit}
       });
     };
   }
-  function cqBaoNghi(p) {
-    var hn = cqHn();
-    var sh = moSheet('<h3 class="ell">Báo nghỉ việc · ' + esc(p.ten) + '</h3><div><label class="lb">Nghỉ từ ngày</label><input class="inp" id="cqNgay" type="date" value="' + hn + '"></div>' +
-      '<div><label class="lb">Lý do</label><input class="inp" id="cqLy" placeholder="Vd: làm nặng không theo được"></div><div class="meta cau">Người nghỉ trước ngày trả thưởng thì mất phần thưởng chưa tới hạn. Trend vẫn trả Tâm An những ngày đã làm (từ 2 ngày trở lên).</div>' +
-      '<div class="msg" id="cqM"></div><button class="btn" id="cqOk">Ghi nghỉ việc</button><button class="btn ghost" id="cqHuy">Thôi</button>');
+  function cqNgayLam(tu, den) {   // số ngày làm (bỏ Chủ nhật), tính cả 2 đầu
+    if (!tu || !den || den < tu) return 0;
+    var n = 0, d = tu; while (d <= den) { var m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(d); if (new Date(Number(m[1]), Number(m[2]) - 1, Number(m[3])).getDay()) n++; d = cqCong(d, 1); }
+    return n;
+  }
+  // b153: xác nhận người hẹn nhận việc đã đi làm chưa
+  function cqXacNhan(p) {
+    var d = CQ.d[S.cty]; if (!d) return;
+    var hn = cqHn(), toiNgay = p.hen && p.hen <= hn, st = { c: toiNgay ? 'di' : 'chua', ngayNV: toiNgay ? (p.hen > hn ? hn : p.hen) : '', cach: 'henLai', ngayHen: cqCong(hn > (p.hen || '') ? hn : p.hen, 1), ly: '' };
+    var sh = moSheet('<h3 class="ell">' + esc(p.ten) + '</h3><div class="meta cau">' + (p.hen ? 'Hẹn nhận việc ' + esc(cqThu(p.hen)) + ' ' + esc(cqDM(p.hen, 1)) + ' lúc 8 giờ' : 'Hẹn nhận việc, chưa ghi ngày') + ' · ' + esc(cqTenNg(p.ng)) + '</div>' +
+      '<div class="meta">Phỏng vấn ' + esc(cqDM(p.ngay, 1)) + ' · CCCD ' + esc(p.cccd) + (p.sdt ? ' · <a href="tel:' + esc(p.sdt) + '">' + esc(p.sdt) + '</a>' : '') + '</div><div id="cqXnF"></div><div class="msg" id="cqM"></div><button class="btn" id="cqOk">Lưu</button><button class="btn ghost" id="cqHuy">Thôi</button>');
     sh.querySelector('#cqHuy').onclick = function () { sh.remove(); };
+    var f = sh.querySelector('#cqXnF'), lyKN = (d.cc.lydo || []).filter(function (s) { return !/hẹn|liên lạc/i.test(s); }).concat(['Không liên lạc được']);
+    function ve() {
+      f.innerHTML = '<label class="lb" style="margin-top:12px">Người này đã đi làm chưa?</label><div class="seg" id="cqC"><button data-c="di"' + (st.c === 'di' ? ' class="on"' : '') + (toiNgay ? '' : ' disabled') + '>Đã đi làm</button><button data-c="chua"' + (st.c === 'chua' ? ' class="on"' : '') + '>Chưa đi làm</button></div>' +
+        (toiNgay ? '' : '<div class="meta cau" style="margin-top:6px">Chưa tới ngày hẹn nên chưa xác nhận đi làm được. Có thể đổi ngày hẹn hoặc báo không đi làm nữa.</div>') +
+        (st.c === 'di' ? '<div><label class="lb" style="margin-top:12px">Ngày bắt đầu đi làm</label><input class="inp" id="cqNgNV" type="date" min="' + esc(p.ngay) + '" max="' + hn + '" value="' + esc(st.ngayNV) + '"></div><div class="meta cau" style="margin-top:6px">Lưu xong người này vào danh sách nhận việc' + (p.ng ? '' : '. Dòng này chưa có người tuyển, ghi người tuyển trên Google Sheet trước') + '.</div>' :
+          '<div class="cqChips" id="cqCach" style="margin-top:12px"><button data-h="henLai"' + (st.cach === 'henLai' ? ' class="on"' : '') + '>Hẹn lại ngày khác</button><button data-h="khong"' + (st.cach === 'khong' ? ' class="on"' : '') + '>Không đi làm nữa</button></div>' +
+          (st.cach === 'henLai' ? '<div><label class="lb" style="margin-top:12px">Ngày hẹn mới</label><input class="inp" id="cqNgHen" type="date" min="' + hn + '" value="' + esc(st.ngayHen) + '"></div>' :
+            '<label class="lb" style="margin-top:12px">Lý do</label><div class="cqChips" id="cqLy">' + lyKN.map(function (s) { return '<button data-l="' + esc(s) + '"' + (st.ly === s ? ' class="on"' : '') + '>' + esc(s) + '</button>'; }).join('') + '</div><input class="inp" id="cqLyKhac" placeholder="Lý do khác" style="margin-top:8px">'));
+      f.querySelectorAll('#cqC button').forEach(function (b) { b.onclick = function () { if (b.disabled) return; st.c = b.getAttribute('data-c'); ve(); }; });
+      f.querySelectorAll('#cqCach button').forEach(function (b) { b.onclick = function () { st.cach = b.getAttribute('data-h'); ve(); }; });
+      f.querySelectorAll('#cqLy button').forEach(function (b) { b.onclick = function () { st.ly = b.getAttribute('data-l'); f.querySelectorAll('#cqLy button').forEach(function (z) { z.classList.toggle('on', z === b); }); var k2 = f.querySelector('#cqLyKhac'); if (k2) k2.value = ''; }; });
+      var lk = f.querySelector('#cqLyKhac'); if (lk) lk.oninput = function () { if (lk.value.trim()) { st.ly = lk.value.trim(); f.querySelectorAll('#cqLy button').forEach(function (z) { z.classList.remove('on'); }); } };
+      var nn = f.querySelector('#cqNgNV'); if (nn) nn.onchange = function () { st.ngayNV = nn.value; };
+      var nh = f.querySelector('#cqNgHen'); if (nh) nh.onchange = function () { st.ngayHen = nh.value; };
+    }
+    ve();
     sh.querySelector('#cqOk').onclick = function () {
-      var n = sh.querySelector('#cqNgay').value, ly = sh.querySelector('#cqLy').value.trim();
-      if (!n) { sh.querySelector('#cqM').textContent = 'Chọn ngày nghỉ.'; return; }
-      cqGhi({ v: 'ctNvSua', r: p.r, khoa: { ten: p.ten, cccd: p.cccd }, f: 'nghi', gt: n, ly: ly }, function () { sh.remove(); p.nghi = n; p.tt = 'Đã nghỉ'; cqVe(); toast('Đã ghi ' + p.ten + ' nghỉ từ ' + cqDM(n)); }, this);
+      var m = sh.querySelector('#cqM'), q = { v: 'ctPvSua', r: p.r, khoa: { ten: p.ten, cccd: p.cccd, ngay: p.ngay }, den: true }, bao;
+      if (st.c === 'di') {
+        if (!st.ngayNV || st.ngayNV > hn || st.ngayNV < p.ngay) { m.textContent = 'Chọn ngày bắt đầu đi làm (không sau hôm nay).'; return; }
+        if (!p.ng) { m.textContent = 'Dòng này chưa có người tuyển.'; return; }
+        q.kq = 'Nhận việc'; q.ngayNV = st.ngayNV; bao = 'Đã ghi ' + p.ten + ' đi làm từ ' + cqDM(st.ngayNV);
+      } else if (st.cach === 'henLai') {
+        if (!st.ngayHen || st.ngayHen < hn) { m.textContent = 'Chọn ngày hẹn mới (từ hôm nay trở đi).'; return; }
+        q.kq = 'Hẹn nhận việc'; q.ngayHen = st.ngayHen; bao = 'Đã đổi ngày hẹn của ' + p.ten + ' sang ' + cqDM(st.ngayHen);
+      } else {
+        if (!st.ly) { m.textContent = 'Chọn hoặc gõ lý do.'; return; }
+        q.kq = 'Không nhận việc'; q.ly = st.ly; bao = 'Đã ghi ' + p.ten + ' không nhận việc';
+      }
+      cqGhi(q, function (o) {
+        sh.remove(); p.kq = q.kq; if (q.ngayHen) p.hen = q.ngayHen; if (q.ly) p.ly = q.ly;
+        cqVe(); cqDaiNhac(); toast(bao + (o.nvMoi ? ', đã thêm vào danh sách nhận việc' : ''));
+        if (q.kq === 'Nhận việc') cqTai(S.cty);
+      }, this);
     };
   }
-
+  // b153: đổi trạng thái Đang làm / Tạm nghỉ / Đã nghỉ
+  function cqDoiTT(p, tt) {
+    var d = CQ.d[S.cty]; if (!d) return;
+    var hn = cqHn(), lyN = (d.cc.lydoN && d.cc.lydoN.length ? d.cc.lydoN : ['Hàng nặng, không làm được', 'Chưa quen việc', 'Gia đình, con ốm', 'Sức khoẻ', 'Đi làm chỗ khác', 'Không liên lạc được']), st = { ngay: hn, ly: '' };
+    var sh = moSheet('<h3 class="ell">' + esc(tt) + ' · ' + esc(p.ten) + '</h3><div class="meta">Nhận việc ' + esc(cqDM(p.nv, 1)) + '</div>' +
+      '<div><label class="lb">' + (tt === 'Tạm nghỉ' ? 'Tạm nghỉ từ ngày' : 'Nghỉ từ ngày (ngày đầu tiên không đi làm)') + '</label><input class="inp" id="cqNgay" type="date" min="' + esc(p.nv) + '" value="' + hn + '"></div>' +
+      '<div class="note" id="cqSoNg" style="margin-top:10px"></div>' +
+      '<label class="lb" style="margin-top:12px">Lý do</label><div class="cqChips" id="cqLy">' + lyN.map(function (s) { return '<button data-l="' + esc(s) + '">' + esc(s) + '</button>'; }).join('') + '</div><input class="inp" id="cqLyKhac" placeholder="Lý do khác" style="margin-top:8px">' +
+      (tt === 'Đã nghỉ' ? '<div class="meta cau" style="margin-top:8px">Người nghỉ trước ngày trả thưởng thì mất phần thưởng chưa tới hạn. Trend vẫn trả Tâm An những ngày đã làm (từ 2 ngày trở lên).</div>' : '<div class="meta cau" style="margin-top:8px">Tạm nghỉ vẫn tính là đang làm. Quá 3 ngày app nhắc người tuyển gọi hỏi lại.</div>') +
+      '<div class="msg" id="cqM"></div><button class="btn" id="cqOk">Lưu</button><button class="btn ghost" id="cqHuy">Thôi</button>');
+    var $ = function (id) { return sh.querySelector('#' + id); };
+    function soNg() {
+      var n = cqNgayLam(p.nv, cqCong(st.ngay, -1)), t = 'Đã làm ' + n + ' ngày' + (n ? ' (' + cqDM(p.nv) + (n > 1 ? ' – ' + cqDM(cqCong(st.ngay, -1)) : '') + ')' : '') + ', không tính Chủ nhật.';
+      if (tt === 'Đã nghỉ' && n <= 1) t += ' Làm 1 ngày trở xuống coi như không nhận việc, không tính vào số đã nhận việc.';
+      $('cqSoNg').textContent = t; $('cqSoNg').className = 'note' + (tt === 'Đã nghỉ' && n <= 1 ? ' warn' : '');
+    }
+    soNg();
+    $('cqNgay').onchange = function () { st.ngay = this.value || hn; soNg(); };
+    sh.querySelectorAll('#cqLy button').forEach(function (b) { b.onclick = function () { st.ly = b.getAttribute('data-l'); sh.querySelectorAll('#cqLy button').forEach(function (z) { z.classList.toggle('on', z === b); }); $('cqLyKhac').value = ''; }; });
+    $('cqLyKhac').oninput = function () { if (this.value.trim()) { st.ly = this.value.trim(); sh.querySelectorAll('#cqLy button').forEach(function (z) { z.classList.remove('on'); }); } };
+    $('cqHuy').onclick = function () { sh.remove(); };
+    $('cqOk').onclick = function () {
+      if (!st.ngay || st.ngay < p.nv) { $('cqM').textContent = 'Ngày nghỉ phải từ ngày nhận việc trở đi.'; return; }
+      cqGhi({ v: 'ctNvSua', r: p.r, khoa: { ten: p.ten, cccd: p.cccd }, f: 'tt', gt: tt, ngay: st.ngay, ly: st.ly }, function () {
+        sh.remove(); p.tt = tt; p.nghi = st.ngay; p.lyN = st.ly; p.soNg = cqNgayLam(p.nv, cqCong(st.ngay > hn ? hn : st.ngay, -1)); p.mot = tt === 'Đã nghỉ' && p.soNg <= 1 ? 1 : 0; p.tamNgay = 0;
+        cqVe(); toast(p.mot ? p.ten + ' làm 1 ngày rồi nghỉ, coi như không nhận việc' : 'Đã ghi ' + p.ten + ' ' + tt.toLowerCase() + ' từ ' + cqDM(st.ngay)); cqTai(S.cty);
+      }, this);
+    };
+  }
   // ---------- thu nhập của tôi ----------
   function veThuNhap() {
     khung('Thu nhập của tôi', S.toi.ten + ' · ' + S.toi.chuc, '', '<div class="sk" style="height:140px"></div><div class="sk" style="height:220px"></div>');
