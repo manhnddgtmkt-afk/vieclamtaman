@@ -6655,7 +6655,7 @@ textarea.inp{font-family:inherit}
       esc([coNgay ? cqDM(p.ngay) + ' ' + p.gio : p.gio, p.ng ? tenSale(p.ng) : '', 'CCCD ' + cqSoCCCD(p.cccd), p.ly].filter(String).join(' · ')) + '</div></div>' + cqTtPV(p) + '</button>';
   }
   function cqDongNV(d, p) {
-    var tag = p.tt === 'Hẹn nhận việc' ? '<span class="pill warn">Hẹn ' + esc(cqDM(p.nv)) + '</span>' : (p.tra ? '<span class="pill good">Đã thưởng 7 ngày</span>' : '');
+    var tag = p.tt === 'Hẹn nhận việc' ? '<span class="pill warn">Hẹn ' + esc(cqDM(p.nv)) + '</span>' : (p.tra ? '<span class="pill good">' + (cqLaVen(d, p) ? 'Đã ứng cho ven' : 'Đã thưởng 7 ngày') + '</span>' : '');
     return '<button class="it" data-nv="' + p.r + '"><div style="min-width:0;flex:1"><div class="nm ell">' + esc(p.ten) + '</div><div class="sub ell">' +
       esc([p.tt === 'Đã nghỉ' ? 'Nghỉ từ ' + cqDM(p.nghi) : 'Nhận việc ' + cqDM(p.nv), cqTenNg(p.ng), p.dot].filter(String).join(' · ')) + '</div></div>' + tag + '</button>';
   }
