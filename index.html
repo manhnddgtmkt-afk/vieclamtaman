@@ -13,7 +13,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
 <script src="config.js"></script>
-<script>window.PB = { so: 156, luc: "13/11 23:19" };</script>
+<script>window.PB = { so: 157, luc: "14/11 08:45" };</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap">
 <style>
@@ -133,6 +133,7 @@ main{padding-bottom:calc(96px + env(safe-area-inset-bottom,0px))}
 .g2 .lb{display:block;margin:0 0 4px}
 .sheet .inp{font-size:16px;padding:12px 14px}
 .btn.xn{background:var(--warn);color:#fff}
+.btn.bo{background:#C62828;color:#fff}
 .acts .btn{flex:1}
 .ul{display:flex;flex-direction:column;margin-top:8px}
 .ur{display:grid;grid-template-columns:52px 1fr auto;gap:2px 10px;padding:8px 0;border-top:1px solid var(--line);font-size:14px;align-items:center}
@@ -921,7 +922,7 @@ textarea.inp{font-family:inherit}
   // ---------- gọi máy chủ ----------
   // ---------- thanh tiến trình (ước tính theo thời gian thường mất của từng việc) ----------
   var VIEC_TG = { hoi: [3, 'Đang kiểm tra'], vao: [4, 'Đang đăng nhập'], toi: [3, 'Đang mở'], ds: [3, 'Đang tải danh sách'], phieu: [4, 'Đang tính phiếu lương'],
-    phieuTuan: [5, 'Đang tính phiếu các tuần'], tangCuong: [8, 'Đang ghi xác nhận tăng cường'], vtXem: [8, 'Đang đọc file vân tay'], dsTra: [2, ''], ghiUT: [7, 'Đang ghi vào sổ ứng/trả'], ntGhi: [4, 'Đang ghi nguồn tuyển'], suaUT: [7, 'Đang sửa sổ ứng/trả'], cho: [3, ''], choGui: [3, ''], choHoan: [2, ''], choBo: [3, ''], utGan: [4, 'Đang tải ứng / trả'], themNguoi: [5, 'Đang thêm vào danh sách'], thuNhap: [4, 'Đang tải thu nhập'],
+    phieuTuan: [5, 'Đang tính phiếu các tuần'], tangCuong: [8, 'Đang ghi xác nhận tăng cường'], vtXem: [8, 'Đang đọc file vân tay'], dsTra: [2, ''], ghiUT: [7, 'Đang ghi vào sổ ứng/trả'], ntGhi: [4, 'Đang ghi nguồn tuyển'], suaUT: [7, 'Đang sửa sổ ứng/trả'], cho: [3, ''], choGui: [3, ''], choHoan: [2, ''], choBo: [3, ''], choBoHoan: [2, ''], utGan: [4, 'Đang tải ứng / trả'], themNguoi: [5, 'Đang thêm vào danh sách'], thuNhap: [4, 'Đang tải thu nhập'],
     quy: [7, 'Đang tải sổ thu chi'], ghiSo: [7, 'Đang ghi sổ thu chi'], tq: [4, 'Đang tải báo cáo'], capNhat: [30, 'Đang cập nhật'], doiPin: [3, 'Đang lưu mã PIN'], ra: [1, ''] };
   var TT = { viec: [], el: null, t: null };
   function ttBat(q) {
@@ -4662,6 +4663,7 @@ textarea.inp{font-family:inherit}
   }
   function ccCheNoi(t) { t.querySelectorAll('[data-che]').forEach(function (b) { b.onclick = function () { CCS.theMo = b.getAttribute('data-che') === '1'; var lg = theLogoNap(); if (!lg.complete) lg.onload = function () { ccVe(); }; ccVe(); window.scrollTo(0, 0); }; }); }
   var BAN_MOI = [
+    { so: 157, ds: [{ i: '🗑️', t: 'Bỏ phiếu khỏi danh sách chờ có hộp xác nhận', m: 'Trước đây nút Không gửi và nút Công ty giữ lại phải bấm hai lần mới ghi, bấm một lần thì phiếu vẫn còn nguyên. Nay chọn lý do xong app mở hộp ghi rõ tên, tuần, số tiền và lý do, bấm Bỏ phiếu là xong. Bỏ nhầm thì bấm Hoàn tác trong 10 giây.', c: [['Bỏ phiếu', 'Chạm tên người ở mục Đã gửi phiếu, chưa ghi chuyển → chọn lý do → [[Bỏ phiếu]].']] }] },
     { so: 156, ds: [{ i: '🏢', t: 'Chọn công ty dạng danh sách', m: 'Khi có nhiều hơn 4 công ty, thanh chọn công ty đổi thành một nút ghi tên công ty đang xem. Chạm vào nút để mở danh sách, công ty còn phiếu đã gửi chưa ghi chuyển nằm lên đầu, nhiều công ty thì có ô tìm.', c: [['Đổi công ty', 'Mục Lao động → chạm nút tên công ty ở đầu trang → chọn công ty trong danh sách.']] }, { i: '📨', t: 'Phiếu chờ theo từng công ty', m: 'Khối Đã gửi phiếu, chưa ghi chuyển giờ chỉ hiện phiếu của công ty đang xem, kể cả mục TREND. Phiếu của công ty khác hiện thành một dòng ngắn bên dưới, chạm tên công ty để chuyển sang xem.', c: [['Xem phiếu công ty khác', 'Chạm tên công ty ở dòng Công ty khác còn phiếu đã gửi chưa ghi chuyển.']] }, { i: '🗂️', t: 'Một công ty có cả chính thức và thời vụ', m: 'Công ty cấp người theo cả hai hình thức chỉ hiện một tên. Bên dưới có hai nút Thời vụ và Chính thức để chuyển qua lại.', c: [['Chuyển hình thức', 'Chọn công ty → chạm nút Thời vụ hoặc Chính thức ngay dưới tên công ty.']] }] },
     { so: 155, ds: [{ i: '🗓️', t: 'Trừ ngày nghỉ khi tính đủ 7 ngày (TREND)', m: 'Người tạm nghỉ rồi đi làm lại: khi chuyển về Đang làm, máy tự đếm số ngày đã nghỉ (không tính Chủ nhật) và trừ khỏi số ngày đã làm. Ngày dự kiến đủ 7 ngày lùi lại tương ứng, nên người chưa làm đủ sẽ không bị đưa vào danh sách gửi Trend kiểm tra.', c: [['Người đang tạm nghỉ', 'Ai đang tạm nghỉ mà trước đó đã làm đủ 7 ngày vẫn có trong danh sách thưởng 7 ngày. Chưa đủ thì chờ đến khi đi làm lại.'], ['Xem số ngày đã nghỉ', 'Chạm tên người trong mục TREND, dòng Số ngày đã nghỉ hiện ngay dưới Số ngày đã làm.']] }] },
     { so: 154, ds: [{ i: '🪪', t: 'Thẻ HOJEONG nhỏ lại còn 8,0 × 5,5 cm', m: 'Thẻ HOJEONG in ra nhỏ hơn thêm 2 mm mỗi chiều (trước 8,2 × 5,7 cm) để nhét vào bao thẻ dễ hơn. Ảnh, chữ và mã thẻ thu nhỏ theo, bố cục giữ nguyên. Khổ A4 vẫn 8 thẻ một tờ, khổ A5 vẫn 4 thẻ một tờ.', c: [['Lưu ý khi in', 'Trong hộp in chọn tỉ lệ 100%, không chọn vừa trang, nếu không thẻ sẽ bị phóng to lại.']] }] },
@@ -5857,17 +5859,33 @@ textarea.inp{font-family:inherit}
     document.getElementById('cvThoi').onclick = function () { sh.remove(); };
     document.getElementById('cvTra').onclick = function () { sh.remove(); timNguoi(x, function (p) { if (S.cty !== x.cty) { S.cty = x.cty; luu('vlta_cty', S.cty); } moGhiUT(p, 'tra', x); }); };
     document.getElementById('cvHs').onclick = function () { sh.remove(); timNguoi(x, function (p) { S.utMo = 0; if (S.cty !== x.cty) { S.cty = x.cty; luu('vlta_cty', S.cty); } moHs(p); }); };
-    [['cvKhong', 'khong', 'Bỏ: không gửi – bấm lần nữa'], ['cvGiu', 'giu', 'Bỏ: công ty giữ lại – bấm lần nữa']].forEach(function (z) {
-      document.getElementById(z[0]).onclick = function () {
-        var btn = this; if (!confirmLan(btn, z[2])) return;
-        btn.disabled = true;
-        apiT({ v: 'choBo', ma: x.ma, ly: z[1] }).then(function (o) {
-          if (o.loi) { btn.disabled = false; document.getElementById('cvM').textContent = o.loi; return; }
-          sh.remove(); toast('Đã bỏ ' + hoaDau(x.ten) + ' khỏi danh sách chờ');
-          S.cho.ds = choDs().filter(function (y) { return y.ma !== x.ma; }); datCho(S.cho); taiCho();
-        }, function (e) { btn.disabled = false; document.getElementById('cvM').textContent = e.message; });
-      };
+    // 14/11: không bấm 2 lần trên cùng nút nữa (anh Mạnh bấm 1 lần tưởng đã bỏ) -> mở hộp xác nhận ghi rõ người, tuần, số tiền, lý do
+    [['cvKhong', 'khong', 'Xuất thử hoặc xuất nhầm, không gửi cho người lao động'], ['cvGiu', 'giu', 'Công ty giữ lại, chưa trả tuần này']].forEach(function (z) {
+      document.getElementById(z[0]).onclick = function () { sh.remove(); xacNhanBoCho(x, z[1], z[2]); };
     });
+  }
+  function xacNhanBoCho(x, ly, lyTxt) {
+    var sh = moSheet('<h3>Bỏ phiếu khỏi danh sách chờ?</h3>' +
+      '<div class="card" style="margin:12px 0 0"><div class="ell" style="font-weight:600;font-size:17px">' + esc(hoaDau(x.ten)) + '</div>' +
+      '<div class="meta">' + esc(x.tuan + ' · ' + vnd(x.so) + ' đ') + '</div>' +
+      '<div class="meta">Lý do: ' + esc(lyTxt) + '.</div></div>' +
+      '<div class="meta" style="margin-top:10px">Phiếu sẽ không còn ở mục Đã gửi phiếu, chưa ghi chuyển. Sổ ứng / trả không thay đổi.</div>' +
+      '<div class="note bad" id="bcM" style="display:none;margin-top:10px"></div>' +
+      '<button class="btn bo" id="bcOk" style="margin-top:14px">Bỏ phiếu</button>' +
+      '<button class="btn ghost" id="bcThoi">Thôi</button>');
+    var m = document.getElementById('bcM'), ok = document.getElementById('bcOk');
+    document.getElementById('bcThoi').onclick = function () { sh.remove(); };
+    ok.onclick = function () {
+      ok.disabled = true; ok.textContent = 'Đang bỏ phiếu…'; m.style.display = 'none';
+      apiT({ v: 'choBo', ma: x.ma, ly: ly }).then(function (o) {
+        if (o.loi) { ok.disabled = false; ok.textContent = 'Thử lại'; m.textContent = 'Chưa bỏ được: ' + o.loi; m.style.display = ''; return; }
+        sh.remove();
+        S.cho.ds = choDs().filter(function (y) { return y.ma !== x.ma; }); datCho(S.cho); taiCho();
+        toastNut('Đã bỏ phiếu của ' + hoaDau(x.ten) + ' khỏi danh sách chờ', 'Hoàn tác', function () {
+          apiT({ v: 'choBoHoan', ma: x.ma }).then(function (z) { if (z.loi) { toastLoi(z.loi); return; } toast('Đã đưa ' + hoaDau(x.ten) + ' trở lại danh sách chờ'); taiCho(); }, function (e) { toastLoi(e.message); });
+        }, 10000);
+      }, function (e) { ok.disabled = false; ok.textContent = 'Thử lại'; m.textContent = 'Chưa bỏ được: ' + e.message; m.style.display = ''; });
+    };
   }
   function veHsCho() {   // dải vàng đầu hồ sơ
     var box = document.getElementById('hsCho'); if (!box || !S.hs) return;
