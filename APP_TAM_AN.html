@@ -879,6 +879,11 @@ textarea.inp{font-family:inherit}
 .cqDong{display:flex;gap:8px;align-items:center;min-width:0}
 .cqDong .inp{flex:1;min-width:0}
 .cqDong .btn{flex:none}
+.cqLsB{display:flex;width:100%;align-items:center;justify-content:space-between;gap:12px;padding:9px 0;border:0;border-top:1px solid var(--soft);background:none;color:var(--fg);text-align:left;font:inherit;white-space:normal;min-width:0}
+.cqKhoi>.cqLsB:first-child{border-top:0}
+.cqLsT{display:flex;flex-direction:column;min-width:0;gap:2px}
+.cqLsT b{font-weight:500;overflow-wrap:anywhere}
+.cqLsB>span:last-child{flex:none;color:var(--muted)}
 .cau{white-space:normal;overflow-wrap:anywhere}.hero>.meta.cau{white-space:normal;overflow:visible}
 .cqKq2 button{flex:1 1 calc(50% - 4px);justify-content:center;text-align:center}
 .cqDai{position:fixed;left:12px;right:12px;top:calc(8px + env(safe-area-inset-top,0px));z-index:60;display:flex;align-items:center;gap:8px;background:var(--warn-bg);color:var(--fg);border:1px solid var(--edge);border-radius:14px;padding:8px 8px 8px 14px;box-shadow:0 6px 20px rgba(0,0,0,.12);font-size:14px}
@@ -4652,6 +4657,8 @@ textarea.inp{font-family:inherit}
   }
   function ccCheNoi(t) { t.querySelectorAll('[data-che]').forEach(function (b) { b.onclick = function () { CCS.theMo = b.getAttribute('data-che') === '1'; var lg = theLogoNap(); if (!lg.complete) lg.onload = function () { ccVe(); }; ccVe(); window.scrollTo(0, 0); }; }); }
   var BAN_MOI = [
+    { so: 160, ds: [{ i: '🔁', t: 'Xác nhận khi chuyển người nghỉ về Đang làm (TREND)', m: 'Chạm Đang làm không còn ghi ngay. App mở hộp xác nhận để chọn ngày đi làm lại và cho biết số ngày nghỉ sẽ được trừ. Lưu xong có nút Hoàn tác trong 10 giây.', c: [['Ghi đi làm lại', 'Chạm tên người → [[Đang làm]] → chọn ngày đi làm lại → [[Xác nhận]].']] },
+      { i: '🗓️', t: 'Lịch sử nghỉ, sửa được bất cứ lúc nào', m: 'Mỗi đợt nghỉ rồi đi làm lại được lưu thành một dòng trong hồ sơ người lao động. Số ngày đã nghỉ, số ngày đã làm và ngày dự kiến đủ 7 ngày luôn tính theo lịch sử này, nên sửa ngày là số tự đúng lại.', c: [['Sửa ngày nghỉ hoặc ngày đi làm lại', 'Chạm tên người → mục Lịch sử nghỉ → chạm đợt nghỉ → đổi ngày → [[Lưu]].'], ['Lỡ cập nhật đi làm lại nhầm', 'Chạm tên người → [[Tạm nghỉ]] → chọn lại ngày nghỉ cũ → [[Lưu]] → [[Xác nhận]]. Hoặc mở đợt nghỉ đó ở Lịch sử nghỉ → [[Huỷ cập nhật đi làm lại]].']] }] },
     { so: 159, ds: [{ i: '🗑️', t: 'Một nút bỏ phiếu chờ', m: 'Hai nút Không gửi và Công ty giữ lại gộp thành một nút Bỏ khỏi danh sách chờ, vì kết quả như nhau.', c: [['Bỏ phiếu', 'Chạm tên người ở mục Đã gửi phiếu, chưa ghi chuyển → [[Bỏ khỏi danh sách chờ]] → [[Bỏ phiếu]].']] }] },
     { so: 158, ds: [{ i: '📝', t: 'TREND: chưa đi làm vì lý do khác', m: 'Đến ngày hẹn mà người đó chưa đi làm được vì lý do khác (ví dụ công ty hết nguyên liệu, chưa có ngày nhận lại), chọn Lý do khác và gõ lý do. Người đó vẫn ở mục Chờ nhận việc, chưa có ngày hẹn nên app không nhắc nữa.', c: [['Ghi lý do', 'Chạm tên ở ô Hẹn nhận việc → [[Chưa đi làm]] → [[Lý do khác]] → gõ lý do → [[Lưu]].'], ['Khi có ngày', 'Chạm tên ở mục Chờ nhận việc → [[Chưa đi làm]] → [[Hẹn lại ngày khác]] → chọn ngày.']] }] },
     { so: 157, ds: [{ i: '🗑️', t: 'Bỏ phiếu khỏi danh sách chờ có hộp xác nhận', m: 'Trước đây nút Không gửi và nút Công ty giữ lại phải bấm hai lần mới ghi, bấm một lần thì phiếu vẫn còn nguyên. Nay chỉ còn một nút Bỏ khỏi danh sách chờ, app mở hộp ghi rõ tên, tuần, số tiền, bấm Bỏ phiếu là xong. Bỏ nhầm thì bấm Hoàn tác trong 10 giây.', c: [['Bỏ phiếu', 'Chạm tên người ở mục Đã gửi phiếu, chưa ghi chuyển → [[Bỏ khỏi danh sách chờ]] → [[Bỏ phiếu]].']] }] },
@@ -6973,6 +6980,7 @@ textarea.inp{font-family:inherit}
       '<div class="cqKhoi">' + dong('Thưởng Trend', p.thT ? '<span class="tien">' + vnd(p.thT) + ' đ</span>' : '–') + dong('Thưởng Tâm An', typeof p.thA === 'number' ? '<span class="tien">' + vnd(p.thA) + ' đ</span>' : esc(p.thA || '–')) +
       dong('Dự kiến đủ 7 ngày', esc(cqDM(p.du7, 1) || '–')) + dong('Trend xác nhận 7 ngày', p.xn ? esc(p.xn) : '<span class="mo">Chưa có</span>') +
       dong(ven ? 'Tâm An đã ứng cho ven' : 'Đã trả thưởng 7 ngày', p.tra ? '<span class="tien" style="color:var(--good)">' + vnd(p.tra) + ' đ</span>' + (p.ngTra ? ' <span class="meta">' + esc(cqDM(p.ngTra)) + '</span>' : '') : '<span class="mo">Chưa</span>') + '</div>' +
+      cqLsHtml(p) +
       (p.ghi ? '<div class="note" style="margin-top:10px;background:var(--soft)">' + esc(p.ghi) + '</div>' : '') +
       '<div id="cqAct"></div><div class="msg" id="cqM"></div><button class="btn ghost" id="cqHuy">Đóng</button>';
     var sh = moSheet(h), act = sh.querySelector('#cqAct');
@@ -6994,9 +7002,10 @@ textarea.inp{font-family:inherit}
     $('cqLuuMa').onclick = function () { var v = $('cqMa').value.trim().toUpperCase(); if (v === p.ma) { sh.remove(); return; } if (v && !/^[A-Z]{1,4}\d{3,8}$/.test(v)) { $('cqM').textContent = 'Mã nhân viên Trend có dạng VT000785.'; return; } ghiNv('ma', v, null, this, function () { p.ma = v; cqVe(); toast('Đã lưu mã ' + (v || '(trống)') + ' cho ' + p.ten); }); };
     sh.querySelectorAll('#cqTT button').forEach(function (b) { b.onclick = function () {
       var t = b.getAttribute('data-t'); if (t === p.tt) return;
-      if (t === 'Đang làm') ghiNv('tt', t, null, null, function () { p.tt = 'Đang làm'; p.nghi = ''; p.lyN = ''; p.mot = 0; p.tamNgay = 0; cqVe(); toast(p.ten + ' đã đi làm lại'); cqTai(S.cty); });
-      else { sh.remove(); cqDoiTT(p, t); }
+      sh.remove();
+      if (t === 'Đang làm') cqDiLam(p); else cqDoiTT(p, t);
     }; });
+    sh.querySelectorAll('[data-ls]').forEach(function (b) { b.onclick = function () { sh.remove(); cqLsSua(p, p.ls[Number(b.getAttribute('data-ls'))]); }; });
     sh.querySelectorAll('#cqXn button').forEach(function (b) { b.onclick = function () { var v = b.getAttribute('data-x'); if (v === p.xn) return; ghiNv('xn', v, null, null, function () { p.xn = v; cqVe(); toast(v ? 'Đã ghi Trend: ' + v.toLowerCase() + ' – ' + p.ten : 'Đã xoá xác nhận của Trend'); cqMoNV(p); }); }; });
     if ($('cqTra')) $('cqTra').onclick = function () {
       var so = Number(String($('cqSoTra').value).replace(/\D/g, ''));
@@ -7064,11 +7073,91 @@ textarea.inp{font-family:inherit}
     };
   }
   // b153: đổi trạng thái Đang làm / Tạm nghỉ / Đã nghỉ
+  // ---- b160: đi làm lại có xác nhận + hoàn tác; lịch sử nghỉ (trang LICH_SU_NGHI) sửa được bất cứ lúc nào ----
+  function cqLsCuoi(p) { var l = (p.ls || []).filter(function (x) { return !x.cu && x.den; }); return l.length ? l[l.length - 1] : null; }
+  function cqLsHtml(p) {
+    if (!p.ls || !p.ls.length) return '';
+    return '<div class="lb" style="margin-top:14px">Lịch sử nghỉ</div><div class="cqKhoi">' + p.ls.map(function (x, i) {
+      if (x.cu) return '<div class="row sp cqHs"><span class="meta">Ghi trước khi có lịch sử</span><span>' + x.n + ' ngày</span></div>';
+      return '<button class="cqLsB" data-ls="' + i + '"><span class="cqLsT"><b>' + esc((x.tt === 'Đã nghỉ' ? 'Nghỉ ' : 'Tạm nghỉ ') + cqDM(x.tu) + ' – đi làm lại ' + cqDM(x.den)) + '</b>' + (x.ly ? '<span class="meta cau">' + esc(x.ly) + '</span>' : '') + '</span><span>' + x.n + ' ngày ›</span></button>';
+    }).join('') + '</div>';
+  }
+  function cqGoiNv(p, q, nut, sau) { var o = { v: 'ctNvSua', r: p.r, khoa: { ten: p.ten, cccd: p.cccd } }; for (var k in q) o[k] = q[k]; return cqGhi(o, sau, nut); }
+  function cqSoNghiCau(tu, den) {   // tu: ngày nghỉ đầu, den: ngày đi làm lại
+    var n = cqNgayLam(tu, cqCong(den, -1));
+    return { n: n, t: n ? 'Số ngày nghỉ: ' + n + ' ngày (' + cqDM(tu) + (cqCong(den, -1) > tu ? ' – ' + cqDM(cqCong(den, -1)) : '') + ', không tính Chủ nhật), sẽ trừ khỏi số ngày đã làm.' : 'Không có ngày nghỉ nào được tính (đi làm lại ngay trong ngày nghỉ hoặc chỉ nghỉ Chủ nhật).' };
+  }
+  function cqDiLam(p) {   // Đang làm: hộp xác nhận, chọn ngày đi làm lại
+    var hn = cqHn(), tu = p.nghi || '', cu = { tt: p.tt, nghi: p.nghi, lyN: p.lyN }, st = { ngay: hn };
+    var sh = moSheet('<h3>Xác nhận đi làm lại</h3><div class="meta ell">' + esc(p.ten) + '</div>' + (tu ? '<div class="meta">' + esc(p.tt) + ' từ ' + esc(cqDM(tu, 1)) + (p.lyN ? ' · ' + esc(p.lyN) : '') + '</div>' : '') +
+      '<div style="margin-top:12px"><label class="lb">Ngày đi làm lại</label><input class="inp" id="cqDen" type="date"' + (tu ? ' min="' + esc(tu) + '"' : '') + ' max="' + hn + '" value="' + hn + '"></div>' +
+      '<div class="note" id="cqSoN" style="margin-top:10px"></div>' +
+      '<div class="msg" id="cqM"></div><button class="btn" id="cqOk">Xác nhận</button><button class="btn ghost" id="cqHuy">Huỷ</button>');
+    var $ = function (id) { return sh.querySelector('#' + id); };
+    function ve() { $('cqSoN').textContent = tu ? cqSoNghiCau(tu, st.ngay).t : 'Chuyển về trạng thái Đang làm.'; }
+    ve();
+    $('cqDen').onchange = function () { st.ngay = this.value || hn; ve(); };
+    $('cqHuy').onclick = function () { sh.remove(); };
+    $('cqOk').onclick = function () {
+      if (tu && st.ngay < tu) { $('cqM').textContent = 'Ngày đi làm lại phải từ ngày nghỉ (' + cqDM(tu) + ') trở đi.'; return; }
+      if (st.ngay > hn) { $('cqM').textContent = 'Ngày đi làm lại không được sau hôm nay.'; return; }
+      cqGoiNv(p, { f: 'tt', gt: 'Đang làm', ngay: st.ngay }, this, function (o) {
+        sh.remove(); p.tt = 'Đang làm'; p.nghi = ''; p.lyN = ''; p.mot = 0; p.tamNgay = 0; cqVe();
+        if (!tu) { toast('Đã cập nhật ' + p.ten + ': đang làm'); return; }
+        toastNut('Đã cập nhật ' + p.ten + ': đi làm lại từ ' + cqDM(st.ngay), 'Hoàn tác', function () {
+          var q = o && o.ls ? { f: 'noi', ls: o.ls, gt: cu.tt, hoan: 1 } : { f: 'tt', gt: cu.tt, ngay: cu.nghi, ly: cu.lyN };
+          cqGoiNv(p, q, null, function () { p.tt = cu.tt; p.nghi = cu.nghi; p.lyN = cu.lyN; cqVe(); toast('Đã hoàn tác: ' + p.ten + ' ' + cu.tt.toLowerCase() + ' từ ' + cqDM(cu.nghi)); });
+        }, 10000);
+      });
+    };
+  }
+  function cqNoi(p, L, tt) {   // chọn lại trạng thái nghỉ với ngày trước ngày đi làm lại đã ghi -> huỷ lần đi làm lại, tiếp tục đợt nghỉ cũ
+    var sh = moSheet('<h3>Huỷ cập nhật đi làm lại</h3><div class="meta ell">' + esc(p.ten) + '</div>' +
+      '<div class="note" style="margin-top:12px">Huỷ lần cập nhật đi làm lại ngày ' + esc(cqDM(L.den, 1)) + ' và tiếp tục ' + esc(tt.toLowerCase()) + ' từ ' + esc(cqDM(L.tu, 1)) + '?</div>' +
+      '<div class="meta cau" style="margin-top:8px">Số ngày nghỉ, số ngày đã làm và ngày dự kiến đủ 7 ngày được tính lại theo đợt nghỉ từ ' + esc(cqDM(L.tu)) + '.' + (L.ly ? ' Lý do nghỉ giữ như cũ: ' + esc(L.ly) + '.' : '') + '</div>' +
+      '<div class="msg" id="cqM"></div><button class="btn" id="cqOk">Xác nhận</button><button class="btn ghost" id="cqHuy">Huỷ</button>');
+    sh.querySelector('#cqHuy').onclick = function () { sh.remove(); };
+    sh.querySelector('#cqOk').onclick = function () {
+      cqGoiNv(p, { f: 'noi', ls: L.id, gt: tt }, this, function () {
+        sh.remove(); p.tt = tt; p.nghi = L.tu; p.lyN = L.ly; cqVe(); toast('Đã khôi phục ' + p.ten + ': ' + tt.toLowerCase() + ' từ ' + cqDM(L.tu));
+      });
+    };
+  }
+  function cqLsSua(p, x) {   // sửa ngày 1 đợt nghỉ trong lịch sử
+    if (!x || x.cu) return;
+    var hn = cqHn(), L = cqLsCuoi(p), laCuoi = L && L.id === x.id && p.tt === 'Đang làm', st = { tu: x.tu, den: x.den };
+    var sh = moSheet('<h3>Sửa đợt nghỉ</h3><div class="meta ell">' + esc(p.ten) + '</div><div class="meta cau">' + esc(x.tt || 'Tạm nghỉ') + (x.ly ? ' · ' + esc(x.ly) : '') + '</div>' +
+      '<div class="g2" style="margin-top:12px"><div><label class="lb">Nghỉ từ ngày</label><input class="inp" id="cqTu" type="date" min="' + esc(p.nv) + '" max="' + hn + '" value="' + esc(x.tu) + '"></div>' +
+      '<div><label class="lb">Đi làm lại ngày</label><input class="inp" id="cqDen" type="date" max="' + hn + '" value="' + esc(x.den) + '"></div></div>' +
+      '<div class="note" id="cqSoN" style="margin-top:10px"></div>' +
+      (p.tra ? '<div class="note warn" style="margin-top:8px">Đã trả thưởng 7 ngày ' + vnd(p.tra) + ' đ' + (p.ngTra ? ' ngày ' + esc(cqDM(p.ngTra, 1)) : '') + '. Sửa ngày nghỉ có thể làm thay đổi điều kiện đủ 7 ngày.</div>' : '') +
+      '<div class="msg" id="cqM"></div><button class="btn" id="cqOk">Lưu</button>' +
+      (laCuoi ? '<button class="btn ghost" id="cqNoi">Huỷ cập nhật đi làm lại ngày ' + esc(cqDM(x.den)) + '</button>' : '') +
+      '<button class="btn ghost" id="cqHuy">Đóng</button>');
+    var $ = function (id) { return sh.querySelector('#' + id); };
+    function ve() { $('cqSoN').textContent = st.den > st.tu ? cqSoNghiCau(st.tu, st.den).t : 'Ngày đi làm lại phải sau ngày nghỉ.'; }
+    ve();
+    $('cqTu').onchange = function () { st.tu = this.value || x.tu; ve(); };
+    $('cqDen').onchange = function () { st.den = this.value || x.den; ve(); };
+    $('cqHuy').onclick = function () { sh.remove(); };
+    if ($('cqNoi')) $('cqNoi').onclick = function () { sh.remove(); cqNoi(p, x, x.tt === 'Đã nghỉ' ? 'Đã nghỉ' : 'Tạm nghỉ'); };
+    $('cqOk').onclick = function () {
+      if (st.tu === x.tu && st.den === x.den) { sh.remove(); return; }
+      if (!(st.den > st.tu)) { $('cqM').textContent = 'Ngày đi làm lại phải sau ngày nghỉ.'; return; }
+      if (st.den > hn) { $('cqM').textContent = 'Ngày đi làm lại không được sau hôm nay.'; return; }
+      if (!cqSoNghiCau(st.tu, st.den).n) { $('cqM').textContent = 'Khoảng này không có ngày nghỉ nào (chỉ có Chủ nhật).'; return; }
+      cqGoiNv(p, { f: 'lsSua', ls: x.id, tu: st.tu, den: st.den }, this, function () {
+        sh.remove(); x.tu = st.tu; x.den = st.den; x.n = cqSoNghiCau(st.tu, st.den).n; cqVe(); toast('Đã sửa đợt nghỉ của ' + p.ten + ': ' + cqDM(st.tu) + ' – đi làm lại ' + cqDM(st.den));
+      });
+    };
+  }
   function cqDoiTT(p, tt) {
     var d = CQ.d[S.cty]; if (!d) return;
     var hn = cqHn(), lyN = (d.cc.lydoN && d.cc.lydoN.length ? d.cc.lydoN : ['Hàng nặng, không làm được', 'Chưa quen việc', 'Gia đình, con ốm', 'Sức khoẻ', 'Đi làm chỗ khác', 'Không liên lạc được']), st = { ngay: hn, ly: '' };
+    var L = p.tt === 'Đang làm' ? cqLsCuoi(p) : null, cu = { tt: p.tt, nghi: p.nghi, lyN: p.lyN };
     var sh = moSheet('<h3 class="ell">' + esc(tt) + ' · ' + esc(p.ten) + '</h3><div class="meta">Nhận việc ' + esc(cqDM(p.nv, 1)) + '</div>' +
       '<div><label class="lb">' + (tt === 'Tạm nghỉ' ? 'Tạm nghỉ từ ngày' : 'Nghỉ từ ngày (ngày đầu tiên không đi làm)') + '</label><input class="inp" id="cqNgay" type="date" min="' + esc(p.nv) + '" value="' + hn + '"></div>' +
+      (L && L.den >= cqCong(hn, -30) ? '<div class="meta cau" style="margin-top:6px">Nếu lần cập nhật đi làm lại ngày ' + esc(cqDM(L.den)) + ' là nhầm, chọn ngày nghỉ từ ' + esc(cqDM(L.tu)) + ' để tiếp tục đợt nghỉ cũ.</div>' : '') +
       '<div class="note" id="cqSoNg" style="margin-top:10px"></div>' +
       '<label class="lb" style="margin-top:12px">Lý do</label><div class="cqChips" id="cqLy">' + lyN.map(function (s) { return '<button data-l="' + esc(s) + '">' + esc(s) + '</button>'; }).join('') + '</div><input class="inp" id="cqLyKhac" placeholder="Lý do khác" style="margin-top:8px">' +
       (tt === 'Đã nghỉ' ? '<div class="meta cau" style="margin-top:8px">Người nghỉ trước ngày trả thưởng thì mất phần thưởng chưa tới hạn. Trend vẫn trả Tâm An những ngày đã làm (từ 2 ngày trở lên).</div>' : '<div class="meta cau" style="margin-top:8px">Tạm nghỉ vẫn tính là đang làm. Quá 3 ngày app nhắc người tuyển gọi hỏi lại.</div>') +
@@ -7086,9 +7175,17 @@ textarea.inp{font-family:inherit}
     $('cqHuy').onclick = function () { sh.remove(); };
     $('cqOk').onclick = function () {
       if (!st.ngay || st.ngay < p.nv) { $('cqM').textContent = 'Ngày nghỉ phải từ ngày nhận việc trở đi.'; return; }
+      if (L && st.ngay < L.den) {
+        if (st.ngay < L.tu) { $('cqM').textContent = 'Ngày này trùng đợt nghỉ đã ghi (' + cqDM(L.tu) + ' – đi làm lại ' + cqDM(L.den) + '). Sửa đợt đó ở mục Lịch sử nghỉ trong hồ sơ.'; return; }
+        sh.remove(); cqNoi(p, L, tt); return;
+      }
       cqGhi({ v: 'ctNvSua', r: p.r, khoa: { ten: p.ten, cccd: p.cccd }, f: 'tt', gt: tt, ngay: st.ngay, ly: st.ly }, function () {
         sh.remove(); p.tt = tt; p.nghi = st.ngay; p.lyN = st.ly; p.soNg = Math.max(0, cqNgayLam(p.nv, cqCong(st.ngay > hn ? hn : st.ngay, -1)) - (p.tn || 0)); p.mot = tt === 'Đã nghỉ' && p.soNg <= 1 ? 1 : 0; p.tamNgay = 0;
-        cqVe(); toast(p.mot ? p.ten + ' làm 1 ngày rồi nghỉ, coi như không nhận việc' : 'Đã ghi ' + p.ten + ' ' + tt.toLowerCase() + ' từ ' + cqDM(st.ngay)); cqTai(S.cty);
+        cqVe(); cqTai(S.cty);
+        toastNut(p.mot ? p.ten + ' làm 1 ngày rồi nghỉ, coi như không nhận việc' : 'Đã cập nhật ' + p.ten + ': ' + tt.toLowerCase() + ' từ ' + cqDM(st.ngay), 'Hoàn tác', function () {
+          var q = cu.tt === 'Đang làm' || !cu.nghi ? { f: 'tt', gt: 'Đang làm', ngay: st.ngay > hn ? hn : st.ngay } : { f: 'tt', gt: cu.tt, ngay: cu.nghi, ly: cu.lyN };
+          cqGoiNv(p, q, null, function () { p.tt = cu.tt || 'Đang làm'; p.nghi = cu.nghi; p.lyN = cu.lyN; p.mot = 0; cqVe(); toast('Đã hoàn tác: ' + p.ten + ' ' + (cu.tt === 'Đang làm' || !cu.nghi ? 'đang làm' : cu.tt.toLowerCase() + ' từ ' + cqDM(cu.nghi))); });
+        }, 10000);
       }, this);
     };
   }
