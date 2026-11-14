@@ -13,7 +13,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
 <script src="config.js"></script>
-<script>window.PB = { so: 157, luc: "14/11 08:45" };</script>
+<script>window.PB = { so: 158, luc: "14/11 09:10" };</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap">
 <style>
@@ -4663,6 +4663,7 @@ textarea.inp{font-family:inherit}
   }
   function ccCheNoi(t) { t.querySelectorAll('[data-che]').forEach(function (b) { b.onclick = function () { CCS.theMo = b.getAttribute('data-che') === '1'; var lg = theLogoNap(); if (!lg.complete) lg.onload = function () { ccVe(); }; ccVe(); window.scrollTo(0, 0); }; }); }
   var BAN_MOI = [
+    { so: 158, ds: [{ i: '📝', t: 'TREND: chưa đi làm vì lý do khác', m: 'Đến ngày hẹn mà người đó chưa đi làm được vì lý do khác (ví dụ công ty hết nguyên liệu, chưa có ngày nhận lại), chọn Lý do khác và gõ lý do. Người đó vẫn ở mục Chờ nhận việc, chưa có ngày hẹn nên app không nhắc nữa.', c: [['Ghi lý do', 'Chạm tên ở ô Hẹn nhận việc → [[Chưa đi làm]] → [[Lý do khác]] → gõ lý do → [[Lưu]].'], ['Khi có ngày', 'Chạm tên ở mục Chờ nhận việc → [[Chưa đi làm]] → [[Hẹn lại ngày khác]] → chọn ngày.']] }] },
     { so: 157, ds: [{ i: '🗑️', t: 'Bỏ phiếu khỏi danh sách chờ có hộp xác nhận', m: 'Trước đây nút Không gửi và nút Công ty giữ lại phải bấm hai lần mới ghi, bấm một lần thì phiếu vẫn còn nguyên. Nay chọn lý do xong app mở hộp ghi rõ tên, tuần, số tiền và lý do, bấm Bỏ phiếu là xong. Bỏ nhầm thì bấm Hoàn tác trong 10 giây.', c: [['Bỏ phiếu', 'Chạm tên người ở mục Đã gửi phiếu, chưa ghi chuyển → chọn lý do → [[Bỏ phiếu]].']] }] },
     { so: 156, ds: [{ i: '🏢', t: 'Chọn công ty dạng danh sách', m: 'Khi có nhiều hơn 4 công ty, thanh chọn công ty đổi thành một nút ghi tên công ty đang xem. Chạm vào nút để mở danh sách, công ty còn phiếu đã gửi chưa ghi chuyển nằm lên đầu, nhiều công ty thì có ô tìm.', c: [['Đổi công ty', 'Mục Lao động → chạm nút tên công ty ở đầu trang → chọn công ty trong danh sách.']] }, { i: '📨', t: 'Phiếu chờ theo từng công ty', m: 'Khối Đã gửi phiếu, chưa ghi chuyển giờ chỉ hiện phiếu của công ty đang xem, kể cả mục TREND. Phiếu của công ty khác hiện thành một dòng ngắn bên dưới, chạm tên công ty để chuyển sang xem.', c: [['Xem phiếu công ty khác', 'Chạm tên công ty ở dòng Công ty khác còn phiếu đã gửi chưa ghi chuyển.']] }, { i: '🗂️', t: 'Một công ty có cả chính thức và thời vụ', m: 'Công ty cấp người theo cả hai hình thức chỉ hiện một tên. Bên dưới có hai nút Thời vụ và Chính thức để chuyển qua lại.', c: [['Chuyển hình thức', 'Chọn công ty → chạm nút Thời vụ hoặc Chính thức ngay dưới tên công ty.']] }] },
     { so: 155, ds: [{ i: '🗓️', t: 'Trừ ngày nghỉ khi tính đủ 7 ngày (TREND)', m: 'Người tạm nghỉ rồi đi làm lại: khi chuyển về Đang làm, máy tự đếm số ngày đã nghỉ (không tính Chủ nhật) và trừ khỏi số ngày đã làm. Ngày dự kiến đủ 7 ngày lùi lại tương ứng, nên người chưa làm đủ sẽ không bị đưa vào danh sách gửi Trend kiểm tra.', c: [['Người đang tạm nghỉ', 'Ai đang tạm nghỉ mà trước đó đã làm đủ 7 ngày vẫn có trong danh sách thưởng 7 ngày. Chưa đủ thì chờ đến khi đi làm lại.'], ['Xem số ngày đã nghỉ', 'Chạm tên người trong mục TREND, dòng Số ngày đã nghỉ hiện ngay dưới Số ngày đã làm.']] }] },
@@ -6714,7 +6715,7 @@ textarea.inp{font-family:inherit}
       return '<button class="ktr" data-xn="' + p.r + '"><span class="ktr-a">' + esc(cqChuTat(p.ten)) + '</span><span class="ktr-t"><b class="ell">' + esc(p.ten) + '</b><span class="cau"' + (qh ? ' style="color:var(--bad)"' : '') + '>' + esc((qh ? 'Hẹn ' + cqDM(p.hen) + ', quá ngày' : 'Hẹn hôm nay') + ' · ' + cqTenNg(p.ng)) + '</span></span><span class="ktr-s">Xác nhận</span></button>';
     }).join('') + '</div>';
     if (sapToi.length) h += '<div class="sec dot cam ell" style="margin:18px 4px 8px">Chờ nhận việc · ' + sapToi.length + ' người</div><div class="grp">' + sapToi.map(function (p) {
-      return '<button class="it" data-xn="' + p.r + '"><div style="min-width:0;flex:1"><div class="nm ell">' + esc(p.ten) + '</div><div class="sub ell">' + esc(['Phỏng vấn ' + cqDM(p.ngay), cqTenNg(p.ng)].join(' · ')) + '</div></div><span class="pill warn">' + (p.hen ? 'Hẹn ' + esc(cqDM(p.hen)) : 'Chưa có ngày') + '</span></button>';
+      return '<button class="it" data-xn="' + p.r + '"><div style="min-width:0;flex:1"><div class="nm ell">' + esc(p.ten) + '</div><div class="sub ell">' + esc(['Phỏng vấn ' + cqDM(p.ngay), cqTenNg(p.ng)].join(' · ')) + '</div>' + (!p.hen && p.ly ? '<div class="sub ell">' + esc(p.ly) + '</div>' : '') + '</div><span class="pill warn">' + (p.hen ? 'Hẹn ' + esc(cqDM(p.hen)) : 'Chưa có ngày') + '</span></button>';
     }).join('') + '</div>';
     // 2. thưởng 7 ngày (người Tâm An tuyển, đã qua ngày dự kiến đủ 7 ngày, chưa trả)
     var b7 = cqBay(d);
@@ -7039,8 +7040,9 @@ textarea.inp{font-family:inherit}
       f.innerHTML = '<label class="lb" style="margin-top:12px">Người này đã đi làm chưa?</label><div class="seg" id="cqC"><button data-c="di"' + (st.c === 'di' ? ' class="on"' : '') + (toiNgay ? '' : ' disabled') + '>Đã đi làm</button><button data-c="chua"' + (st.c === 'chua' ? ' class="on"' : '') + '>Chưa đi làm</button></div>' +
         (toiNgay ? '' : '<div class="meta cau" style="margin-top:6px">Chưa tới ngày hẹn nên chưa xác nhận đi làm được. Có thể đổi ngày hẹn hoặc báo không đi làm nữa.</div>') +
         (st.c === 'di' ? '<div><label class="lb" style="margin-top:12px">Ngày bắt đầu đi làm</label><input class="inp" id="cqNgNV" type="date" min="' + esc(p.ngay) + '" max="' + hn + '" value="' + esc(st.ngayNV) + '"></div><div class="meta cau" style="margin-top:6px">Lưu xong người này vào danh sách nhận việc' + (p.ng ? '' : '. Dòng này chưa có người tuyển, ghi người tuyển trên Google Sheet trước') + '.</div>' :
-          '<div class="cqChips" id="cqCach" style="margin-top:12px"><button data-h="henLai"' + (st.cach === 'henLai' ? ' class="on"' : '') + '>Hẹn lại ngày khác</button><button data-h="khong"' + (st.cach === 'khong' ? ' class="on"' : '') + '>Không đi làm nữa</button></div>' +
-          (st.cach === 'henLai' ? '<div><label class="lb" style="margin-top:12px">Ngày hẹn mới</label><input class="inp" id="cqNgHen" type="date" min="' + hn + '" value="' + esc(st.ngayHen) + '"></div>' :
+          '<div class="cqChips" id="cqCach" style="margin-top:12px"><button data-h="henLai"' + (st.cach === 'henLai' ? ' class="on"' : '') + '>Hẹn lại ngày khác</button><button data-h="khong"' + (st.cach === 'khong' ? ' class="on"' : '') + '>Không đi làm nữa</button><button data-h="khac"' + (st.cach === 'khac' ? ' class="on"' : '') + '>Lý do khác</button></div>' +
+          (st.cach === 'khac' ? '<label class="lb" style="margin-top:12px">Lý do chưa đi làm</label><input class="inp" id="cqLyCho" placeholder="Ví dụ: Công ty hết nguyên liệu" value="' + esc(st.lyCho || '') + '"><div class="meta cau" style="margin-top:6px">Người này vẫn ở mục Chờ nhận việc, chưa có ngày hẹn nên app không nhắc. Khi có ngày thì chạm tên → Hẹn lại ngày khác.</div>' :
+          st.cach === 'henLai' ? '<div><label class="lb" style="margin-top:12px">Ngày hẹn mới</label><input class="inp" id="cqNgHen" type="date" min="' + hn + '" value="' + esc(st.ngayHen) + '"></div>' :
             '<label class="lb" style="margin-top:12px">Lý do</label><div class="cqChips" id="cqLy">' + lyKN.map(function (s) { return '<button data-l="' + esc(s) + '"' + (st.ly === s ? ' class="on"' : '') + '>' + esc(s) + '</button>'; }).join('') + '</div><input class="inp" id="cqLyKhac" placeholder="Lý do khác" style="margin-top:8px">'));
       f.querySelectorAll('#cqC button').forEach(function (b) { b.onclick = function () { if (b.disabled) return; st.c = b.getAttribute('data-c'); ve(); }; });
       f.querySelectorAll('#cqCach button').forEach(function (b) { b.onclick = function () { st.cach = b.getAttribute('data-h'); ve(); }; });
@@ -7048,6 +7050,7 @@ textarea.inp{font-family:inherit}
       var lk = f.querySelector('#cqLyKhac'); if (lk) lk.oninput = function () { if (lk.value.trim()) { st.ly = lk.value.trim(); f.querySelectorAll('#cqLy button').forEach(function (z) { z.classList.remove('on'); }); } };
       var nn = f.querySelector('#cqNgNV'); if (nn) nn.onchange = function () { st.ngayNV = nn.value; };
       var nh = f.querySelector('#cqNgHen'); if (nh) nh.onchange = function () { st.ngayHen = nh.value; };
+      var lc = f.querySelector('#cqLyCho'); if (lc) lc.oninput = function () { st.lyCho = lc.value; };
     }
     ve();
     sh.querySelector('#cqOk').onclick = function () {
@@ -7056,6 +7059,10 @@ textarea.inp{font-family:inherit}
         if (!st.ngayNV || st.ngayNV > hn || st.ngayNV < p.ngay) { m.textContent = 'Chọn ngày bắt đầu đi làm (không sau hôm nay).'; return; }
         if (!p.ng) { m.textContent = 'Dòng này chưa có người tuyển.'; return; }
         q.kq = 'Nhận việc'; q.ngayNV = st.ngayNV; bao = 'Đã ghi ' + p.ten + ' đi làm từ ' + cqDM(st.ngayNV);
+      } else if (st.cach === 'khac') {
+        var lyC = String(st.lyCho || '').trim();
+        if (!lyC) { m.textContent = 'Gõ lý do chưa đi làm.'; return; }
+        q.kq = 'Hẹn nhận việc'; q.choBao = 1; q.ly = lyC; bao = 'Đã ghi ' + p.ten + ' chưa đi làm: ' + lyC;
       } else if (st.cach === 'henLai') {
         if (!st.ngayHen || st.ngayHen < hn) { m.textContent = 'Chọn ngày hẹn mới (từ hôm nay trở đi).'; return; }
         q.kq = 'Hẹn nhận việc'; q.ngayHen = st.ngayHen; bao = 'Đã đổi ngày hẹn của ' + p.ten + ' sang ' + cqDM(st.ngayHen);
@@ -7064,7 +7071,7 @@ textarea.inp{font-family:inherit}
         q.kq = 'Không nhận việc'; q.ly = st.ly; bao = 'Đã ghi ' + p.ten + ' không nhận việc';
       }
       cqGhi(q, function (o) {
-        sh.remove(); p.kq = q.kq; if (q.ngayHen) p.hen = q.ngayHen; if (q.ly) p.ly = q.ly;
+        sh.remove(); p.kq = q.kq; if (q.ngayHen) p.hen = q.ngayHen; if (q.choBao) p.hen = ''; p.ly = q.ly || '';
         cqVe(); cqDaiNhac(); toast(bao + (o.nvMoi ? ', đã thêm vào danh sách nhận việc' : ''));
         if (q.kq === 'Nhận việc') cqTai(S.cty);
       }, this);
