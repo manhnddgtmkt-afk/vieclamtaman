@@ -13,7 +13,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
 <script src="config.js"></script>
-<script>window.PB = { so: 158, luc: "14/11 09:10" };</script>
+<script>window.PB = { so: 159, luc: "14/11 09:19" };</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap">
 <style>
@@ -4663,8 +4663,9 @@ textarea.inp{font-family:inherit}
   }
   function ccCheNoi(t) { t.querySelectorAll('[data-che]').forEach(function (b) { b.onclick = function () { CCS.theMo = b.getAttribute('data-che') === '1'; var lg = theLogoNap(); if (!lg.complete) lg.onload = function () { ccVe(); }; ccVe(); window.scrollTo(0, 0); }; }); }
   var BAN_MOI = [
+    { so: 159, ds: [{ i: '🗑️', t: 'Một nút bỏ phiếu chờ', m: 'Hai nút Không gửi và Công ty giữ lại gộp thành một nút Bỏ khỏi danh sách chờ, vì kết quả như nhau.', c: [['Bỏ phiếu', 'Chạm tên người ở mục Đã gửi phiếu, chưa ghi chuyển → [[Bỏ khỏi danh sách chờ]] → [[Bỏ phiếu]].']] }] },
     { so: 158, ds: [{ i: '📝', t: 'TREND: chưa đi làm vì lý do khác', m: 'Đến ngày hẹn mà người đó chưa đi làm được vì lý do khác (ví dụ công ty hết nguyên liệu, chưa có ngày nhận lại), chọn Lý do khác và gõ lý do. Người đó vẫn ở mục Chờ nhận việc, chưa có ngày hẹn nên app không nhắc nữa.', c: [['Ghi lý do', 'Chạm tên ở ô Hẹn nhận việc → [[Chưa đi làm]] → [[Lý do khác]] → gõ lý do → [[Lưu]].'], ['Khi có ngày', 'Chạm tên ở mục Chờ nhận việc → [[Chưa đi làm]] → [[Hẹn lại ngày khác]] → chọn ngày.']] }] },
-    { so: 157, ds: [{ i: '🗑️', t: 'Bỏ phiếu khỏi danh sách chờ có hộp xác nhận', m: 'Trước đây nút Không gửi và nút Công ty giữ lại phải bấm hai lần mới ghi, bấm một lần thì phiếu vẫn còn nguyên. Nay chọn lý do xong app mở hộp ghi rõ tên, tuần, số tiền và lý do, bấm Bỏ phiếu là xong. Bỏ nhầm thì bấm Hoàn tác trong 10 giây.', c: [['Bỏ phiếu', 'Chạm tên người ở mục Đã gửi phiếu, chưa ghi chuyển → chọn lý do → [[Bỏ phiếu]].']] }] },
+    { so: 157, ds: [{ i: '🗑️', t: 'Bỏ phiếu khỏi danh sách chờ có hộp xác nhận', m: 'Trước đây nút Không gửi và nút Công ty giữ lại phải bấm hai lần mới ghi, bấm một lần thì phiếu vẫn còn nguyên. Nay chỉ còn một nút Bỏ khỏi danh sách chờ, app mở hộp ghi rõ tên, tuần, số tiền, bấm Bỏ phiếu là xong. Bỏ nhầm thì bấm Hoàn tác trong 10 giây.', c: [['Bỏ phiếu', 'Chạm tên người ở mục Đã gửi phiếu, chưa ghi chuyển → [[Bỏ khỏi danh sách chờ]] → [[Bỏ phiếu]].']] }] },
     { so: 156, ds: [{ i: '🏢', t: 'Chọn công ty dạng danh sách', m: 'Khi có nhiều hơn 4 công ty, thanh chọn công ty đổi thành một nút ghi tên công ty đang xem. Chạm vào nút để mở danh sách, công ty còn phiếu đã gửi chưa ghi chuyển nằm lên đầu, nhiều công ty thì có ô tìm.', c: [['Đổi công ty', 'Mục Lao động → chạm nút tên công ty ở đầu trang → chọn công ty trong danh sách.']] }, { i: '📨', t: 'Phiếu chờ theo từng công ty', m: 'Khối Đã gửi phiếu, chưa ghi chuyển giờ chỉ hiện phiếu của công ty đang xem, kể cả mục TREND. Phiếu của công ty khác hiện thành một dòng ngắn bên dưới, chạm tên công ty để chuyển sang xem.', c: [['Xem phiếu công ty khác', 'Chạm tên công ty ở dòng Công ty khác còn phiếu đã gửi chưa ghi chuyển.']] }, { i: '🗂️', t: 'Một công ty có cả chính thức và thời vụ', m: 'Công ty cấp người theo cả hai hình thức chỉ hiện một tên. Bên dưới có hai nút Thời vụ và Chính thức để chuyển qua lại.', c: [['Chuyển hình thức', 'Chọn công ty → chạm nút Thời vụ hoặc Chính thức ngay dưới tên công ty.']] }] },
     { so: 155, ds: [{ i: '🗓️', t: 'Trừ ngày nghỉ khi tính đủ 7 ngày (TREND)', m: 'Người tạm nghỉ rồi đi làm lại: khi chuyển về Đang làm, máy tự đếm số ngày đã nghỉ (không tính Chủ nhật) và trừ khỏi số ngày đã làm. Ngày dự kiến đủ 7 ngày lùi lại tương ứng, nên người chưa làm đủ sẽ không bị đưa vào danh sách gửi Trend kiểm tra.', c: [['Người đang tạm nghỉ', 'Ai đang tạm nghỉ mà trước đó đã làm đủ 7 ngày vẫn có trong danh sách thưởng 7 ngày. Chưa đủ thì chờ đến khi đi làm lại.'], ['Xem số ngày đã nghỉ', 'Chạm tên người trong mục TREND, dòng Số ngày đã nghỉ hiện ngay dưới Số ngày đã làm.']] }] },
     { so: 154, ds: [{ i: '🪪', t: 'Thẻ HOJEONG nhỏ lại còn 8,0 × 5,5 cm', m: 'Thẻ HOJEONG in ra nhỏ hơn thêm 2 mm mỗi chiều (trước 8,2 × 5,7 cm) để nhét vào bao thẻ dễ hơn. Ảnh, chữ và mã thẻ thu nhỏ theo, bố cục giữ nguyên. Khổ A4 vẫn 8 thẻ một tờ, khổ A5 vẫn 4 thẻ một tờ.', c: [['Lưu ý khi in', 'Trong hộp in chọn tỉ lệ 100%, không chọn vừa trang, nếu không thẻ sẽ bị phóng to lại.']] }] },
@@ -5853,23 +5854,19 @@ textarea.inp{font-family:inherit}
       (laQua(x) ? '<div class="note bad" style="margin-top:10px">Đã quá 2 tiếng mà chưa ghi chuyển khoản.</div>' : '') +
       '<button class="btn" id="cvTra" style="margin-top:14px">Đã chuyển khoản – ghi trả lương</button>' +
       '<button class="btn ghost" id="cvHs">Mở hồ sơ</button>' +
-      '<div class="sec" style="margin:14px 4px 6px">Bỏ khỏi danh sách chờ</div>' +
-      '<button class="btn ghost" id="cvKhong">Không gửi (xuất thử, xuất nhầm)</button>' +
-      '<button class="btn ghost" id="cvGiu">Công ty giữ lại, chưa trả tuần này</button>' +
+      '<button class="btn ghost" id="cvBo" style="color:var(--bad)">Bỏ khỏi danh sách chờ</button>' +
       '<div class="msg" id="cvM"></div><button class="link" id="cvThoi" style="width:100%;margin-top:4px">Thôi</button>');
     document.getElementById('cvThoi').onclick = function () { sh.remove(); };
     document.getElementById('cvTra').onclick = function () { sh.remove(); timNguoi(x, function (p) { if (S.cty !== x.cty) { S.cty = x.cty; luu('vlta_cty', S.cty); } moGhiUT(p, 'tra', x); }); };
     document.getElementById('cvHs').onclick = function () { sh.remove(); timNguoi(x, function (p) { S.utMo = 0; if (S.cty !== x.cty) { S.cty = x.cty; luu('vlta_cty', S.cty); } moHs(p); }); };
     // 14/11: không bấm 2 lần trên cùng nút nữa (anh Mạnh bấm 1 lần tưởng đã bỏ) -> mở hộp xác nhận ghi rõ người, tuần, số tiền, lý do
-    [['cvKhong', 'khong', 'Xuất thử hoặc xuất nhầm, không gửi cho người lao động'], ['cvGiu', 'giu', 'Công ty giữ lại, chưa trả tuần này']].forEach(function (z) {
-      document.getElementById(z[0]).onclick = function () { sh.remove(); xacNhanBoCho(x, z[1], z[2]); };
-    });
+    // 14/11: gộp 2 nút lý do (Không gửi / Công ty giữ) thành 1 – hệ thống không phân biệt 2 lý do
+    document.getElementById('cvBo').onclick = function () { sh.remove(); xacNhanBoCho(x); };
   }
-  function xacNhanBoCho(x, ly, lyTxt) {
+  function xacNhanBoCho(x) {
     var sh = moSheet('<h3>Bỏ phiếu khỏi danh sách chờ?</h3>' +
       '<div class="card" style="margin:12px 0 0"><div class="ell" style="font-weight:600;font-size:17px">' + esc(hoaDau(x.ten)) + '</div>' +
-      '<div class="meta">' + esc(x.tuan + ' · ' + vnd(x.so) + ' đ') + '</div>' +
-      '<div class="meta">Lý do: ' + esc(lyTxt) + '.</div></div>' +
+      '<div class="meta">' + esc(x.tuan + ' · ' + vnd(x.so) + ' đ') + '</div></div>' +
       '<div class="meta" style="margin-top:10px">Phiếu sẽ không còn ở mục Đã gửi phiếu, chưa ghi chuyển. Sổ ứng / trả không thay đổi.</div>' +
       '<div class="note bad" id="bcM" style="display:none;margin-top:10px"></div>' +
       '<button class="btn bo" id="bcOk" style="margin-top:14px">Bỏ phiếu</button>' +
@@ -5878,7 +5875,7 @@ textarea.inp{font-family:inherit}
     document.getElementById('bcThoi').onclick = function () { sh.remove(); };
     ok.onclick = function () {
       ok.disabled = true; ok.textContent = 'Đang bỏ phiếu…'; m.style.display = 'none';
-      apiT({ v: 'choBo', ma: x.ma, ly: ly }).then(function (o) {
+      apiT({ v: 'choBo', ma: x.ma, ly: 'khong' }).then(function (o) {
         if (o.loi) { ok.disabled = false; ok.textContent = 'Thử lại'; m.textContent = 'Chưa bỏ được: ' + o.loi; m.style.display = ''; return; }
         sh.remove();
         S.cho.ds = choDs().filter(function (y) { return y.ma !== x.ma; }); datCho(S.cho); taiCho();
