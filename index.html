@@ -13,7 +13,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
 <script src="config.js"></script>
-<script>window.PB = { so: 166, luc: "15/11 22:10" };</script>
+<script>window.PB = { so: 167, luc: "15/11 22:50" };</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap">
 <style>
@@ -550,6 +550,31 @@ textarea.inp{font-family:inherit}
 .toast.nut{display:flex;align-items:center;gap:12px;text-align:left;width:max-content}
 .toast.nut button{border:0;background:none;color:#8DB8FF;font-weight:700;font-size:14px;padding:4px 2px;white-space:nowrap}
 
+/* b167 (15/11): thẻ Số người các nhà – 7 ngày (HOJEONG, chủ + kế toán) */
+.nhaC{margin-top:12px;padding:14px 12px}
+.nhaH{min-width:0}
+.nhaH b{display:block;font-size:15px;font-weight:800}
+.nhaH small{display:block;font-size:11.5px;color:var(--muted);margin-top:2px}
+.nhaO{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:10px}
+.nhaO>div{background:var(--soft);border-radius:12px;padding:9px 10px;min-width:0}
+.nhaO>div.ta{box-shadow:inset 0 3px 0 var(--blue)}
+.nhaO small{display:block;font-size:11px;color:var(--muted);font-weight:600;line-height:1.3;min-height:2.6em}
+.nhaO b{display:block;font-size:21px;font-weight:800;margin-top:2px;white-space:nowrap}
+.nhaO i{display:block;font-style:normal;font-size:11px;color:var(--muted);line-height:1.35}
+.nhaL{margin-top:10px}.nhaL small{font-size:11.5px;color:var(--muted);font-weight:600}
+.nhaL svg{display:block;width:100%;height:auto}
+.nhaW{overflow-x:auto;-webkit-overflow-scrolling:touch;margin-top:8px}
+.nhaT{width:100%;min-width:300px;border-collapse:collapse;table-layout:fixed;font-size:12px}
+.nhaO small,.nhaO i{overflow-wrap:normal;word-break:keep-all}
+.nhaT th{font-size:11px;font-weight:600;color:var(--muted);padding:4px 0;text-align:center;line-height:1.25}
+.nhaT th:first-child{text-align:left;padding-left:4px}
+.nhaT td{text-align:center;padding:7px 0;border-bottom:1px solid var(--line);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-variant-numeric:tabular-nums}
+.nhaT td.n{text-align:left;padding-left:4px;font-size:11px;font-weight:600;white-space:normal;line-height:1.2;word-break:break-word}
+.nhaT td.x{opacity:.5}
+.nhaT tr.ta td{font-weight:800}
+.nhaT tr.nhaTg td{font-weight:800;font-size:11.5px;letter-spacing:-.2px;background:var(--tint);border-bottom:0}
+.nhaT td.up{color:var(--good);font-weight:700}.nhaT td.dn{color:var(--bad);font-weight:700}.nhaT td.z{color:var(--muted)}
+.nhaG{margin-top:10px;font-size:11.5px;color:var(--muted);line-height:1.5}
 /* 21/10: khối Cần kiểm tra luôn mở */
 .ktk{background:var(--warn-bg);border:1.5px solid var(--warn);border-radius:18px;margin-top:12px;padding:12px 12px 4px}
 .ktk-h{font-weight:800;color:var(--warn);font-size:15px;padding:0 4px 6px}
@@ -1589,7 +1614,7 @@ textarea.inp{font-family:inherit}
     hd.innerHTML = vtTheHtml() + '<div id="tbBox"></div><div id="lkBox"></div><div id="choBox"></div><div class="card hero"><div class="meta">Còn phải trả</div><div class="row" style="align-items:baseline;gap:4px 10px;flex-wrap:wrap"><span class="big num ' + (tong > 0 ? 'c-cam' : 'c-xanh') + '">' + vnd(tong) + '</span>' + (tong > 0 ? '<span class="pill warn">Trả vào thứ Tư</span>' : '<span class="pill good">Đã trả đủ</span>') + '</div>' +
       '<div class="meta ell">' + esc(canTra.length + ' người' + (d.ky ? ' · kỳ ' + String(d.ky).replace(/\/\d{4}$/, '') : '')) + '</div>' + diLamHtml(d) +
       (d.het ? '' : '<div class="meta cau">Bạn thấy những người bạn tuyển ở công ty này.</div>') + '</div>' +
-      '<div id="ktBox"></div>';
+      '<div id="ktBox"></div><div id="nhaBox"></div>';
     ganVtThe(); veTB(); veLK(); taiLK();
     hd.insertAdjacentHTML('beforeend', '<button class="ckt nghi" id="moUT"><span class="ell" style="flex:1">Ứng / trả gần đây</span><i>›</i></button>');
     document.getElementById('moUT').onclick = moUTTuDs;
@@ -1617,6 +1642,7 @@ textarea.inp{font-family:inherit}
           (p.con ? '<span class="ktr-s num">' + vnd(p.con) + '<small>' + (p.con < 0 ? 'nhận trước' : 'còn phải trả') + '</small></span>' : '') + '</button>';
       }).join('') + '</div>' : '';
       ktB.querySelectorAll('.ktr').forEach(function (b) { b.onclick = function () { moHs(d.ds[Number(b.getAttribute('data-i'))]); }; });
+      veNha();
     }
     function dong(p) {
       var nghi = !dangLam(d, p);
@@ -5044,6 +5070,7 @@ textarea.inp{font-family:inherit}
   }
   function ccCheNoi(t) { t.querySelectorAll('[data-che]').forEach(function (b) { b.onclick = function () { CCS.theMo = b.getAttribute('data-che') === '1'; var lg = theLogoNap(); if (!lg.complete) lg.onload = function () { ccVe(); }; ccVe(); window.scrollTo(0, 0); }; }); }
   var BAN_MOI = [
+    { so: 167, ds: [{ i: '🏭', t: 'Số người các nhà ở HOJEONG trong 7 ngày', m: 'Tab Lao động → HOJEONG có thẻ Số người các nhà: mỗi nhà một dòng, mỗi ngày một cột, ô càng đậm là càng đông người. Cột So TB cho biết mỗi nhà đang tăng hay giảm so với tuần trước. Số tự cập nhật mỗi khi có file vân tay mới. Chỉ chủ và kế toán thấy thẻ này.', c: [['Xem ca ngày, ca đêm', 'Chạm vào một ô trong bảng.']] }] },
     { so: 166, ds: [{ i: '🪪', t: 'Tổng số CCCD trong kho', m: 'Mục Tìm ảnh trong kho hiện ngay dòng Kho có … CCCD, kèm số Nam và Nữ.' }] },
     { so: 165, ds: [{ i: '✋', t: 'Chỉnh tay ảnh chờ duyệt', m: 'Màn duyệt ảnh máy tự lưu có nút Chỉnh tay: app mở ảnh gốc với khung 4 góc đặt sẵn, kéo lại góc lệch cho mặt trước rồi mặt sau, xem ảnh ghép và bấm Lưu đè ảnh kho (ảnh máy cắt được sao lưu).' }, { i: '✅', t: 'Ít ảnh phải duyệt hơn', m: 'Ảnh máy cắt một lần đã khớp thẻ mẫu chặt thì tự coi là đạt. Danh sách chờ duyệt chỉ còn ảnh máy phải tự chỉnh khung hoặc khớp sát ngưỡng; để quá 3 ngày cũng tự coi là đạt.' }] },
     { so: 164, ds: [{ i: '🪪', t: 'Ảnh CCCD bị ngón tay che 1 góc', m: 'Ngón tay che mất 1 góc thẻ thì máy dựng lại góc đó từ 3 góc còn lại rồi đối chiếu thẻ mẫu. Thẻ khớp mẫu chặt thì không còn báo khung méo hay thẻ chạm mép ảnh.' }] },
@@ -6644,6 +6671,87 @@ textarea.inp{font-family:inherit}
       if (b && S.cty === cty && S.tab === 'ld' && !S.hs && !S.utMo && !S.vtMo) { b.outerHTML = vtTheHtml(); ganVtThe(); }
     }, function () { });
   }
+  // ---------- b167 (15/11): SỐ NGƯỜI CÁC NHÀ – 7 NGÀY (file vân tay HOJEONG, máy chủ ghi THONG_KE_NHA) ----------
+  //   Chỉ chủ + kế toán. So sánh = trung bình mỗi ngày 7 ngày gần nhất / 7 ngày trước đó (không tính Chủ nhật, ngày chưa đủ ca đêm).
+  //   Đường biểu đồ không vẽ Chủ nhật; nhà không có ai cả 7 ngày thì ẩn.
+  var NHA = {}, NHA_T = {}, NHA_DANG = {};
+  function nhaCo() { return S.cty === 'HOJEONG' && !!(S.toi && (S.toi.vai === 'chu' || S.toi.vai === 'ketoan')); }
+  function taiNha(cty, moi) {
+    if (NHA_DANG[cty + moi]) return; NHA_DANG[cty + moi] = 1;
+    apiT({ v: 'nhaTk', cty: cty, moi: moi ? 1 : 0, im: 1 }).then(function (o) {
+      NHA_DANG[cty + moi] = 0;
+      if (o.loi) { if (!NHA[cty]) { NHA[cty] = { loi: o.loi }; veNha(); } return; }
+      var cu = JSON.stringify(NHA[cty] ? NHA[cty].ds : null); NHA[cty] = o;
+      if (moi) NHA_T[cty] = Date.now();
+      if (JSON.stringify(o.ds) !== cu) veNha();
+      if (!moi && !NHA_T[cty]) taiNha(cty, 1);
+    }, function () { NHA_DANG[cty + moi] = 0; });
+  }
+  function nhaThu(sv) { return ['CN', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7'][serialDate(sv).getUTCDay()]; }
+  function nhaSo(x) { return Math.round(x * 10) / 10; }
+  function nhaTB(x) { return String(nhaSo(x)).replace('.', ',').replace('-', '−'); }
+  function nhaTen(o, k) { return k === o.ta ? 'Tâm An' : k === o.ra ? 'Rời Tâm An' : k; }
+  function veNha() {
+    var box = document.getElementById('nhaBox');
+    if (!box) return;
+    if (!nhaCo()) { box.innerHTML = ''; return; }
+    var cty = S.cty, o = NHA[cty];
+    if (!o) { box.innerHTML = '<div class="card nhaC"><div class="nhaH"><b>Số người các nhà · 7 ngày</b><small>Đang tải…</small></div></div>'; taiNha(cty, 0); return; }
+    if (!NHA_T[cty] || Date.now() - NHA_T[cty] > 6e5) taiNha(cty, 1);
+    if (o.loi || !o.ds || !o.ds.length) { box.innerHTML = '<div class="card nhaC"><div class="nhaH"><b>Số người các nhà · 7 ngày</b></div><div class="nhaG">' + esc(o.loi || 'Chưa có số liệu. Máy sẽ tự đếm khi có file vân tay mới.') + '</div></div>'; return; }
+    var m = {}; o.ds.forEach(function (x) { m[x.d] = x; });
+    var tong = function (x) { var t = 0; if (x) for (var k in x.n) t += x.n[k][0] + x.n[k][1]; return t; };
+    var mot = function (x, k) { var a = x && x.n[k]; return a ? a[0] + a[1] : 0; };
+    var E = o.ds[o.ds.length - 1].d, du = o.ds.filter(function (x) { return x.du; }), L = du.length ? du[du.length - 1].d : E;
+    var cot = []; for (var d = E - 6; d <= E; d++) cot.push(d);
+    var tinh = function (x) { return x && x.du && serialDate(x.d).getUTCDay() !== 0; };
+    var ngA = [], ngB = []; for (var d2 = L - 13; d2 <= L; d2++) if (tinh(m[d2])) (d2 > L - 7 ? ngA : ngB).push(m[d2]);
+    var tb = function (ng, k) { if (!ng.length) return null; var s = 0; ng.forEach(function (x) { s += k ? mot(x, k) : tong(x); }); return s / ng.length; };
+    var nhas = {}; cot.forEach(function (d3) { var x = m[d3]; if (x) for (var k in x.n) nhas[k] = 1; });
+    ngA.concat(ngB).forEach(function (x) { for (var k in x.n) if (nhas[k] === undefined) nhas[k] = 0; });
+    var co7 = function (k) { return cot.some(function (d4) { return mot(m[d4], k) > 0; }); };
+    var ds = Object.keys(nhas).filter(function (k) { return k !== o.ta && k !== o.ra && co7(k); })
+      .sort(function (a, b) { return (tb(ngA, b) || 0) - (tb(ngA, a) || 0) || a.localeCompare(b); });
+    if (co7(o.ta) || nhas[o.ta] !== undefined) ds.push(o.ta);
+    if (co7(o.ra)) ds.push(o.ra);
+    var max = 1; ds.forEach(function (k) { cot.forEach(function (d5) { max = Math.max(max, mot(m[d5], k)); }); });
+    var lech = function (k) { var a = tb(ngA, k), b = tb(ngB, k); if (a === null || b === null) return '<td class="z">–</td>'; var c = nhaSo(a - b); return '<td class="' + (c > 0 ? 'up' : c < 0 ? 'dn' : 'z') + '">' + (c > 0 ? '+' : '') + nhaTB(c) + '</td>'; };
+    var o_ = function (d6, k) {
+      var x = m[d6]; if (!x) return '<td class="z">–</td>';
+      var v = k ? mot(x, k) : tong(x), a = k ? (x.n[k] || [0, 0]) : null, p = Math.round(8 + 50 * v / max);
+      return '<td class="' + (nhaThieu(x) ? 'x' : '') + '" data-d="' + d6 + '" data-k="' + esc(k || '') + '"' + (k && v ? ' style="background:color-mix(in srgb,var(--good) ' + p + '%,transparent)"' : '') + '>' + v + '</td>';
+    };
+    var coX = cot.some(function (d7) { return nhaThieu(m[d7]); });
+    var h = '<div class="nhaW"><table class="nhaT"><colgroup><col style="width:25%">' + cot.map(function () { return '<col>'; }).join('') + '<col style="width:13%"></colgroup><tr><th>Nhà</th>' +
+      cot.map(function (d8) { return '<th>' + nhaThu(d8) + '<br>' + ddmm(serialDate(d8)).slice(0, 2) + (nhaThieu(m[d8]) ? '*' : '') + '</th>'; }).join('') + '<th>So TB</th></tr>' +
+      ds.map(function (k) { return '<tr' + (k === o.ta ? ' class="ta"' : '') + '><td class="n">' + esc(nhaTen(o, k)) + '</td>' + cot.map(function (d9) { return o_(d9, k); }).join('') + lech(k) + '</tr>'; }).join('') +
+      '<tr class="nhaTg"><td class="n">Tổng</td>' + cot.map(function (d10) { return o_(d10, ''); }).join('') + lech('') + '</tr></table></div>';
+    // đường tổng: các ngày trong 7 cột đã đủ ca đêm, bỏ Chủ nhật
+    var dd = cot.filter(function (d11) { return tinh(m[d11]); }), svg = '';
+    if (dd.length >= 2) {
+      var vs = dd.map(function (d12) { return tong(m[d12]); }), lo = Math.min.apply(null, vs), hi = Math.max.apply(null, vs), W = 320, H = 76;
+      var pt = dd.map(function (d13, i) { return [16 + (W - 32) * (cot.indexOf(d13)) / 6, hi === lo ? 44 : 64 - 44 * (vs[i] - lo) / (hi - lo)]; });
+      svg = '<svg viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="Tổng người đi làm theo ngày"><polyline fill="none" stroke="var(--blue)" stroke-width="2" vector-effect="non-scaling-stroke" points="' + pt.map(function (q) { return q[0].toFixed(1) + ',' + q[1].toFixed(1); }).join(' ') + '"/>' +
+        pt.map(function (q, i) { return '<circle cx="' + q[0].toFixed(1) + '" cy="' + q[1].toFixed(1) + '" r="3" fill="var(--blue)"/><text x="' + q[0].toFixed(1) + '" y="' + (q[1] - 7).toFixed(1) + '" text-anchor="middle" font-size="11" font-weight="700" fill="var(--muted)">' + vs[i] + '</text>'; }).join('') + '</svg>';
+    }
+    var aT = tb(ngA, o.ta), bT = tb(ngB, o.ta), cT = aT !== null && bT !== null ? nhaSo(aT - bT) : null;
+    var nL = ddmm(serialDate(L));
+    var oS = '<div class="nhaO"><div><small>Tổng ngày ' + nL + '</small><b class="num">' + tong(m[L]) + '</b><i>Ca&nbsp;ngày&nbsp;' + nhaCa(m[L], '', 0) + ' · đêm&nbsp;' + nhaCa(m[L], '', 1) + '</i></div>' +
+      '<div class="ta"><small>Tâm An ngày ' + nL + '</small><b class="num">' + mot(m[L], o.ta) + '</b><i>Ca&nbsp;ngày&nbsp;' + nhaCa(m[L], o.ta, 0) + ' · đêm&nbsp;' + nhaCa(m[L], o.ta, 1) + '</i></div>' +
+      '<div><small>Tâm An so tuần trước</small><b class="num" style="color:' + (cT > 0 ? 'var(--good)' : cT < 0 ? 'var(--bad)' : 'var(--muted)') + '">' + (cT === null ? '–' : (cT > 0 ? '+' : '') + nhaTB(cT)) + '</b><i>' + (cT === null ? 'Chưa đủ số liệu' : 'TB/ngày ' + nhaTB(bT) + ' → ' + nhaTB(aT)) + '</i></div></div>';
+    box.innerHTML = '<div class="card nhaC"><div class="nhaH"><b>Số người các nhà · 7 ngày</b><small>' + (o.luc ? 'Cập nhật ' + esc(gioPhut(o.luc)) : '') + '</small></div>' + oS +
+      (svg ? '<div class="nhaL"><small>Tổng người đi làm (không vẽ Chủ nhật)</small>' + svg + '</div>' : '') + h +
+      '<div class="nhaG">So TB: số người trung bình mỗi ngày của 7 ngày gần nhất so với 7 ngày trước đó, không tính Chủ nhật và ngày chưa đủ ca đêm.' +
+      (coX ? ' Cột có dấu * là ngày chưa có ca đêm (số còn tăng).' : '') + ' Dòng Tâm An đã tính người chuyển nhà' + (co7(o.ra) ? '; Rời Tâm An là người đã chuyển sang nhà khác nhưng vân tay vẫn ghi nhà Tâm An' : '') + '. Chạm vào ô để xem ca ngày, ca đêm.</div></div>';
+    box.querySelectorAll('td[data-d]').forEach(function (td) {
+      td.onclick = function () {
+        var d14 = Number(td.getAttribute('data-d')), k = td.getAttribute('data-k'), x = m[d14];
+        toast((k ? nhaTen(o, k) : 'Tổng HOJEONG') + ' · ' + nhaThu(d14) + ' ' + ddmm(serialDate(d14)) + ': ca ngày ' + nhaCa(x, k, 0) + ', ca đêm ' + (x && x.du ? nhaCa(x, k, 1) : 'chưa có'));
+      };
+    });
+  }
+  function nhaThieu(x) { return !!(x && !x.du && serialDate(x.d).getUTCDay() !== 0); }   // ngày thường chưa có ca đêm (Chủ nhật nghỉ thì không đánh dấu)
+  function nhaCa(x, k, i) { if (!x) return 0; if (k) return (x.n[k] || [0, 0])[i]; var t = 0; for (var j in x.n) t += x.n[j][i]; return t; }
   // ---- thông báo cho chủ: bảng công sửa khác vân tay (đọc xong là ẩn) ----
   function laChu() { return !!(S.toi && S.toi.vai === 'chu'); }
   function tbDs() { return laChu() && TB && TB.ds ? TB.ds.filter(tbCo) : []; }
