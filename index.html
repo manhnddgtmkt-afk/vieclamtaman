@@ -13,7 +13,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
 <script src="config.js"></script>
-<script>window.PB = { so: 164, luc: "15/11 21:52" };</script>
+<script>window.PB = { so: 165, luc: "15/11 22:04" };</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap">
 <style>
@@ -4065,13 +4065,14 @@ textarea.inp{font-family:inherit}
       (dy.ds.length > 1 && !dy.tai ? '<button class="btn sm" id="ccDyHet"' + (dy.dang ? ' disabled' : '') + '>Đạt hết ' + dy.ds.length + ' ảnh</button>' : '') + '</div>';
     if (dy.tai) h += '<div class="card"><b>Đang tải ảnh máy tự lưu…</b><div class="ccbar0"><i style="width:30%"></i></div></div>';
     else if (!dy.ds.length) h += '<div class="card"><b>Không còn ảnh chờ duyệt.</b></div>';
-    else h += '<div class="note" style="margin-bottom:10px">Xem kỹ 4 mép: thẻ phải thẳng, sát mép, không dính nền, không mất chữ. Đạt hết chỉ bấm khi đã lướt xem mọi ảnh.</div>' +
+    else h += '<div class="note" style="margin-bottom:10px">Chỉ còn ảnh máy phải tự chỉnh khung hoặc khớp mẫu sát ngưỡng (quá 3 ngày tự coi là đạt). Xem 4 mép: thẳng, sát thẻ, không dính nền, không mất chữ. Lệch thì bấm Chỉnh tay.</div>' +
       dy.ds.map(function (x) {
         var d = dy.dang && dy.dang.indexOf(x.id) >= 0;
         return '<div class="card ccp"><div class="row sp"><div style="min-width:0"><b class="ell" style="display:block">' + esc(x.ten ? hoaDau(x.ten) : x.so) + '</b><span class="meta num">' + esc(x.so) + ' · ' + esc(x.duong || '') + '</span>' +
           (x.sua ? '<div class="meta">Máy đã ' + esc(x.sua) + '</div>' : '') + '</div></div>' +
           (dy.nho[x.id] ? '<img src="' + dy.nho[x.id] + '" alt="" style="width:100%;display:block;border-radius:6px;margin:8px 0;border:1px solid #d5dbe5">' : '<div class="meta" style="margin:8px 0">Chưa tải được ảnh xem trước.</div>') +
           '<div class="row" style="gap:8px"><button class="btn sm" data-dyd="' + esc(x.id) + '"' + (dy.dang ? ' disabled' : '') + '>' + (d ? 'Đang ghi…' : 'Đạt') + '</button>' +
+          '<button class="btn ghost sm" data-dyc="' + esc(x.id) + '"' + (dy.dang ? ' disabled' : '') + '>Chỉnh tay</button>' +
           '<button class="btn ghost sm" data-dyl="' + esc(x.id) + '"' + (dy.dang ? ' disabled' : '') + '>Làm lại</button></div></div>';
       }).join('');
     t.innerHTML = h;
@@ -4079,12 +4080,89 @@ textarea.inp{font-family:inherit}
     if ((b = document.getElementById('ccDyLui'))) b.onclick = function () { CCS.duyet = null; ccVe(); };
     if ((b = document.getElementById('ccDyHet'))) b.onclick = function () { ccDuyetGui(dy.ds.map(function (x) { return x.id; }), 'dat'); };
     t.querySelectorAll('[data-dyd]').forEach(function (e) { e.onclick = function () { ccDuyetGui([e.getAttribute('data-dyd')], 'dat'); }; });
+    t.querySelectorAll('[data-dyc]').forEach(function (e) { e.onclick = function () { ccDuyetChinh(e.getAttribute('data-dyc')); }; });
     t.querySelectorAll('[data-dyl]').forEach(function (e) {
       e.onclick = function () {
         if (e.getAttribute('data-hoi')) { ccDuyetGui([e.getAttribute('data-dyl')], 'lai'); return; }
         e.setAttribute('data-hoi', '1'); e.textContent = 'Chạm lần nữa để làm lại'; e.className = 'btn sm';
       };
     });
+  }
+  // ---- bản 165: CHỈNH TAY ngay trong màn duyệt – tải ảnh gốc, mở khung kéo 4 góc (đặt sẵn theo khung máy cắt), xem ảnh ghép rồi lưu đè ảnh kho (giữ id, máy chủ sao lưu ảnh cũ)
+  function ccKeoGoc(cv, q0, tieuDe) {   // -> Promise 4 góc (toạ độ ảnh gốc) | null nếu Thôi
+    return new Promise(function (ok) {
+      var W = Math.min(440, window.innerWidth - 40), k = W / cv.width, H = Math.round(cv.height * k);
+      if (H > window.innerHeight * 0.55) { H = Math.round(window.innerHeight * 0.55); k = H / cv.height; W = Math.round(cv.width * k); }
+      var q = (q0 || [[0, 0], [cv.width, 0], [cv.width, cv.height], [0, cv.height]]).map(function (p) { return [Math.max(0, Math.min(W, p[0] * k)), Math.max(0, Math.min(H, p[1] * k))]; });
+      var sh = moSheet('<h3>' + esc(tieuDe) + '</h3><div class="meta">Kéo 4 chấm vào đúng 4 góc thẻ (góc bị ngón tay che thì đặt theo mép thẻ kéo dài).</div><div class="cck" style="width:' + W + 'px;height:' + H + 'px"><img src="' + cv.toDataURL('image/jpeg', 0.85) + '" alt=""><svg width="' + W + '" height="' + H + '"><polygon/></svg>' +
+        [0, 1, 2, 3].map(function (i) { return '<i data-g="' + i + '"></i>'; }).join('') + '</div>' +
+        '<div class="row"><button class="btn ghost" id="kCa">Cả ảnh</button><button class="btn" id="kOk">Xong</button></div><button class="btn lk" id="kThoi">Thôi</button>');
+      var box = sh.querySelector('.cck'), pg = sh.querySelector('polygon'), g = sh.querySelectorAll('.cck i');
+      function ve() { g.forEach(function (e, i) { e.style.left = q[i][0] + 'px'; e.style.top = q[i][1] + 'px'; }); pg.setAttribute('points', q.map(function (p) { return p.join(','); }).join(' ')); }
+      ve();
+      g.forEach(function (e, i) {
+        e.onpointerdown = function (ev) {
+          ev.preventDefault(); e.setPointerCapture(ev.pointerId); var r = box.getBoundingClientRect();
+          e.onpointermove = function (m) { q[i] = [Math.max(0, Math.min(W, m.clientX - r.left)), Math.max(0, Math.min(H, m.clientY - r.top))]; ve(); };
+          e.onpointerup = e.onpointercancel = function () { e.onpointermove = null; };
+        };
+      });
+      sh.querySelector('#kCa').onclick = function () { q = [[0, 0], [W, 0], [W, H], [0, H]]; ve(); };
+      sh.querySelector('#kThoi').onclick = function () { sh.remove(); ok(null); };
+      sh.querySelector('#kOk').onclick = function () { sh.remove(); ok(q.map(function (p) { return [p[0] / k, p[1] / k]; })); };
+    });
+  }
+  function ccJpg277(c) {   // canvas ảnh ghép -> dataURL JPEG 0,9, ghi 277 dpi (in đúng khổ thẻ)
+    var u = c.toDataURL('image/jpeg', 0.9), bin = atob(u.slice(23)), arr = new Uint8Array(bin.length), i;
+    for (i = 0; i < bin.length; i++) arr[i] = bin.charCodeAt(i);
+    if (arr[2] === 0xFF && arr[3] === 0xE0 && arr[6] === 0x4A && arr[7] === 0x46) { arr[13] = 1; arr[14] = 1; arr[15] = 21; arr[16] = 1; arr[17] = 21; }
+    var st = ''; for (i = 0; i < arr.length; i += 8192) st += String.fromCharCode.apply(null, arr.subarray(i, i + 8192));
+    return 'data:image/jpeg;base64,' + btoa(st);
+  }
+  function ccCanvasU(u) { return new Promise(function (ok, hong) { var im = new Image(); im.onload = function () { var c = document.createElement('canvas'); c.width = im.naturalWidth; c.height = im.naturalHeight; c.getContext('2d').drawImage(im, 0, 0); ok(c); }; im.onerror = function () { hong(new Error('Không mở được ảnh gốc.')); }; im.src = u; }); }
+  function ccDuyetChinh(id) {
+    var dy = CCS.duyet; if (!dy || dy.dang) return;
+    var x = dy.ds.filter(function (y) { return y.id === id; })[0]; if (!x) return;
+    toast('Đang tải ảnh gốc…');
+    apiT({ v: 'ccDuyetGoc', id: id }).then(function (o) {
+      if (!o || o.loi) throw new Error((o && o.loi) || 'Không tải được ảnh gốc.');
+      return Promise.all(o.ds.map(function (a) { return ccCanvasU(a.anh); }));
+    }).then(function (cvs) {
+      var mats = [];   // [{cv, q, mat}]
+      cvs.forEach(function (cv) {
+        var vn = null; try { vn = CC.tachVN(cv); } catch (e) { vn = null; }
+        if (vn && vn.length === 2) vn.forEach(function (q) { var r = CC.xuLy(cv, q); mats.push({ cv: cv, q: q, mat: r.mat }); });
+        else { var r = CC.xuLy(cv); mats.push({ cv: cv, q: r.q, mat: r.mat }); }
+      });
+      if (mats.length < 2) throw new Error('Chỉ có 1 mặt thẻ trong ảnh gốc – bấm Làm lại.');
+      mats = mats.slice(0, 2); if (mats[0].mat === 'sau' && mats[1].mat !== 'sau') mats.reverse();
+      var ra = [];
+      function buoc(i) {
+        if (i >= 2) return Promise.resolve(true);
+        return ccKeoGoc(mats[i].cv, mats[i].q, (i ? 'Mặt sau' : 'Mặt trước') + ' · ' + (x.ten ? hoaDau(x.ten) : x.so)).then(function (q) {
+          if (!q) return false;
+          var r = CC.xuLy(mats[i].cv, q); ra[i] = r.the; return buoc(i + 1);
+        });
+      }
+      return buoc(0).then(function (xong) { if (xong) ccDuyetXem(x, ra); });
+    }).catch(function (e) { toastLoi(e.message); });
+  }
+  function ccDuyetXem(x, ra) {   // xem ảnh ghép sau khi chỉnh tay -> Lưu / Đảo 2 mặt / Thôi
+    var sh = moSheet('<h3>Ảnh sau khi chỉnh · ' + esc(x.ten ? hoaDau(x.ten) : x.so) + '</h3><img id="dyXem" alt="" style="width:100%;border-radius:6px;border:1px solid #d5dbe5">' +
+      '<div class="row" style="gap:8px;margin-top:8px"><button class="btn" id="dyLuu">Lưu đè ảnh kho</button><button class="btn ghost" id="dyDao">Đảo 2 mặt</button></div><button class="btn lk" id="dyThoi">Thôi</button>');
+    function ve() { sh.querySelector('#dyXem').src = CC.ghep(ra[0], ra[1], CC.CHINH_MD, 560).toDataURL('image/jpeg', 0.85); }
+    ve();
+    sh.querySelector('#dyDao').onclick = function () { ra = [ra[1], ra[0]]; ve(); };
+    sh.querySelector('#dyThoi').onclick = function () { sh.remove(); };
+    sh.querySelector('#dyLuu').onclick = function () {
+      var b = sh.querySelector('#dyLuu'); b.disabled = true; b.textContent = 'Đang lưu…';
+      apiT({ v: 'ccDuyetGhi', id: x.id, anh: ccJpg277(CC.ghep(ra[0], ra[1], CC.CHINH_MD)) }).then(function (o) {
+        if (!o || o.loi) { b.disabled = false; b.textContent = 'Lưu đè ảnh kho'; toastLoi((o && o.loi) || 'Lỗi, thử lại.'); return; }
+        sh.remove(); var dy = CCS.duyet;
+        if (dy) { dy.ds = dy.ds.filter(function (y) { return y.id !== x.id; }); CCS.duyetN = dy.ds.length; if (!dy.ds.length) CCS.duyet = null; }
+        toast('Đã lưu ảnh chỉnh tay vào kho.'); ccVe();
+      }, function (e) { b.disabled = false; b.textContent = 'Lưu đè ảnh kho'; toastLoi(e.message); });
+    };
   }
   function ccTamDem() {   // số ảnh chờ trong CCCD TẠM (hỏi ngầm, tối đa 1 lần/phút)
     if (CCS.soat) return;   // bản 149: đang xử lý CCCD TẠM thì lượt xử lý tự đếm
@@ -4959,6 +5037,7 @@ textarea.inp{font-family:inherit}
   }
   function ccCheNoi(t) { t.querySelectorAll('[data-che]').forEach(function (b) { b.onclick = function () { CCS.theMo = b.getAttribute('data-che') === '1'; var lg = theLogoNap(); if (!lg.complete) lg.onload = function () { ccVe(); }; ccVe(); window.scrollTo(0, 0); }; }); }
   var BAN_MOI = [
+    { so: 165, ds: [{ i: '✋', t: 'Chỉnh tay ảnh chờ duyệt', m: 'Màn duyệt ảnh máy tự lưu có nút Chỉnh tay: app mở ảnh gốc với khung 4 góc đặt sẵn, kéo lại góc lệch cho mặt trước rồi mặt sau, xem ảnh ghép và bấm Lưu đè ảnh kho (ảnh máy cắt được sao lưu).' }, { i: '✅', t: 'Ít ảnh phải duyệt hơn', m: 'Ảnh máy cắt một lần đã khớp thẻ mẫu chặt thì tự coi là đạt. Danh sách chờ duyệt chỉ còn ảnh máy phải tự chỉnh khung hoặc khớp sát ngưỡng; để quá 3 ngày cũng tự coi là đạt.' }] },
     { so: 164, ds: [{ i: '🪪', t: 'Ảnh CCCD bị ngón tay che 1 góc', m: 'Ngón tay che mất 1 góc thẻ thì máy dựng lại góc đó từ 3 góc còn lại rồi đối chiếu thẻ mẫu. Thẻ khớp mẫu chặt thì không còn báo khung méo hay thẻ chạm mép ảnh.' }] },
     { so: 163, ds: [{ i: '🪪', t: 'Ảnh CCCD nghiêng nhiều', m: 'Ảnh thẻ nghiêng hơn 6° máy thử xoay thêm 9° và 12° để tự nắn thẳng.' }] },
     { so: 162, ds: [{ i: '🪪', t: 'Ảnh CCCD khớp thẻ mẫu thì không báo xem lại', m: 'Ảnh máy chưa nhận ra quốc huy hay chip (thường do ảnh tối, loá) nhưng khớp rõ với thẻ mẫu thì coi là ảnh rõ, không còn báo xem lại.' }] },
