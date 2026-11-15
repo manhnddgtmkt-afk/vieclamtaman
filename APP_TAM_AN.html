@@ -568,15 +568,16 @@ textarea.inp{font-family:inherit}
 .nhaR.mo{border-bottom:0}
 .nhaHd{border-top:0;padding-top:2px;font-size:10.5px!important;color:var(--muted)}
 .nhaHd .n,.nhaHd .v,.nhaHd .s,.nhaHd .c{font-size:10.5px;font-weight:600;color:var(--muted);line-height:1.2;white-space:normal}
-.nhaCt{background:var(--soft);border-radius:12px;padding:10px 8px 8px;margin:0 0 8px}
-.nhaCt>b{display:block;font-size:12.5px;font-weight:700;margin:0 2px 8px}
-.nhaCt .cols{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px;align-items:end;height:84px}
-.nhaCt .cl{display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%}
-.nhaCt .cl.x{opacity:.45}
-.nhaCt .cl b{font-size:12px;font-weight:700;margin-bottom:2px;font-variant-numeric:tabular-nums}
-.nhaCt .stk{width:70%;display:flex;flex-direction:column;border-radius:3px;overflow:hidden}
-.nhaCt .lb{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px;text-align:center;font-size:10.5px;color:var(--muted);margin-top:4px;line-height:1.3}
-.nhaCt .lb.sub{font-size:10px;margin-top:2px}
+.nhaCt{background:var(--soft);border-radius:12px;padding:10px 10px 8px;margin:0 0 8px}
+.nhaCt>b{display:block;font-size:13px;font-weight:700;margin:0 2px 6px}
+.nhaCt table{width:100%;border-collapse:collapse;table-layout:fixed;font-size:13px;font-variant-numeric:tabular-nums}
+.nhaCt th{line-height:1.25;vertical-align:bottom}
+.nhaCt th{font-size:11.5px;font-weight:600;color:var(--muted);text-align:right;padding:4px 2px}
+.nhaCt th:first-child,.nhaCt td:first-child{text-align:left;white-space:nowrap;padding-right:6px}
+.nhaCt td{padding:8px 2px;border-top:1px solid var(--line);text-align:right}
+.nhaCt tr.ng td{color:var(--muted)}.nhaCt tr.ng td+td{text-align:left;white-space:normal;padding-left:8px}
+.nhaCt tr.x td{color:var(--muted)}
+.nhaCt tr.tb td{font-weight:800;background:var(--tint);color:var(--blue)}
 .nhaCt small{display:block;font-size:11px;color:var(--muted);margin-top:8px;line-height:1.45}
 .nhaG{margin-top:10px;font-size:11.5px;color:var(--muted);line-height:1.5}
 .nhaR .nd{display:none;font-size:11px;color:var(--muted);font-weight:500;margin-top:3px;white-space:nowrap}
@@ -5124,6 +5125,7 @@ textarea.inp{font-family:inherit}
   }
   function ccCheNoi(t) { t.querySelectorAll('[data-che]').forEach(function (b) { b.onclick = function () { CCS.theMo = b.getAttribute('data-che') === '1'; var lg = theLogoNap(); if (!lg.complete) lg.onload = function () { ccVe(); }; ccVe(); window.scrollTo(0, 0); }; }); }
   var BAN_MOI = [
+    { so: 171, ds: [{ i: '📋', t: 'Chi tiết từng nhà dạng bảng', m: 'Chạm tên nhà ở thẻ Người đi làm các nhà: mỗi ngày một dòng ghi rõ ca ngày, ca đêm, tổng; ngày HOJEONG nghỉ ghi chữ nghỉ; dòng cuối là trung bình mỗi ngày, đúng bằng số ở danh sách.' }] },
     { so: 170, ds: [{ i: '🏭', t: 'Thẻ người đi làm các nhà dễ đọc hơn', m: 'Mỗi nhà một dòng: hạng, số người trung bình mỗi ngày (tách ca ngày, ca đêm) và tăng hay giảm so với tuần trước. Tâm An tô xanh, có hạng tuần này và tuần trước. Chạm tên nhà để xem từng ngày trong 7 ngày gần nhất.' }] },
     { so: 169, ds: [{ i: '🖨️', t: 'Ảnh trên thẻ HOJEONG in sáng hơn', m: 'In thẻ trên giấy A5 thường, ảnh chân dung tự sáng lên theo khuôn mặt từng người (mức B anh chọn), nền ảnh trắng, mắt tóc rõ hơn. Ảnh trong kho giữ nguyên. Máy in vẫn ra đậm thì kéo thanh Sáng ảnh trong mục Thẻ HOJEONG, app nhớ mức đó.' }] },
     { so: 168, ds: [{ i: '⚠️', t: 'TREND: ghi rõ đang bị gì và phải làm gì', m: 'Người nào có vấn đề thì ngay dưới tên hiện một dòng cảnh báo bằng chữ, nói rõ đang bị gì và cần làm gì. Đỏ ⛔ là phải sửa, cam 📞 là phải gọi điện, xám ℹ️ là chỉ để biết, không cần làm gì. Trên file Google Sheet cũng có cột CẢNH BÁO (cột E) ghi y hệt.', c: [['Xem cảnh báo', 'Tab Lao động → TREND → đọc dòng màu dưới tên người.']] }] },
@@ -6798,20 +6800,22 @@ textarea.inp{font-family:inherit}
       '<div class="nhaG">Bỏ Chủ nhật và ngày HOJEONG nghỉ. Chạm tên nhà để xem từng ngày.</div></div>';
     box.querySelectorAll('button.nhaR[data-k]').forEach(function (b) { b.onclick = function () { var k = b.getAttribute('data-k'); S.nhaMo = S.nhaMo === k ? '' : k; veNha(); }; });
   }
-  function nhaChiTiet(o, t, k) {
-    var max = 1; t.cot.forEach(function (d) { max = Math.max(max, nhaTong(t.m[d], k)); });
-    var c = '', l = '', s = '', ra = [], coX = false;
-    t.cot.forEach(function (d) {
-      var x = t.m[d], v = nhaTong(x, k), ng = t.nghi(x) || (!x && serialDate(d).getUTCDay() === 0), thieu = x && !x.du && !ng, h = Math.round(56 * v / max);
-      c += '<div class="cl' + (thieu ? ' x' : '') + '"><b>' + (x ? v : '–') + '</b><span class="stk" style="height:' + (v ? Math.max(3, h) : 0) + 'px"><span class="e" style="flex:' + nhaCa(x, k, 1) + '"></span><span class="d" style="flex:' + nhaCa(x, k, 0) + '"></span></span></div>';
-      l += '<div>' + nhaThu(d) + '<br>' + ddmm(serialDate(d)).slice(0, 2) + '</div>';
-      s += '<div>' + (!x ? 'Chưa có' : ng ? 'Nghỉ' : thieu ? nhaCa(x, k, 0) + ' / –' : nhaCa(x, k, 0) + ' / ' + nhaCa(x, k, 1)) + '</div>';
-      if (thieu) coX = true;
-      if (k === o.ta && x && nhaTong(x, o.ra)) ra.push(ddmm(serialDate(d)) + ': ' + nhaTong(x, o.ra));
-    });
-    return '<div class="nhaCt"><b>' + esc(nhaTen(o, k)) + ' · ' + ddmm(serialDate(t.cot[0])) + ' – ' + ddmm(serialDate(t.cot[6])) + '</b><div class="cols">' + c + '</div><div class="lb">' + l + '</div><div class="lb sub">' + s + '</div>' +
-      '<small>Số trên cột là tổng người; dòng dưới là ca ngày / ca đêm.' + (coX ? ' Cột mờ là ngày chưa có ca đêm.' : '') + '</small>' +
-      (ra.length ? '<small>Người đã chuyển khỏi Tâm An nhưng vân tay vẫn ghi Tâm An (không tính vào số trên) – ' + esc(ra.join(', ')) + ' người.</small>' : '') + '</div>';
+  function nhaChiTiet(o, t, k) {   // b171: bảng mỗi ngày 1 dòng (mới nhất trên cùng) + dòng Trung bình/ngày = số ngoài danh sách
+    var E = t.cot[t.cot.length - 1], D0 = t.A.length ? Math.min(t.A[0].d, E - 6) : E - 6, h = '', coX = false, ra = [];
+    var x0 = null; t.ds.forEach(function (y) { if (y.k === k) x0 = y; });
+    for (var d = E; d >= D0; d--) {
+      var x = t.m[d], cn = serialDate(d).getUTCDay() === 0, nh = 'HOJEONG nghỉ', ten = nhaThu(d) + ' ' + ddmm(serialDate(d)), v = nhaTong(x, k);
+      if (!x && cn) h += '<tr class="ng"><td>' + ten + '</td><td colspan="3">' + nh + '</td></tr>';
+      else if (!x) h += '<tr class="ng"><td>' + ten + '</td><td colspan="3">Chưa có file vân tay</td></tr>';
+      else if (t.nghi(x)) h += '<tr class="ng"><td>' + ten + '</td><td colspan="3">' + nh + (v ? ' (' + v + ' người đi làm)' : '') + '</td></tr>';
+      else if (!x.du) { coX = true; h += '<tr class="x"><td>' + ten + '</td><td>' + nhaCa(x, k, 0) + '</td><td>–</td><td>' + nhaCa(x, k, 0) + '</td></tr>'; }
+      else h += '<tr><td>' + ten + '</td><td>' + nhaCa(x, k, 0) + '</td><td>' + nhaCa(x, k, 1) + '</td><td><b>' + v + '</b></td></tr>';
+      if (k === o.ta && x && nhaTong(x, o.ra)) ra.push(ddmm(serialDate(d)) + ': ' + nhaTong(x, o.ra) + ' người');
+    }
+    if (x0) h += '<tr class="tb"><td>Trung bình</td><td>' + x0.a[0] + '</td><td>' + x0.a[1] + '</td><td>' + x0.a[2] + '</td></tr>';
+    return '<div class="nhaCt"><b>' + esc(nhaTen(o, k)) + ' – số người từng ngày</b><table><colgroup><col style="width:34%"><col><col><col></colgroup><tr><th>Ngày</th><th>Ca<br>ngày</th><th>Ca<br>đêm</th><th>Tổng</th></tr>' + h + '</table>' +
+      '<small>Trung bình chỉ tính ngày đã đủ ca đêm, bỏ ngày HOJEONG nghỉ.' + (coX ? ' Ngày có dấu – ở ca đêm là chưa có số ca đêm, chưa tính vào trung bình.' : '') + '</small>' +
+      (ra.length ? '<small>Người đã chuyển khỏi Tâm An nhưng vân tay vẫn ghi Tâm An, không tính vào bảng trên: ' + esc(ra.join('; ')) + '.</small>' : '') + '</div>';
   }
   // ---- thông báo cho chủ: bảng công sửa khác vân tay (đọc xong là ẩn) ----
   function laChu() { return !!(S.toi && S.toi.vai === 'chu'); }
