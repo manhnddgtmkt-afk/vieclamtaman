@@ -2871,6 +2871,80 @@ textarea.inp{font-family:inherit}
       function gon(A, a, b) { var mu = 0, v = 0, c = 0; for (var t = a + 1; t < b; t++) { var d = A[t] - A[t - 1]; mu += d; v += d * d; c++; } return c ? v / c - (mu / c) * (mu / c) : 0; }
       var vc = gon(C, m, w - m); return vc > 0 ? gon(R, m, h - m) / vc : 9;
     }
+    // ---- 15/11: KIỂM BỐ CỤC THEO THẺ MẪU – ảnh đã nắn phải trùng khớp bố cục thẻ thật (quốc huy, QR, ảnh, chữ, chip, vân tay, dòng mã)
+    // ở đúng chỗ. Dính nền / cắt lẹm / méo -> phải phóng hoặc dịch mới khớp -> không đạt. Mẫu = trung bình ảnh kho đạt (64×40, lọc nét).
+    var BC_W = 64, BC_H = 40;
+    function bcDacTrung(cv) {   // ảnh thẻ -> 64×40 Float32 (xám, trừ nền mờ sigma 4, chuẩn hoá)
+      var W = cv.width, H = cv.height, d = cv.getContext('2d').getImageData(0, 0, W, H).data, g = new Float32Array(BC_W * BC_H), x, y, i, j;
+      for (j = 0; j < BC_H; j++) {
+        var y0 = Math.floor(j * H / BC_H), y1 = Math.floor((j + 1) * H / BC_H);
+        for (i = 0; i < BC_W; i++) {
+          var x0 = Math.floor(i * W / BC_W), x1 = Math.floor((i + 1) * W / BC_W), s = 0, n = 0;
+          for (y = y0; y < y1; y += 2) for (x = x0; x < x1; x += 2) { var k = (y * W + x) * 4; s += 0.299 * d[k] + 0.587 * d[k + 1] + 0.114 * d[k + 2]; n++; }
+          g[j * BC_W + i] = s / Math.max(1, n);
+        }
+      }
+      var R = 12, ker = [], ks = 0; for (i = -R; i <= R; i++) { var v = Math.exp(-i * i / 32); ker.push(v); ks += v; }
+      ker = ker.map(function (v) { return v / ks; });
+      function ref(p, n) { while (p < 0 || p >= n) p = p < 0 ? -p : 2 * (n - 1) - p; return p; }
+      var t = new Float32Array(BC_W * BC_H), b = new Float32Array(BC_W * BC_H);
+      for (j = 0; j < BC_H; j++) for (i = 0; i < BC_W; i++) { var s1 = 0; for (k = -R; k <= R; k++) s1 += ker[k + R] * g[j * BC_W + ref(i + k, BC_W)]; t[j * BC_W + i] = s1; }
+      for (j = 0; j < BC_H; j++) for (i = 0; i < BC_W; i++) { var s2 = 0; for (k = -R; k <= R; k++) s2 += ker[k + R] * t[ref(j + k, BC_H) * BC_W + i]; b[j * BC_W + i] = s2; }
+      var m = 0, q = 0; for (i = 0; i < g.length; i++) { g[i] -= b[i]; m += g[i]; } m /= g.length;
+      for (i = 0; i < g.length; i++) { g[i] -= m; q += g[i] * g[i]; } q = Math.sqrt(q / g.length) || 1;
+      for (i = 0; i < g.length; i++) g[i] /= q;
+      return g;
+    }
+    function bcKhop(F, T, sx, sy, dx, dy) {   // NCC giữa mẫu T và ảnh F lấy mẫu tại c+(u-c)*s+d (phần ra ngoài ảnh bỏ)
+      var cx = (BC_W - 1) / 2, cy = (BC_H - 1) / 2, sa = 0, sb = 0, saa = 0, sbb = 0, sab = 0, n = 0, i, j;
+      for (j = 0; j < BC_H; j++) {
+        var yy = cy + (j - cy) * sy + dy; if (yy < 0 || yy > BC_H - 1) continue;
+        var y0 = Math.floor(yy), fy = yy - y0, y1 = Math.min(BC_H - 1, y0 + 1);
+        for (i = 0; i < BC_W; i++) {
+          var xx = cx + (i - cx) * sx + dx; if (xx < 0 || xx > BC_W - 1) continue;
+          var x0 = Math.floor(xx), fx = xx - x0, x1 = Math.min(BC_W - 1, x0 + 1);
+          var a = (F[y0 * BC_W + x0] * (1 - fx) + F[y0 * BC_W + x1] * fx) * (1 - fy) + (F[y1 * BC_W + x0] * (1 - fx) + F[y1 * BC_W + x1] * fx) * fy, b = T[j * BC_W + i];
+          sa += a; sb += b; saa += a * a; sbb += b * b; sab += a * b; n++;
+        }
+      }
+      var fr = n / (BC_W * BC_H); if (fr < 0.6) return -9;
+      var va = saa - sa * sa / n, vb = sbb - sb * sb / n, r = (sab - sa * sb / n) / Math.sqrt(Math.max(1e-9, va * vb));
+      return r * Math.min(1, fr / 0.9);
+    }
+    function bcDo(F, T) {   // tìm cách phóng/dịch khớp nhất: thô rồi mịn
+      var tot = { v: -9 }, sx, sy, dx, dy, v;
+      for (sx = 0.8; sx <= 1.201; sx += 0.08) for (sy = 0.8; sy <= 1.201; sy += 0.08) for (dx = -6; dx <= 6; dx += 2) for (dy = -6; dy <= 6; dy += 2) {
+        v = bcKhop(F, T, sx, sy, dx, dy); if (v > tot.v) tot = { v: v, sx: sx, sy: sy, dx: dx, dy: dy };
+      }
+      var c = tot;
+      for (sx = c.sx - 0.06; sx <= c.sx + 0.061; sx += 0.02) for (sy = c.sy - 0.06; sy <= c.sy + 0.061; sy += 0.02) for (dx = c.dx - 2; dx <= c.dx + 2; dx++) for (dy = c.dy - 2; dy <= c.dy + 2; dy++) {
+        v = bcKhop(F, T, sx, sy, dx, dy); if (v > tot.v) tot = { v: v, sx: sx, sy: sy, dx: dx, dy: dy };
+      }
+      tot.v0 = bcKhop(F, T, 1, 1, 0, 0);
+      return tot;
+    }
+    var BC_MAU_B64 = {"t21": "Ff/19/7/GAMBAwsPDf7w7u/7+/gBAwcGCgsVFhgVFBYZGyAeHhUeGBUYHBMSDxcKCgoSGh4cKC0iHx0dFhIMH/sEAgYRJxgWDQkRDxsZDQQVFhQQESAeGxsfJy0oJS0sKS0yLyosLSkjKCofGCUsHh4cICElLTU2Li0rJyEeEQrzAwwKBR0aDQUEBAkVFBgeIBsJ6d7e8QHr6u0K9fz+9vcJAPcE9vLz6fED5OP69+bk6yoiDAgcExMTFAsLHhUL8/8LCAMMC+vL0cbkCCMZIiMYC+nZ4e/68OXj/PHz/ur0Avj2/vfs8uzyAPDnAe/k6AUlHuHFz9XV1NXU3x8ZDv8KExUJAe+8wd69ruUGFhgdFBENCxQdFRX/097z1gj+7froEe/h4/vf5/siGyYXEhQeJBTiwMDAxr7E1/IlHBHzCg8VDwLZsLLBs6TL7hEaFxUUFBojIRMSDObm7t74++728AT05/D06OoEICEtIyMlISIc7cHEyMPCydD1KiAS7/oMCxTq1cWsqqy6w9cOGBQWFBYdJRnw2t7V393s7dni3tfx9evz6tHy8eLcGiYiISslGtu7vsfHw8LL+zUkFvoA/AUS487Fyd64wr7cFB4QEhUVHRsVAtzY4ubm7/b/EPHs6/H5Cd7a5eHi+SMjJCIlJR/ft8DNxb3Cz/guIhYGC/f7/Pzq3AUSA9jh9QUWFx4dGx4XGxHx6+j19/8DCRQM8+Hj+f7p2+Di8gokIyIfHykl4La8x8K+uMnsJSIPABIRAfv30sTe3uLB3woECRobIhYU/hIYFx0ZJCstHSYvLikLCwYFBgQB9QQSGw8UGx4pGNy4sLO6uba17iUeDQYMDRUEAfHQ1NbTz+76AAALDwrk+ND24wMW+gQN8vXt+wwu8O7b2tPg1sz00+fj7+D8KRXLtMC3tce9wu0rGBIAGA8LDQkC9PkSBPv9+PwDBQX61ebQ2NjqBe365v/w8vUFJ/Dp2dfHu8jGANXZzM7S5RgZCQkEAQwSGBMOHSMV9A4cFQwJEwYB/gkD9//7AP4ICwkKFRgVGRwVHxsrHiMlIiwfHyIUCgL8DB0MCwoHBw4dJB4WGhoUHBwTCwsYBPQQHyUnHh4lJBglHhEaFxQWDwsFDxwjHB8mJB0pJCktHsTDvAc4IhAdIyonIR8bGBMTGyMTHB4jEBESFBIECfTsGDE4PkFDQ0NFR0lFQj88OCMC07W+yuPDx9HH4era3euur6f/KAcDDykuLS8gGxYUDw0LDxoaGw8PHRoY/f3y0wIxPENEOikbEx4vQkdFQTwlEgL5+f8TCgwVCw0bFRshFhYQJjMiBQsoLTcoHxwUEw0ICR4dDQ0LBw0RF/336c/9Ljs/MAbYvbe/2gQyQUA6HgoIERgbJCwoICYeKScoKiYsLygnMRUEEiUnFxQSEQ0LBQMMAQUJEAEA//778+7P/i86Mva5mpKTjpGx8S09ORwA4+8IBQ8jELi8u9K40q21t7XCrsGzxamtuKvEqvILCAP/AQoPEhQCAggHBff40AAvNwy8nqKoq6aVi7EJNjkbAbrF5+HeDwyzwru6ms6usKyqra+3t8anp6qouafvCwcD/gIWEQQE/AISFAz599AEMDHrpKu/1tvWu5mU5y86HxIMERQiIiQoBP3vCwUI/AMMCRMAFgsQBevc6vjnCA0HAf76//0CAf76/xAM9fLUDDEs2aTA4PkKBum4mNcoOyIF3/oA9/rwEBP+Cg8OCgkXLzg7OTc4Ojko//EOIyARBgAA+v/5AAQH9Pj+/vHt3g8yLNi41/IRIhj/2a7aJzwlAN/W7+Dv5wIUD/YM+f36Ezg5Ojk3OTo6NyPw8w0UDwYBAf0NDQIHB/kGAAj06eUPMSvk0d3g/BUC6uLC5Cg8JxP6+/ULEA8YBgkSGRMKAwoLEx0gHycrNDIsA+vwBw0IBAD4/P0DAv/9Dg0L9ejkDTAn8ujn3/0ZBOLl2OsoOyQDysbDz9nZ5OXY0unZ2MvY2eju7v8ECyMoIgb29AMOCQEB/QT+BwEF/AMWDvfm4gwuKAH6ERoaHRkbFPf9JzsmDOjv6/r0BQgKBwMMAgX9BwsHChYUFRkmKiX+AAL4DgsGAwUJChoUCv8DCwf45t0LLCkO/xIfERAPHBQDDy05Iv/G19P76OnmDP/t6QL08+vjBS8Y7O3t6fH52dDQzwsPDQgHEQ0PCwYPCggDBfncCSosHQUHEQP4+woFBxoyOSEL9dTm/gUDCBgRBQAPCQwCBRoxCuHQ3OHU6tO4u8sKFBANEQoSFQ0CDRgYBwv13AYoLSQK/Pjl3uLz9gkmNTggEBMVIBwpHycpLSkmFQcIFiAuHhkQFxoiGxsI+vX0ChEJFBoG+vz96PUGDwIQ+d4GKSwmB+7r6Onp5uT/JzY4Jf3Jws3W0tH+/+XxG/vAwdgEIt3O0djs1dvy6M3Fx9/S0P8LyrGw1ruvsMbsEQnfBikrJQHh4Obq5drT9yAzNyoO/AEPExIbKCAVGiokFw0ZISgTBg4QFPX2+AH68/AH/fsACfTs5PgE8PLv+gr/3wYlIxX03d7g3dnU1vYSIi8mEP8YEiAgGiMdFx4rIyAWHRkYICsrKSUPCAIGGRsdISIgDgwODAQICRgT/wIF8eAHGRMS+Ovr6+bm5ujzDRclJQTDyNTb1MjjAfji6Ov28+fd2fcnKRkLBQsCCCMmIiciFhcNCwgHBwgSBf4JB+ziCBQRFfz2+QEB//v9+AUTGCUO5O4E//wAAgoeCwL9BQr+8/cE//ns7On1+QAGBhMZEw4WCwQAFAwEAPz/AxD05QsWFRoC/AYPDgsRDgILGR0mC9bGvtfi09Tb8uLgzdff3dHO0uDVxLfKztjQ2d3i+QMIAP78+w8VEgIEBwAA6OwMFxgeFhYZHRkZHhQQEBkeJBcFAAIKFgQHDg4ODxADBhMWEgUNC/nrAhYbExQNEBQKCAX9+f4FFAcBEwz8++bz/wYICRAWCgMMEgcCBAYLEBYLz9vr2Obe39/v4fUI8eb3/f8C8PLh5/f2BO7q8fj6793a5PTu8/b3AggAAP3o+OfT3sbU08LD5+rZyMvJzdXkEhcZJSEbICUVGSIfKiofJiEiJh0bIiIkIR387OTr6+jTzs71+u/p9QIJEAL86fv47+nv6uPm+Abt5tXP1tfb8xH5/AIaCw4REhcVEAIGEhAFDAwVCxUJChENBwQOFRIREw8FChYGBhEMFAsA9+gA+f/7/wcKA/4TGBsYCAoMDxgQ3s/H5ePY0t/v7ezX1N/h2tbY6Org3ODl5drd4+z/CBgUFA4HAQMTDQD//fLmCfr+Bw0JCQP9/wkVGgT6/gAICAUBBQgPAgUMCBAUDwcKDgwLCAULDwoKDA8HBAUNBQcLD/v6A/vv/P7s7Ojm9w==", "t24": "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", "s21": "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", "s24": "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"};
+    var BC_MAU = null;   // {t21, t24, s21, s24} Float32Array – giải nén từ BC_MAU_B64 khi cần
+    function bcMau() {
+      if (BC_MAU) return BC_MAU;
+      BC_MAU = {};
+      Object.keys(BC_MAU_B64).forEach(function (k) {
+        var s = atob(BC_MAU_B64[k]), a = new Float32Array(s.length);
+        for (var i = 0; i < s.length; i++) { var c = s.charCodeAt(i); a[i] = (c > 127 ? c - 256 : c) / 32; }
+        BC_MAU[k] = a;
+      });
+      return BC_MAU;
+    }
+    function boCuc(mat, matThe) {   // mat: ảnh thẻ đã nắn + xoay đúng; matThe 'truoc'|'sau' -> { dat, v, sx, sy, dx, dy, ly }
+      var F = bcDacTrung(mat), M = bcMau(), ks = matThe === 'truoc' ? ['t21', 't24'] : ['s21', 's24'], tot = null;
+      ks.forEach(function (k) { var r = bcDo(F, M[k]); r.mau = k; if (!tot || r.v > tot.v) tot = r; });
+      var lech = Math.max(Math.abs(tot.sx - 1), Math.abs(tot.sy - 1)) > BC_NG.s || Math.abs(tot.dx) > BC_NG.d || Math.abs(tot.dy) > BC_NG.d;
+      tot.ly = tot.v < BC_NG.v ? 'không khớp bố cục thẻ mẫu' : (lech && tot.v - tot.v0 > BC_NG.loi) ? 'khung lệch so với thẻ mẫu (dính nền / cắt lẹm / méo)' : '';
+      tot.dat = !tot.ly;
+      tot.F = F;
+      return tot;
+    }
+    var BC_NG = { s: 0.031, d: 1.5, v: 0.55, loi: 0.04 };
     function xuLy(cv, q) {
       var t = q ? { q: xep(q), nguon: 'tay' } : timThe(cv);
       if (!q) {
@@ -2883,14 +2957,125 @@ textarea.inp{font-family:inherit}
       var d01 = Math.hypot(g[1][0] - g[0][0], g[1][1] - g[0][1]), d12 = Math.hypot(g[2][0] - g[1][0], g[2][1] - g[1][1]);
       var gn = d01 >= d12 ? g : [g[3], g[0], g[1], g[2]];   // cạnh dài nằm ngang
       if (!q && t.nguon !== 'ca anh') { gn = noiLe(cv, gn); g = gn; }   // 23/10: không cắt lẹm vào thẻ
-      var mat = nan(cv, gn, MW, MH), pl = phanLoai(mat);
+      var r = xuLyTinh(cv, gn, !q), kem = q ? [] : danhGia(cv, t, g), sua = '';
+      function datHet(x) { return x.bc && x.bc.dat && Math.abs(x.ng) <= 1 && x.cn >= 1.15; }
+      var caAnhDung = !q && t.nguon === 'ca anh' && datHet(r) && Math.abs(r.bc.sx - 1) <= 0.021 && Math.abs(r.bc.sy - 1) <= 0.021 && !r.bc.dx && !r.bc.dy;   // ảnh chính là thẻ (đã cắt sẵn): khớp thẻ mẫu y nguyên mới nhận
+      if (!q && t.nguon === 'ca anh' && !caAnhDung) {   // ảnh cắt sẵn đúng khổ thẻ: thử lấy nguyên ảnh (không lẹm) xem có khớp thẻ mẫu y nguyên không
+        var gF = ngangKhung([[0, 0], [cv.width, 0], [cv.width, cv.height], [0, cv.height]]), rF = xuLyTinh(cv, gF, true);
+        if (datHet(rF) && Math.abs(rF.bc.sx - 1) <= 0.021 && Math.abs(rF.bc.sy - 1) <= 0.021 && !rF.bc.dx && !rF.bc.dy) { r = rF; g = gF; kem = []; caAnhDung = true; }
+      }
+      if (!q && t.nguon === 'ca anh' && !caAnhDung) kem.push('không tìm thấy mép thẻ (máy lấy cả ảnh)');   // 15/11: không thấy mép thẻ thì không tự lưu
+      if (!q && !caAnhDung && !datHet(r)) {   // 15/11: lệch thẻ mẫu / nghiêng -> máy tự tìm lại khung: phóng-dịch theo thẻ mẫu, xoay theo dòng chữ, bám mép thật
+        var ung = [], tot = null;
+        function thu(g2, sau) { var r2 = xuLyTinh(cv, g2, true); if (datHet(r2)) { if (!tot || r2.bc.v > tot.r.bc.v + 0.02) tot = { r: r2, g: g2 }; } else if (sau && r2.bc && !r2.bc.dat && Math.abs(r2.ng) <= 1) (bcSua(cv, g2, r2.pl.xoay, r2.bc) || []).forEach(function (g3) { thu(g3, false); }); }
+        if (r.bc && !r.bc.dat) ung = ung.concat(bcSua(cv, gn, r.pl.xoay, r.bc) || []);
+        if (Math.abs(r.ng) > 1 || r.cn < 1.15) [r.ng, -r.ng].forEach(function (a) { if (!a) return; var g1 = quayKhung(cv, gn, a); if (!g1) return; ung.push(g1); try { ung.push(lemVao(xep(bamMep(cv, g1)))); } catch (e) { } });
+        ung.forEach(function (g2) { thu(ngangKhung(g2), true); });
+        if (!tot) {   // vẫn hỏng: rà cả ảnh tìm chỗ giống thẻ mẫu (thẻ nhỏ, dựng đứng, nền sọc)
+          var ds2 = []; try { ds2 = timTheMau(cv); } catch (e) { ds2 = []; }
+          ds2.forEach(function (g1) { if (tot) return; var c1 = [g1]; try { c1.unshift(lemVao(xep(bamMep(cv, xep(g1))))); } catch (e) { } c1.forEach(function (g2) { if (!tot) thu(ngangKhung(xep(g2)), true); }); });
+          if (tot) { r = tot.r; g = tot.g; kem = []; sua = 'tìm thẻ theo thẻ mẫu'; }
+        } else { r = tot.r; g = tot.g; kem = []; sua = 'tự chỉnh khung theo thẻ mẫu'; }
+      }
+      if (Math.abs(r.ng) > 1) kem.push('ảnh nghiêng ' + String(Math.abs(r.ng)).replace('.', ',') + '°');   // 04/11: chuẩn chung – dòng chữ nghiêng quá 1° thì không lưu kho
+      if (r.cn < 1.15) kem.push('khung cắt sai (chữ trên thẻ không nằm ngang)');   // 04/11: bắt khung lấy cả nền / nội dung xoay 90°
+      if (r.bc && !r.bc.dat) kem.push(r.bc.ly);
+      if (!q && !caAnhDung && g.some(function (a) { return a[0] < 0.004 * cv.width || a[1] < 0.004 * cv.height || a[0] > 0.996 * cv.width || a[1] > 0.996 * cv.height; })) kem.push('thẻ chạm mép ảnh (có thể mất 1 phần thẻ)');   // 15/11: ảnh chụp cắt mất 1 phần thẻ thì không tự lưu
+      return { the: r.mat, q: g, tim: t, mat: r.pl.mat, chac: r.pl.chac, f: r.pl.f, ro: r.pl.ro !== false, kem: kem, ng: r.ng, cn: r.cn, bc: r.bc ? { v: r.bc.v, sx: r.bc.sx, sy: r.bc.sy, dx: r.bc.dx, dy: r.bc.dy, mau: r.bc.mau } : null, sua: sua };
+    }
+    // ---- 15/11: TÌM THẺ THEO THẺ MẪU – khi cách tìm khung thường hỏng (thẻ nhỏ trong ảnh, thẻ dựng đứng, nền sọc): rà cả ảnh tìm chỗ giống thẻ mẫu nhất
+    // (mẫu thu nhỏ 16×10, 4 hướng xoay, 13 cỡ thẻ từ 14% đến 100% bề rộng ảnh) -> vài khung ứng viên, sau đó bám mép thật + đối chiếu mẫu như thường.
+    function tmNho(T) {   // mẫu 64×40 -> 16×10 (gộp 4×4), chuẩn hoá
+      var o = new Float32Array(160), i, j, a, b, m = 0, q = 0;
+      for (j = 0; j < 10; j++) for (i = 0; i < 16; i++) { var s = 0; for (b = 0; b < 4; b++) for (a = 0; a < 4; a++) s += T[(j * 4 + b) * BC_W + i * 4 + a]; o[j * 16 + i] = s / 16; }
+      for (i = 0; i < 160; i++) m += o[i]; m /= 160; for (i = 0; i < 160; i++) { o[i] -= m; q += o[i] * o[i]; } q = Math.sqrt(q) || 1;
+      for (i = 0; i < 160; i++) o[i] /= q;
+      return o;
+    }
+    function tmXoay(t, w, h, k) {   // xoay mẫu k×90° -> { d, w, h }
+      var W2 = k % 2 ? h : w, H2 = k % 2 ? w : h, o = new Float32Array(w * h);
+      for (var y = 0; y < h; y++) for (var x = 0; x < w; x++) {
+        var X, Y; if (k === 0) { X = x; Y = y; } else if (k === 1) { X = h - 1 - y; Y = x; } else if (k === 2) { X = w - 1 - x; Y = h - 1 - y; } else { X = y; Y = w - 1 - x; }
+        o[Y * W2 + X] = t[y * w + x];
+      }
+      return { d: o, w: W2, h: H2 };
+    }
+    function timTheMau(cv, mat) {   // -> [khung 4 góc] tốt nhất trước (tối đa 4)
+      var M = bcMau(), ks = mat === 'truoc' ? ['t21', 't24'] : mat === 'sau' ? ['s21', 's24'] : ['t21', 't24', 's21', 's24'], mau = [];
+      ks.forEach(function (k) { var t = tmNho(M[k]); for (var r = 0; r < 4; r++) mau.push(tmXoay(t, 16, 10, r)); });
+      var W = cv.width, H = cv.height, n0 = nho(cv, 480), w0 = n0.w, h0 = n0.h, g0 = new Float32Array(w0 * h0), i, x, y;
+      for (i = 0; i < w0 * h0; i++) g0[i] = 0.299 * n0.d[i * 4] + 0.587 * n0.d[i * 4 + 1] + 0.114 * n0.d[i * 4 + 2];
+      var ung = [];
+      for (var c = 0; c < 13; c++) {
+        var fr = 0.14 * Math.pow(1 / 0.14, c / 12), cw = fr * Math.max(w0, h0) * (w0 >= h0 ? 1 : 0.75), f = 16 / cw;   // cỡ thẻ (cạnh dài) theo ảnh thu nhỏ
+        var w = Math.max(10, Math.round(w0 * f)), h = Math.max(10, Math.round(h0 * f));
+        if (w > 400 || h > 400) continue;
+        var g = new Float32Array(w * h);   // thu nhỏ trung bình ô
+        for (y = 0; y < h; y++) for (x = 0; x < w; x++) {
+          var xa = Math.floor(x * w0 / w), xb = Math.max(xa + 1, Math.floor((x + 1) * w0 / w)), ya = Math.floor(y * h0 / h), yb = Math.max(ya + 1, Math.floor((y + 1) * h0 / h)), s = 0, nn = 0;
+          for (var yy = ya; yy < yb && yy < h0; yy++) for (var xx = xa; xx < xb && xx < w0; xx++) { s += g0[yy * w0 + xx]; nn++; }
+          g[y * w + x] = s / Math.max(1, nn);
+        }
+        var b1 = new Float32Array(w * h), b2 = new Float32Array(w * h), kr = [0.054, 0.242, 0.399, 0.242, 0.054];   // trừ mờ sigma 1
+        for (y = 0; y < h; y++) for (x = 0; x < w; x++) { var s1 = 0; for (i = -2; i <= 2; i++) s1 += kr[i + 2] * g[y * w + Math.min(w - 1, Math.max(0, x + i))]; b1[y * w + x] = s1; }
+        for (y = 0; y < h; y++) for (x = 0; x < w; x++) { var s2 = 0; for (i = -2; i <= 2; i++) s2 += kr[i + 2] * b1[Math.min(h - 1, Math.max(0, y + i)) * w + x]; b2[y * w + x] = g[y * w + x] - s2; }
+        var S1 = new Float64Array((w + 1) * (h + 1)), S2 = new Float64Array((w + 1) * (h + 1));
+        for (y = 0; y < h; y++) { var r1 = 0, r2 = 0; for (x = 0; x < w; x++) { var v = b2[y * w + x]; r1 += v; r2 += v * v; S1[(y + 1) * (w + 1) + x + 1] = S1[y * (w + 1) + x + 1] + r1; S2[(y + 1) * (w + 1) + x + 1] = S2[y * (w + 1) + x + 1] + r2; } }
+        mau.forEach(function (t, ti) {
+          var tw = t.w, th = t.h, d = t.d, N = tw * th;
+          for (var py = 0; py + th <= h; py++) for (var px = 0; px + tw <= w; px++) {
+            var a = py * (w + 1) + px, b = (py + th) * (w + 1) + px + tw, sm = S1[b] - S1[a + tw] - S1[b - tw] + S1[a], sq = S2[b] - S2[a + tw] - S2[b - tw] + S2[a];
+            var vr = sq - sm * sm / N; if (vr <= 1e-6) continue;
+            var dot = 0; for (var yy2 = 0; yy2 < th; yy2++) { var o1 = (py + yy2) * w + px, o2 = yy2 * tw; for (var xx2 = 0; xx2 < tw; xx2++) dot += d[o2 + xx2] * b2[o1 + xx2]; }
+            var sc = dot / Math.sqrt(vr);
+            if (sc > 0.45) ung.push({ v: sc, x0: px / w * W, y0: py / h * H, x1: (px + tw) / w * W, y1: (py + th) / h * H });
+          }
+        });
+      }
+      ung.sort(function (a, b) { return b.v - a.v; });
+      var chon = [];
+      ung.forEach(function (u) {   // bỏ ứng viên trùng chỗ
+        if (chon.length >= 4) return;
+        if (chon.some(function (c2) { var ix = Math.max(0, Math.min(c2.x1, u.x1) - Math.max(c2.x0, u.x0)), iy = Math.max(0, Math.min(c2.y1, u.y1) - Math.max(c2.y0, u.y0)); return ix * iy > 0.3 * (u.x1 - u.x0) * (u.y1 - u.y0); })) return;
+        chon.push(u);
+      });
+      return chon.map(function (u) { return [[u.x0, u.y0], [u.x1, u.y0], [u.x1, u.y1], [u.x0, u.y1]]; });
+    }
+    function lemVao(q) { var mx = (q[0][0] + q[1][0] + q[2][0] + q[3][0]) / 4, my = (q[0][1] + q[1][1] + q[2][1] + q[3][1]) / 4; return q.map(function (a) { return [mx + (a[0] - mx) * 0.988, my + (a[1] - my) * 0.985]; }); }
+    function ngangKhung(q) { var d01 = Math.hypot(q[1][0] - q[0][0], q[1][1] - q[0][1]), d12 = Math.hypot(q[2][0] - q[1][0], q[2][1] - q[1][1]); return d01 >= d12 ? q : [q[3], q[0], q[1], q[2]]; }
+    function quayKhung(cv, gn, deg) {   // xoay khung quanh tâm thẻ (trên ảnh đã nắn) deg độ -> 4 góc mới trên ảnh gốc; ra ngoài ảnh thì thôi
+      var c = Math.cos(deg * Math.PI / 180), s2 = Math.sin(deg * Math.PI / 180), cx = MW / 2, cy = MH / 2, M = homo([[0, 0], [MW, 0], [MW, MH], [0, MH]], gn), W = cv.width, H = cv.height, ra = false;
+      var q = [[0, 0], [MW, 0], [MW, MH], [0, MH]].map(function (p) {
+        var x = cx + (p[0] - cx) * c - (p[1] - cy) * s2, y = cy + (p[0] - cx) * s2 + (p[1] - cy) * c, z = M[6] * x + M[7] * y + 1, u = (M[0] * x + M[1] * y + M[2]) / z, v = (M[3] * x + M[4] * y + M[5]) / z;
+        if (u < -0.01 * W || v < -0.01 * H || u > 1.01 * W || v > 1.01 * H) ra = true; return [u, v];
+      });
+      return ra ? null : xep(q);
+    }
+    function xuLyTinh(cv, gn, kiemMau) {   // nắn theo 4 góc -> nhận mặt, xoay, đo nghiêng, đo chữ ngang, đối chiếu thẻ mẫu
+      var mat = nan(cv, gn, MW, MH), pl = phanLoai(mat), ng = 0, cn = 9, bc = null;
       if (pl.xoay) mat = xoay(mat, 180);
-      var kem = q ? [] : danhGia(cv, t, g), ng = 0;
       try { ng = nghiengChu(mat); } catch (e) { }
-      if (Math.abs(ng) > 1) kem.push('ảnh nghiêng ' + String(Math.abs(ng)).replace('.', ',') + '°');   // 04/11: chuẩn chung – dòng chữ nghiêng quá 1° thì không lưu kho
-      var cn = 9; try { cn = chuNgang(mat); } catch (e) { }
-      if (cn < 1.15) kem.push('khung cắt sai (chữ trên thẻ không nằm ngang)');   // 04/11: bắt khung lấy cả nền / nội dung xoay 90°
-      return { the: mat, q: g, tim: t, mat: pl.mat, chac: pl.chac, f: pl.f, ro: pl.ro !== false, kem: kem, ng: ng, cn: cn };
+      try { cn = chuNgang(mat); } catch (e) { }
+      if (kiemMau) { try { bc = boCuc(mat, pl.mat); } catch (e) { bc = null; } }
+      return { mat: mat, pl: pl, ng: ng, cn: cn, bc: bc };
+    }
+    function bcSua(cv, gn, xoay180, bc) {   // thẻ thật nằm ở đâu trên ảnh đã nắn (theo phép phóng/dịch khớp mẫu) -> 4 góc mới trên ảnh gốc; ra ngoài ảnh thì thôi
+      var cx = (BC_W - 1) / 2, cy = (BC_H - 1) / 2;
+      function px(u, c, s, d, n, N) { return (c + (u - c) * s + d + 0.5) * N / n; }
+      var x0 = px(-0.5, cx, bc.sx, bc.dx, BC_W, MW), x1 = px(BC_W - 0.5, cx, bc.sx, bc.dx, BC_W, MW), y0 = px(-0.5, cy, bc.sy, bc.dy, BC_H, MH), y1 = px(BC_H - 0.5, cy, bc.sy, bc.dy, BC_H, MH);
+      var p = [[x0, y0], [x1, y0], [x1, y1], [x0, y1]];
+      if (xoay180) p = p.map(function (a) { return [MW - a[0], MH - a[1]]; });
+      var M = homo([[0, 0], [MW, 0], [MW, MH], [0, MH]], gn), W = cv.width, H = cv.height, ra = false;
+      var q = p.map(function (a) { var z = M[6] * a[0] + M[7] * a[1] + 1, u = (M[0] * a[0] + M[1] * a[1] + M[2]) / z, v = (M[3] * a[0] + M[4] * a[1] + M[5]) / z; if (u < -0.01 * W || v < -0.01 * H || u > 1.01 * W || v > 1.01 * H) ra = true; return [u, v]; });
+      if (ra) return null;
+      q = xep(q);
+      function ngang(q) { var d01 = Math.hypot(q[1][0] - q[0][0], q[1][1] - q[0][1]), d12 = Math.hypot(q[2][0] - q[1][0], q[2][1] - q[1][1]); return d01 >= d12 ? q : [q[3], q[0], q[1], q[2]]; }
+      var ds = [ngang(q)];
+      try {   // phương án 2: bám lại mép thẻ thật quanh khung mới, rồi lẹm vào như bước đầu
+        var b = xep(bamMep(cv, q)), mx = (b[0][0] + b[1][0] + b[2][0] + b[3][0]) / 4, my = (b[0][1] + b[1][1] + b[2][1] + b[3][1]) / 4;
+        ds.unshift(ngang(b.map(function (a) { return [mx + (a[0] - mx) * 0.988, my + (a[1] - my) * 0.985]; })));
+      } catch (e) { }
+      return ds;
     }
     // 04/11: chấm ảnh tự cắt – lý do khiến ảnh dễ lệch / dính nền / thiếu góc ([] = đạt). Chỉ đọc số đo của bước tìm khung, không đổi cách cắt.
     // Thử 106 ảnh gốc CCCD TẠM: bắt 12/14 ảnh cắt hỏng (2 ảnh còn lại: 1 lộn ngược – app đã báo 'xem lại'; 1 ảnh chân dung – không có số nên không lưu), báo nhầm 4/92 ảnh tốt
@@ -3193,7 +3378,7 @@ textarea.inp{font-family:inherit}
       }
       return out;
     }
-    return { CHINH_MD: CHINH_MD, tachVN: tachVN, xep: xep, lamDep: lamDep, lamMau: lamMau, lamIn: lamIn, inGhep: inGhep, loaiThe: loaiThe, timThe: timThe, xuLy: xuLy, ghep: ghep, xoay: xoay, phanLoai: phanLoai, nghiengChu: nghiengChu, chuNgang: chuNgang, MW: MW, MH: MH, GAP: GAP };
+    return { CHINH_MD: CHINH_MD, tachVN: tachVN, xep: xep, lamDep: lamDep, lamMau: lamMau, lamIn: lamIn, inGhep: inGhep, loaiThe: loaiThe, timThe: timThe, xuLy: xuLy, ghep: ghep, xoay: xoay, phanLoai: phanLoai, nghiengChu: nghiengChu, chuNgang: chuNgang, boCuc: boCuc, MW: MW, MH: MH, GAP: GAP };
   })();
   // ---------- 21/10: tab CCCD – chọn ảnh 2 mặt trong album -> tự cắt, nắn, ghép từng cặp -> in mỗi người 1 tờ A4 -> lưu thư mục CCCD trên Drive ----------
   var CCS = { ds: [], tt: {}, jpg: {}, dang: null, doi: null, hang: [], chay: 0, docHang: [], docChay: 0, kho: null, anh: {} }, ccId = 0;
@@ -3407,6 +3592,7 @@ textarea.inp{font-family:inherit}
     if (THUC.on && !ccBan()) ccThuc(0);
     var t = document.getElementById('ccThan'); if (!t || S.tab !== 'cc') return;
     if (CCS.kho) { ccVeKho(t); return; }
+    if (CCS.duyet) { ccVeDuyet(t); return; }
     if (CCS.theMo && !CCS.dang) { ccVeThe(t); return; }
     var cap = ccCap(), gan = ccGan(), h = CCS.dang || CCS.soat ? '' : ccChe();
     ccKqLuot(cap);
@@ -3420,7 +3606,7 @@ textarea.inp{font-family:inherit}
       h += '<div class="card"><b>' + (CCS.dang.tai ? 'Đang tải ảnh từ CCCD TẠM ' + CCS.dang.i : 'Đang cắt và ghép ảnh ' + (CCS.dang.i + 1)) + '/' + CCS.dang.n + '…</b><div class="ccbar0"><i style="width:' + Math.round(100 * CCS.dang.i / CCS.dang.n) + '%"></i></div>' + ccNhacThuc() + '</div>';
     } else if (!CCS.ds.length) {
       h += '<div class="card cch">' + ICON.cc + '<b>In CCCD người mới</b><div class="meta">Chọn cùng lúc ảnh mặt trước và mặt sau của từng người trong album. App tự cắt sát viền, nắn thẳng, ghép 2 mặt, in mỗi người 1 tờ A4 rồi lưu vào thư mục CCCD trên Drive. Không cần in thì bấm Lưu kho.</div>' +
-        '<button class="btn" id="ccChon">Chọn ảnh trong album</button>' + (CCS.tamN ? '<button class="btn ghost" id="ccTam">Xử lý ảnh chờ trong CCCD TẠM (' + CCS.tamN + ')</button>' : CCS.tamN === 0 ? '<button class="btn ghost" disabled>Không còn ảnh chờ trong CCCD TẠM</button>' : '') + '<button class="btn ghost" id="ccKho">Tìm ảnh trong kho</button></div>' + ccKqHtml();
+        '<button class="btn" id="ccChon">Chọn ảnh trong album</button>' + (CCS.tamN ? '<button class="btn ghost" id="ccTam">Xử lý ảnh chờ trong CCCD TẠM (' + CCS.tamN + ')</button>' : CCS.tamN === 0 ? '<button class="btn ghost" disabled>Không còn ảnh chờ trong CCCD TẠM</button>' : '') + '<button class="btn ghost" id="ccKho">Tìm ảnh trong kho</button></div>' + ccDuyetThe() + ccKqHtml();
     } else {
       if (CCS.tam) h += '<div class="note" style="margin-bottom:10px">Lượt này lấy ' + CCS.tam.n + ' ảnh từ <b>CCCD TẠM</b>. Bấm <b>Lưu kho</b> để đưa người đã ghép đúng vào thư mục năm sinh; ảnh gốc của họ chuyển sang CCCD TẠM/ĐÃ XỬ LÝ. Ảnh lẻ, ảnh chưa đọc được vẫn để lại trong CCCD TẠM.</div>' + ccKqHtml();
       if (CCS.doi) h += '<div class="note warn ccdoi"><span>Chạm vào ảnh muốn đổi chỗ</span><button class="btn sm ghost" id="ccDoiThoi">Thôi</button></div>';
@@ -3475,6 +3661,7 @@ textarea.inp{font-family:inherit}
     if ((b = document.getElementById('ccKho'))) b.onclick = ccKhoMo;
     if ((b = document.getElementById('ccLuu'))) b.onclick = ccLuuKho;
     if ((b = document.getElementById('ccTam'))) b.onclick = ccTamMo;
+    if ((b = document.getElementById('ccDuyet'))) b.onclick = ccDuyetMo;
     t.querySelectorAll('[data-dung]').forEach(function (e) { e.onclick = function () { ccDung(e.getAttribute('data-dung')); }; });
     t.querySelectorAll('[data-kemok]').forEach(function (e) { e.onclick = function () { var p = ccCap().filter(function (x) { return x.k === e.getAttribute('data-kemok'); })[0]; if (p) [p.t, p.s].forEach(function (x) { if (x) x.kem = null; }); ccVe(); }; });
     ccDayDat(t); ccCheNoi(t);
@@ -3784,10 +3971,64 @@ textarea.inp{font-family:inherit}
     if (xem) m.push(xem + ' người cần bấm Đúng người'); if (kem) m.push(kem + ' người ảnh cắt chưa chuẩn – chỉnh khung hoặc bấm Ảnh ổn'); if (le) m.push(le + ' ảnh lẻ chưa có cặp');
     toast(m.length ? m.join(' · ') : 'Không còn người nào cần lưu.');
   }
+  // ---- 15/11 (bản 161): DUYỆT NHANH ẢNH MÁY TỰ LƯU – lượt tự xử lý CCCD TẠM hằng đêm lưu kho người nào thì người đó vào danh sách chờ duyệt.
+  // Lướt ảnh: Đạt = xong; Làm lại = ảnh kho cất sang CCCD/_du_lieu/MAY_LUU_LAM_LAI, ảnh gốc trả về CCCD TẠM để cắt lại trên app.
+  function ccDuyetThe() {
+    if (!CCS.duyetN) return '';
+    return '<div class="card"><div class="row sp"><div style="min-width:0"><b>Máy tự lưu kho · chờ duyệt</b><div class="meta">' + CCS.duyetN + ' người máy tự cắt ghép ban đêm. Lướt xem ảnh: thẳng, sát thẻ thì bấm Đạt; lệch, dính nền thì bấm Làm lại.</div></div></div>' +
+      '<button class="btn" id="ccDuyet">Duyệt ' + CCS.duyetN + ' ảnh máy tự lưu</button></div>';
+  }
+  function ccDuyetMo() {
+    CCS.duyet = { tai: 1, ds: [], nho: {} }; ccVe();
+    apiT({ v: 'ccDuyetDs' }).then(function (o) {
+      if (!CCS.duyet) return;
+      if (!o || o.loi) { CCS.duyet = null; toastLoi((o && o.loi) || 'Không tải được danh sách.'); ccVe(); return; }
+      CCS.duyet = { ds: o.ds || [], nho: o.nho || {} }; CCS.duyetN = CCS.duyet.ds.length; ccVe();
+    }, function (e) { CCS.duyet = null; toastLoi(e.message); ccVe(); });
+  }
+  function ccDuyetGui(ids, kq) {
+    var dy = CCS.duyet; if (!dy || dy.dang) return;
+    dy.dang = ids.slice(); ccVe();
+    apiT({ v: 'ccDuyet', ids: ids, kq: kq }).then(function (o) {
+      dy.dang = null;
+      if (!o || o.loi) { toastLoi((o && o.loi) || 'Lỗi, thử lại.'); ccVe(); return; }
+      dy.ds = dy.ds.filter(function (x) { return ids.indexOf(x.id) < 0; }); CCS.duyetN = dy.ds.length;
+      if (kq === 'lai') { CCS.tamLuc = 0; toast('Đã cất ảnh lỗi, trả ' + (o.tra || 0) + ' ảnh gốc về CCCD TẠM – bấm Xử lý ảnh chờ để cắt lại.'); }
+      else toast(ids.length > 1 ? 'Đã duyệt đạt ' + ids.length + ' ảnh.' : 'Đã duyệt đạt.');
+      if (!dy.ds.length) { CCS.duyet = null; ccTamDem(); }
+      ccVe();
+    }, function (e) { dy.dang = null; toastLoi(e.message); ccVe(); });
+  }
+  function ccVeDuyet(t) {
+    var dy = CCS.duyet, h = '<div class="row sp" style="margin-bottom:10px"><button class="btn ghost sm" id="ccDyLui">‹ Quay lại</button>' +
+      (dy.ds.length > 1 && !dy.tai ? '<button class="btn sm" id="ccDyHet"' + (dy.dang ? ' disabled' : '') + '>Đạt hết ' + dy.ds.length + ' ảnh</button>' : '') + '</div>';
+    if (dy.tai) h += '<div class="card"><b>Đang tải ảnh máy tự lưu…</b><div class="ccbar0"><i style="width:30%"></i></div></div>';
+    else if (!dy.ds.length) h += '<div class="card"><b>Không còn ảnh chờ duyệt.</b></div>';
+    else h += '<div class="note" style="margin-bottom:10px">Xem kỹ 4 mép: thẻ phải thẳng, sát mép, không dính nền, không mất chữ. Đạt hết chỉ bấm khi đã lướt xem mọi ảnh.</div>' +
+      dy.ds.map(function (x) {
+        var d = dy.dang && dy.dang.indexOf(x.id) >= 0;
+        return '<div class="card ccp"><div class="row sp"><div style="min-width:0"><b class="ell" style="display:block">' + esc(x.ten ? hoaDau(x.ten) : x.so) + '</b><span class="meta num">' + esc(x.so) + ' · ' + esc(x.duong || '') + '</span>' +
+          (x.sua ? '<div class="meta">Máy đã ' + esc(x.sua) + '</div>' : '') + '</div></div>' +
+          (dy.nho[x.id] ? '<img src="' + dy.nho[x.id] + '" alt="" style="width:100%;display:block;border-radius:6px;margin:8px 0;border:1px solid #d5dbe5">' : '<div class="meta" style="margin:8px 0">Chưa tải được ảnh xem trước.</div>') +
+          '<div class="row" style="gap:8px"><button class="btn sm" data-dyd="' + esc(x.id) + '"' + (dy.dang ? ' disabled' : '') + '>' + (d ? 'Đang ghi…' : 'Đạt') + '</button>' +
+          '<button class="btn ghost sm" data-dyl="' + esc(x.id) + '"' + (dy.dang ? ' disabled' : '') + '>Làm lại</button></div></div>';
+      }).join('');
+    t.innerHTML = h;
+    var b;
+    if ((b = document.getElementById('ccDyLui'))) b.onclick = function () { CCS.duyet = null; ccVe(); };
+    if ((b = document.getElementById('ccDyHet'))) b.onclick = function () { ccDuyetGui(dy.ds.map(function (x) { return x.id; }), 'dat'); };
+    t.querySelectorAll('[data-dyd]').forEach(function (e) { e.onclick = function () { ccDuyetGui([e.getAttribute('data-dyd')], 'dat'); }; });
+    t.querySelectorAll('[data-dyl]').forEach(function (e) {
+      e.onclick = function () {
+        if (e.getAttribute('data-hoi')) { ccDuyetGui([e.getAttribute('data-dyl')], 'lai'); return; }
+        e.setAttribute('data-hoi', '1'); e.textContent = 'Chạm lần nữa để làm lại'; e.className = 'btn sm';
+      };
+    });
+  }
   function ccTamDem() {   // số ảnh chờ trong CCCD TẠM (hỏi ngầm, tối đa 1 lần/phút)
     if (CCS.soat) return;   // bản 149: đang xử lý CCCD TẠM thì lượt xử lý tự đếm
     if (CCS.tamLuc && Date.now() - CCS.tamLuc < 60000) return; CCS.tamLuc = Date.now();
-    apiT({ v: 'cccdTamDs', im: 1 }).then(function (o) { if (CCS.soat || !o || o.loi) return; var n = (o.ds || []).length; if (n !== CCS.tamN) { CCS.tamN = n; ccVe(); } }, function () { });
+    apiT({ v: 'cccdTamDs', im: 1 }).then(function (o) { if (CCS.soat || !o || o.loi) return; var n = (o.ds || []).length, d = Number(o.duyet) || 0; if (n !== CCS.tamN || d !== CCS.duyetN) { CCS.tamN = n; CCS.duyetN = d; ccVe(); } }, function () { });
   }
   // bản 149: đang mở mục CCCD thì số ảnh chờ CCCD TẠM tự cập nhật mỗi phút và ngay khi quay lại app (trước chỉ đếm lúc mở mục)
   setInterval(function () { if (S.tab === 'cc' && S.t && S.toi && document.visibilityState === 'visible') ccTamDem(); }, 20000);
@@ -4657,6 +4898,7 @@ textarea.inp{font-family:inherit}
   }
   function ccCheNoi(t) { t.querySelectorAll('[data-che]').forEach(function (b) { b.onclick = function () { CCS.theMo = b.getAttribute('data-che') === '1'; var lg = theLogoNap(); if (!lg.complete) lg.onload = function () { ccVe(); }; ccVe(); window.scrollTo(0, 0); }; }); }
   var BAN_MOI = [
+    { so: 161, ds: [{ i: '🪪', t: 'Ảnh CCCD tự xử lý: đối chiếu thẻ mẫu', m: 'Máy cắt xong mỗi mặt thẻ thì đối chiếu với thẻ mẫu (quốc huy, mã QR, ảnh, chip, vân tay, dòng mã nằm đúng chỗ). Ảnh dính nền, cắt lẹm, méo hay nghiêng thì máy tự tìm lại khung: phóng, dịch, xoay theo dòng chữ, bám mép thẻ; thẻ nhỏ hoặc dựng đứng trong ảnh thì rà cả ảnh tìm chỗ giống thẻ mẫu. Vẫn chưa đạt thì không tự lưu mà báo cắt chưa chuẩn.' }, { i: '✅', t: 'Duyệt ảnh máy tự lưu', m: 'Mục CCCD có thẻ Máy tự lưu kho · chờ duyệt: lướt xem ảnh máy tự ghép ban đêm, bấm Đạt; ảnh lỗi bấm Làm lại thì ảnh gốc trả về CCCD TẠM để cắt lại.' }] },
     { so: 160, ds: [{ i: '🔁', t: 'Xác nhận khi chuyển người nghỉ về Đang làm (TREND)', m: 'Chạm Đang làm không còn ghi ngay. App mở hộp xác nhận để chọn ngày đi làm lại và cho biết số ngày nghỉ sẽ được trừ. Lưu xong có nút Hoàn tác trong 10 giây.', c: [['Ghi đi làm lại', 'Chạm tên người → [[Đang làm]] → chọn ngày đi làm lại → [[Xác nhận]].']] },
       { i: '🗓️', t: 'Lịch sử nghỉ, sửa được bất cứ lúc nào', m: 'Mỗi đợt nghỉ rồi đi làm lại được lưu thành một dòng trong hồ sơ người lao động. Số ngày đã nghỉ, số ngày đã làm và ngày dự kiến đủ 7 ngày luôn tính theo lịch sử này, nên sửa ngày là số tự đúng lại.', c: [['Sửa ngày nghỉ hoặc ngày đi làm lại', 'Chạm tên người → mục Lịch sử nghỉ → chạm đợt nghỉ → đổi ngày → [[Lưu]].'], ['Lỡ cập nhật đi làm lại nhầm', 'Chạm tên người → [[Tạm nghỉ]] → chọn lại ngày nghỉ cũ → [[Lưu]] → [[Xác nhận]]. Hoặc mở đợt nghỉ đó ở Lịch sử nghỉ → [[Huỷ cập nhật đi làm lại]].']] }] },
     { so: 159, ds: [{ i: '🗑️', t: 'Một nút bỏ phiếu chờ', m: 'Hai nút Không gửi và Công ty giữ lại gộp thành một nút Bỏ khỏi danh sách chờ, vì kết quả như nhau.', c: [['Bỏ phiếu', 'Chạm tên người ở mục Đã gửi phiếu, chưa ghi chuyển → [[Bỏ khỏi danh sách chờ]] → [[Bỏ phiếu]].']] }] },
