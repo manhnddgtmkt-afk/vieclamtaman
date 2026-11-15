@@ -13,7 +13,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
 <script src="config.js"></script>
-<script>window.PB = { so: 167, luc: "15/11 22:50" };</script>
+<script>window.PB = { so: 168, luc: "15/11 23:09" };</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap">
 <style>
@@ -5070,6 +5070,7 @@ textarea.inp{font-family:inherit}
   }
   function ccCheNoi(t) { t.querySelectorAll('[data-che]').forEach(function (b) { b.onclick = function () { CCS.theMo = b.getAttribute('data-che') === '1'; var lg = theLogoNap(); if (!lg.complete) lg.onload = function () { ccVe(); }; ccVe(); window.scrollTo(0, 0); }; }); }
   var BAN_MOI = [
+    { so: 168, ds: [{ i: '⚠️', t: 'TREND: ghi rõ đang bị gì và phải làm gì', m: 'Người nào có vấn đề thì ngay dưới tên hiện một dòng cảnh báo bằng chữ, nói rõ đang bị gì và cần làm gì. Đỏ ⛔ là phải sửa, cam 📞 là phải gọi điện, xám ℹ️ là chỉ để biết, không cần làm gì. Trên file Google Sheet cũng có cột CẢNH BÁO (cột E) ghi y hệt.', c: [['Xem cảnh báo', 'Tab Lao động → TREND → đọc dòng màu dưới tên người.']] }] },
     { so: 167, ds: [{ i: '🏭', t: 'Số người các nhà ở HOJEONG trong 7 ngày', m: 'Tab Lao động → HOJEONG có thẻ Số người các nhà: mỗi nhà một dòng, mỗi ngày một cột, ô càng đậm là càng đông người. Cột So TB cho biết mỗi nhà đang tăng hay giảm so với tuần trước. Số tự cập nhật mỗi khi có file vân tay mới. Chỉ chủ và kế toán thấy thẻ này.', c: [['Xem ca ngày, ca đêm', 'Chạm vào một ô trong bảng.']] }] },
     { so: 166, ds: [{ i: '🪪', t: 'Tổng số CCCD trong kho', m: 'Mục Tìm ảnh trong kho hiện ngay dòng Kho có … CCCD, kèm số Nam và Nữ.' }] },
     { so: 165, ds: [{ i: '✋', t: 'Chỉnh tay ảnh chờ duyệt', m: 'Màn duyệt ảnh máy tự lưu có nút Chỉnh tay: app mở ảnh gốc với khung 4 góc đặt sẵn, kéo lại góc lệch cho mặt trước rồi mặt sau, xem ảnh ghép và bấm Lưu đè ảnh kho (ảnh máy cắt được sao lưu).' }, { i: '✅', t: 'Ít ảnh phải duyệt hơn', m: 'Ảnh máy cắt một lần đã khớp thẻ mẫu chặt thì tự coi là đạt. Danh sách chờ duyệt chỉ còn ảnh máy phải tự chỉnh khung hoặc khớp sát ngưỡng; để quá 3 ngày cũng tự coi là đạt.' }] },
@@ -7272,15 +7273,23 @@ textarea.inp{font-family:inherit}
     if (p.den) return '<span class="pill warn">Đã đến</span>';
     return p.ngay < cqHn() ? '<span class="pill warn">Chưa ghi</span>' : '';
   }
+  // b73: cột CẢNH BÁO trên Sheet (⛔ phải sửa · 📞 phải gọi điện · ℹ️ chỉ để biết) – mỗi dòng 1 khung màu
+  function cqCanh(t) {
+    if (!t) return '';
+    return String(t).split('\n').filter(function (x) { return x.trim(); }).map(function (x) {
+      var m = x.indexOf('⛔') >= 0 ? ['#fdecec', '#9b1c1c'] : x.indexOf('📞') >= 0 ? ['#fff1e0', '#9a4a00'] : ['#f1f1f1', '#555'];
+      return '<div style="margin-top:4px;padding:5px 8px;border-radius:8px;font-size:12.5px;line-height:1.4;white-space:normal;text-align:left;background:' + m[0] + ';color:' + m[1] + '">' + esc(x) + '</div>';
+    }).join('');
+  }
   function cqDongPV(p, coNgay) {
     return '<button class="it" data-pv="' + p.r + '"><div style="min-width:0;flex:1"><div class="nm ell">' + esc(p.ten) + '</div><div class="sub ell">' +
-      esc([coNgay ? cqDM(p.ngay) + ' ' + p.gio : p.gio, p.ng ? tenSale(p.ng) : '', 'CCCD ' + cqSoCCCD(p.cccd), p.ly].filter(String).join(' · ')) + '</div></div>' + cqTtPV(p) + '</button>';
+      esc([coNgay ? cqDM(p.ngay) + ' ' + p.gio : p.gio, p.ng ? tenSale(p.ng) : '', 'CCCD ' + cqSoCCCD(p.cccd), p.ly].filter(String).join(' · ')) + '</div>' + cqCanh(p.canh) + '</div>' + cqTtPV(p) + '</button>';
   }
   function cqDongNV(d, p) {
-    var tag = p.tt === 'Tạm nghỉ' ? '<span class="pill ' + (p.tamNgay > 3 ? 'bad' : 'warn') + '">Tạm nghỉ' + (p.tamNgay ? ' ' + p.tamNgay + ' ngày' : '') + '</span>' : p.mot ? '<span class="pill bad">Làm 1 ngày</span>' :
+    var tag = p.tt === 'Tạm nghỉ' ? '<span class="pill ' + (p.tamNgay > 3 ? 'bad' : 'warn') + '">Tạm nghỉ' + (p.tamNgay ? ' ' + p.tamNgay + ' ngày' : '') + '</span>' : p.mot ? '<span class="pill mo">Làm 1 ngày</span>' :
       p.tt === 'Hẹn nhận việc' ? '<span class="pill warn">Hẹn ' + esc(cqDM(p.nv)) + '</span>' : (p.tra ? '<span class="pill good">' + (cqLaVen(d, p) ? 'Đã ứng cho ven' : 'Đã thưởng 7 ngày') + '</span>' : '');
     return '<button class="it" data-nv="' + p.r + '"><div style="min-width:0;flex:1"><div class="nm ell">' + esc(p.ten) + '</div><div class="sub ell">' +
-      esc([p.tt === 'Đã nghỉ' ? 'Nghỉ từ ' + cqDM(p.nghi) + (p.soNg ? ', làm ' + p.soNg + ' ngày' : '') : p.tt === 'Tạm nghỉ' ? 'Tạm nghỉ từ ' + cqDM(p.nghi) : 'Nhận việc ' + cqDM(p.nv), cqTenNg(p.ng), p.dot].filter(String).join(' · ')) + '</div></div>' + tag + '</button>';
+      esc([p.tt === 'Đã nghỉ' ? 'Nghỉ từ ' + cqDM(p.nghi) + (p.soNg ? ', làm ' + p.soNg + ' ngày' : '') : p.tt === 'Tạm nghỉ' ? 'Tạm nghỉ từ ' + cqDM(p.nghi) : 'Nhận việc ' + cqDM(p.nv), cqTenNg(p.ng), p.dot].filter(String).join(' · ')) + '</div>' + cqCanh(p.canh) + '</div>' + tag + '</button>';
   }
   function cqGan(box, d) {
     box.querySelectorAll('[data-pv],[data-xn]').forEach(function (b) { b.onclick = function () { var r = Number(b.getAttribute('data-pv') || b.getAttribute('data-xn')), p = d.pv.filter(function (x) { return x.r === r; })[0]; if (p) { if (p.kq === 'Hẹn nhận việc') cqXacNhan(p); else cqMoPV(p); } }; });
@@ -7474,10 +7483,10 @@ textarea.inp{font-family:inherit}
     var ql = cqQuanLy(), ven = cqLaVen(d, p), hn = cqHn(), ns = p.ns ? cqDM(p.ns, 1) : '', nsCc = cqNamSinh(p.cccd);
     var lech = p.ns && nsCc && Number(p.ns.slice(0, 4)) !== nsCc.nam;
     var dong = function (a, b, cls) { return '<div class="row sp cqHs"><span class="meta">' + a + '</span><span class="' + (cls || '') + '">' + b + '</span></div>'; };
-    var h = '<h3 class="ell">' + esc(p.ten) + '</h3><div class="meta">' + esc([p.tt, p.dot, cqTenNg(p.ng)].filter(String).join(' · ')) + '</div>' +
+    var h = '<h3 class="ell">' + esc(p.ten) + '</h3><div class="meta">' + esc([p.tt, p.dot, cqTenNg(p.ng)].filter(String).join(' · ')) + '</div>' + cqCanh(p.canh) +
       '<div class="cqKhoi">' + dong('CCCD', esc(p.cccd || '–')) + dong('Ngày sinh', esc(ns || (nsCc ? 'năm ' + nsCc.nam : '–')) + (lech ? ' <span class="pill bad">lệch năm sinh trên CCCD</span>' : '')) +
       dong('Mã nhân viên Trend', p.ma ? esc(p.ma) : '<span class="mo">Chưa có</span>') + dong('Phỏng vấn', esc(cqDM(p.pv, 1) || '–')) + dong('Nhận việc', esc(cqDM(p.nv, 1) || '–')) +
-      (p.nghi ? dong(p.tt === 'Tạm nghỉ' ? 'Tạm nghỉ từ' : 'Nghỉ từ', esc(cqDM(p.nghi, 1))) : '') + dong('Số ngày đã làm', p.soNg + ' ngày' + (p.mot ? ' <span class="pill bad">Làm 1 ngày</span>' : '')) + (p.tn ? dong('Số ngày đã nghỉ', p.tn + ' ngày (đã trừ khỏi số ngày đã làm)') : '') + (p.lyN ? dong('Lý do nghỉ', esc(p.lyN)) : '') + '</div>' +
+      (p.nghi ? dong(p.tt === 'Tạm nghỉ' ? 'Tạm nghỉ từ' : 'Nghỉ từ', esc(cqDM(p.nghi, 1))) : '') + dong('Số ngày đã làm', p.soNg + ' ngày' + (p.mot ? ' <span class="pill mo">Làm 1 ngày</span>' : '')) + (p.tn ? dong('Số ngày đã nghỉ', p.tn + ' ngày (đã trừ khỏi số ngày đã làm)') : '') + (p.lyN ? dong('Lý do nghỉ', esc(p.lyN)) : '') + '</div>' +
       '<div class="cqKhoi">' + dong('Thưởng Trend', p.thT ? '<span class="tien">' + vnd(p.thT) + ' đ</span>' : '–') + dong('Thưởng Tâm An', typeof p.thA === 'number' ? '<span class="tien">' + vnd(p.thA) + ' đ</span>' : esc(p.thA || '–')) +
       dong('Dự kiến đủ 7 ngày', esc(cqDM(p.du7, 1) || '–')) + dong('Trend xác nhận 7 ngày', p.xn ? esc(p.xn) : '<span class="mo">Chưa có</span>') +
       dong(ven ? 'Tâm An đã ứng cho ven' : 'Đã trả thưởng 7 ngày', p.tra ? '<span class="tien" style="color:var(--good)">' + vnd(p.tra) + ' đ</span>' + (p.ngTra ? ' <span class="meta">' + esc(cqDM(p.ngTra)) + '</span>' : '') : '<span class="mo">Chưa</span>') + '</div>' +
