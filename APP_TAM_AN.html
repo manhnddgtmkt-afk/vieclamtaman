@@ -2969,7 +2969,8 @@ textarea.inp{font-family:inherit}
         var ung = [], tot = null;
         function thu(g2, sau) { var r2 = xuLyTinh(cv, g2, true); if (datHet(r2)) { if (!tot || r2.bc.v > tot.r.bc.v + 0.02) tot = { r: r2, g: g2 }; } else if (sau && r2.bc && !r2.bc.dat && Math.abs(r2.ng) <= 1) (bcSua(cv, g2, r2.pl.xoay, r2.bc) || []).forEach(function (g3) { thu(g3, false); }); }
         if (r.bc && !r.bc.dat) ung = ung.concat(bcSua(cv, gn, r.pl.xoay, r.bc) || []);
-        if (Math.abs(r.ng) > 1 || r.cn < 1.15) [r.ng, -r.ng].forEach(function (a) { if (!a) return; var g1 = quayKhung(cv, gn, a); if (!g1) return; ung.push(g1); try { ung.push(lemVao(xep(bamMep(cv, g1)))); } catch (e) { } });
+        if (Math.abs(r.ng) > 1 || r.cn < 1.15) [r.ng, -r.ng].concat(Math.abs(r.ng) >= 5.75 ? [9, -9, 12, -12] : []).forEach(function (a) {   // nghiengChu đo tối đa 6°: nghiêng hơn thì thử thêm 9° / 12°
+           if (!a) return; var g1 = quayKhung(cv, gn, a); if (!g1) return; ung.push(g1); try { ung.push(lemVao(xep(bamMep(cv, g1)))); } catch (e) { } });
         ung.forEach(function (g2) { thu(ngangKhung(g2), true); });
         if (!tot) {   // vẫn hỏng: rà cả ảnh tìm chỗ giống thẻ mẫu (thẻ nhỏ, dựng đứng, nền sọc)
           var ds2 = []; try { ds2 = timTheMau(cv); } catch (e) { ds2 = []; }
@@ -4898,6 +4899,7 @@ textarea.inp{font-family:inherit}
   }
   function ccCheNoi(t) { t.querySelectorAll('[data-che]').forEach(function (b) { b.onclick = function () { CCS.theMo = b.getAttribute('data-che') === '1'; var lg = theLogoNap(); if (!lg.complete) lg.onload = function () { ccVe(); }; ccVe(); window.scrollTo(0, 0); }; }); }
   var BAN_MOI = [
+    { so: 163, ds: [{ i: '🪪', t: 'Ảnh CCCD nghiêng nhiều', m: 'Ảnh thẻ nghiêng hơn 6° máy thử xoay thêm 9° và 12° để tự nắn thẳng.' }] },
     { so: 162, ds: [{ i: '🪪', t: 'Ảnh CCCD khớp thẻ mẫu thì không báo xem lại', m: 'Ảnh máy chưa nhận ra quốc huy hay chip (thường do ảnh tối, loá) nhưng khớp rõ với thẻ mẫu thì coi là ảnh rõ, không còn báo xem lại.' }] },
     { so: 161, ds: [{ i: '🪪', t: 'Ảnh CCCD tự xử lý: đối chiếu thẻ mẫu', m: 'Máy cắt xong mỗi mặt thẻ thì đối chiếu với thẻ mẫu (quốc huy, mã QR, ảnh, chip, vân tay, dòng mã nằm đúng chỗ). Ảnh dính nền, cắt lẹm, méo hay nghiêng thì máy tự tìm lại khung: phóng, dịch, xoay theo dòng chữ, bám mép thẻ; thẻ nhỏ hoặc dựng đứng trong ảnh thì rà cả ảnh tìm chỗ giống thẻ mẫu. Vẫn chưa đạt thì không tự lưu mà báo cắt chưa chuẩn.' }, { i: '✅', t: 'Duyệt ảnh máy tự lưu', m: 'Mục CCCD có thẻ Máy tự lưu kho · chờ duyệt: lướt xem ảnh máy tự ghép ban đêm, bấm Đạt; ảnh lỗi bấm Làm lại thì ảnh gốc trả về CCCD TẠM để cắt lại.' }] },
     { so: 160, ds: [{ i: '🔁', t: 'Xác nhận khi chuyển người nghỉ về Đang làm (TREND)', m: 'Chạm Đang làm không còn ghi ngay. App mở hộp xác nhận để chọn ngày đi làm lại và cho biết số ngày nghỉ sẽ được trừ. Lưu xong có nút Hoàn tác trong 10 giây.', c: [['Ghi đi làm lại', 'Chạm tên người → [[Đang làm]] → chọn ngày đi làm lại → [[Xác nhận]].']] },
