@@ -4572,7 +4572,7 @@ textarea.inp{font-family:inherit}
   function ccKhoMo() {
     var l = {}; try { l = JSON.parse(doc('vlta_cc_kho') || '{}'); } catch (e) { }
     CCS.kho = { gioi: '', tu: '', den: '', duoi: '', q: '', ds: [], tong: -1, trang: -1, dang: 0, chon: {} };   // 04/11: không điền sẵn năm sinh / giới tính lần trước
-    dbNap(function () { var k = CCS.kho; if (k && k.q) ckTenLoc(); });
+    dbNap(function () { var k = CCS.kho, tg = document.getElementById('ckTong'); if (tg) tg.innerHTML = ckTong(); if (k && k.q) ckTenLoc(); });
     ccVe(); window.scrollTo(0, 0);
     setTimeout(function () { var e = document.getElementById('ckTen'); if (e && !('ontouchstart' in window)) e.focus(); }, 50);
   }
@@ -4597,6 +4597,7 @@ textarea.inp{font-family:inherit}
   function ccVeKho(t) {
     var k = CCS.kho, h = '', n = CCS.db ? CCS.db.ds.length : 0;
     h += '<div class="card cckl"><div class="row sp"><b style="font-size:17px">Tìm ảnh trong kho</b><button class="link" id="ckDong">Đóng</button></div>' +
+      '<div id="ckTong" style="font-size:15px;margin:2px 0 8px;color:#1F3864">' + ckTong() + '</div>' +
       '<input class="inp" id="ckTen" type="search" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Gõ tên, năm sinh hoặc số CCCD" value="' + esc(k.q || '') + '" style="margin:0">' +
       '<div class="meta" id="ckTenG" style="margin-top:-6px">' + (n ? 'Danh bạ ' + n + ' người · không cần gõ dấu, gõ đầu chữ cũng được (vd: “hoa 1994”, “ng t huong”)' : 'Đang tải danh bạ…') + '</div>' +
       '<div class="seg" id="ckGioi">' + [['', 'Tất cả'], ['NAM', 'Nam'], ['NỮ', 'Nữ']].map(function (x) { return '<button data-gi="' + x[0] + '"' + (k.gioi === x[0] ? ' class="on"' : '') + '>' + x[1] + '</button>'; }).join('') + '</div>' +
@@ -4632,7 +4633,13 @@ textarea.inp{font-family:inherit}
     else { k.loc = dbLoc(q, k.gioi); k.hien = 30; k.ds = k.loc.slice(0, k.hien); k.tong = k.loc.length; }
     var c = document.getElementById('ckKq'); if (!c) { ccVe(); return; }
     c.innerHTML = ckKqHtml(k); ckKqGan(k);
+    var tg = document.getElementById('ckTong'); if (tg) tg.innerHTML = ckTong();
     var g = document.getElementById('ckTenG'); if (g && CCS.db && CCS.db.ds.length) g.textContent = 'Danh bạ ' + CCS.db.ds.length + ' người · không cần gõ dấu, gõ đầu chữ cũng được (vd: “hoa 1994”, “ng t huong”)';
+  }
+  function ckTong() {   // bản 166: tổng số CCCD trong kho (theo danh bạ máy chủ: người còn ảnh trong kho), tách Nam / Nữ theo chữ số thứ 4 của số CCCD
+    var ds = CCS.db ? CCS.db.ds : []; if (!ds.length) return 'Đang đếm số CCCD trong kho…';
+    var nu = ds.filter(function (x) { return /^\d{3}[13579]/.test(x.so || ''); }).length;
+    return 'Kho có <b>' + ds.length + '</b> CCCD · Nam ' + (ds.length - nu) + ' · Nữ ' + nu;
   }
   function ckNgay(n) { return /^\d{8}$/.test(n || '') ? n.slice(0, 2) + '/' + n.slice(2, 4) + '/' + n.slice(4) : ''; }
   function ckKqHtml(k) {
@@ -5026,6 +5033,7 @@ textarea.inp{font-family:inherit}
   }
   function ccCheNoi(t) { t.querySelectorAll('[data-che]').forEach(function (b) { b.onclick = function () { CCS.theMo = b.getAttribute('data-che') === '1'; var lg = theLogoNap(); if (!lg.complete) lg.onload = function () { ccVe(); }; ccVe(); window.scrollTo(0, 0); }; }); }
   var BAN_MOI = [
+    { so: 166, ds: [{ i: '🪪', t: 'Tổng số CCCD trong kho', m: 'Mục Tìm ảnh trong kho hiện ngay dòng Kho có … CCCD, kèm số Nam và Nữ.' }] },
     { so: 165, ds: [{ i: '✋', t: 'Chỉnh tay ảnh chờ duyệt', m: 'Màn duyệt ảnh máy tự lưu có nút Chỉnh tay: app mở ảnh gốc với khung 4 góc đặt sẵn, kéo lại góc lệch cho mặt trước rồi mặt sau, xem ảnh ghép và bấm Lưu đè ảnh kho (ảnh máy cắt được sao lưu).' }, { i: '✅', t: 'Ít ảnh phải duyệt hơn', m: 'Ảnh máy cắt một lần đã khớp thẻ mẫu chặt thì tự coi là đạt. Danh sách chờ duyệt chỉ còn ảnh máy phải tự chỉnh khung hoặc khớp sát ngưỡng; để quá 3 ngày cũng tự coi là đạt.' }] },
     { so: 164, ds: [{ i: '🪪', t: 'Ảnh CCCD bị ngón tay che 1 góc', m: 'Ngón tay che mất 1 góc thẻ thì máy dựng lại góc đó từ 3 góc còn lại rồi đối chiếu thẻ mẫu. Thẻ khớp mẫu chặt thì không còn báo khung méo hay thẻ chạm mép ảnh.' }] },
     { so: 163, ds: [{ i: '🪪', t: 'Ảnh CCCD nghiêng nhiều', m: 'Ảnh thẻ nghiêng hơn 6° máy thử xoay thêm 9° và 12° để tự nắn thẳng.' }] },
