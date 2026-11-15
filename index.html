@@ -13,7 +13,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
 <script src="config.js"></script>
-<script>window.PB = { so: 169, luc: "15/11 23:11" };</script>
+<script>window.PB = { so: 170, luc: "15/11 23:22" };</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap">
 <style>
@@ -550,31 +550,49 @@ textarea.inp{font-family:inherit}
 .toast.nut{display:flex;align-items:center;gap:12px;text-align:left;width:max-content}
 .toast.nut button{border:0;background:none;color:#8DB8FF;font-weight:700;font-size:14px;padding:4px 2px;white-space:nowrap}
 
-/* b167 (15/11): thẻ Số người các nhà – 7 ngày (HOJEONG, chủ + kế toán) */
+/* b170 (15/11): thẻ Người đi làm các nhà ở HOJEONG (chủ + kế toán) */
 .nhaC{margin-top:12px;padding:14px 12px}
-.nhaH{min-width:0}
 .nhaH b{display:block;font-size:15px;font-weight:800}
-.nhaH small{display:block;font-size:11.5px;color:var(--muted);margin-top:2px}
-.nhaO{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:10px}
-.nhaO>div{background:var(--soft);border-radius:12px;padding:9px 10px;min-width:0}
-.nhaO>div.ta{box-shadow:inset 0 3px 0 var(--blue)}
-.nhaO small{display:block;font-size:11px;color:var(--muted);font-weight:600;line-height:1.3;min-height:2.6em}
-.nhaO b{display:block;font-size:21px;font-weight:800;margin-top:2px;white-space:nowrap}
-.nhaO i{display:block;font-style:normal;font-size:11px;color:var(--muted);line-height:1.35}
-.nhaL{margin-top:10px}.nhaL small{font-size:11.5px;color:var(--muted);font-weight:600}
-.nhaL svg{display:block;width:100%;height:auto}
-.nhaW{overflow-x:auto;-webkit-overflow-scrolling:touch;margin-top:8px}
-.nhaT{width:100%;min-width:300px;border-collapse:collapse;table-layout:fixed;font-size:12px}
-.nhaO small,.nhaO i{overflow-wrap:normal;word-break:keep-all}
-.nhaT th{font-size:11px;font-weight:600;color:var(--muted);padding:4px 0;text-align:center;line-height:1.25}
-.nhaT th:first-child{text-align:left;padding-left:4px}
-.nhaT td{text-align:center;padding:7px 0;border-bottom:1px solid var(--line);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-variant-numeric:tabular-nums}
-.nhaT td.n{text-align:left;padding-left:4px;font-size:11px;font-weight:600;white-space:normal;line-height:1.2;word-break:break-word}
-.nhaT td.x{opacity:.5}
-.nhaT tr.ta td{font-weight:800}
-.nhaT tr.nhaTg td{font-weight:800;font-size:11.5px;letter-spacing:-.2px;background:var(--tint);border-bottom:0}
-.nhaT td.up{color:var(--good);font-weight:700}.nhaT td.dn{color:var(--bad);font-weight:700}.nhaT td.z{color:var(--muted)}
+.nhaH small{display:block;font-size:11.5px;color:var(--muted);margin-top:2px;line-height:1.4}
+.nhaO{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:10px}
+.nhaO>div{background:var(--soft);border-radius:12px;padding:9px 11px;min-width:0}
+.nhaO>div.ta{box-shadow:inset 3px 0 0 var(--blue)}
+.nhaO small{display:block;font-size:11.5px;color:var(--muted);font-weight:600}
+.nhaO b{font-size:22px;font-weight:800;margin-right:4px}
+.nhaO .dv{font-size:11.5px;color:var(--muted)}
+.nhaO i{display:block;font-style:normal;font-size:11.5px;color:var(--muted);line-height:1.45}
+.nhaC .up{color:var(--good);font-weight:700}.nhaC .dn{color:var(--bad);font-weight:700}.nhaC .z{color:var(--muted)}
+.nhaLg{display:flex;align-items:center;gap:5px;font-size:11.5px;color:var(--muted);margin:12px 0 4px}
+.nhaLg span{width:10px;height:10px;border-radius:2px;display:inline-block}.nhaLg span.e{margin-left:10px}
+.nhaC .d{background:#F2B544}.nhaC .e{background:#1F4FA3}
+.nhaR{display:grid;grid-template-columns:16px minmax(0,1fr) 28px 28px 30px 44px;align-items:center;gap:5px;width:100%;border:0;border-top:1px solid var(--line);background:none;color:var(--fg);padding:9px 2px;text-align:left;font:inherit;font-size:13px}
+.nhaR .k{font-size:11.5px;color:var(--muted);text-align:center}
+.nhaR .n{display:block;font-size:12px;font-weight:700;line-height:1.25;word-break:keep-all;overflow-wrap:anywhere}
+.nhaR .n i{font-style:normal;color:var(--muted);margin-left:3px;font-weight:600}
+.nhaR .br{display:flex;height:8px;border-radius:4px;overflow:hidden;min-width:4px;margin-top:5px}
+.nhaR .nb{display:block;min-width:0}
+.nhaR .s{text-align:right;color:var(--muted);font-size:12px;font-variant-numeric:tabular-nums}
+.nhaR .v{text-align:right;font-weight:800;font-size:14px;font-variant-numeric:tabular-nums}
+.nhaR .c{text-align:right;font-size:12px;white-space:nowrap}
+.nhaR.ta{background:var(--tint);border-radius:10px;border-top-color:transparent}
+.nhaR.ta .n,.nhaR.ta .k{color:var(--blue)}
+.nhaR.mo{border-bottom:0}
+.nhaHd{border-top:0;padding-top:2px;font-size:10.5px!important;color:var(--muted)}
+.nhaHd .n,.nhaHd .v,.nhaHd .s,.nhaHd .c{font-size:10.5px;font-weight:600;color:var(--muted);line-height:1.2;white-space:normal}
+.nhaCt{background:var(--soft);border-radius:12px;padding:10px 8px 8px;margin:0 0 8px}
+.nhaCt>b{display:block;font-size:12.5px;font-weight:700;margin:0 2px 8px}
+.nhaCt .cols{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px;align-items:end;height:84px}
+.nhaCt .cl{display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%}
+.nhaCt .cl.x{opacity:.45}
+.nhaCt .cl b{font-size:12px;font-weight:700;margin-bottom:2px;font-variant-numeric:tabular-nums}
+.nhaCt .stk{width:70%;display:flex;flex-direction:column;border-radius:3px;overflow:hidden}
+.nhaCt .lb{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px;text-align:center;font-size:10.5px;color:var(--muted);margin-top:4px;line-height:1.3}
+.nhaCt .lb.sub{font-size:10px;margin-top:2px}
+.nhaCt small{display:block;font-size:11px;color:var(--muted);margin-top:8px;line-height:1.45}
 .nhaG{margin-top:10px;font-size:11.5px;color:var(--muted);line-height:1.5}
+.nhaR .nd{display:none;font-size:11px;color:var(--muted);font-weight:500;margin-top:3px;white-space:nowrap}
+/* màn hẹp / chữ phóng to: ca ngày, ca đêm xuống dòng dưới tên; 2 ô đầu xếp dọc */
+@media (max-width:340px){.nhaO{grid-template-columns:1fr}.nhaR{grid-template-columns:16px minmax(0,1fr) 30px 44px}.nhaR .s{display:none}.nhaR .nd{display:block}}
 /* 21/10: khối Cần kiểm tra luôn mở */
 .ktk{background:var(--warn-bg);border:1.5px solid var(--warn);border-radius:18px;margin-top:12px;padding:12px 12px 4px}
 .ktk-h{font-weight:800;color:var(--warn);font-size:15px;padding:0 4px 6px}
@@ -5117,6 +5135,7 @@ textarea.inp{font-family:inherit}
   }
   function ccCheNoi(t) { t.querySelectorAll('[data-che]').forEach(function (b) { b.onclick = function () { CCS.theMo = b.getAttribute('data-che') === '1'; var lg = theLogoNap(); if (!lg.complete) lg.onload = function () { ccVe(); }; ccVe(); window.scrollTo(0, 0); }; }); }
   var BAN_MOI = [
+    { so: 170, ds: [{ i: '🏭', t: 'Thẻ người đi làm các nhà dễ đọc hơn', m: 'Mỗi nhà một dòng: hạng, số người trung bình mỗi ngày (tách ca ngày, ca đêm) và tăng hay giảm so với tuần trước. Tâm An tô xanh, có hạng tuần này và tuần trước. Chạm tên nhà để xem từng ngày trong 7 ngày gần nhất.' }] },
     { so: 169, ds: [{ i: '🖨️', t: 'Ảnh trên thẻ HOJEONG in sáng hơn', m: 'In thẻ trên giấy A5 thường, ảnh chân dung tự sáng lên theo khuôn mặt từng người (mức B anh chọn), nền ảnh trắng, mắt tóc rõ hơn. Ảnh trong kho giữ nguyên. Máy in vẫn ra đậm thì kéo thanh Sáng ảnh trong mục Thẻ HOJEONG, app nhớ mức đó.' }] },
     { so: 168, ds: [{ i: '⚠️', t: 'TREND: ghi rõ đang bị gì và phải làm gì', m: 'Người nào có vấn đề thì ngay dưới tên hiện một dòng cảnh báo bằng chữ, nói rõ đang bị gì và cần làm gì. Đỏ ⛔ là phải sửa, cam 📞 là phải gọi điện, xám ℹ️ là chỉ để biết, không cần làm gì. Trên file Google Sheet cũng có cột CẢNH BÁO (cột E) ghi y hệt.', c: [['Xem cảnh báo', 'Tab Lao động → TREND → đọc dòng màu dưới tên người.']] }] },
     { so: 167, ds: [{ i: '🏭', t: 'Số người các nhà ở HOJEONG trong 7 ngày', m: 'Tab Lao động → HOJEONG có thẻ Số người các nhà: mỗi nhà một dòng, mỗi ngày một cột, ô càng đậm là càng đông người. Cột So TB cho biết mỗi nhà đang tăng hay giảm so với tuần trước. Số tự cập nhật mỗi khi có file vân tay mới. Chỉ chủ và kế toán thấy thẻ này.', c: [['Xem ca ngày, ca đêm', 'Chạm vào một ô trong bảng.']] }] },
@@ -6720,9 +6739,9 @@ textarea.inp{font-family:inherit}
       if (b && S.cty === cty && S.tab === 'ld' && !S.hs && !S.utMo && !S.vtMo) { b.outerHTML = vtTheHtml(); ganVtThe(); }
     }, function () { });
   }
-  // ---------- b167 (15/11): SỐ NGƯỜI CÁC NHÀ – 7 NGÀY (file vân tay HOJEONG, máy chủ ghi THONG_KE_NHA) ----------
-  //   Chỉ chủ + kế toán. So sánh = trung bình mỗi ngày 7 ngày gần nhất / 7 ngày trước đó (không tính Chủ nhật, ngày chưa đủ ca đêm).
-  //   Đường biểu đồ không vẽ Chủ nhật; nhà không có ai cả 7 ngày thì ẩn.
+  // ---------- b170 (15/11): NGƯỜI ĐI LÀM CÁC NHÀ Ở HOJEONG (máy chủ ghi THONG_KE_NHA; chủ + kế toán) ----------
+  //   Số chính = trung bình mỗi ngày làm việc trong 7 ngày gần nhất (bỏ Chủ nhật, ngày HOJEONG nghỉ, ngày chưa đủ ca đêm).
+  //   Ngày làm = ca ngày + ca đêm làm tròn riêng rồi cộng (3 số trên 1 dòng luôn khớp). Xếp hạng theo TB; chạm tên nhà -> 7 ngày.
   var NHA = {}, NHA_T = {}, NHA_DANG = {};
   function nhaCo() { return S.cty === 'HOJEONG' && !!(S.toi && (S.toi.vai === 'chu' || S.toi.vai === 'ketoan')); }
   function taiNha(cty, moi) {
@@ -6737,70 +6756,74 @@ textarea.inp{font-family:inherit}
     }, function () { NHA_DANG[cty + moi] = 0; });
   }
   function nhaThu(sv) { return ['CN', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7'][serialDate(sv).getUTCDay()]; }
-  function nhaSo(x) { return Math.round(x * 10) / 10; }
-  function nhaTB(x) { return String(nhaSo(x)).replace('.', ',').replace('-', '−'); }
-  function nhaTen(o, k) { return k === o.ta ? 'Tâm An' : k === o.ra ? 'Rời Tâm An' : k; }
+  function nhaTen(o, k) { return k === o.ta ? 'Tâm An' : k; }
+  function nhaCa(x, k, i) { if (!x) return 0; if (k) return (x.n[k] || [0, 0])[i]; var t = 0; for (var j in x.n) t += x.n[j][i]; return t; }
+  function nhaTong(x, k) { return nhaCa(x, k, 0) + nhaCa(x, k, 1); }
+  function nhaLech(c) { return c === null ? '<span class="z">–</span>' : c < 0 ? '<span class="dn">↓ ' + (-c) + '</span>' : c > 0 ? '<span class="up">↑ ' + c + '</span>' : '<span class="z">=</span>'; }
+  function nhaTinh(o) {   // -> số liệu đã tính cho thẻ
+    var m = {}; o.ds.forEach(function (x) { m[x.d] = x; });
+    var du = o.ds.filter(function (x) { return x.du && serialDate(x.d).getUTCDay() !== 0; }).map(function (x) { return nhaTong(x, ''); }).sort(function (a, b) { return a - b; });
+    var trung = du.length ? du[Math.floor(du.length / 2)] : 0;
+    var nghi = function (x) { return !!x && (serialDate(x.d).getUTCDay() === 0 || (x.du && nhaTong(x, '') < trung * 0.3)); };
+    var lam = function (x) { return !!x && x.du && !nghi(x) && serialDate(x.d).getUTCDay() !== 0; };
+    var dsLam = o.ds.filter(lam), L = dsLam.length ? dsLam[dsLam.length - 1].d : o.ds[o.ds.length - 1].d, E = o.ds[o.ds.length - 1].d;
+    var A = dsLam.filter(function (x) { return x.d > L - 7; }), B = dsLam.filter(function (x) { return x.d <= L - 7 && x.d > L - 14; });
+    var tb = function (ng, k) { if (!ng.length) return null; var a = 0, b = 0; ng.forEach(function (x) { a += nhaCa(x, k, 0); b += nhaCa(x, k, 1); }); a = Math.round(a / ng.length); b = Math.round(b / ng.length); return [a, b, a + b]; };
+    var cot = []; for (var d = E - 6; d <= E; d++) cot.push(d);
+    var ks = {}; A.concat(B).forEach(function (x) { for (var k in x.n) ks[k] = 1; }); cot.forEach(function (d2) { if (m[d2]) for (var k in m[d2].n) ks[k] = 1; });
+    delete ks[o.ra];
+    var hang = function (ng) { return Object.keys(ks).map(function (k) { return { k: k, t: tb(ng, k) }; }).filter(function (x) { return x.t && x.t[2] > 0; }).sort(function (a, b) { return b.t[2] - a.t[2] || a.k.localeCompare(b.k); }); };
+    var ds = Object.keys(ks).map(function (k) { var a = tb(A, k), b = tb(B, k); return { k: k, a: a || [0, 0, 0], c: a && b ? a[2] - b[2] : null, co: cot.some(function (d3) { return nhaTong(m[d3], k) > 0; }) || (a && a[2] > 0) }; })
+      .filter(function (x) { return x.co; }).sort(function (a, b) { return b.a[2] - a.a[2] || a.k.localeCompare(b.k); });
+    var hB = hang(B), viTruoc = -1; hB.forEach(function (x, i) { if (x.k === o.ta) viTruoc = i + 1; });
+    var tA = tb(A, ''), tB = tb(B, '');
+    return { m: m, A: A, cot: cot, ds: ds, nghi: nghi, tong: tA || [0, 0, 0], tongC: tA && tB ? tA[2] - tB[2] : null, hangTruoc: viTruoc, soTruoc: hB.length };
+  }
   function veNha() {
     var box = document.getElementById('nhaBox');
     if (!box) return;
     if (!nhaCo()) { box.innerHTML = ''; return; }
-    var cty = S.cty, o = NHA[cty];
-    if (!o) { box.innerHTML = '<div class="card nhaC"><div class="nhaH"><b>Số người các nhà · 7 ngày</b><small>Đang tải…</small></div></div>'; taiNha(cty, 0); return; }
+    var cty = S.cty, o = NHA[cty], tieu = '<div class="nhaH"><b>Người đi làm các nhà ở HOJEONG</b>';
+    if (!o) { box.innerHTML = '<div class="card nhaC">' + tieu + '<small>Đang tải…</small></div></div>'; taiNha(cty, 0); return; }
     if (!NHA_T[cty] || Date.now() - NHA_T[cty] > 6e5) taiNha(cty, 1);
-    if (o.loi || !o.ds || !o.ds.length) { box.innerHTML = '<div class="card nhaC"><div class="nhaH"><b>Số người các nhà · 7 ngày</b></div><div class="nhaG">' + esc(o.loi || 'Chưa có số liệu. Máy sẽ tự đếm khi có file vân tay mới.') + '</div></div>'; return; }
-    var m = {}; o.ds.forEach(function (x) { m[x.d] = x; });
-    var tong = function (x) { var t = 0; if (x) for (var k in x.n) t += x.n[k][0] + x.n[k][1]; return t; };
-    var mot = function (x, k) { var a = x && x.n[k]; return a ? a[0] + a[1] : 0; };
-    var E = o.ds[o.ds.length - 1].d, du = o.ds.filter(function (x) { return x.du; }), L = du.length ? du[du.length - 1].d : E;
-    var cot = []; for (var d = E - 6; d <= E; d++) cot.push(d);
-    var tinh = function (x) { return x && x.du && serialDate(x.d).getUTCDay() !== 0; };
-    var ngA = [], ngB = []; for (var d2 = L - 13; d2 <= L; d2++) if (tinh(m[d2])) (d2 > L - 7 ? ngA : ngB).push(m[d2]);
-    var tb = function (ng, k) { if (!ng.length) return null; var s = 0; ng.forEach(function (x) { s += k ? mot(x, k) : tong(x); }); return s / ng.length; };
-    var nhas = {}; cot.forEach(function (d3) { var x = m[d3]; if (x) for (var k in x.n) nhas[k] = 1; });
-    ngA.concat(ngB).forEach(function (x) { for (var k in x.n) if (nhas[k] === undefined) nhas[k] = 0; });
-    var co7 = function (k) { return cot.some(function (d4) { return mot(m[d4], k) > 0; }); };
-    var ds = Object.keys(nhas).filter(function (k) { return k !== o.ta && k !== o.ra && co7(k); })
-      .sort(function (a, b) { return (tb(ngA, b) || 0) - (tb(ngA, a) || 0) || a.localeCompare(b); });
-    if (co7(o.ta) || nhas[o.ta] !== undefined) ds.push(o.ta);
-    if (co7(o.ra)) ds.push(o.ra);
-    var max = 1; ds.forEach(function (k) { cot.forEach(function (d5) { max = Math.max(max, mot(m[d5], k)); }); });
-    var lech = function (k) { var a = tb(ngA, k), b = tb(ngB, k); if (a === null || b === null) return '<td class="z">–</td>'; var c = nhaSo(a - b); return '<td class="' + (c > 0 ? 'up' : c < 0 ? 'dn' : 'z') + '">' + (c > 0 ? '+' : '') + nhaTB(c) + '</td>'; };
-    var o_ = function (d6, k) {
-      var x = m[d6]; if (!x) return '<td class="z">–</td>';
-      var v = k ? mot(x, k) : tong(x), a = k ? (x.n[k] || [0, 0]) : null, p = Math.round(8 + 50 * v / max);
-      return '<td class="' + (nhaThieu(x) ? 'x' : '') + '" data-d="' + d6 + '" data-k="' + esc(k || '') + '"' + (k && v ? ' style="background:color-mix(in srgb,var(--good) ' + p + '%,transparent)"' : '') + '>' + v + '</td>';
-    };
-    var coX = cot.some(function (d7) { return nhaThieu(m[d7]); });
-    var h = '<div class="nhaW"><table class="nhaT"><colgroup><col style="width:25%">' + cot.map(function () { return '<col>'; }).join('') + '<col style="width:13%"></colgroup><tr><th>Nhà</th>' +
-      cot.map(function (d8) { return '<th>' + nhaThu(d8) + '<br>' + ddmm(serialDate(d8)).slice(0, 2) + (nhaThieu(m[d8]) ? '*' : '') + '</th>'; }).join('') + '<th>So TB</th></tr>' +
-      ds.map(function (k) { return '<tr' + (k === o.ta ? ' class="ta"' : '') + '><td class="n">' + esc(nhaTen(o, k)) + '</td>' + cot.map(function (d9) { return o_(d9, k); }).join('') + lech(k) + '</tr>'; }).join('') +
-      '<tr class="nhaTg"><td class="n">Tổng</td>' + cot.map(function (d10) { return o_(d10, ''); }).join('') + lech('') + '</tr></table></div>';
-    // đường tổng: các ngày trong 7 cột đã đủ ca đêm, bỏ Chủ nhật
-    var dd = cot.filter(function (d11) { return tinh(m[d11]); }), svg = '';
-    if (dd.length >= 2) {
-      var vs = dd.map(function (d12) { return tong(m[d12]); }), lo = Math.min.apply(null, vs), hi = Math.max.apply(null, vs), W = 320, H = 76;
-      var pt = dd.map(function (d13, i) { return [16 + (W - 32) * (cot.indexOf(d13)) / 6, hi === lo ? 44 : 64 - 44 * (vs[i] - lo) / (hi - lo)]; });
-      svg = '<svg viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="Tổng người đi làm theo ngày"><polyline fill="none" stroke="var(--blue)" stroke-width="2" vector-effect="non-scaling-stroke" points="' + pt.map(function (q) { return q[0].toFixed(1) + ',' + q[1].toFixed(1); }).join(' ') + '"/>' +
-        pt.map(function (q, i) { return '<circle cx="' + q[0].toFixed(1) + '" cy="' + q[1].toFixed(1) + '" r="3" fill="var(--blue)"/><text x="' + q[0].toFixed(1) + '" y="' + (q[1] - 7).toFixed(1) + '" text-anchor="middle" font-size="11" font-weight="700" fill="var(--muted)">' + vs[i] + '</text>'; }).join('') + '</svg>';
-    }
-    var aT = tb(ngA, o.ta), bT = tb(ngB, o.ta), cT = aT !== null && bT !== null ? nhaSo(aT - bT) : null;
-    var nL = ddmm(serialDate(L));
-    var oS = '<div class="nhaO"><div><small>Tổng ngày ' + nL + '</small><b class="num">' + tong(m[L]) + '</b><i>Ca&nbsp;ngày&nbsp;' + nhaCa(m[L], '', 0) + ' · đêm&nbsp;' + nhaCa(m[L], '', 1) + '</i></div>' +
-      '<div class="ta"><small>Tâm An ngày ' + nL + '</small><b class="num">' + mot(m[L], o.ta) + '</b><i>Ca&nbsp;ngày&nbsp;' + nhaCa(m[L], o.ta, 0) + ' · đêm&nbsp;' + nhaCa(m[L], o.ta, 1) + '</i></div>' +
-      '<div><small>Tâm An so tuần trước</small><b class="num" style="color:' + (cT > 0 ? 'var(--good)' : cT < 0 ? 'var(--bad)' : 'var(--muted)') + '">' + (cT === null ? '–' : (cT > 0 ? '+' : '') + nhaTB(cT)) + '</b><i>' + (cT === null ? 'Chưa đủ số liệu' : 'TB/ngày ' + nhaTB(bT) + ' → ' + nhaTB(aT)) + '</i></div></div>';
-    box.innerHTML = '<div class="card nhaC"><div class="nhaH"><b>Số người các nhà · 7 ngày</b><small>' + (o.luc ? 'Cập nhật ' + esc(gioPhut(o.luc)) : '') + '</small></div>' + oS +
-      (svg ? '<div class="nhaL"><small>Tổng người đi làm (không vẽ Chủ nhật)</small>' + svg + '</div>' : '') + h +
-      '<div class="nhaG">So TB: số người trung bình mỗi ngày của 7 ngày gần nhất so với 7 ngày trước đó, không tính Chủ nhật và ngày chưa đủ ca đêm.' +
-      (coX ? ' Cột có dấu * là ngày chưa có ca đêm (số còn tăng).' : '') + ' Dòng Tâm An đã tính người chuyển nhà' + (co7(o.ra) ? '; Rời Tâm An là người đã chuyển sang nhà khác nhưng vân tay vẫn ghi nhà Tâm An' : '') + '. Chạm vào ô để xem ca ngày, ca đêm.</div></div>';
-    box.querySelectorAll('td[data-d]').forEach(function (td) {
-      td.onclick = function () {
-        var d14 = Number(td.getAttribute('data-d')), k = td.getAttribute('data-k'), x = m[d14];
-        toast((k ? nhaTen(o, k) : 'Tổng HOJEONG') + ' · ' + nhaThu(d14) + ' ' + ddmm(serialDate(d14)) + ': ca ngày ' + nhaCa(x, k, 0) + ', ca đêm ' + (x && x.du ? nhaCa(x, k, 1) : 'chưa có'));
-      };
-    });
+    if (o.loi || !o.ds || !o.ds.length) { box.innerHTML = '<div class="card nhaC">' + tieu + '</div><div class="nhaG">' + esc(o.loi || 'Chưa có số liệu. Máy sẽ tự đếm khi có file vân tay mới.') + '</div></div>'; return; }
+    var t = nhaTinh(o), viTA = 0;
+    t.ds.forEach(function (x, i) { if (x.k === o.ta) viTA = i + 1; });
+    var taX = t.ds[viTA - 1], ngay = t.A.map(function (x) { return ddmm(serialDate(x.d)).slice(0, 2); });
+    var ngayTxt = ngay.length ? 'Trung bình các ngày ' + ngay.join(', ') + '/' + ddmm(serialDate(t.A[t.A.length - 1].d)).slice(3) : 'Chưa có ngày làm việc nào đủ ca đêm';
+    var oS = '<div class="nhaO"><div><small>Cả HOJEONG · ' + t.ds.length + ' nhà</small><b class="num">' + t.tong[2] + '</b><span class="dv">người/ngày</span>' +
+      '<i>Ca\u00a0ngày\u00a0' + t.tong[0] + ' · ca\u00a0đêm\u00a0' + t.tong[1] + '</i><i>' + nhaLech(t.tongC) + (t.tongC === null ? '' : ' so tuần trước') + '</i></div>' +
+      '<div class="ta"><small>Tâm An' + (viTA ? ' · hạng ' + viTA + '/' + t.ds.length : '') + '</small><b class="num">' + (taX ? taX.a[2] : 0) + '</b><span class="dv">người/ngày</span>' +
+      '<i>Ca\u00a0ngày\u00a0' + (taX ? taX.a[0] : 0) + ' · ca\u00a0đêm\u00a0' + (taX ? taX.a[1] : 0) + '</i><i>' + nhaLech(taX ? taX.c : null) + (taX && taX.c !== null ? ' so tuần trước' : '') + '</i>' +
+      (t.hangTruoc > 0 ? '<i>Tuần trước hạng ' + t.hangTruoc + '/' + t.soTruoc + '</i>' : '') + '</div></div>';
+    var max = 1; t.ds.forEach(function (x) { max = Math.max(max, x.a[2]); });
+    var dong = t.ds.map(function (x, i) {
+      var mo = S.nhaMo === x.k, w = Math.max(4, Math.round(100 * x.a[2] / max));
+      return '<button class="nhaR' + (x.k === o.ta ? ' ta' : '') + (mo ? ' mo' : '') + '" data-k="' + esc(x.k) + '"><span class="k">' + (i + 1) + '</span><span class="nb"><span class="n">' + esc(nhaTen(o, x.k)) + '<i>' + (mo ? '▾' : '›') + '</i></span>' +
+        '<span class="br" style="width:' + w + '%"><span class="d" style="flex:' + x.a[0] + '"></span><span class="e" style="flex:' + x.a[1] + '"></span></span><span class="nd">Ngày ' + x.a[0] + ' · Đêm ' + x.a[1] + '</span></span>' +
+        '<span class="s">' + x.a[0] + '</span><span class="s">' + x.a[1] + '</span><span class="v">' + x.a[2] + '</span><span class="c">' + nhaLech(x.c) + '</span></button>' + (mo ? nhaChiTiet(o, t, x.k) : '');
+    }).join('');
+    box.innerHTML = '<div class="card nhaC">' + tieu + '<small>' + esc(ngayTxt) + (o.luc ? ' · cập nhật ' + esc(gioPhut(o.luc)) : '') + '</small></div>' + oS +
+      '<div class="nhaLg"><span class="d"></span>Ca ngày<span class="e"></span>Ca đêm</div>' +
+      '<div class="nhaR nhaHd"><span class="k">#</span><span class="n">Nhà</span><span class="s">Ngày</span><span class="s">Đêm</span><span class="v">TB/<br>ngày</span><span class="c">So tuần<br>trước</span></div>' + dong +
+      '<div class="nhaG">Bỏ Chủ nhật và ngày HOJEONG nghỉ. Chạm tên nhà để xem từng ngày.</div></div>';
+    box.querySelectorAll('button.nhaR[data-k]').forEach(function (b) { b.onclick = function () { var k = b.getAttribute('data-k'); S.nhaMo = S.nhaMo === k ? '' : k; veNha(); }; });
   }
-  function nhaThieu(x) { return !!(x && !x.du && serialDate(x.d).getUTCDay() !== 0); }   // ngày thường chưa có ca đêm (Chủ nhật nghỉ thì không đánh dấu)
-  function nhaCa(x, k, i) { if (!x) return 0; if (k) return (x.n[k] || [0, 0])[i]; var t = 0; for (var j in x.n) t += x.n[j][i]; return t; }
+  function nhaChiTiet(o, t, k) {
+    var max = 1; t.cot.forEach(function (d) { max = Math.max(max, nhaTong(t.m[d], k)); });
+    var c = '', l = '', s = '', ra = [], coX = false;
+    t.cot.forEach(function (d) {
+      var x = t.m[d], v = nhaTong(x, k), ng = t.nghi(x) || (!x && serialDate(d).getUTCDay() === 0), thieu = x && !x.du && !ng, h = Math.round(56 * v / max);
+      c += '<div class="cl' + (thieu ? ' x' : '') + '"><b>' + (x ? v : '–') + '</b><span class="stk" style="height:' + (v ? Math.max(3, h) : 0) + 'px"><span class="e" style="flex:' + nhaCa(x, k, 1) + '"></span><span class="d" style="flex:' + nhaCa(x, k, 0) + '"></span></span></div>';
+      l += '<div>' + nhaThu(d) + '<br>' + ddmm(serialDate(d)).slice(0, 2) + '</div>';
+      s += '<div>' + (!x ? 'Chưa có' : ng ? 'Nghỉ' : thieu ? nhaCa(x, k, 0) + ' / –' : nhaCa(x, k, 0) + ' / ' + nhaCa(x, k, 1)) + '</div>';
+      if (thieu) coX = true;
+      if (k === o.ta && x && nhaTong(x, o.ra)) ra.push(ddmm(serialDate(d)) + ': ' + nhaTong(x, o.ra));
+    });
+    return '<div class="nhaCt"><b>' + esc(nhaTen(o, k)) + ' · ' + ddmm(serialDate(t.cot[0])) + ' – ' + ddmm(serialDate(t.cot[6])) + '</b><div class="cols">' + c + '</div><div class="lb">' + l + '</div><div class="lb sub">' + s + '</div>' +
+      '<small>Số trên cột là tổng người; dòng dưới là ca ngày / ca đêm.' + (coX ? ' Cột mờ là ngày chưa có ca đêm.' : '') + '</small>' +
+      (ra.length ? '<small>Người đã chuyển khỏi Tâm An nhưng vân tay vẫn ghi Tâm An (không tính vào số trên) – ' + esc(ra.join(', ')) + ' người.</small>' : '') + '</div>';
+  }
   // ---- thông báo cho chủ: bảng công sửa khác vân tay (đọc xong là ẩn) ----
   function laChu() { return !!(S.toi && S.toi.vai === 'chu'); }
   function tbDs() { return laChu() && TB && TB.ds ? TB.ds.filter(tbCo) : []; }
