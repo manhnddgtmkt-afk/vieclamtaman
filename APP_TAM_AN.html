@@ -4747,10 +4747,54 @@ textarea.inp{font-family:inherit}
     var c = theMau(e.anhThe || (e.p && e.p.t ? e.p.t.the : null), e.p && e.p.t && e.p.t.chinh); if (!c) return null;
     return { cv: c, x: THE_R[0] * c.width, y: THE_R[1] * c.height, w: (THE_R[2] - THE_R[0]) * c.width, h: (THE_R[3] - THE_R[1]) * c.height };
   }
-  function theVeAnh(x, n, X, Y, W, H) {   // vẽ phủ kín khung (cắt bớt phần thừa; ảnh tự chọn ưu tiên giữ phần trên – mặt người)
+  // ---- 15/11 (bản 169): ẢNH CHÂN DUNG TRÊN THẺ HOJEONG IN GIẤY THƯỜNG – máy in phun loang mực làm ảnh tối. Chỉ chỉnh khi vẽ lên thẻ (kho giữ nguyên):
+  // đo độ sáng mặt (vùng giữa ảnh) rồi kéo về L* đích (mặc định 78 = mức B anh chọn), nền sáng ít màu -> trắng, giảm màu 12%, làm nét nhẹ.
+  function theSangMuc() { var v = Number(doc('vlta_the_sang')); return isFinite(v) && doc('vlta_the_sang') !== null ? Math.max(0, Math.min(100, v)) : 50; }
+  function theSangAnh(c) {
+    var W = c.width, H = c.height, x = c.getContext('2d'), im = x.getImageData(0, 0, W, H), d = im.data, n = W * H, i;
+    var T = 78 + (theSangMuc() - 50) * 0.24;
+    function lin(v) { v /= 255; return v <= 0.04045 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4); }
+    function gam(v) { v = v <= 0.0031308 ? 12.92 * v : 1.055 * Math.pow(v, 1 / 2.4) - 0.055; return v * 255; }
+    var LT = new Float32Array(256); for (i = 0; i < 256; i++) LT[i] = lin(i);
+    var L = new Float32Array(n), Y = new Float32Array(n);
+    for (i = 0; i < n; i++) { var y = 0.2126 * LT[d[i * 4]] + 0.7152 * LT[d[i * 4 + 1]] + 0.0722 * LT[d[i * 4 + 2]]; Y[i] = y; L[i] = y > 0.008856 ? 116 * Math.cbrt(y) - 16 : 903.3 * y; }
+    var mat = [], yy, xx;
+    for (yy = Math.floor(0.22 * H); yy < 0.62 * H; yy += 2) for (xx = Math.floor(0.25 * W); xx < 0.75 * W; xx += 2) mat.push(L[yy * W + xx]);
+    mat.sort(function (a, b) { return a - b; });
+    var m = mat.length ? mat[mat.length >> 1] : 60, g = Math.max(0.4, Math.min(1, Math.log(T / 100) / Math.log(Math.max(m, 5) / 100)));
+    var o = new Uint8ClampedArray(d.length);
+    for (i = 0; i < n; i++) {
+      var r = d[i * 4], gg = d[i * 4 + 1], b = d[i * 4 + 2], L2 = 100 * Math.pow(Math.max(L[i], 0) / 100, g);
+      var ch = (Math.max(r, gg, b) - Math.min(r, gg, b)) * 100 / 255, nen = Math.max(0, Math.min(1, (L2 - 78) / 10)) * Math.max(0, Math.min(1, (18 - ch) / 10));
+      L2 = L2 * (1 - nen) + 97 * nen;
+      var Y2 = L2 > 8 ? Math.pow((L2 + 16) / 116, 3) : L2 / 903.3, k = Y[i] > 1e-5 ? Y2 / Y[i] : 1;
+      var lr = LT[r] * k, lg = LT[gg] * k, lb = LT[b] * k;
+      lr = Y2 + (lr - Y2) * 0.8; lg = Y2 + (lg - Y2) * 0.8; lb = Y2 + (lb - Y2) * 0.8;   // giảm màu cho mực đỡ loang
+      o[i * 4] = gam(Math.min(1, Math.max(0, lr))); o[i * 4 + 1] = gam(Math.min(1, Math.max(0, lg))); o[i * 4 + 2] = gam(Math.min(1, Math.max(0, lb))); o[i * 4 + 3] = 255;
+    }
+    for (yy = 1; yy < H - 1; yy++) for (xx = 1; xx < W - 1; xx++) {   // làm nét nhẹ (mắt, tóc)
+      var p = (yy * W + xx) * 4;
+      for (var c2 = 0; c2 < 3; c2++) {
+        var tb = (o[p - 4 + c2] + o[p + 4 + c2] + o[p - W * 4 + c2] + o[p + W * 4 + c2]) / 4;
+        d[p + c2] = o[p + c2] + 0.45 * (o[p + c2] - tb);
+      }
+      d[p + 3] = 255;
+    }
+    for (xx = 0; xx < W; xx++) { [0, H - 1].forEach(function (y0) { var p = (y0 * W + xx) * 4; d[p] = o[p]; d[p + 1] = o[p + 1]; d[p + 2] = o[p + 2]; }); }
+    for (yy = 0; yy < H; yy++) { [0, W - 1].forEach(function (x0) { var p = (yy * W + x0) * 4; d[p] = o[p]; d[p + 1] = o[p + 1]; d[p + 2] = o[p + 2]; }); }
+    x.putImageData(im, 0, 0);
+    return c;
+  }
+  function theSangChu() { var v = theSangMuc(); return v === 50 ? 'Mặc định' : v < 50 ? 'Tối hơn ' + (50 - v) / 5 : 'Sáng hơn ' + (v - 50) / 5; }
+  function theVeAnh(x, n, X, Y, W, H, sang) {   // vẽ phủ kín khung (cắt bớt phần thừa; ảnh tự chọn ưu tiên giữ phần trên – mặt người)
     var sx = n.x, sy = n.y, sw = n.w, sh = n.h, r = W / H;
     if (sw / sh > r) { var w2 = sh * r; sx += (sw - w2) / 2; sw = w2; } else { var h2 = sw / r; sy += (sh - h2) * (n.tay ? 0.3 : 0.5); sh = h2; }
-    x.imageSmoothingQuality = 'high'; x.drawImage(n.cv, sx, sy, sw, sh, X, Y, W, H);
+    x.imageSmoothingQuality = 'high';
+    if (!sang) { x.drawImage(n.cv, sx, sy, sw, sh, X, Y, W, H); return; }
+    var t = document.createElement('canvas'); t.width = Math.max(1, Math.round(W)); t.height = Math.max(1, Math.round(H));
+    var tx = t.getContext('2d'); tx.imageSmoothingQuality = 'high'; tx.drawImage(n.cv, sx, sy, sw, sh, 0, 0, t.width, t.height);
+    try { theSangAnh(t); } catch (e) { }
+    x.drawImage(t, X, Y, W, H);
   }
   // 31/10: thẻ 8,5 × 6 cm (trước 8,1 × 5,3): giữ bố cục cũ, phóng ngang SX, dọc SY; ô ảnh giữ tỉ lệ cũ (29,6 : 44,6) nên ảnh đã lưu dùng lại được
   // 05/11: sale nhét bao thẻ khó -> giảm mỗi chiều 3 mm: 8,2 × 5,7 cm
@@ -4766,7 +4810,7 @@ textarea.inp{font-family:inherit}
     x.fillStyle = '#fff'; x.fillRect(0, 0, c.width, c.height);
     // ảnh chân dung trong khung viền mảnh (cao theo dọc, rộng giữ tỉ lệ 29,6 : 44,6)
     var bh = my(44.6), bw = bh * 29.6 / 44.6, bx = mx(1.6), by = my(6.4), n = theAnhNguon(e);
-    if (n) theVeAnh(x, n, bx, by, bw, bh); else { x.fillStyle = '#EEF1F5'; x.fillRect(bx, by, bw, bh); x.fillStyle = '#98A2B3'; x.font = pt(7) + 'px sans-serif'; x.textAlign = 'center'; x.fillText('Ảnh 3×4', bx + bw / 2, by + bh / 2); }
+    if (n) theVeAnh(x, n, bx, by, bw, bh, true); else { x.fillStyle = '#EEF1F5'; x.fillRect(bx, by, bw, bh); x.fillStyle = '#98A2B3'; x.font = pt(7) + 'px sans-serif'; x.textAlign = 'center'; x.fillText('Ảnh 3×4', bx + bw / 2, by + bh / 2); }
     x.strokeStyle = '#555'; x.lineWidth = mm(0.25); x.strokeRect(bx, by, bw, bh);
     // logo + bộ phận (bắt đầu sau ô ảnh)
     var tx = Math.max(mx(36.6), bx + bw + mm(3)), lg = theLogoNap();
@@ -4975,7 +5019,7 @@ textarea.inp{font-family:inherit}
     fi.click();
   }
   function theTb(e) {   // ảnh nhỏ thẻ (xem trước trong danh sách)
-    var kk = [theLogo && theLogo.complete ? 1 : 0, e.ten, e.ma, e.bp, e.anh ? 'a' : e.anhThe ? 't' : '', e.p && e.p.t ? e.p.t.id + '.' + e.p.t.v : ''].join('|');
+    var kk = [theLogo && theLogo.complete ? 1 : 0, theSangMuc(), e.ten, e.ma, e.bp, e.anh ? 'a' : e.anhThe ? 't' : '', e.p && e.p.t ? e.p.t.id + '.' + e.p.t.v : ''].join('|');
     if (e.tbk !== kk || !e.tb) { e.tb = theVe(e, 486).toDataURL('image/jpeg', 0.85); e.tbk = kk; }
     return e.tb;
   }
@@ -4984,6 +5028,7 @@ textarea.inp{font-family:inherit}
     theMaTai(); theGanMa(ds);
     if (!ds.length) h += '<div class="card cch">' + ICON.cc + '<b>Thẻ ra vào HOJEONG</b><div class="meta">Chọn ảnh CCCD ở mục In CCCD, rồi quay lại đây tích người cần làm thẻ. Người chưa có CCCD trong lượt thì bấm Thêm người.</div></div>';
     else h += '<div class="row thk"><span class="meta">Khổ giấy</span><div class="seg" id="thKho">' + ['A4', 'A5'].map(function (g) { return '<button data-tk="' + g + '"' + (theKho() === g ? ' class="on"' : '') + '>' + g + (g === 'A4' ? ' · 8 thẻ/tờ' : ' · 4 thẻ/tờ') + '</button>'; }).join('') + '</div></div>' +
+      '<div class="row thk"><span class="meta">Sáng ảnh</span><input type="range" id="thSang" min="0" max="100" step="5" value="' + theSangMuc() + '" style="flex:1"><span class="meta num" id="thSangV" style="min-width:64px;text-align:right">' + theSangChu() + '</span></div>' +
       '<div class="meta" style="padding:0 2px">Tích người cần làm thẻ, gõ mã thẻ. Mỗi thẻ 8,0 × 5,5 cm, cần in màu.' + (theKho() === 'A5' ? ' Đặt giấy A5 vào khay; hộp in hiện khổ 5 × 7 inch là đúng.' : '') + '</div>';
     h += ds.map(function (e) {
       var n0 = theAnhNguon(e), dd = e.chon;
@@ -5003,6 +5048,8 @@ textarea.inp{font-family:inherit}
     h += '<div class="grp"><button class="it" id="thLs"><div style="min-width:0;flex:1"><div class="nm">Thẻ đã in trước đây' + (CCS.thLs ? ' · ' + CCS.thLs.length : '') + '</div><div class="sub">Tìm theo tên hoặc mã thẻ để in lại</div></div><span class="ch">›</span></button></div>';
     h += '<div class="ccday">' + ccMay(1) + '<button class="btn ghost" id="thThem">Thêm người</button><button class="btn ghost ccgui" id="thGui" aria-label="Chia sẻ PDF"' + (n ? '' : ' disabled') + '>' + ICON_GUI + '</button><button class="btn" id="thIn"' + (n ? '' : ' disabled') + '>' + (n ? 'In ' + n + ' thẻ' : 'Chưa chọn ai') + '</button></div><div class="ccdem"></div>';
     t.innerHTML = h; ccDayDat(t); ccCheNoi(t);
+    var sl = document.getElementById('thSang');
+    if (sl) { sl.oninput = function () { luu('vlta_the_sang', sl.value); var v = document.getElementById('thSangV'); if (v) v.textContent = theSangChu(); }; sl.onchange = function () { ccVe(); }; }
     function e_(k) { return CCS.the[k]; }
     t.querySelectorAll('[data-tc],[data-tc2]').forEach(function (b) { b.onclick = function () { var e = e_(b.getAttribute('data-tc') || b.getAttribute('data-tc2')); e.chon = !e.chon; ccVe(); }; });
     t.querySelectorAll('[data-ta]').forEach(function (b) { b.onclick = function () { theChonAnh(e_(b.getAttribute('data-ta'))); }; });
@@ -5059,6 +5106,7 @@ textarea.inp{font-family:inherit}
   }
   function ccCheNoi(t) { t.querySelectorAll('[data-che]').forEach(function (b) { b.onclick = function () { CCS.theMo = b.getAttribute('data-che') === '1'; var lg = theLogoNap(); if (!lg.complete) lg.onload = function () { ccVe(); }; ccVe(); window.scrollTo(0, 0); }; }); }
   var BAN_MOI = [
+    { so: 169, ds: [{ i: '🖨️', t: 'Ảnh trên thẻ HOJEONG in sáng hơn', m: 'In thẻ trên giấy A5 thường, ảnh chân dung tự sáng lên theo khuôn mặt từng người (mức B anh chọn), nền ảnh trắng, mắt tóc rõ hơn. Ảnh trong kho giữ nguyên. Máy in vẫn ra đậm thì kéo thanh Sáng ảnh trong mục Thẻ HOJEONG, app nhớ mức đó.' }] },
     { so: 168, ds: [{ i: '⚠️', t: 'TREND: ghi rõ đang bị gì và phải làm gì', m: 'Người nào có vấn đề thì ngay dưới tên hiện một dòng cảnh báo bằng chữ, nói rõ đang bị gì và cần làm gì. Đỏ ⛔ là phải sửa, cam 📞 là phải gọi điện, xám ℹ️ là chỉ để biết, không cần làm gì. Trên file Google Sheet cũng có cột CẢNH BÁO (cột E) ghi y hệt.', c: [['Xem cảnh báo', 'Tab Lao động → TREND → đọc dòng màu dưới tên người.']] }] },
     { so: 167, ds: [{ i: '🏭', t: 'Số người các nhà ở HOJEONG trong 7 ngày', m: 'Tab Lao động → HOJEONG có thẻ Số người các nhà: mỗi nhà một dòng, mỗi ngày một cột, ô càng đậm là càng đông người. Cột So TB cho biết mỗi nhà đang tăng hay giảm so với tuần trước. Số tự cập nhật mỗi khi có file vân tay mới. Chỉ chủ và kế toán thấy thẻ này.', c: [['Xem ca ngày, ca đêm', 'Chạm vào một ô trong bảng.']] }] },
     { so: 166, ds: [{ i: '🪪', t: 'Tổng số CCCD trong kho', m: 'Mục Tìm ảnh trong kho hiện ngay dòng Kho có … CCCD, kèm số Nam và Nữ.' }] },
