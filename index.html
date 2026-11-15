@@ -13,7 +13,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
 <script src="config.js"></script>
-<script>window.PB = { so: 163, luc: "15/11 21:39" };</script>
+<script>window.PB = { so: 164, luc: "15/11 21:52" };</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap">
 <style>
@@ -2895,7 +2895,10 @@ textarea.inp{font-family:inherit}
           g[j * BC_W + i] = s / Math.max(1, n);
         }
       }
-      var R = 12, ker = [], ks = 0; for (i = -R; i <= R; i++) { var v = Math.exp(-i * i / 32); ker.push(v); ks += v; }
+      return bcLoc(g);
+    }
+    function bcLoc(g) {   // 64×40 xám -> trừ nền mờ sigma 4, chuẩn hoá
+      var i, j, k, R = 12, ker = [], ks = 0; for (i = -R; i <= R; i++) { var v = Math.exp(-i * i / 32); ker.push(v); ks += v; }
       ker = ker.map(function (v) { return v / ks; });
       function ref(p, n) { while (p < 0 || p >= n) p = p < 0 ? -p : 2 * (n - 1) - p; return p; }
       var t = new Float32Array(BC_W * BC_H), b = new Float32Array(BC_W * BC_H);
@@ -2970,6 +2973,8 @@ textarea.inp{font-family:inherit}
       if (!q && t.nguon !== 'ca anh') { gn = noiLe(cv, gn); g = gn; }   // 23/10: không cắt lẹm vào thẻ
       var r = xuLyTinh(cv, gn, !q), kem = q ? [] : danhGia(cv, t, g), sua = '';
       function datHet(x) { return x.bc && x.bc.dat && Math.abs(x.ng) <= 1 && x.cn >= 1.15; }
+      function khit(x) { return datHet(x) && x.bc.v >= 0.6 && Math.abs(x.bc.sx - 1) <= 0.021 && Math.abs(x.bc.sy - 1) <= 0.021 && Math.abs(x.bc.dx) <= 1 && Math.abs(x.bc.dy) <= 1; }   // khớp mẫu chặt: thẻ đủ, thẳng
+      if (!q && t.nguon !== 'ca anh' && khit(r)) kem = [];   // 15/11: khớp thẻ mẫu chặt thì bỏ các báo hình học của bước tìm khung (khung méo vì ngón tay che 1 góc…)
       var caAnhDung = !q && t.nguon === 'ca anh' && datHet(r) && Math.abs(r.bc.sx - 1) <= 0.021 && Math.abs(r.bc.sy - 1) <= 0.021 && !r.bc.dx && !r.bc.dy;   // ảnh chính là thẻ (đã cắt sẵn): khớp thẻ mẫu y nguyên mới nhận
       if (!q && t.nguon === 'ca anh' && !caAnhDung) {   // ảnh cắt sẵn đúng khổ thẻ: thử lấy nguyên ảnh (không lẹm) xem có khớp thẻ mẫu y nguyên không
         var gF = ngangKhung([[0, 0], [cv.width, 0], [cv.width, cv.height], [0, cv.height]]), rF = xuLyTinh(cv, gF, true);
@@ -2982,17 +2987,22 @@ textarea.inp{font-family:inherit}
         if (r.bc && !r.bc.dat) ung = ung.concat(bcSua(cv, gn, r.pl.xoay, r.bc) || []);
         if (Math.abs(r.ng) > 1 || r.cn < 1.15) [r.ng, -r.ng].concat(Math.abs(r.ng) >= 5.75 ? [9, -9, 12, -12] : []).forEach(function (a) {   // nghiengChu đo tối đa 6°: nghiêng hơn thì thử thêm 9° / 12°
            if (!a) return; var g1 = quayKhung(cv, gn, a); if (!g1) return; ung.push(g1); try { ung.push(lemVao(xep(bamMep(cv, g1)))); } catch (e) { } });
+        ung.push.apply(ung, baGoc(gn));   // 15/11: 1 góc bị che (ngón tay) -> dựng lại góc đó từ 3 góc còn lại
         ung.forEach(function (g2) { thu(ngangKhung(g2), true); });
+        if (!tot && r.bc) {   // tinh chỉnh từng góc theo thẻ mẫu (1 góc bị ngón tay che, thẻ nghiêng phối cảnh)
+          var Tm = bcMau()[r.bc.mau];
+          [gn].concat(baGoc(gn)).forEach(function (g1) { if (tot) return; try { var o = tinhGoc(cv, ngangKhung(xep(g1)), r.pl.xoay, Tm); if (o.v > 0.5) { var cs = [o.q]; try { var bm = xep(bamMep(cv, xep(o.q))); cs.unshift(lemVao(bm)); cs = cs.concat(baGoc(lemVao(bm))); } catch (e2) { } cs.forEach(function (g3) { thu(ngangKhung(xep(g3)), false); }); } } catch (e) { } });
+        }
         if (!tot) {   // vẫn hỏng: rà cả ảnh tìm chỗ giống thẻ mẫu (thẻ nhỏ, dựng đứng, nền sọc)
           var ds2 = []; try { ds2 = timTheMau(cv); } catch (e) { ds2 = []; }
-          ds2.forEach(function (g1) { if (tot) return; var c1 = [g1]; try { c1.unshift(lemVao(xep(bamMep(cv, xep(g1))))); } catch (e) { } c1.forEach(function (g2) { if (!tot) thu(ngangKhung(xep(g2)), true); }); });
+          ds2.forEach(function (g1) { if (tot) return; var c1 = [g1]; try { var b1 = lemVao(xep(bamMep(cv, xep(g1)))); c1.unshift(b1); c1 = c1.concat(baGoc(b1)); } catch (e) { } c1.forEach(function (g2) { if (!tot) thu(ngangKhung(xep(g2)), true); }); });
           if (tot) { r = tot.r; g = tot.g; kem = []; sua = 'tìm thẻ theo thẻ mẫu'; }
         } else { r = tot.r; g = tot.g; kem = []; sua = 'tự chỉnh khung theo thẻ mẫu'; }
       }
       if (Math.abs(r.ng) > 1) kem.push('ảnh nghiêng ' + String(Math.abs(r.ng)).replace('.', ',') + '°');   // 04/11: chuẩn chung – dòng chữ nghiêng quá 1° thì không lưu kho
       if (r.cn < 1.15) kem.push('khung cắt sai (chữ trên thẻ không nằm ngang)');   // 04/11: bắt khung lấy cả nền / nội dung xoay 90°
       if (r.bc && !r.bc.dat) kem.push(r.bc.ly);
-      if (!q && !caAnhDung && g.some(function (a) { return a[0] < 0.004 * cv.width || a[1] < 0.004 * cv.height || a[0] > 0.996 * cv.width || a[1] > 0.996 * cv.height; })) kem.push('thẻ chạm mép ảnh (có thể mất 1 phần thẻ)');   // 15/11: ảnh chụp cắt mất 1 phần thẻ thì không tự lưu
+      if (!q && !caAnhDung && !khit(r) && g.some(function (a) { return a[0] < 0.004 * cv.width || a[1] < 0.004 * cv.height || a[0] > 0.996 * cv.width || a[1] > 0.996 * cv.height; })) kem.push('thẻ chạm mép ảnh (có thể mất 1 phần thẻ)');   // 15/11: ảnh chụp cắt mất 1 phần thẻ thì không tự lưu
       return { the: r.mat, q: g, tim: t, mat: r.pl.mat, chac: r.pl.chac, f: r.pl.f, ro: r.pl.ro !== false || !!(r.bc && r.bc.dat && r.bc.v >= 0.7), kem: kem, ng: r.ng, cn: r.cn, bc: r.bc ? { v: r.bc.v, sx: r.bc.sx, sy: r.bc.sy, dx: r.bc.dx, dy: r.bc.dy, mau: r.bc.mau } : null, sua: sua };
     }
     // ---- 15/11: TÌM THẺ THEO THẺ MẪU – khi cách tìm khung thường hỏng (thẻ nhỏ trong ảnh, thẻ dựng đứng, nền sọc): rà cả ảnh tìm chỗ giống thẻ mẫu nhất
@@ -3052,6 +3062,45 @@ textarea.inp{font-family:inherit}
         chon.push(u);
       });
       return chon.map(function (u) { return [[u.x0, u.y0], [u.x1, u.y0], [u.x1, u.y1], [u.x0, u.y1]]; });
+    }
+    // 15/11: TINH CHỈNH 4 GÓC THEO THẺ MẪU – dịch từng góc khung (bước 3% -> 0,4% cạnh thẻ) sao cho ảnh nắn trùng thẻ mẫu nhất.
+    // Lấy mẫu thẳng từ ảnh gốc qua phép nắn (không nắn cả ảnh) nên mỗi lần thử chỉ vài mili giây. Dùng khi 1 góc bị che, khung lệch, thẻ nghiêng phối cảnh.
+    function bcDTQ(sd, sw, sh, q, xoay180) {
+      var M = homo([[0, 0], [BC_W, 0], [BC_W, BC_H], [0, BC_H]], q), g = new Float32Array(BC_W * BC_H), i, j, a, b;
+      for (j = 0; j < BC_H; j++) for (i = 0; i < BC_W; i++) {
+        var s = 0;
+        for (b = 0; b < 4; b++) for (a = 0; a < 4; a++) {
+          var X = i + (a + 0.5) / 4, Y = j + (b + 0.5) / 4; if (xoay180) { X = BC_W - X; Y = BC_H - Y; }
+          var z = M[6] * X + M[7] * Y + 1, u = Math.round((M[0] * X + M[1] * Y + M[2]) / z), v = Math.round((M[3] * X + M[4] * Y + M[5]) / z);
+          u = u < 0 ? 0 : u >= sw ? sw - 1 : u; v = v < 0 ? 0 : v >= sh ? sh - 1 : v;
+          var k = (v * sw + u) * 4; s += 0.299 * sd[k] + 0.587 * sd[k + 1] + 0.114 * sd[k + 2];
+        }
+        g[j * BC_W + i] = s / 16;
+      }
+      return bcLoc(g);
+    }
+    function tinhGoc(cv, q, xoay180, T) {   // -> { q, v } khung tốt nhất tìm được
+      var sw = cv.width, sh = cv.height, sd = cv.getContext('2d').getImageData(0, 0, sw, sh).data;
+      function diem(qq) { return bcKhop(bcDTQ(sd, sw, sh, qq, xoay180), T, 1, 1, 0, 0); }
+      var cur = q.map(function (p) { return p.slice(); }), best = diem(cur);
+      var L = (Math.hypot(q[1][0] - q[0][0], q[1][1] - q[0][1]) + Math.hypot(q[2][0] - q[1][0], q[2][1] - q[1][1])) / 2;
+      [0.03, 0.015, 0.007, 0.004].forEach(function (st) {
+        var d = st * L;
+        for (var lap = 0; lap < 4; lap++) {
+          var doi = false;
+          for (var c = 0; c < 4; c++) for (var t = 0; t < 2; t++) for (var sg = -1; sg <= 1; sg += 2) {
+            var th = cur.map(function (p) { return p.slice(); }); th[c][t] += sg * d;
+            var v = diem(th); if (v > best + 1e-4) { best = v; cur = th; doi = true; }
+          }
+          if (!doi) break;
+        }
+      });
+      return { q: cur, v: best };
+    }
+    function baGoc(q) {   // 4 khung: mỗi khung thay 1 góc bằng góc suy từ 3 góc kia (hình bình hành); ra ngoài ảnh vẫn giữ để thử
+      var o = [];
+      for (var i = 0; i < 4; i++) { var a = q[(i + 3) % 4], b = q[(i + 1) % 4], c = q[(i + 2) % 4], g2 = q.slice(); g2[i] = [a[0] + b[0] - c[0], a[1] + b[1] - c[1]]; o.push(g2); }
+      return o;
     }
     function lemVao(q) { var mx = (q[0][0] + q[1][0] + q[2][0] + q[3][0]) / 4, my = (q[0][1] + q[1][1] + q[2][1] + q[3][1]) / 4; return q.map(function (a) { return [mx + (a[0] - mx) * 0.988, my + (a[1] - my) * 0.985]; }); }
     function ngangKhung(q) { var d01 = Math.hypot(q[1][0] - q[0][0], q[1][1] - q[0][1]), d12 = Math.hypot(q[2][0] - q[1][0], q[2][1] - q[1][1]); return d01 >= d12 ? q : [q[3], q[0], q[1], q[2]]; }
@@ -4910,6 +4959,7 @@ textarea.inp{font-family:inherit}
   }
   function ccCheNoi(t) { t.querySelectorAll('[data-che]').forEach(function (b) { b.onclick = function () { CCS.theMo = b.getAttribute('data-che') === '1'; var lg = theLogoNap(); if (!lg.complete) lg.onload = function () { ccVe(); }; ccVe(); window.scrollTo(0, 0); }; }); }
   var BAN_MOI = [
+    { so: 164, ds: [{ i: '🪪', t: 'Ảnh CCCD bị ngón tay che 1 góc', m: 'Ngón tay che mất 1 góc thẻ thì máy dựng lại góc đó từ 3 góc còn lại rồi đối chiếu thẻ mẫu. Thẻ khớp mẫu chặt thì không còn báo khung méo hay thẻ chạm mép ảnh.' }] },
     { so: 163, ds: [{ i: '🪪', t: 'Ảnh CCCD nghiêng nhiều', m: 'Ảnh thẻ nghiêng hơn 6° máy thử xoay thêm 9° và 12° để tự nắn thẳng.' }] },
     { so: 162, ds: [{ i: '🪪', t: 'Ảnh CCCD khớp thẻ mẫu thì không báo xem lại', m: 'Ảnh máy chưa nhận ra quốc huy hay chip (thường do ảnh tối, loá) nhưng khớp rõ với thẻ mẫu thì coi là ảnh rõ, không còn báo xem lại.' }] },
     { so: 161, ds: [{ i: '🪪', t: 'Ảnh CCCD tự xử lý: đối chiếu thẻ mẫu', m: 'Máy cắt xong mỗi mặt thẻ thì đối chiếu với thẻ mẫu (quốc huy, mã QR, ảnh, chip, vân tay, dòng mã nằm đúng chỗ). Ảnh dính nền, cắt lẹm, méo hay nghiêng thì máy tự tìm lại khung: phóng, dịch, xoay theo dòng chữ, bám mép thẻ; thẻ nhỏ hoặc dựng đứng trong ảnh thì rà cả ảnh tìm chỗ giống thẻ mẫu. Vẫn chưa đạt thì không tự lưu mà báo cắt chưa chuẩn.' }, { i: '✅', t: 'Duyệt ảnh máy tự lưu', m: 'Mục CCCD có thẻ Máy tự lưu kho · chờ duyệt: lướt xem ảnh máy tự ghép ban đêm, bấm Đạt; ảnh lỗi bấm Làm lại thì ảnh gốc trả về CCCD TẠM để cắt lại.' }] },
