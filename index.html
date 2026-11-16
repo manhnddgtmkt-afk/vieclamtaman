@@ -13,7 +13,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
 <script src="config.js"></script>
-<script>window.PB = { so: 173, luc: "16/11 11:57" };</script>
+<script>window.PB = { so: 174, luc: "16/11 13:02" };</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap">
 <style>
@@ -1211,6 +1211,8 @@ textarea.inp{font-family:inherit}
       (laChu ? '<div class="sec" style="margin:8px 4px -6px">Quản trị</div><div class="set"><button id="tdNv"><span>Quản lý nhân viên</span><span class="ch" style="margin-left:auto">›</span></button>' +
         '<button id="tdVi"><span>Khoá đọc ảnh CCCD<small id="tdViTt">Đang kiểm tra…</small></span><span class="ch" style="margin-left:auto">›</span></button>' +
         '<div id="eVi" class="hidden" style="padding:0 16px 12px"><div class="meta" style="margin-bottom:8px">Dán khoá Cloud Vision (bắt đầu bằng AIza…). Khoá chỉ lưu trên máy chủ, không gửi xuống điện thoại của nhân viên.</div><div class="row"><input class="inp" id="tVi" placeholder="AIza…" autocomplete="off" autocapitalize="off" spellcheck="false" style="font-size:16px;padding:11px 14px"><button class="btn sm" id="tViOk">Lưu</button></div><button class="btn lk" id="tViXoa" style="padding-left:0">Bỏ khoá, quay về đọc bằng Drive</button></div>' +
+        '<button id="tdGh"><span>Khoá GitHub (xử lý CCCD trên máy chủ)<small id="tdGhTt">Đang kiểm tra…</small></span><span class="ch" style="margin-left:auto">›</span></button>' +
+        '<div id="eGh" class="hidden" style="padding:0 16px 12px"><div class="meta" style="margin-bottom:8px">Dán khoá GitHub (bắt đầu bằng github_pat_…), loại chỉ chọn kho taman-ma và quyền Actions: Read and write. Khoá chỉ lưu trên máy chủ, dùng cho nút Xử lý ngay trên máy chủ ở tab CCCD.</div><div class="row"><input class="inp" id="tGh" placeholder="github_pat_…" autocomplete="off" autocapitalize="off" spellcheck="false" style="font-size:16px;padding:11px 14px"><button class="btn sm" id="tGhOk">Lưu</button></div><button class="btn lk" id="tGhXoa" style="padding-left:0">Bỏ khoá</button></div>' +
         '<button id="tdMa"><span>Cập nhật ứng dụng<small id="tdMaTt">Lấy bản mới nhất</small></span><span class="v" style="color:var(--blue)">⟳</span></button></div>' : '') +
       '<div class="msg" id="tdm"></div><button class="dx" id="tdx">Đăng xuất</button>');
     function an(id, hien) { document.getElementById(id).classList.toggle('hidden', hien === undefined ? undefined : !hien); }
@@ -1237,6 +1239,17 @@ textarea.inp{font-family:inherit}
         apiT({ v: 'visionKhoa', khoa: k }).then(function (o) { b.disabled = false; viHien(o); if (!o.loi) { document.getElementById('tVi').value = ''; an('eVi', false); toast('Đã lưu khoá, từ giờ đọc ảnh bằng Cloud Vision.'); } }, function (e) { b.disabled = false; viTt.textContent = e.message; });
       };
       document.getElementById('tViXoa').onclick = function () { apiT({ v: 'visionKhoa', khoa: '' }).then(function (o) { viHien(o); an('eVi', false); }, function (e) { viTt.textContent = e.message; }); };
+      // 16/11 bản 174: khoá GitHub cho nút "Xử lý ngay trên máy chủ" (tab CCCD)
+      var ghTt = document.getElementById('tdGhTt');
+      function ghHien(o) { ghTt.textContent = o.loi ? o.loi : o.co ? 'Đã có khoá · nút Xử lý ngay trên máy chủ dùng được' : 'Chưa có khoá'; }
+      apiT({ v: 'ghTT', im: 1 }).then(ghHien, function () { ghTt.textContent = 'Chưa kiểm tra được'; });
+      document.getElementById('tdGh').onclick = function () { an('eGh'); };
+      document.getElementById('tGhOk').onclick = function () {
+        var b = this, k = document.getElementById('tGh').value.trim(); if (!k) return;
+        b.disabled = true; ghTt.textContent = 'Đang thử khoá với GitHub…';
+        apiT({ v: 'ghKhoa', khoa: k }).then(function (o) { b.disabled = false; ghHien(o); if (!o.loi) { document.getElementById('tGh').value = ''; an('eGh', false); CCS.ghCo = true; toast('Đã lưu khoá GitHub.'); } }, function (e) { b.disabled = false; ghTt.textContent = e.message; });
+      };
+      document.getElementById('tGhXoa').onclick = function () { apiT({ v: 'ghKhoa', khoa: '' }).then(function (o) { ghHien(o); an('eGh', false); CCS.ghCo = false; }, function (e) { ghTt.textContent = e.message; }); };
       document.getElementById('tdMa').onclick = function () {
         if (window.PB) { lenBanMoi(true); return; }   // kéo bản mã mới nhất từ GitHub sang Drive ngay (không chờ lịch 5 phút)
         var b = this, tt = document.getElementById('tdMaTt'); b.disabled = true; tt.textContent = 'Đang lấy bản mã mới nhất…';
@@ -3734,7 +3747,8 @@ textarea.inp{font-family:inherit}
       h += '<div class="card"><b>' + (CCS.dang.tai ? 'Đang tải ảnh từ CCCD TẠM ' + CCS.dang.i : 'Đang cắt và ghép ảnh ' + (CCS.dang.i + 1)) + '/' + CCS.dang.n + '…</b><div class="ccbar0"><i style="width:' + Math.round(100 * CCS.dang.i / CCS.dang.n) + '%"></i></div>' + ccNhacThuc() + '</div>';
     } else if (!CCS.ds.length) {
       h += '<div class="card cch">' + ICON.cc + '<b>In CCCD người mới</b><div class="meta">Chọn cùng lúc ảnh mặt trước và mặt sau của từng người trong album. App tự cắt sát viền, nắn thẳng, ghép 2 mặt, in mỗi người 1 tờ A4 rồi lưu vào thư mục CCCD trên Drive. Không cần in thì bấm Lưu kho.</div>' +
-        '<button class="btn" id="ccChon">Chọn ảnh trong album</button>' + (CCS.tamN ? '<button class="btn ghost" id="ccTam">Xử lý ảnh chờ trong CCCD TẠM (' + CCS.tamN + ')</button>' : CCS.tamN === 0 ? '<button class="btn ghost" disabled>Không còn ảnh chờ trong CCCD TẠM</button>' : '') + '<button class="btn ghost" id="ccKho">Tìm ảnh trong kho</button></div>' + ccDuyetThe() + ccKqHtml();
+        '<button class="btn" id="ccChon">Chọn ảnh trong album</button>' + (CCS.tamN ? (CCS.ghCo ? '<button class="btn ghost" id="ccMC"' + (CCS.chayMC && CCS.chayMC.dang ? ' disabled>Máy chủ đang xử lý CCCD TẠM…' : '>Xử lý ngay trên máy chủ (' + CCS.tamN + ' ảnh chờ)') + '</button>' : '') +
+          '<button class="btn ghost" id="ccTam">' + (CCS.ghCo ? 'Cắt ghép trên điện thoại (16 ảnh/lượt)' : 'Xử lý ảnh chờ trong CCCD TẠM (' + CCS.tamN + ')') + '</button>' : CCS.tamN === 0 ? '<button class="btn ghost" disabled>Không còn ảnh chờ trong CCCD TẠM</button>' : '') + '<button class="btn ghost" id="ccKho">Tìm ảnh trong kho</button></div>' + ccDuyetThe() + ccChayHtml() + ccKqHtml();
     } else {
       if (CCS.tam) h += '<div class="note" style="margin-bottom:10px">Lượt này lấy ' + CCS.tam.n + ' ảnh từ <b>CCCD TẠM</b>. Bấm <b>Lưu kho</b> để đưa người đã ghép đúng vào thư mục năm sinh; ảnh gốc của họ chuyển sang CCCD TẠM/ĐÃ XỬ LÝ. Ảnh lẻ, ảnh chưa đọc được vẫn để lại trong CCCD TẠM.</div>' + ccKqHtml();
       if (CCS.doi) h += '<div class="note warn ccdoi"><span>Chạm vào ảnh muốn đổi chỗ</span><button class="btn sm ghost" id="ccDoiThoi">Thôi</button></div>';
@@ -3789,6 +3803,7 @@ textarea.inp{font-family:inherit}
     if ((b = document.getElementById('ccKho'))) b.onclick = ccKhoMo;
     if ((b = document.getElementById('ccLuu'))) b.onclick = ccLuuKho;
     if ((b = document.getElementById('ccTam'))) b.onclick = ccTamMo;
+    if ((b = document.getElementById('ccMC'))) b.onclick = ccChayNgay;
     if ((b = document.getElementById('ccDuyet'))) b.onclick = ccDuyetMo;
     t.querySelectorAll('[data-dung]').forEach(function (e) { e.onclick = function () { ccDung(e.getAttribute('data-dung')); }; });
     t.querySelectorAll('[data-kemok]').forEach(function (e) { e.onclick = function () { var p = ccCap().filter(function (x) { return x.k === e.getAttribute('data-kemok'); })[0]; if (p) [p.t, p.s].forEach(function (x) { if (x) x.kem = null; }); ccVe(); }; });
@@ -4235,7 +4250,40 @@ textarea.inp{font-family:inherit}
     if (CCS.soat) return;   // bản 149: đang xử lý CCCD TẠM thì lượt xử lý tự đếm
     if (CCS.tamLuc && Date.now() - CCS.tamLuc < 60000) return; CCS.tamLuc = Date.now();
     apiT({ v: 'cccdTamDs', im: 1 }).then(function (o) { if (CCS.soat || !o || o.loi) return; var n = (o.ds || []).length, d = Number(o.duyet) || 0; if (n !== CCS.tamN || d !== CCS.duyetN) { CCS.tamN = n; CCS.duyetN = d; ccVe(); } }, function () { });
+    ccChayHoi();
   }
+  // 16/11 bản 174: XỬ LÝ CCCD TẠM NGAY TRÊN MÁY CHỦ – máy chủ gọi GitHub chạy việc tự xử lý (như ban đêm), điện thoại không tải/cắt ảnh
+  function ccChayHoi() {
+    apiT({ v: 'ccChayTT', im: 1 }).then(function (o) {
+      if (!o || o.loi) return;
+      var truoc = CCS.chayMC, cu = JSON.stringify([truoc && truoc.dang, truoc && truoc.kq, truoc && truoc.co]);
+      CCS.chayMC = o; CCS.ghCo = !!o.co;
+      if (truoc && truoc.dang && !o.dang && o.kq && o.kq.luc > truoc.dang.luc) { toast('Máy chủ xử lý CCCD TẠM xong: lưu ' + o.kq.dat + ' người vào kho.'); CCS.tamLuc = 0; setTimeout(ccTamDem, 500); }
+      if (JSON.stringify([o.dang, o.kq, o.co]) !== cu && S.tab === 'cc') ccVe();
+    }, function () { });
+  }
+  function ccChayNgay() {
+    var b = document.getElementById('ccMC'); if (b) { b.disabled = true; b.textContent = 'Đang gửi lệnh…'; }
+    apiT({ v: 'ccChayNgay' }).then(function (o) {
+      if (o.loi) { toastLoi(o.loi); ccVe(); return; }
+      CCS.chayMC = CCS.chayMC || {}; CCS.chayMC.dang = o.dang;
+      toast(o.ok ? 'Máy chủ bắt đầu xử lý. Khoảng 5–10 phút, xong sẽ báo về điện thoại.' : 'Máy chủ đang xử lý lượt trước, chờ lượt đó xong nhé.');
+      ccVe();
+    }, function (e) { toastLoi(e.message); ccVe(); });
+  }
+  function ccChayHtml() {   // thẻ trạng thái / kết quả lượt chạy trên máy chủ
+    var o = CCS.chayMC || {}, h = '';
+    if (o.dang) h += '<div class="card"><div class="row sp"><b>Máy chủ đang xử lý CCCD TẠM…</b><span class="meta">từ ' + esc(ngayGio(o.dang.luc)) + '</span></div><div class="meta">Do ' + esc(o.dang.ten || '') + ' bấm. Thường mất 5–10 phút. Có thể tắt app, xong sẽ có thông báo; ảnh đã lưu hiện ở mục chờ duyệt.</div></div>';
+    if (o.kq) {
+      var k = o.kq, d = [['Đã lưu vào kho', k.dat + ' người'], ['Ảnh trùng kho → TRÙNG', k.trung + ' ảnh']];
+      if (k.cho) d.push(['Để lại cần xem', k.cho + ' người']); if (k.le) d.push(['Ảnh lẻ / chưa đọc được', k.le + ' ảnh']);
+      h += '<div class="card cckq"><div class="row sp"><b>Lượt máy chủ gần nhất</b><span class="meta">' + esc(ngayGio(k.luc)) + ' · ' + esc(k.ai || '') + '</span></div>' +
+        d.map(function (r) { return '<div class="row sp cckqd"><span class="meta">' + esc(r[0]) + '</span><span class="num">' + esc(r[1]) + '</span></div>'; }).join('') +
+        ((k.cho || k.le) ? '<div class="meta">Người / ảnh để lại vẫn nằm trong CCCD TẠM: bấm Cắt ghép trên điện thoại để xử lý tay.</div>' : '') + '</div>';
+    }
+    return h;
+  }
+  function ngayGio(ms) { var d = new Date(ms); function p(x) { return (x < 10 ? '0' : '') + x; } return p(d.getDate()) + '/' + p(d.getMonth() + 1) + ' ' + p(d.getHours()) + ':' + p(d.getMinutes()); }
   // bản 149: đang mở mục CCCD thì số ảnh chờ CCCD TẠM tự cập nhật mỗi phút và ngay khi quay lại app (trước chỉ đếm lúc mở mục)
   setInterval(function () { if (S.tab === 'cc' && S.t && S.toi && document.visibilityState === 'visible') ccTamDem(); }, 20000);
   document.addEventListener('visibilitychange', function () { if (document.visibilityState === 'visible' && S.tab === 'cc' && S.t && S.toi) { CCS.tamLuc = 0; ccTamDem(); } });
@@ -4272,7 +4320,7 @@ textarea.inp{font-family:inherit}
     function xong(o) {
       var ds = o.ds || [], da = CCS.tamDa || (CCS.tamDa = {}); CCS.tamN = ds.length; CCS.tamLuc = Date.now();
       var moi = ds.filter(function (f) { return !da[f.id]; }), lay = ds.length ? ccTamLo(moi.length ? moi : ds, 16) : [];   // hết ảnh mới thì lấy lại ảnh lần trước chưa ghép được
-      ccKqDat({ luc: gioPhut(Date.now()), soat: tong.soat, trung: tong.chuyen, trungNg: Object.keys(tong.so).length, khongSo: o.khongSo || 0, lay: lay.length, con: ds.length, khong: o.khong ? 1 : 0, khongSoat: o.khongSoat ? 1 : 0 });
+      ccKqDat({ luc: gioPhut(Date.now()), lucMs: Date.now(), soat: tong.soat, trung: tong.chuyen, trungNg: Object.keys(tong.so).length, khongSo: o.khongSo || 0, lay: lay.length, con: ds.length, khong: o.khong ? 1 : 0, khongSoat: o.khongSoat ? 1 : 0 });
       if (!ds.length) { toast(o.khong ? 'Không thấy thư mục CCCD TẠM trong thư mục CCCD.' : 'Xong. CCCD TẠM không còn ảnh nào cần ghép.'); ccVe(); return; }
       lay.forEach(function (f) { da[f.id] = 1; });
       CCS.ds = []; CCS.tt = {}; CCS.jpg = {}; CCS.doi = null; CCS.kho = null; CCS.theMo = false;
@@ -4313,7 +4361,7 @@ textarea.inp{font-family:inherit}
       if (k.luot.le) d.push(['Ảnh lẻ chưa có cặp', k.luot.le + ' ảnh']);
     }
     d.push(['Không đọc được số', k.khongSo + ' ảnh']);
-    return '<div class="card cckq"><div class="row sp"><b>Lần xử lý CCCD TẠM gần nhất</b><span class="meta">' + esc(k.luc) + '</span></div>' +
+    return '<div class="card cckq"><div class="row sp"><b>Lần xử lý trên điện thoại gần nhất</b><span class="meta">' + esc(k.lucMs ? ngayGio(k.lucMs) : k.luc) + '</span></div>' +
       d.map(function (r) { return '<div class="row sp cckqd"><span class="meta">' + esc(r[0]) + '</span><span class="num">' + esc(String(r[1])) + '</span></div>'; }).join('') +
       '<div class="meta">Ảnh gốc đã ghép vào kho → CCCD TẠM/ĐÃ XỬ LÝ. Ảnh của người kho đã có → ĐÃ XỬ LÝ/TRÙNG. Ảnh lẻ, ảnh không đọc được vẫn để trong CCCD TẠM. Không xoá ảnh nào.</div></div>';
   }
@@ -5158,6 +5206,8 @@ textarea.inp{font-family:inherit}
   }
   function ccCheNoi(t) { t.querySelectorAll('[data-che]').forEach(function (b) { b.onclick = function () { CCS.theMo = b.getAttribute('data-che') === '1'; var lg = theLogoNap(); if (!lg.complete) lg.onload = function () { ccVe(); }; ccVe(); window.scrollTo(0, 0); }; }); }
   var BAN_MOI = [
+    { so: 174, ds: [{ i: '🪪', t: 'Xử lý CCCD TẠM ngay trên máy chủ', m: 'Tab CCCD có nút Xử lý ngay trên máy chủ: máy chủ xử lý hết ảnh chờ một mạch như lượt ban đêm, điện thoại không phải tải hay cắt ảnh, tắt app cũng được. Xong sẽ có thông báo và thẻ Lượt máy chủ gần nhất ghi rõ ngày giờ, số người đã lưu, số ảnh trùng, số người cần xem. Nút cắt ghép trên điện thoại vẫn giữ để xử lý tay.' },
+      { i: '🕒', t: 'Ghi rõ ngày lần xử lý gần nhất', m: 'Thẻ kết quả xử lý CCCD ghi cả ngày lẫn giờ (vd 16/11 13:05), không chỉ ghi giờ.' }] },
     { so: 173, ds: [{ i: '💵', t: 'Bảng lương công nhân từng công ty', m: 'Xem lương 1 ngày theo số giờ làm, ca ngày, ca đêm, chủ nhật, loại việc và các quy định chuyên cần, đi muộn của công ty đang xem. Số lấy thẳng từ file công ty nên sửa lương trong file là app tự đổi theo. Cách dùng: Lao động → chọn công ty → Bảng lương công nhân.' }] },
     { so: 172, ds: [{ i: '✨', t: 'Thẻ Người đi làm các nhà gọn hơn', m: 'Chữ trên thẻ ngắn lại, mỗi ý một dòng, không còn chữ nhảy dòng lộn xộn.' }] },
     { so: 171, ds: [{ i: '📋', t: 'Chi tiết từng nhà dạng bảng', m: 'Chạm tên nhà ở thẻ Người đi làm các nhà: mỗi ngày một dòng ghi rõ ca ngày, ca đêm, tổng; ngày HOJEONG nghỉ ghi chữ nghỉ; dòng cuối là trung bình mỗi ngày, đúng bằng số ở danh sách.' }] },
