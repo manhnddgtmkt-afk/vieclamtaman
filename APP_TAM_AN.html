@@ -952,6 +952,10 @@ textarea.inp{font-family:inherit}
 .bl-qd{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:2px 14px}
 .bl-qd div{padding:10px 0;border-bottom:1px solid var(--line);font-size:14px;line-height:1.5;white-space:normal;overflow-wrap:anywhere}
 .bl-qd div:last-child{border-bottom:0}
+.bl-qd .bl-gl{display:grid;grid-template-columns:112px 1fr;column-gap:10px;align-items:baseline}
+.bl-gl b{font-weight:600;white-space:normal}
+.bl-gl span{white-space:normal;overflow-wrap:anywhere}
+.bl-gl .bl-gd{display:block;font-style:normal}
 @media (max-width:370px){.bl-cot,.bl-r{column-gap:6px}.bl-r{padding:10px 10px}.bl-cot{padding:0 10px}.bl-v{font-size:15px}}
 </style>
 </head>
@@ -5195,6 +5199,7 @@ textarea.inp{font-family:inherit}
   }
   function ccCheNoi(t) { t.querySelectorAll('[data-che]').forEach(function (b) { b.onclick = function () { CCS.theMo = b.getAttribute('data-che') === '1'; var lg = theLogoNap(); if (!lg.complete) lg.onload = function () { ccVe(); }; ccVe(); window.scrollTo(0, 0); }; }); }
   var BAN_MOI = [
+    { so: 175, ds: [{ i: '🕗', t: 'Giờ làm việc trong bảng lương', m: 'Bảng lương công nhân của từng công ty có thêm giờ vào ca, giờ tan ca và giờ tăng ca. Cách dùng: Lao động → chọn công ty → Bảng lương công nhân.' }] },
     { so: 174, ds: [{ i: '🪪', t: 'Xử lý CCCD TẠM ngay trên máy chủ', m: 'Tab CCCD có nút Xử lý ngay trên máy chủ: máy chủ xử lý hết ảnh chờ một mạch như lượt ban đêm, điện thoại không phải tải hay cắt ảnh, tắt app cũng được. Xong sẽ có thông báo và thẻ Lượt máy chủ gần nhất ghi rõ ngày giờ, số người đã lưu, số ảnh trùng, số người cần xem. Nút cắt ghép trên điện thoại vẫn giữ để xử lý tay.' },
       { i: '🕒', t: 'Ghi rõ ngày lần xử lý gần nhất', m: 'Thẻ kết quả xử lý CCCD ghi cả ngày lẫn giờ (vd 16/11 13:05), không chỉ ghi giờ.' }] },
     { so: 173, ds: [{ i: '💵', t: 'Bảng lương công nhân từng công ty', m: 'Xem lương 1 ngày theo số giờ làm, ca ngày, ca đêm, chủ nhật, loại việc và các quy định chuyên cần, đi muộn của công ty đang xem. Số lấy thẳng từ file công ty nên sửa lương trong file là app tự đổi theo. Cách dùng: Lao động → chọn công ty → Bảng lương công nhân.' }] },
@@ -6492,6 +6497,7 @@ textarea.inp{font-family:inherit}
     if (loais.indexOf(BL.loai) < 0) BL.loai = loais[0] || '';
     var nm = blNgay(d.ngayMoi), apMoi = !!(nm && nm <= hn), coMoi = false;
     h += '<div class="meta cau">Lương 1 ngày theo tổng số giờ làm (hành chính + tăng ca).</div>';
+    if (d.gio && d.gio.length) h += '<div class="bl-sec">Giờ làm việc</div><div class="bl-qd">' + d.gio.map(function (g) { return '<div class="bl-gl"><b>' + esc(g[0]) + '</b><span>' + String(g[1]).split(/,\s*/).map(function (x) { return '<i class="bl-gd">' + esc(x.charAt(0).toUpperCase() + x.slice(1)) + '</i>'; }).join('') + '</span></div>'; }).join('') + '</div><div class="bl-sec">Tiền công</div>';   // b174
     if (loais.length > 1) h += '<div class="seg" id="blLoai">' + loais.map(function (l) { return '<button data-l="' + esc(l) + '"' + (l === BL.loai ? ' class="on"' : '') + '>' + esc(blHoa(l)) + '</button>'; }).join('') + '</div>';
     var bs = d.bang.filter(function (b) { return b.loai === BL.loai; });
     function o(x, ca) {
