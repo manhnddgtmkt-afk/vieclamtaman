@@ -13,7 +13,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
 <script src="config.js"></script>
-<script>window.PB = { so: 176, luc: "16/11 17:56" };</script>
+<script>window.PB = { so: 177, luc: "17/11 17:08" };</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap">
 <style>
@@ -5413,10 +5413,21 @@ textarea.inp{font-family:inherit}
     var rong = { stt: 48, ma: 110, ten: 290, ns: 120, gt: 85, so: 150, dc: 200, sdt: 125, ghi: 120 }, cot = o.cot, tong = 0;
     cot.forEach(function (c) { tong += rong[c[0]] || 100; });
     var bw = W - 2 * le, xs = [le]; cot.forEach(function (c) { xs.push(xs[xs.length - 1] + bw * (rong[c[0]] || 100) / tong); });
-    var hTieu = 24 * MM, hDau = 11 * MM, hDong = 8.6 * MM, dong = [], st = 0, cur = null;
-    o.ds.forEach(function (r) {
-      if (o.lv && r.lv !== cur) { cur = r.lv; dong.push({ khoi: (cur || '').toUpperCase() + ' · ' + o.ds.filter(function (y) { return y.lv === cur; }).length + ' người' }); }
-      st++; dong.push({ r: r, stt: st });
+    var hTieu = 24 * MM, hDau = 11 * MM, hDong = 8.6 * MM, dong = [], st = 0;
+    // Dòng trống để viết tay thêm người: cả trang ít nhất DSL_IN_TOI_THIEU dòng, mỗi khối ít nhất DSL_IN_TRONG dòng trống (STT in sẵn)
+    var DSL_IN_TOI_THIEU = 10, DSL_IN_TRONG = 3, nhom = [];
+    if (o.lv && o.lv.length) {
+      o.ds.forEach(function (r) { if (!nhom.some(function (g) { return g.v === r.lv; })) nhom.push({ v: r.lv }); });
+      o.lv.forEach(function (v) { if (!nhom.some(function (g) { return g.v === v; })) nhom.push({ v: v }); });   // loại việc chưa có người vẫn in khối trống
+      nhom.forEach(function (g) { g.ds = o.ds.filter(function (y) { return y.lv === g.v; }); });
+    } else nhom.push({ v: null, ds: o.ds });
+    nhom.forEach(function (g) { g.trong = DSL_IN_TRONG; });
+    var dem = function () { return nhom.reduce(function (s, g) { return s + g.ds.length + g.trong; }, 0); };
+    while (dem() < DSL_IN_TOI_THIEU) nhom.reduce(function (a, g) { return g.ds.length + g.trong < a.ds.length + a.trong ? g : a; }).trong++;
+    nhom.forEach(function (g) {
+      if (g.v != null) dong.push({ khoi: String(g.v || '').toUpperCase() + ' · ' + g.ds.length + ' người' });
+      g.ds.forEach(function (r) { st++; dong.push({ r: r, stt: st }); });
+      for (var t = 0; t < g.trong; t++) { st++; dong.push({ r: {}, stt: st }); }
     });
     var moi = Math.max(1, Math.floor((H - 2 * le - hTieu - hDau) / hDong)), trang = [];
     for (var i = 0; i < Math.max(dong.length, 1); i += moi) trang.push(dong.slice(i, i + moi));
@@ -5476,6 +5487,7 @@ textarea.inp{font-family:inherit}
     }, function (er) { ccTd(''); toastLoi(er.message); });
   }
   var BAN_MOI = [
+    { so: 177, ds: [{ i: '🖨️', t: 'Danh sách in có sẵn dòng trống', m: 'Trang in danh sách đi làm luôn có ít nhất 10 dòng, mỗi khối có thêm 3 dòng trống đánh sẵn số thứ tự để viết tay thêm người. MINGJIE in đủ 2 khối Lắp ráp và Ngồi máy, kể cả khối chưa có người. File Google Sheet gửi công ty giữ nguyên.' }] },
     { so: 176, ds: [{ i: '📋', t: 'Lập danh sách đi làm trước mỗi ca', m: 'Chọn người trong kho CCCD hoặc chọn ảnh CCCD mới, app tạo danh sách đi làm của ca đó trên Google Sheet của công ty (mỗi tháng 1 file, mỗi ca 1 trang), tự điền ngày sinh, giới tính, số CCCD, địa chỉ. Người mới chưa có trong kho được lưu vào kho luôn. Làm được cho HOJEONG và MINGJIE.',
       c: [['Lập danh sách', 'Tab CCCD → [[Danh sách]] → chọn công ty, ngày, ca → [[Thêm người]] → tích người → [[Xuất danh sách]]'],
         ['HOJEONG theo thẻ đã in', 'Mục [[Thẻ HOJEONG]] → tích người, gõ mã thẻ → [[Lập danh sách đi làm]] → chọn ca → [[Xuất danh sách]]. Mã nhân viên lấy theo mã thẻ.'],
