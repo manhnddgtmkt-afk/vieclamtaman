@@ -13,7 +13,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
 <script src="config.js"></script>
-<script>window.PB = { so: 179, luc: "18/11 11:47" };</script>
+<script>window.PB = { so: 180, luc: "18/11 12:35" };</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap">
 <style>
@@ -985,6 +985,9 @@ textarea.inp{font-family:inherit}
 .bca-day .btn[disabled]{opacity:.55}
 .note.bca-ok{background:var(--good-bg);color:var(--good);font-weight:600}
 .pill.bca-p0{background:var(--soft);color:var(--muted)}
+.bca-ng{display:flex;align-items:center;gap:6px;flex-wrap:wrap}.bca-ng .meta{font-size:12.5px;margin-right:2px}
+.bca-ng button{flex:none;border:1px solid var(--line);background:var(--soft);color:var(--muted);border-radius:9px;padding:5px 12px;font-size:13.5px;font-weight:600;white-space:nowrap;min-height:34px}
+.bca-ng button.on{background:var(--tint);border-color:var(--blue);color:var(--blue)}
 /* b173 (16/11): bảng lương công nhân theo công ty (hộp mở từ tab Lao động) */
 .bl-hd{display:flex;align-items:baseline;justify-content:space-between;gap:10px}
 .bl-hd b{font-size:20px;font-weight:700;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -5636,7 +5639,9 @@ textarea.inp{font-family:inherit}
     }, function (er) { ccTd(''); toastLoi(er.message); });
   }
   var BAN_MOI = [
-    { so: 179, ds: [{ i: '📸', t: 'Nhập giờ MINGJIE từ ảnh bảng công', m: 'Chọn ảnh bảng công MINGJIE gửi, máy đọc tên, số giờ và vị trí (ngồi máy, lắp ráp) từng ngày, đối chiếu với bảng công rồi ghi một lần. Tên đọc sai thì chọn lại đúng người. Không có ảnh vẫn chọn được vị trí theo ngày.',
+    { so: 180, ds: [{ i: '➕', t: 'Người mới trong ảnh bảng công tự vào bảng công', m: 'Ảnh bảng công có người chưa có trên bảng công thì máy tự thêm khi bấm Ghi: lấy số CCCD, ngày sinh từ danh sách đi làm hoặc danh sách lao động; ngày vào là ngày đầu tiên có giờ. Chỉ cần chọn nguồn tuyển nếu máy chưa biết.',
+      c: [['Thêm người mới', 'Tab Lao động → MINGJIE → [[Nhập giờ từ ảnh bảng công]] → chọn ảnh → người có nhãn Người mới: kiểm nguồn tuyển → [[Ghi vào bảng công]]']] }] },
+    { so: 179, ds: [{ i: '📸', t: 'Nhập giờ MINGJIE từ ảnh bảng công', m: 'Chọn ảnh bảng công MINGJIE gửi, máy đọc tên, số giờ và vị trí (ngồi máy, lắp ráp) từng ngày, đối chiếu với bảng công rồi ghi một lần. Người mới chưa có trên bảng công thì máy tự thêm (lấy CCCD từ danh sách đi làm nếu có). Tên đọc sai thì chọn lại đúng người. Không có ảnh vẫn chọn được vị trí theo ngày.',
       c: [['Nhập từ ảnh', 'Tab Lao động → MINGJIE → [[Nhập giờ từ ảnh bảng công]] → [[Chọn ảnh bảng công]] → kiểm từng người → [[Ghi vào bảng công]]']] }] },
     { so: 178, ds: [{ i: '✏️', t: 'Sửa danh sách đi làm đã xuất', m: 'Danh sách đi làm đã xuất giờ sửa được ngay trên điện thoại: bỏ người, thêm người, đổi loại việc, sửa họ tên, mã nhân viên, số điện thoại, ghi chú. Công ty, ngày và ca giữ nguyên. Lưu xong có Hoàn tác trong 10 giây.',
       c: [['Sửa danh sách', 'Tab CCCD → [[Danh sách]] → chạm danh sách đã xuất → [[Sửa danh sách]] → bỏ chọn, thêm người hoặc giữ ngón lên tên để sửa → [[Lưu danh sách]]']] }] },
@@ -7002,11 +7007,11 @@ textarea.inp{font-family:inherit}
   }
   function bcaTT(x) {   // tình trạng 1 dòng: gioDoi, vtDoi, doi
     var gd = bcaChuan(x.cu) !== bcaChuan(x.moi), vd = !!(BCA.d && BCA.d.vtCo && x.vt && x.vt !== x.vtCu);
-    return { gd: gd, vd: vd, doi: x.r > 0 && (gd || vd) };
+    return { gd: gd, vd: vd, doi: (x.r > 0 || !!x.them) && (gd || vd) };
   }
   function bcaNgayChu(n) { var d = new Date(Date.UTC(1899, 11, 30) + n.s * 864e5); return ddmm(d) + (n.cn ? ' · CN' : ''); }
   function bcaXoaGio(x) { return !bcaChuan(x.moi).replace(/\|/g, '') && !!bcaChuan(x.cu).replace(/\|/g, ''); }   // ảnh ghi nghỉ mà bảng công đang có giờ
-  function bcaChon(n) { var dem = 0; n.ds.forEach(function (x) { if (x.ghi === undefined) x.ghi = bcaTT(x).doi && !bcaXoaGio(x); if (x.ghi && bcaTT(x).doi) dem++; }); return dem; }
+  function bcaChon(n) { var dem = 0; n.ds.forEach(function (x) { if (x.ghi === undefined) x.ghi = bcaTT(x).doi && !bcaXoaGio(x) && (!x.them || !!x.them.nguon); if (x.ghi && bcaTT(x).doi) dem++; }); return dem; }
   function bcaVe() {
     var nd = document.getElementById('bcaNd'); if (!nd) return;
     var h = '<div class="bl-hd"><b>' + esc(BCA.cty) + '</b><span class="meta">Nhập giờ từ ảnh bảng công</span></div>';
@@ -7016,7 +7021,7 @@ textarea.inp{font-family:inherit}
     }
     if (BCA.kq) {   // đã ghi xong
       var k = BCA.kq, t = [];
-      if (k.gio) t.push(k.gio + ' ngày công'); if (k.vt) t.push(k.vt + ' vị trí');
+      if (k.them) t.push(k.them + ' người mới'); if (k.gio) t.push(k.gio + ' ngày công'); if (k.vt) t.push(k.vt + ' vị trí');
       nd.innerHTML = h + (t.length ? '<div class="note bca-ok cau">✓ Đã ghi vào bảng công: ' + esc(t.join(', ')) + '.</div>' : '<div class="note cau">Không có ô nào phải ghi.</div>') +
         ((k.loi || []).length ? '<div class="note bad cau">Chưa ghi được ' + k.loi.length + ' dòng:<br>' + k.loi.map(esc).join('<br>') + '</div>' : '') +
         '<button class="btn" id="bcaXong">Xong</button>';
@@ -7055,7 +7060,7 @@ textarea.inp{font-family:inherit}
     else h += '<div class="bca-sec">Ngày ' + esc(bcaNgayChu(n)) + '</div>';
     if ((d.canh || []).length) h += '<div class="note warn cau">' + d.canh.map(esc).join('<br>') + '</div>';
     if (n.thieu && n.thieu.length) h += '<div class="note warn cau">Có giờ trên bảng công nhưng không có trong ảnh: ' + n.thieu.map(function (t) { return esc(hoaDau(t)); }).join(', ') + '. Kiểm lại xem ảnh đã chụp đủ người chưa.</div>';
-    var ds = n.ds.slice().sort(function (a, b) { var p = function (x) { return !x.r ? 0 : bcaTT(x).doi ? 1 : 2; }; return p(a) - p(b); });
+    var ds = n.ds.slice().sort(function (a, b) { var p = function (x) { return !x.r && !x.them ? 0 : x.them ? 1 : bcaTT(x).doi ? 2 : 3; }; return p(a) - p(b); });
     h += '<div class="bca-ds">' + ds.map(function (x) { return bcaDong(x, n.ds.indexOf(x)); }).join('') + '</div>';
     h += '<div class="bca-day"><button class="btn" id="bcaGhi"' + (tong ? '' : ' disabled') + '>' + (tong ? 'Ghi ' + tong + ' thay đổi vào bảng công' : thieuVt ? 'Chọn vị trí rồi bấm Ghi' : 'Bảng công đã khớp, không cần ghi') + '</button>' +
       '<button class="btn ghost" id="bcaThoi">' + (tong ? 'Thôi' : 'Đóng') + '</button></div>';
@@ -7063,34 +7068,43 @@ textarea.inp{font-family:inherit}
     nd.querySelectorAll('.bca-ngs button').forEach(function (b) { b.onclick = function () { BCA.ngay = +b.getAttribute('data-i'); bcaVe(); }; });
     nd.querySelectorAll('.bca-r').forEach(function (el) {
       var x = n.ds[+el.getAttribute('data-i')];
+      el.querySelectorAll('.bca-ng button').forEach(function (b) { b.onclick = function () { x.them.nguon = b.getAttribute('data-n'); x.ghi = bcaTT(x).doi; bcaVe(); }; });
       var cb = el.querySelector('.bca-tick'); if (cb) cb.onclick = function () { x.ghi = !x.ghi; bcaVe(); };
       el.querySelectorAll('.bca-vt button').forEach(function (b) { b.onclick = function () { x.vt = b.getAttribute('data-v'); x.ghi = bcaTT(x).doi && !bcaXoaGio(x); bcaVe(); }; });
       var sg = el.querySelector('.bca-sua'); if (sg) sg.onclick = function () { BCA.mo[x.k || x.r] = !BCA.mo[x.k || x.r]; bcaVe(); };
       el.querySelectorAll('.bca-o input').forEach(function (ip) { ip.onchange = function () { var v = String(ip.value).trim().replace(',', '.'); x.moi[+ip.getAttribute('data-k')] = v === '' || !Number(v) ? '' : Number(v); x.ghi = bcaTT(x).doi; bcaVe(); }; });
       var sl = el.querySelector('.bca-pick'); if (sl) sl.onchange = function () {
         var r = +sl.value, p = (x.chon || []).concat(n.khac || []).filter(function (q) { return q.r === r; })[0]; if (!p) return;
-        x.r = p.r; x.ten = p.ten; x.cu = p.cu; x.vtCu = p.vtCu; x.ng = p.ng; x.ghi = bcaTT(x).doi && !bcaXoaGio(x); bcaVe();
+        x.r = p.r; x.ten = p.ten; x.cu = p.cu; x.vtCu = p.vtCu; x.ng = p.ng; x.them = null; x.ghi = bcaTT(x).doi && !bcaXoaGio(x); bcaVe();
       };
     });
     document.getElementById('bcaThoi').onclick = function () { BCA.sh.remove(); };
     document.getElementById('bcaGhi').onclick = bcaGhi;
   }
   function bcaDong(x, i) {
-    var t = bcaTT(x), h = '<div class="bca-r' + (x.r ? '' : ' chua') + '" data-i="' + i + '">';
-    var nhan = !x.r ? '<span class="pill bad">Chưa khớp</span>' : !t.doi ? (BCA.d.vtCo && !x.vt ? '<span class="pill warn">Thiếu vị trí</span>' : '<span class="pill bca-p0">Khớp</span>') :
+    var t = bcaTT(x), h = '<div class="bca-r' + (x.r || x.them ? '' : ' chua') + '" data-i="' + i + '">';
+    var nhan = !x.r && x.them ? '<span class="pill good">Người mới</span>' : !x.r ? '<span class="pill bad">Chưa khớp</span>' : !t.doi ? (BCA.d.vtCo && !x.vt ? '<span class="pill warn">Thiếu vị trí</span>' : '<span class="pill bca-p0">Khớp</span>') :
       t.gd ? (!bcaChuan(x.cu).replace(/\|/g, '') ? '<span class="pill good">Mới</span>' : !bcaChuan(x.moi).replace(/\|/g, '') ? '<span class="pill bad">Ảnh ghi nghỉ</span>' : '<span class="pill warn">Khác giờ</span>') : '<span class="pill good">Vị trí</span>';
-    h += '<div class="bca-l1">' + (x.r && t.doi ? '<button class="bca-tick' + (x.ghi ? ' on' : '') + '" aria-label="Chọn ghi"></button>' : '<span class="bca-tick an"></span>') +
-      '<span class="ten">' + esc(hoaDau(x.ten || x.tenAnh)) + '</span>' + nhan + '</div>';
+    h += '<div class="bca-l1">' + ((x.r || x.them) && t.doi ? '<button class="bca-tick' + (x.ghi ? ' on' : '') + '" aria-label="Chọn ghi"></button>' : '<span class="bca-tick an"></span>') +
+      '<span class="ten">' + esc(hoaDau(x.ten || (x.them && x.them.ten) || x.tenAnh)) + '</span>' + nhan + '</div>';
     h += '<div class="bca-l2"><span class="ten">' + esc(bcaGioChu(x.moi)) + '</span>' +
       (x.tay ? '' : '<button class="link bca-sua">' + (BCA.mo[x.k || x.r] ? 'Xong' : 'Sửa giờ') + '</button>') + '</div>';
     if (!x.tay && t.gd && x.r && bcaChuan(x.cu).replace(/\|/g, '')) h += '<div class="bca-l3 ten">Bảng công đang ghi: ' + esc(bcaGioChu(x.cu)) + '</div>';
-    if (!x.r) {
+    if (!x.r && x.them) {   // người mới: thêm vào bảng công khi ghi
+      var th = x.them, tt = [];
+      if (th.so) tt.push('CCCD ' + th.so); if (th.ns) tt.push('sinh ' + th.ns);
+      h += '<div class="meta cau">Chưa có trên bảng công. Khi ghi, máy thêm người này vào bảng công' + (tt.length ? ' (' + esc(tt.join(', ')) + (th.tu ? ', lấy từ ' + esc(th.tu) : '') + ')' : '') + '.' + (th.so ? '' : ' Chưa có số CCCD, bổ sung sau trong danh sách lao động.') + '</div>';
+      if ((BCA.d.nguon || []).length) h += '<div class="bca-ng"><span class="meta">Nguồn tuyển</span>' + BCA.d.nguon.map(function (n) { return '<button data-n="' + esc(n) + '"' + (th.nguon === n ? ' class="on"' : '') + '>' + esc(n) + '</button>'; }).join('') + '</div>';
+      if (!th.nguon) h += '<div class="note warn cau">Chọn nguồn tuyển để thêm người này.</div>';
+      var ck = BCA.d.ngay[BCA.ngay].khac || [];
+      if (ck.length) h += '<select class="inp bca-pick"><option value="">Hoặc chọn người đã có trên bảng công…</option>' + ck.map(function (q) { return '<option value="' + q.r + '">' + esc(hoaDau(q.ten)) + '</option>'; }).join('') + '</select>';
+    } else if (!x.r) {
       var cs = (x.chon && x.chon.length ? x.chon : (BCA.d.ngay[BCA.ngay].khac || []));
       h += '<div class="meta cau">Ảnh ghi "' + esc(x.tenAnh) + '"' + (x.chon && x.chon.length ? ' – bảng công có ' + x.chon.length + ' người trùng tên, chọn đúng người.' : ' – không thấy tên này trên bảng công. Chọn đúng người, hoặc thêm người này vào bảng công rồi đọc lại ảnh.') + '</div>' +
         '<select class="inp bca-pick"><option value="">Chọn người trên bảng công…</option>' + cs.map(function (q) { return '<option value="' + q.r + '">' + esc(hoaDau(q.ten)) + (q.nvao ? ' · vào ' + esc(q.nvao) : '') + '</option>'; }).join('') + '</select>';
     }
     if (BCA.mo[x.k || x.r]) h += '<div class="bca-o">' + ['Ngày', 'TC ngày', 'Đêm', 'TC đêm'].map(function (l, k) { return '<label><span>' + l + '</span><input class="inp" inputmode="decimal" data-k="' + k + '" value="' + esc(String(x.moi[k] === '' ? '' : x.moi[k]).replace('.', ',')) + '"></label>'; }).join('') + '</div>';
-    if (BCA.d.vtCo && x.r) h += '<div class="bca-vt">' + ['Ngồi máy', BCA.d.lv2 || 'Lắp ráp'].map(function (v) { return '<button data-v="' + esc(v) + '"' + (x.vt === v ? ' class="on"' : '') + '>' + esc(v) + '</button>'; }).join('') +
+    if (BCA.d.vtCo && (x.r || x.them)) h += '<div class="bca-vt">' + ['Ngồi máy', BCA.d.lv2 || 'Lắp ráp'].map(function (v) { return '<button data-v="' + esc(v) + '"' + (x.vt === v ? ' class="on"' : '') + '>' + esc(v) + '</button>'; }).join('') +
       (x.vtAnh ? '<span class="meta ten">Ảnh ghi ' + esc(bcaHoa(x.vtAnh)) + '</span>' : '') + '</div>';
     if (x.r && t.gd && bcaXoaGio(x) && !x.ghi) h += '<div class="meta cau">Ảnh không có giờ ngày này. Chỉ đánh dấu để xoá giờ trên bảng công khi chắc chắn người này nghỉ.</div>';
     if (x.r && t.gd && x.ng === 0) h += '<div class="note warn cau">Người này chưa có nguồn tuyển nên chưa ghi được giờ. Chọn nguồn tuyển trong hồ sơ người này rồi ghi lại.</div>';
@@ -7132,7 +7146,7 @@ textarea.inp{font-family:inherit}
   }
   function bcaGhi() {
     var ds = [];
-    BCA.d.ngay.forEach(function (n) { n.ds.forEach(function (x) { if (x.ghi && bcaTT(x).doi) ds.push({ r: x.r, s: n.s, ten: x.ten, cu: x.cu, moi: x.moi, vtCu: x.vtCu, vt: BCA.d.vtCo ? x.vt : '' }); }); });
+    BCA.d.ngay.forEach(function (n) { n.ds.forEach(function (x) { if (x.ghi && bcaTT(x).doi) ds.push({ r: x.r || 0, s: n.s, ten: x.ten || '', them: x.r ? null : x.them, cu: x.cu, moi: x.moi, vtCu: x.vtCu, vt: BCA.d.vtCo ? x.vt : '' }); }); });
     if (!ds.length) return;
     BCA.dang = 'Đang ghi ' + ds.length + ' thay đổi vào bảng công…'; bcaVe();
     apiT({ v: 'bcaGhi', cty: BCA.cty, ds: ds, lang: 1 }).then(function (o) {
