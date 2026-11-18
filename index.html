@@ -13,7 +13,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
 <script src="config.js"></script>
-<script>window.PB = { so: 177, luc: "17/11 17:08" };</script>
+<script>window.PB = { so: 178, luc: "18/11 10:10" };</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap">
 <style>
@@ -753,7 +753,7 @@ textarea.inp{font-family:inherit}
 .tha{flex:none;width:40px;height:60px;border-radius:6px;object-fit:cover;background:var(--soft)}
 .thx{border:1px dashed var(--edge);font-size:11px;color:var(--muted);padding:0}
 .dsd1{display:flex;flex-direction:column;gap:10px}.dsdh{font-size:16px}.dsdn{gap:10px;align-items:center}.dsdn .meta{flex:none}.dsdn .inp{flex:1;margin:0;min-width:0}.dsd1 .seg button{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.dsdt{padding:0 4px;margin:4px 0 6px;gap:10px}.dsdt .meta{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}.dsdt .btn{flex:none;width:auto}.dsdg .dsdi{gap:10px;align-items:center}.dsdc{min-width:0;flex:1}.dsdw{color:var(--warn);margin-top:2px}
+.dsdt{padding:0 4px;margin:4px 0 6px;gap:10px}.dsdt .meta{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}.dsdt .btn{flex:none;width:auto}.dsdg .dsdi{gap:10px;align-items:center}.dsdg .dsdi.on .thc{background:var(--cta);border-color:var(--cta)}.dsdc{min-width:0;flex:1}.dsdw{color:var(--warn);margin-top:2px}
 .dsdlv{flex:none;border:1px solid #C9B8F0;background:#F1ECFD;color:#4C2E9E;border-radius:999px;padding:4px 10px;font-size:12.5px;font-weight:600;white-space:nowrap;min-height:30px}.dsdlv.b{border-color:#A7DCCB;background:#E6F6F0;color:#0B5E47}
 :root[data-theme="dark"] .dsdlv{background:#2B2342;color:#CFC2F5;border-color:#4B3E78}:root[data-theme="dark"] .dsdlv.b{background:#173A31;color:#A6E3CF;border-color:#2C6A58}
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .dsdlv{background:#2B2342;color:#CFC2F5;border-color:#4B3E78}:root:not([data-theme="light"]) .dsdlv.b{background:#173A31;color:#A6E3CF;border-color:#2C6A58}}
@@ -5244,9 +5244,10 @@ textarea.inp{font-family:inherit}
   function dslNgs(p) { return (p.t && p.t.ngs) || (p.s && p.s.ngs) || ''; }
   function dslDs() {   // người trong danh sách: người lấy từ kho / thẻ (khoá 's' + số) + người trong lượt ảnh (khoá 'p' + số hoặc cặp ảnh)
     var L = CCS.dsl, out = [], co = {};
-    Object.keys(L.ng).forEach(function (k) { var e = L.ng[k]; if (k[0] === 's') { out.push(e); if (e.so) co[e.so] = 1; } });
+    Object.keys(L.ng).forEach(function (k) { var e = L.ng[k]; if (k[0] === 's' || k[0] === 'r') { out.push(e); if (e.so) co[e.so] = 1; } });   // 'r': dòng không có CCCD của danh sách đang sửa
     ccCap().forEach(function (p) {
       if (p.so && co[p.so]) return;
+      if (L.sua && !((p.t && p.t.id > L.sua.tuId) || (p.s && p.s.id > L.sua.tuId))) return;   // đang sửa: chỉ hiện ảnh chọn thêm sau khi mở sửa
       var k = 'p' + (p.so || p.k), e = L.ng[k];
       if (!e) e = L.ng[k] = { k: k, chon: L.tuId != null && ((p.t && p.t.id > L.tuId) || (p.s && p.s.id > L.tuId)), lv: L.lv, nguon: 'luot' };   // ảnh chọn từ màn danh sách: tích sẵn
       e.p = p; e.so = p.so || ''; e.ten = p.ten || ''; e.ngs = dslNgs(p);
@@ -5266,9 +5267,14 @@ textarea.inp{font-family:inherit}
     var L = CCS.dsl, g = dslCfg(), h = ccChe(), ds = dslDs(), chon = ds.filter(function (e) { return e.chon; });
     if (!L.ngay) { var o0 = dslCa0(); L.ngay = o0.ngay; L.ca = o0.ca; }
     if (!L.ctys) dslCtyTai();
-    if (L.kq) h += dslKqHtml(L.kq);
-    h += '<div class="card dsd1"><b class="dsdh">Thông tin ca làm</b>';
-    if (!L.ctys) h += '<div class="meta">Đang tải danh sách công ty…</div>';
+    var SU = L.sua;
+    if (L.kq && !SU) h += dslKqHtml(L.kq);
+    if (SU) h += '<div class="card dsd1"><div class="row sp"><b class="dsdh" style="white-space:nowrap">Sửa danh sách</b><button class="link" id="dsThoi">Thôi sửa</button></div>' +
+      '<div class="meta cau">' + esc(SU.cty) + ' · Ngày ' + esc(SU.ngay) + ' · Ca ' + esc(String(SU.ca).toLowerCase()) + '. Công ty, ngày và ca giữ nguyên.</div>' +
+      '<div class="meta cau">Bỏ chọn người nào thì người đó ra khỏi danh sách khi lưu. Giữ ngón tay lên tên để sửa thông tin.</div>';
+    else h += '<div class="card dsd1"><b class="dsdh">Thông tin ca làm</b>';
+    if (SU) { }
+    else if (!L.ctys) h += '<div class="meta">Đang tải danh sách công ty…</div>';
     else if (!L.ctys.length) h += '<div class="meta">Chưa có công ty nào làm danh sách đi làm.</div>';
     else h += '<div class="seg" id="dlCty">' + L.ctys.map(function (c) { return '<button data-dc="' + esc(c.ma) + '"' + (c.ma === L.cty ? ' class="on"' : '') + '>' + esc(c.ma) + '</button>'; }).join('') + '</div>' +
       '<div class="row dsdn"><span class="meta">Ngày làm</span><input class="inp" type="date" id="dlNgay" value="' + esc(L.ngay) + '"></div><div class="seg" id="dlCa">' + ['Ngày', 'Đêm'].map(function (c) { return '<button data-ca="' + c + '"' + (L.ca === c ? ' class="on"' : '') + '>Ca ' + c.toLowerCase() + '</button>'; }).join('') + '</div>';
@@ -5277,7 +5283,7 @@ textarea.inp{font-family:inherit}
       h += '<div class="meta">Loại việc cho người chọn tiếp theo:</div><div class="seg" id="dlLv">' + g.lv.map(function (v) { return '<button data-lv="' + esc(v) + '"' + (L.lv === v ? ' class="on"' : '') + '>' + esc(v) + ' · ' + (dem[v] || 0) + '</button>'; }).join('') + '</div>' +
         '<div class="meta">Chạm nhãn loại việc ở từng người để đổi.</div>';
     }
-    if (g && g.coMa) h += '<div class="meta cau">Mã nhân viên lấy theo mã thẻ đã in. Làm thẻ ở mục Thẻ HOJEONG rồi bấm Lập danh sách để mang sẵn mã thẻ của lượt in.</div>';
+    if (g && g.coMa && !SU) h += '<div class="meta cau">Mã nhân viên lấy theo mã thẻ đã in. Làm thẻ ở mục Thẻ HOJEONG rồi bấm Lập danh sách để mang sẵn mã thẻ của lượt in.</div>';
     h += '</div>';
     if (!ds.length) h += '<div class="card cch">' + ICON.cc + '<b>Chưa có ai trong danh sách</b><div class="meta">Bấm Thêm người rồi tìm trong kho CCCD, hoặc chọn ảnh CCCD mới trong album. Người mới chưa có trong kho sẽ được lưu vào kho khi xuất danh sách.</div></div>';
     else {
@@ -5288,32 +5294,39 @@ textarea.inp{font-family:inherit}
         if (e.nguon === 'luot' && e.p) {
           if (e.p.doc) sub = 'Đang đọc số CCCD…';
           else { var lu = dslLuu(e.p); sub = lu === 'co' ? 'Đã có trong kho' : lu === 'luu' ? 'Ảnh mới · lưu vào kho khi xuất' : ''; if (lu !== 'co' && lu !== 'luu') canh = lu + ', chưa lưu kho (vẫn vào danh sách).'; }
-        } else sub = e.ma ? 'Mã thẻ ' + e.ma : '';
-        if (!e.so && !(e.p && e.p.doc)) canh = 'Chưa có số CCCD. Gõ số ở mục In CCCD hoặc bỏ chọn người này.';
+        } else if (e.nguon === 'ds') sub = [e.so ? '' : 'Chưa có số CCCD', e.ma ? 'Mã ' + e.ma : ''].filter(Boolean).join(' · ');
+        else sub = e.ma ? 'Mã thẻ ' + e.ma : '';
+        if (!e.so && !(e.p && e.p.doc) && e.nguon !== 'ds') canh = 'Chưa có số CCCD. Gõ số ở mục In CCCD hoặc bỏ chọn người này.';
         return '<div class="it dsdi' + (e.chon ? ' on' : '') + '"><button class="thc" data-dk="' + esc(e.k) + '" aria-label="Chọn">' + (e.chon ? '✓' : '') + '</button>' +
-          '<div class="dsdc" data-dk2="' + esc(e.k) + '"><div class="nm ell">' + esc(e.ten ? hoaDau(e.ten) : 'Chưa đọc được tên') + '</div><div class="sub ell num">' + esc([e.so, sub].filter(Boolean).join(' · ')) + '</div>' +
+          '<div class="dsdc" ' + (e.nguon === 'ds' ? 'data-dsr' : 'data-dk2') + '="' + esc(e.k) + '"><div class="nm ell">' + esc(e.ten ? hoaDau(e.ten) : 'Chưa đọc được tên') + '</div><div class="sub ell num">' + esc([e.so, sub].filter(Boolean).join(' · ')) + '</div>' +
           (canh ? '<div class="sub dsdw cau">' + esc(canh) + '</div>' : '') + '</div>' +
           (g && g.lv && e.chon ? '<button class="dsdlv' + (g.lv.indexOf(e.lv) === 1 ? ' b' : '') + '" data-dv="' + esc(e.k) + '">' + esc(g.lv.indexOf(e.lv) >= 0 ? e.lv : g.lv[0]) + '</button>' : '') +
-          (e.k[0] === 's' ? '<button class="ccx" data-dx="' + esc(e.k) + '" aria-label="Bỏ">×</button>' : '') + '</div>';
+          (e.k[0] === 's' && e.nguon !== 'ds' ? '<button class="ccx" data-dx="' + esc(e.k) + '" aria-label="Bỏ">×</button>' : '') + '</div>';
       }).join('') + '</div>';
     }
-    dslGanTai();
-    if (L.gan && L.gan.length) h += '<div class="grp"><div class="gh">Danh sách đã xuất gần đây · chạm để in hoặc gửi lại</div>' + L.gan.slice(0, 8).map(function (x, i) {
+    if (!SU) dslGanTai();
+    if (!SU && L.gan && L.gan.length) h += '<div class="grp"><div class="gh">Danh sách đã xuất gần đây · chạm để in hoặc gửi lại</div>' + L.gan.slice(0, 8).map(function (x, i) {
       return '<button class="it" data-dg="' + i + '"><div style="min-width:0;flex:1"><div class="nm ell">' + esc(x.cty) + ' · ' + esc(String(x.ngay).slice(0, 5)) + ' · Ca ' + esc(String(x.ca).toLowerCase()) + '</div><div class="sub ell">' + x.n + ' người · ' + esc(x.nguoi) + ' xuất lúc ' + esc(x.luc) + '</div></div><span class="ch">›</span></button>';
     }).join('') + '</div>';
     h += '<input type="file" id="dlFile" accept="image/*" multiple hidden>';
-    h += '<div class="ccday"><button class="btn ghost" id="dlThem">Thêm người</button><button class="btn" id="dlXuat"' + (chon.length && g ? '' : ' disabled') + '>' + (chon.length ? 'Xuất danh sách · ' + chon.length : 'Chưa chọn ai') + '</button></div><div class="ccdem"></div>';
+    h += '<div class="ccday"><button class="btn ghost" id="dlThem">Thêm người</button>' + (SU ? '<button class="btn" id="dlXuat"' + (g ? '' : ' disabled') + '>Lưu danh sách · ' + chon.length + '</button>' :
+      '<button class="btn" id="dlXuat"' + (chon.length && g ? '' : ' disabled') + '>' + (chon.length ? 'Xuất danh sách · ' + chon.length : 'Chưa chọn ai') + '</button>') + '</div><div class="ccdem"></div>';
     t.innerHTML = h; ccDayDat(t); ccCheNoi(t);
     function e_(k) { return L.ng[k]; }
     t.querySelectorAll('[data-dc]').forEach(function (b) { b.onclick = function () { L.cty = b.getAttribute('data-dc'); luu('vlta_dsl_cty', L.cty); dslLvMd(); ccVe(); }; });
     t.querySelectorAll('[data-ca]').forEach(function (b) { b.onclick = function () { L.ca = b.getAttribute('data-ca'); ccVe(); }; });
     t.querySelectorAll('[data-lv]').forEach(function (b) { b.onclick = function () { L.lv = b.getAttribute('data-lv'); ccVe(); }; });
     var nd = document.getElementById('dlNgay'); if (nd) nd.onchange = function () { if (nd.value) L.ngay = nd.value; };
-    t.querySelectorAll('[data-dk],[data-dk2]').forEach(function (b) { b.onclick = function () { var e = e_(b.getAttribute('data-dk') || b.getAttribute('data-dk2')); if (!e) return; e.chon = !e.chon; if (e.chon && g && g.lv) e.lv = L.lv; ccVe(); }; });
+    t.querySelectorAll('[data-dk],[data-dk2]').forEach(function (b) { b.onclick = function () { var e = e_(b.getAttribute('data-dk') || b.getAttribute('data-dk2')); if (!e) return; e.chon = !e.chon; if (e.chon && g && g.lv && e.nguon !== 'ds') e.lv = L.lv; ccVe(); }; });
+    t.querySelectorAll('[data-dsr]').forEach(function (b) {   // dòng có sẵn trong danh sách đang sửa: chạm = chọn / bỏ chọn, giữ ngón = Sửa / Xoá
+      var k = b.getAttribute('data-dsr');
+      giuNgon(b, function () { var e = e_(k); if (e) { e.chon = !e.chon; ccVe(); } }, function () { var e = e_(k); if (e) dslSuaNguoi(e); });
+    });
+    var bt = document.getElementById('dsThoi'); if (bt) bt.onclick = function () { dslSuaThoi(); };
     t.querySelectorAll('[data-dv]').forEach(function (b) { b.onclick = function () { var e = e_(b.getAttribute('data-dv')); if (!e || !g || !g.lv) return; var i = g.lv.indexOf(e.lv); e.lv = g.lv[(i + 1) % g.lv.length]; ccVe(); }; });
     t.querySelectorAll('[data-dx]').forEach(function (b) { b.onclick = function () { delete L.ng[b.getAttribute('data-dx')]; ccVe(); }; });
     t.querySelectorAll('[data-dg]').forEach(function (b) { b.onclick = function () { dslMoLai(L.gan[Number(b.getAttribute('data-dg'))]); }; });
-    var bh = document.getElementById('dlHet'); if (bh) bh.onclick = function () { var het = ds.every(function (e) { return e.chon; }); ds.forEach(function (e) { if (het) e.chon = false; else if (!e.chon) { e.chon = true; if (g && g.lv) e.lv = L.lv; } }); ccVe(); };
+    var bh = document.getElementById('dlHet'); if (bh) bh.onclick = function () { var het = ds.every(function (e) { return e.chon; }); ds.forEach(function (e) { if (het) e.chon = false; else if (!e.chon) { e.chon = true; if (g && g.lv && e.nguon !== 'ds') e.lv = L.lv; } }); ccVe(); };
     var fi = document.getElementById('dlFile'); fi.onchange = function () { var f = fi.files; L.tuId = ccId; ccNap(f); fi.value = ''; };
     document.getElementById('dlThem').onclick = function () {
       var sh = moSheet('<h3>Thêm người vào danh sách</h3><button class="btn" id="dtK">Tìm trong kho CCCD</button><button class="btn ghost" id="dtA">Chọn ảnh CCCD mới trong album</button><button class="btn lk" id="dtT">Thôi</button>');
@@ -5321,15 +5334,17 @@ textarea.inp{font-family:inherit}
       sh.querySelector('#dtA').onclick = function () { sh.remove(); fi.click(); };
       sh.querySelector('#dtT').onclick = function () { sh.remove(); };
     };
-    document.getElementById('dlXuat').onclick = function () { dslXuat(''); };
-    if (L.kq) dslKqNoi(t, L.kq);
+    document.getElementById('dlXuat').onclick = function () { if (L.sua) dslSuaLuu(); else dslXuat(''); };
+    if (L.kq && !SU) dslKqNoi(t, L.kq);
   }
   function dslKqHtml(o) {
     var dem = {}; if (o.lv) o.ds.forEach(function (r) { dem[r.lv] = (dem[r.lv] || 0) + 1; });
-    return '<div class="card dsdk"><div class="row sp"><b>✓ Đã tạo danh sách ' + esc(o.cty) + '</b><button class="link" id="dkDong">Đóng</button></div>' +
+    return '<div class="card dsdk"><div class="row sp"><b>✓ ' + (o.daSua ? 'Đã lưu danh sách ' : 'Đã tạo danh sách ') + esc(o.cty) + '</b><button class="link" id="dkDong">Đóng</button></div>' +
       '<div class="meta cau">Ngày ' + esc(o.ngay) + ' · Ca ' + esc(String(o.ca).toLowerCase()) + ' · ' + o.ds.length + ' người' + (o.lv ? ' (' + o.lv.map(function (v) { return v + ' ' + (dem[v] || 0); }).join(', ') + ')' : '') + '</div>' +
       '<div class="meta cau">File ' + esc(o.file) + ', trang ' + esc(o.sh) + '.</div>' + (o.luuKho ? '<div class="meta cau">' + esc(o.luuKho) + '</div>' : '') +
-      ccMay(0) + '<button class="btn" id="dkIn">In danh sách</button><div class="row" style="gap:8px"><button class="btn ghost" id="dkGui" style="flex:1">Gửi qua Zalo</button><button class="btn ghost" id="dkXem" style="flex:1">Xem file</button></div></div>';
+      (o.daSua ? '<div class="meta cau">Nếu đã gửi bản trước cho công ty, bấm Gửi qua Zalo để gửi lại bản mới.</div>' : '') +
+      ccMay(0) + '<button class="btn" id="dkIn">In danh sách</button><div class="row" style="gap:8px"><button class="btn ghost" id="dkGui" style="flex:1">Gửi qua Zalo</button><button class="btn ghost" id="dkXem" style="flex:1">Xem file</button></div>' +
+      '<button class="btn ghost" id="dkSua">Sửa danh sách</button></div>';
   }
   function dslKqNoi(t, o) {
     var b;
@@ -5337,6 +5352,100 @@ textarea.inp{font-family:inherit}
     if ((b = document.getElementById('dkIn'))) b.onclick = function () { dslIn(o); };
     if ((b = document.getElementById('dkGui'))) b.onclick = function () { dslGui(o); };
     if ((b = document.getElementById('dkXem'))) b.onclick = function () { window.open(o.url, '_blank'); };
+    if ((b = document.getElementById('dkSua'))) b.onclick = function () { dslSuaMo(o); };
+  }
+  // ---- 18/11 (bản 178): SỬA danh sách đã xuất. Mở lại đúng số đang có trên sheet (kể cả phần gõ tay trên Google Sheet), dùng lại màn chọn người:
+  //      bỏ chọn = bỏ khỏi danh sách, thêm người từ kho / ảnh, đổi loại việc; giữ ngón lên tên -> Sửa (tên, mã, SĐT, ghi chú) / Xoá.
+  //      Công ty, ngày, ca giữ nguyên. Máy chủ từ chối nếu sheet vừa bị sửa ở chỗ khác (ky). Lưu xong có Hoàn tác 10 giây.
+  function dslSuaMo(o) {
+    var L = CCS.dsl;
+    ccTd('Đang mở danh sách để sửa…');
+    apiT({ v: 'dslDoc', id: o.id, gid: o.gid }).then(function (m) {
+      ccTd(''); if (!m || m.loi) { toastLoi(m && m.loi ? m.loi : 'Không mở được danh sách.'); return; }
+      if (!L.sua) L.nhap = { ng: L.ng, cty: L.cty, lv: L.lv };   // cất phần đang chọn dở cho danh sách mới, thôi sửa thì trả lại
+      L.ng = {}; L.cty = m.cty; dslLvMd();
+      m.ds.forEach(function (r, i) {
+        var k = r.so && !L.ng['s' + r.so] ? 's' + r.so : 'r' + i;
+        L.ng[k] = { k: k, so: r.so || '', ten: r.ten || '', ma: r.ma || '', lv: r.lv || '', chon: true, nguon: 'ds', r: JSON.parse(JSON.stringify(r)) };
+      });
+      L.sua = { id: m.id, gid: m.gid, ky: m.ky, cty: m.cty, ngay: m.ngay, ca: m.ca, goc: m.ds, tuId: ccId };
+      L.kq = null; CCS.dslMo = true; CCS.theMo = false; ccVe(); window.scrollTo(0, 0);
+    }, function (er) { ccTd(''); toastLoi(er.message); });
+  }
+  function dslSuaThoi(kq) {   // ra khỏi chế độ sửa: trả lại phần đang chọn dở, hiện kết quả (nếu có)
+    var L = CCS.dsl, nh = L.nhap || { ng: {}, cty: L.cty, lv: L.lv };
+    L.ng = nh.ng; L.cty = nh.cty || L.cty; L.lv = nh.lv || L.lv; L.nhap = null; L.sua = null; L.tuId = ccId;
+    if (kq) L.kq = kq;
+    dslLvMd(); ccVe(); window.scrollTo(0, 0);
+  }
+  function dslSuaNguoi(e) {   // giữ ngón lên 1 người có sẵn trong danh sách đang sửa
+    var g = dslCfg() || {}, r = e.r || {};
+    menuGiu(function () {
+      var o_ = function (nhan, id, v, kieu) { return '<label class="lb">' + nhan + '</label><input class="inp" id="' + id + '"' + (kieu ? ' inputmode="' + kieu + '"' : '') + ' value="' + esc(v || '') + '">'; };
+      var sh = moSheet('<h3>Sửa thông tin</h3>' + o_('Họ và tên', 'dsTen', e.ten) + (g.coMa ? o_('Mã nhân viên', 'dsMa', e.ma, 'numeric') : '') +
+        (!e.so ? o_('Số CCCD (12 chữ số)', 'dsSo', '', 'numeric') : '') + o_('Số điện thoại', 'dsSdt', r.sdt, 'tel') + o_('Ghi chú', 'dsGhi', r.ghi) +
+        '<button class="btn" id="dsOk">Xong</button><button class="btn lk" id="dsK">Thôi</button>');
+      sh.querySelector('#dsK').onclick = function () { sh.remove(); };
+      sh.querySelector('#dsOk').onclick = function () {
+        var v = function (id) { var x = sh.querySelector('#' + id); return x ? x.value.replace(/\s+/g, ' ').trim() : null; };
+        var ten = v('dsTen'), so = v('dsSo');
+        if (!ten) { toastLoi('Họ và tên không được để trống.'); return; }
+        if (so) { so = so.replace(/\D/g, ''); if (!/^\d{12}$/.test(so)) { toastLoi('Số CCCD phải đủ 12 chữ số.'); return; } if (CCS.dsl.ng['s' + so]) { toastLoi('Số CCCD này đã có trong danh sách.'); return; } e.so = r.so = so; }
+        e.ten = r.ten = ten.toUpperCase();
+        if (g.coMa) e.ma = r.ma = v('dsMa').replace(/\D/g, '');
+        r.sdt = v('dsSdt'); r.ghi = v('dsGhi');
+        sh.remove(); ccVe(); toast('Đã sửa, bấm Lưu danh sách để ghi.');
+      };
+    }, function () { e.chon = false; ccVe(); toast('Đã bỏ ' + (e.ten ? hoaDau(e.ten) : 'người này') + '. Bấm Lưu danh sách để ghi vào file.'); });
+  }
+  function dslSuaLuu() {
+    var L = CCS.dsl, S2 = L.sua, g = dslCfg(); if (!S2 || !g) return;
+    var ds = dslDs().filter(function (e) { return e.chon; });
+    if (ds.some(function (e) { return e.p && e.p.doc; })) { toast('Đang đọc số CCCD của ảnh mới, chờ chút.'); return; }
+    var thieu = ds.filter(function (e) { return e.nguon !== 'ds' && !/^\d{12}$/.test(String(e.so || '')); });
+    if (thieu.length) { toastLoi(thieu.length + ' người mới chưa có số CCCD: ' + thieu.slice(0, 3).map(function (e) { return e.ten ? hoaDau(e.ten) : 'chưa đọc được tên'; }).join(', ') + '. Gõ số ở mục In CCCD hoặc bỏ chọn.'); return; }
+    var bo = S2.goc.length - ds.filter(function (e) { return e.nguon === 'ds'; }).length;
+    var gui = function () {
+      var nut = document.getElementById('dlXuat'); if (nut) { nut.disabled = true; nut.textContent = 'Đang lưu…'; }
+      var nLuu = 0, chua = 0;
+      ds.forEach(function (e) {   // người mới trong lượt ảnh: lưu kho như khi xuất
+        var p = e.p; if (!p || e.nguon !== 'luot') return;
+        var lu = dslLuu(p), st = CCS.tt[p.k] || {};
+        if (lu === 'co') { if (p.co && !st.co && !st.ok) { CCS.tt[p.k] = { co: 1, so: p.so, ten: p.ten, duong: p.co }; ccGanThem({ so: p.so, ten: p.ten, duong: p.co, id: p.coId }, p); ccTamXong(p, p.so, true); } return; }
+        if (lu === 'luu') { if (!st.dang) { ccXep(p.k, p.so, 'đọc từ ảnh'); nLuu++; } return; }
+        chua++;
+      });
+      dslSuaGui(S2, ds.map(function (e) {
+        if (e.nguon === 'ds') { var r = e.r || {}; return { cu: 1, so: e.so || '', ten: e.ten || '', ma: e.ma || '', ns: r.ns || '', gt: r.gt || '', dc: r.dc || '', sdt: r.sdt || '', ghi: r.ghi || '', lv: g.lv ? e.lv : '' }; }
+        return { so: e.so, ten: e.ten || '', ngs: e.ngs || '', ma: e.ma || '', lv: g.lv ? e.lv : '' };
+      }), function (o) {
+        if (nLuu || chua) o.luuKho = (nLuu ? 'Đang lưu ' + nLuu + ' người mới vào kho CCCD.' : '') + (chua ? ' ' + chua + ' người ảnh chưa đạt chuẩn nên chưa lưu kho, xem lại ở mục In CCCD.' : '');
+        var goc = S2.goc;
+        dslSuaThoi(o); dslGanTai(1);
+        toastNut('Đã lưu danh sách ' + o.cty + ' · ' + o.ds.length + ' người', 'Hoàn tác', function () {
+          dslSuaGui({ id: o.id, gid: o.gid, ky: o.ky }, goc.map(function (r) { var x = JSON.parse(JSON.stringify(r)); x.cu = 1; return x; }), function (o2) {
+            CCS.dsl.kq = o2; dslGanTai(1); ccVe(); toast('Đã trả lại danh sách như trước khi sửa.');
+          });
+        }, 10000);
+      });
+    };
+    if (bo > 0 || !ds.length) {
+      var sh = moSheet('<h3>Lưu danh sách</h3><div class="meta cau">' + (ds.length ? 'Bỏ ' + bo + ' người khỏi danh sách ' + esc(S2.cty) + ' ngày ' + esc(S2.ngay.slice(0, 5)) + ' ca ' + esc(String(S2.ca).toLowerCase()) + '. Danh sách còn ' + ds.length + ' người.' :
+        'Danh sách ' + esc(S2.cty) + ' ngày ' + esc(S2.ngay.slice(0, 5)) + ' ca ' + esc(String(S2.ca).toLowerCase()) + ' sẽ không còn ai.') + '</div><button class="btn" id="dsLu">Lưu danh sách</button><button class="btn lk" id="dsTh">Thôi</button>');
+      sh.querySelector('#dsLu').onclick = function () { sh.remove(); gui(); };
+      sh.querySelector('#dsTh').onclick = function () { sh.remove(); };
+    } else gui();
+  }
+  function dslSuaGui(S2, ds, xong) {   // gọi máy chủ; sheet vừa bị sửa ở chỗ khác -> mở lại bản mới nhất
+    apiT({ v: 'dslSua', id: S2.id, gid: S2.gid, ky: S2.ky, ds: ds }).then(function (o) {
+      if (o && o.doi) {
+        toastLoi('Danh sách vừa được sửa ở chỗ khác (trên Google Sheet hoặc máy khác). App đã mở lại bản mới nhất, kiểm tra rồi sửa lại.');
+        if (CCS.dsl.sua) dslSuaMo(S2); else ccVe();
+        return;
+      }
+      if (!o || o.loi) { toastLoi(o && o.loi ? o.loi : 'Chưa lưu được danh sách.'); ccVe(); return; }
+      o.daSua = 1; xong(o);
+    }, function (er) { toastLoi('Chưa lưu được danh sách: ' + er.message); ccVe(); });
   }
   function dslGanTai(ep) {
     var L = CCS.dsl; if (L.ganDang || (L.gan && !ep)) return;
@@ -5359,6 +5468,7 @@ textarea.inp{font-family:inherit}
   }
   function dslTuThe(ds) {   // từ màn Thẻ HOJEONG: mang theo mã thẻ
     var L = CCS.dsl, thieu = 0, n = 0;
+    if (L.sua) { L.ng = (L.nhap && L.nhap.ng) || {}; L.cty = (L.nhap && L.nhap.cty) || L.cty; L.nhap = null; L.sua = null; }   // đang sửa danh sách cũ thì thôi sửa, lập danh sách mới
     Object.keys(L.ng).forEach(function (k) { if (k[0] === 's') delete L.ng[k]; else L.ng[k].chon = false; });   // danh sách mới cho lượt thẻ này
     ds.forEach(function (e) {
       var so = String(e.so || (e.p && e.p.so) || '').replace(/\D/g, '');
@@ -5487,6 +5597,8 @@ textarea.inp{font-family:inherit}
     }, function (er) { ccTd(''); toastLoi(er.message); });
   }
   var BAN_MOI = [
+    { so: 178, ds: [{ i: '✏️', t: 'Sửa danh sách đi làm đã xuất', m: 'Danh sách đi làm đã xuất giờ sửa được ngay trên điện thoại: bỏ người, thêm người, đổi loại việc, sửa họ tên, mã nhân viên, số điện thoại, ghi chú. Công ty, ngày và ca giữ nguyên. Lưu xong có Hoàn tác trong 10 giây.',
+      c: [['Sửa danh sách', 'Tab CCCD → [[Danh sách]] → chạm danh sách đã xuất → [[Sửa danh sách]] → bỏ chọn, thêm người hoặc giữ ngón lên tên để sửa → [[Lưu danh sách]]']] }] },
     { so: 177, ds: [{ i: '🖨️', t: 'Danh sách in có sẵn dòng trống', m: 'Trang in danh sách đi làm luôn có ít nhất 10 dòng, mỗi khối có thêm 3 dòng trống đánh sẵn số thứ tự để viết tay thêm người. MINGJIE in đủ 2 khối Lắp ráp và Ngồi máy, kể cả khối chưa có người. File Google Sheet gửi công ty giữ nguyên.' }] },
     { so: 176, ds: [{ i: '📋', t: 'Lập danh sách đi làm trước mỗi ca', m: 'Chọn người trong kho CCCD hoặc chọn ảnh CCCD mới, app tạo danh sách đi làm của ca đó trên Google Sheet của công ty (mỗi tháng 1 file, mỗi ca 1 trang), tự điền ngày sinh, giới tính, số CCCD, địa chỉ. Người mới chưa có trong kho được lưu vào kho luôn. Làm được cho HOJEONG và MINGJIE.',
       c: [['Lập danh sách', 'Tab CCCD → [[Danh sách]] → chọn công ty, ngày, ca → [[Thêm người]] → tích người → [[Xuất danh sách]]'],
