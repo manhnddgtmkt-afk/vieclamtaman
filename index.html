@@ -13,7 +13,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
 <script src="config.js"></script>
-<script>window.PB = { so: 181, luc: "20/11 15:32" };</script>
+<script>window.PB = { so: 182, luc: "20/11 18:03" };</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap">
 <style>
@@ -754,6 +754,10 @@ textarea.inp{font-family:inherit}
 .thx{border:1px dashed var(--edge);font-size:11px;color:var(--muted);padding:0}
 .dsd1{display:flex;flex-direction:column;gap:10px}.dsdh{font-size:16px}.dsdn{gap:10px;align-items:center}.dsdn .meta{flex:none}.dsdn .inp{flex:1;margin:0;min-width:0}.dsd1 .seg button{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .dsdt{padding:0 4px;margin:4px 0 6px;gap:10px}.dsdt .meta{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}.dsdt .btn{flex:none;width:auto}.dsdg .dsdi{gap:10px;align-items:center}.dsdg .dsdi.on .thc{background:var(--cta);border-color:var(--cta)}.dsdc{min-width:0;flex:1}.dsdw{color:var(--warn);margin-top:2px}
+.dscu .dsct{gap:10px;margin-top:2px}.dscu .dsct .meta{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0;font-weight:600}.dscu .dsct .btn{flex:none;width:auto}
+.dscl{display:flex;flex-direction:column}.dscui{display:flex;align-items:center;gap:10px;width:100%;background:none;border:0;border-top:1px solid var(--line);padding:10px 2px;text-align:left;color:inherit;font:inherit;cursor:pointer}.dscl .dscui:first-child{border-top:0}
+.dscui[hidden]{display:none}.dscp{flex:none;width:28px;height:28px;border-radius:50%;border:2px solid var(--cta);color:var(--cta);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:18px;line-height:1}.dscui.tat .dscp{border-color:var(--edge);color:var(--muted)}.dscui.tat .nm{color:var(--muted)}
+.dscu>.btn.lk{align-self:flex-start}
 .dsdlv{flex:none;border:1px solid #C9B8F0;background:#F1ECFD;color:#4C2E9E;border-radius:999px;padding:4px 10px;font-size:12.5px;font-weight:600;white-space:nowrap;min-height:30px}.dsdlv.b{border-color:#A7DCCB;background:#E6F6F0;color:#0B5E47}
 :root[data-theme="dark"] .dsdlv{background:#2B2342;color:#CFC2F5;border-color:#4B3E78}:root[data-theme="dark"] .dsdlv.b{background:#173A31;color:#A6E3CF;border-color:#2C6A58}
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .dsdlv{background:#2B2342;color:#CFC2F5;border-color:#4B3E78}:root:not([data-theme="light"]) .dsdlv.b{background:#173A31;color:#A6E3CF;border-color:#2C6A58}}
@@ -5313,6 +5317,104 @@ textarea.inp{font-family:inherit}
     if (p.kem) return 'Ảnh cắt chưa chuẩn';
     return 'luu';
   }
+  // ---- 20/11 (bản 182): NGƯỜI ĐÃ ĐI LÀM ở công ty – hiện sẵn dưới phần ngày/ca (máy chủ dslCu đọc bảng công kỳ này + kỳ trước, chỉ người có giờ);
+  //      chạm tên = thêm vào danh sách (rời khỏi mục gợi ý), "Thêm cả ca" = thêm hết người làm ca ngày / ca đêm gần nhất (theo ca đang lập)
+  var DSL_CU_GON = 5;   // mục "Các ngày trước" hiện 5 người, bấm Xem thêm để hiện hết
+  function dslCuCty() { var L = CCS.dsl; return L.sua ? L.sua.cty : L.cty; }
+  function dslCuTai(ep) {
+    var L = CCS.dsl, cty = dslCuCty(); if (!cty) return;
+    if (L.cu && L.cu.cty === cty && (L.cu.dang || ((L.cu.ds || L.cu.loi) && !ep))) return;
+    L.cu = { cty: cty, dang: 1, ds: L.cu && L.cu.cty === cty ? L.cu.ds : null, loi: '' };
+    function ve() { if (S.tab === 'cc' && CCS.dslMo && !CCS.kho && !document.querySelector('.sheet') && !/INPUT|TEXTAREA/.test((document.activeElement || {}).tagName || '')) ccVe(); }
+    apiT({ v: 'dslCu', cty: cty, moi: ep ? 1 : 0, im: 1 }).then(function (o) {
+      if (!L.cu || L.cu.cty !== cty) return;
+      L.cu.dang = 0;
+      if (!o || o.loi) L.cu.loi = (o && o.loi) || 'Chưa tải được người đã đi làm.'; else { L.cu.ds = o.ds || []; L.cu.loi = ''; }
+      ve();
+    }, function (er) { if (!L.cu || L.cu.cty !== cty) return; L.cu.dang = 0; L.cu.loi = 'Chưa tải được người đã đi làm: ' + er.message; ve(); });
+  }
+  function dslCuNhom(ds) {   // ds = người đang có trong danh sách -> { all, dau (ca gần nhất), caG, ngayG, khac, co }
+    var L = CCS.dsl, all = (L.cu && L.cu.ds) || [], ca = (L.sua ? L.sua.ca : L.ca) === 'Đêm' ? 'Đêm' : 'Ngày', da = {};
+    ds.forEach(function (e) { if (e.so) da[e.so] = 1; });
+    function mx(key) { var m = 0; all.forEach(function (x) { if (x[key] > m) m = x[key]; }); return m; }
+    var caG = ca, key = ca === 'Đêm' ? 'svD' : 'svN', m = mx(key);
+    if (!m) { caG = ca === 'Đêm' ? 'Ngày' : 'Đêm'; key = caG === 'Đêm' ? 'svD' : 'svN'; m = mx(key); }   // chưa ai làm ca này -> lấy ca kia gần nhất
+    var ngayG = '', dau = [], khac = [], co = 0;
+    all.forEach(function (x, i) {
+      x.i = i;
+      if (m && x[key] === m && !ngayG) ngayG = caG === 'Đêm' ? x.nD : x.nN;
+      if (x.so && da[x.so]) { co++; return; }
+      if (m && x[key] === m) dau.push(x); else khac.push(x);
+    });
+    return { all: all, dau: dau, caG: caG, ngayG: ngayG, khac: khac, co: co, nDau: all.filter(function (x) { return m && x[key] === m; }).length };
+  }
+  function dslCuDong(x) {
+    var nam = /(\d{4})$/.exec(String(x.ns || '')), sub = [nam ? 'Sinh ' + nam[1] : '', 'Làm ' + x.ngay + ' ca ' + String(x.ca).toLowerCase()].filter(Boolean).join(' · ');
+    return '<button class="dscui' + (x.so ? '' : ' tat') + '" data-cu="' + x.i + '" data-kd="' + esc(kd(x.ten)) + '"><span class="dscp" aria-hidden="true">+</span><div class="dsdc"><div class="nm ell">' + esc(hoaDau(x.ten)) + '</div><div class="sub ell num">' + esc(sub) + '</div>' +
+      (x.so ? '' : '<div class="sub dsdw cau">Chưa có số CCCD trong danh sách lao động. Thêm người này qua kho CCCD.</div>') + '</div></button>';
+  }
+  function dslCuHtml(ds) {   // -> { h, n (số người gợi ý còn lại), nh (nhóm) } | null
+    var L = CCS.dsl, cty = dslCuCty(); if (!cty) return null;
+    dslCuTai();
+    var h = '<div class="card dsd1 dscu"><b class="dsdh ell">Người đã đi làm ở ' + esc(cty) + '</b>';
+    if (!L.cu || (!L.cu.ds && L.cu.dang)) return { h: h + '<div class="meta">Đang tải người đã đi làm…</div></div>', n: 0 };
+    if (!L.cu.ds) return { h: h + '<div class="meta dsdw cau">' + esc(L.cu.loi || 'Chưa tải được người đã đi làm.') + '</div><button class="btn ghost" id="dcLai">Tải lại</button></div>', n: 0 };
+    var nh = dslCuNhom(ds), con = nh.dau.length + nh.khac.length;
+    if (!nh.all.length) return { h: h + '<div class="meta cau">Chưa có ai có giờ làm ở ' + esc(cty) + ' trong kỳ này và kỳ trước.</div></div>', n: 0 };
+    if (!con) return { h: h + '<div class="meta cau">Đã thêm hết ' + nh.all.length + ' người đã đi làm vào danh sách.</div></div>', n: 0 };
+    h += '<div class="meta cau">Lấy từ bảng công kỳ này và kỳ trước. Chạm tên để thêm vào danh sách.</div>';
+    if (con > 12) h += '<input class="inp" id="dcTim" type="search" placeholder="Tìm theo tên" autocomplete="off" value="' + esc(L.cuTim || '') + '">';
+    if (nh.dau.length) {
+      var them = nh.dau.filter(function (x) { return x.so; }).length;
+      h += '<div class="row sp dsct"><span class="meta ell">Ca ' + nh.caG.toLowerCase() + ' gần nhất · ' + esc(nh.ngayG) + ' · ' + nh.nDau + ' người</span>' +
+        (them ? '<button class="btn lk" id="dcCa">' + (them === nh.dau.length && nh.dau.length === nh.nDau ? 'Thêm cả ca' : 'Thêm ' + them + ' người còn lại') + '</button>' : '') + '</div>' +
+        '<div class="dscl">' + nh.dau.map(dslCuDong).join('') + '</div>';
+    } else if (nh.nDau) h += '<div class="meta cau">Ca ' + nh.caG.toLowerCase() + ' gần nhất (' + esc(nh.ngayG) + '): đã thêm đủ ' + nh.nDau + ' người vào danh sách.</div>';
+    if (nh.khac.length) {
+      var het = L.cuHet || !!L.cuTim, xem = het ? nh.khac : nh.khac.slice(0, DSL_CU_GON);
+      h += '<div class="row sp dsct"><span class="meta ell">' + (nh.nDau ? 'Những người khác' : 'Đã đi làm') + ' · ' + nh.khac.length + ' người</span></div>' +
+        '<div class="dscl" id="dcKhac">' + xem.map(dslCuDong).join('') + '</div>';
+      if (nh.khac.length > DSL_CU_GON && !L.cuTim) h += '<button class="btn lk" id="dcHet">' + (L.cuHet ? 'Thu gọn' : 'Xem thêm ' + (nh.khac.length - DSL_CU_GON) + ' người') + '</button>';
+    }
+    return { h: h + '</div>', n: con, nh: nh };
+  }
+  function dslCuThem(xs) {
+    var L = CCS.dsl, n = 0;
+    xs.forEach(function (x) {
+      if (!x.so) return;
+      var k = 's' + x.so, e = L.ng[k];
+      if (!e) e = L.ng[k] = { k: k, so: x.so, nguon: 'cu' };
+      e.ten = e.ten || x.ten; e.ngs = e.ngs || String(x.ns || '').replace(/\D/g, ''); e.cu = 'Ca ' + String(x.ca).toLowerCase() + ' ' + x.ngay;
+      e.chon = true; if (!e.lv) e.lv = L.lv; n++;
+    });
+    return n;
+  }
+  function dslCuNoi(t, CU) {
+    var L = CCS.dsl;
+    t.querySelectorAll('[data-cu]').forEach(function (b) {
+      b.onclick = function () {
+        var x = L.cu && L.cu.ds && L.cu.ds[Number(b.getAttribute('data-cu'))]; if (!x) return;
+        if (!x.so) { toast('Người này chưa có số CCCD trong danh sách lao động. Thêm qua kho CCCD.'); return; }
+        dslCuThem([x]); ccVe();
+      };
+    });
+    var bc = document.getElementById('dcCa'); if (bc && CU.nh) bc.onclick = function () { var n = dslCuThem(CU.nh.dau); ccVe(); toast('Đã thêm ' + n + ' người làm ca ' + CU.nh.caG.toLowerCase() + ' ' + CU.nh.ngayG + '.'); };
+    var bh = document.getElementById('dcHet'); if (bh) bh.onclick = function () { L.cuHet = !L.cuHet; ccVe(); };
+    var bl = document.getElementById('dcLai'); if (bl) bl.onclick = function () { dslCuTai(1); ccVe(); };
+    var ti = document.getElementById('dcTim');
+    if (ti) {
+      var loc = function () {
+        var q = kd(ti.value).trim(); L.cuTim = ti.value;
+        t.querySelectorAll('.dscu [data-kd]').forEach(function (b) { b.hidden = !!q && b.getAttribute('data-kd').indexOf(q) < 0; });
+      };
+      ti.oninput = function () {
+        var coHet = !!L.cuTim === !!ti.value;   // bật / tắt chế độ tìm thì vẽ lại để hiện đủ người các ngày trước
+        if (!coHet) { L.cuTim = ti.value; ccVe(); var t2 = document.getElementById('dcTim'); if (t2) { t2.focus(); try { t2.setSelectionRange(t2.value.length, t2.value.length); } catch (e) { } } return; }
+        loc();
+      };
+      if (L.cuTim) loc();
+    }
+  }
   function dslVe(t) {
     var L = CCS.dsl, g = dslCfg(), h = ccChe(), ds = dslDs(), chon = ds.filter(function (e) { return e.chon; });
     if (!L.ngay) { var o0 = dslCa0(); L.ngay = o0.ngay; L.ca = o0.ca; }
@@ -5335,7 +5437,9 @@ textarea.inp{font-family:inherit}
     }
     if (g && g.coMa && !SU) h += '<div class="meta cau">Mã nhân viên lấy theo mã thẻ đã in. Làm thẻ ở mục Thẻ HOJEONG rồi bấm Lập danh sách để mang sẵn mã thẻ của lượt in.</div>';
     h += '</div>';
-    if (!ds.length) h += '<div class="card cch">' + ICON.cc + '<b>Chưa có ai trong danh sách</b><div class="meta">Bấm Thêm người rồi tìm trong kho CCCD, hoặc chọn ảnh CCCD mới trong album. Người mới chưa có trong kho sẽ được lưu vào kho khi xuất danh sách.</div></div>';
+    var CU = (g || SU) ? dslCuHtml(ds) : null;   // 20/11: người đã đi làm ở công ty – gợi ý sẵn, chạm để thêm
+    if (CU) h += CU.h;
+    if (!ds.length) h += '<div class="card cch">' + ICON.cc + '<b>Chưa có ai trong danh sách</b><div class="meta">' + (CU && CU.n ? 'Chạm tên ở mục Người đã đi làm phía trên để thêm, hoặc bấm Thêm người để tìm trong kho CCCD, chọn ảnh CCCD mới.' : 'Bấm Thêm người rồi tìm trong kho CCCD, hoặc chọn ảnh CCCD mới trong album.') + ' Người mới chưa có trong kho sẽ được lưu vào kho khi xuất danh sách.</div></div>';
     else {
       var het = ds.every(function (e) { return e.chon; });
       h += '<div class="row sp dsdt"><span class="meta">' + ds.length + ' người · đã chọn ' + chon.length + '</span><button class="btn lk" id="dlHet">' + (het ? 'Bỏ chọn hết' : 'Chọn hết') + '</button></div>';
@@ -5345,6 +5449,7 @@ textarea.inp{font-family:inherit}
           if (e.p.doc) sub = 'Đang đọc số CCCD…';
           else { var lu = dslLuu(e.p); sub = lu === 'co' ? 'Đã có trong kho' : lu === 'luu' ? 'Ảnh mới · lưu vào kho khi xuất' : ''; if (lu !== 'co' && lu !== 'luu') canh = lu + ', chưa lưu kho (vẫn vào danh sách).'; }
         } else if (e.nguon === 'ds') sub = [e.so ? '' : 'Chưa có số CCCD', e.ma ? 'Mã ' + e.ma : ''].filter(Boolean).join(' · ');
+        else if (e.nguon === 'cu') sub = e.cu;
         else sub = e.ma ? 'Mã thẻ ' + e.ma : '';
         if (!e.so && !(e.p && e.p.doc) && e.nguon !== 'ds') canh = 'Chưa có số CCCD. Gõ số ở mục In CCCD hoặc bỏ chọn người này.';
         return '<div class="it dsdi' + (e.chon ? ' on' : '') + '"><button class="thc" data-dk="' + esc(e.k) + '" aria-label="Chọn">' + (e.chon ? '✓' : '') + '</button>' +
@@ -5367,6 +5472,7 @@ textarea.inp{font-family:inherit}
     t.querySelectorAll('[data-ca]').forEach(function (b) { b.onclick = function () { L.ca = b.getAttribute('data-ca'); ccVe(); }; });
     t.querySelectorAll('[data-lv]').forEach(function (b) { b.onclick = function () { L.lv = b.getAttribute('data-lv'); ccVe(); }; });
     var nd = document.getElementById('dlNgay'); if (nd) nd.onchange = function () { if (nd.value) L.ngay = nd.value; };
+    if (CU) dslCuNoi(t, CU);
     t.querySelectorAll('[data-dk],[data-dk2]').forEach(function (b) { b.onclick = function () { var e = e_(b.getAttribute('data-dk') || b.getAttribute('data-dk2')); if (!e) return; e.chon = !e.chon; if (e.chon && g && g.lv && e.nguon !== 'ds') e.lv = L.lv; ccVe(); }; });
     t.querySelectorAll('[data-dsr]').forEach(function (b) {   // dòng có sẵn trong danh sách đang sửa: chạm = chọn / bỏ chọn, giữ ngón = Sửa / Xoá
       var k = b.getAttribute('data-dsr');
@@ -5647,6 +5753,10 @@ textarea.inp{font-family:inherit}
     }, function (er) { ccTd(''); toastLoi(er.message); });
   }
   var BAN_MOI = [
+    { so: 182, ds: [{ i: '👥', t: 'Danh sách đi làm: gợi ý sẵn người đã đi làm', m: 'Mở mục Danh sách, chọn công ty là app hiện ngay những người đã đi làm ở công ty đó (lấy từ bảng công kỳ này và kỳ trước), người làm gần nhất đứng đầu. Chạm tên để thêm, không phải tìm trong kho CCCD.',
+      c: [['Thêm cả ca', 'Tab CCCD → [[Danh sách]] → chọn công ty, ngày, ca → mục Người đã đi làm → [[Thêm cả ca]] để thêm hết người làm ca ngày / ca đêm gần nhất'],
+        ['Thêm từng người', 'Chạm tên ở mục Người đã đi làm. Người đã thêm chuyển xuống danh sách bên dưới; bấm × để bỏ thì người đó trở lại mục gợi ý.']] },
+      { i: '📋', t: 'MINGJIE: danh sách đi làm không chia Ngồi máy / Lắp ráp', m: 'MINGJIE tự phân việc khi người lao động đến công ty, nên danh sách gửi MINGJIE là một bảng chung. Vị trí làm việc từng ngày vẫn lấy theo ảnh bảng công MINGJIE gửi.' }] },
     { so: 181, ds: [{ i: '🔒', t: 'Ảnh bảng công: người mới phải chọn nguồn tuyển', m: 'Khi nhập giờ từ ảnh bảng công, người mới chưa chọn nguồn tuyển thì nút Ghi bị khoá và app báo rõ tên người, ngày làm. Không còn trường hợp ghi xong mà người mới bị bỏ sót. Google đọc sai tên người mới thì sửa được tên ngay trên app.',
       c: [['Chọn nguồn tuyển', 'Tab Lao động → MINGJIE → [[Nhập giờ từ ảnh bảng công]] → người có viền đỏ → chọn nguồn tuyển → [[Ghi vào bảng công]]'],
         ['Sửa tên đọc sai', 'Người có nhãn Người mới → [[Sửa tên]] → gõ đúng họ tên → [[Lưu tên]]. Tên trùng người đã có trên bảng công thì app tự chuyển thành người đó.'],
