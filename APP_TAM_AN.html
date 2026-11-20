@@ -977,6 +977,14 @@ textarea.inp{font-family:inherit}
 .bca-ng{display:flex;align-items:center;gap:6px;flex-wrap:wrap}.bca-ng .meta{font-size:12.5px;margin-right:2px}
 .bca-ng button{flex:none;border:1px solid var(--line);background:var(--soft);color:var(--muted);border-radius:9px;padding:5px 12px;font-size:13.5px;font-weight:600;white-space:nowrap;min-height:34px}
 .bca-ng button.on{background:var(--tint);border-color:var(--blue);color:var(--blue)}
+.bca-ngs button.thieu{border-color:var(--bad)}.bca-ngs button.thieu i{background:var(--bad-bg);color:var(--bad)}.bca-ngs button.on.thieu{box-shadow:0 0 0 2px var(--bad-bg)}
+.bca-r.thieu{border-color:var(--bad);border-width:1.5px}
+.bca-r.nhay{animation:bcaNhay .5s ease-in-out 3}@keyframes bcaNhay{50%{box-shadow:0 0 0 4px var(--bad-bg)}}
+.bca-day .btn.khoa{opacity:.6}
+.bca-day .note{margin:0}
+.bca-ng .meta.bat{color:var(--bad);font-weight:600}
+.bca-l2 .link+.link{margin-left:10px}
+.bca-tsua{display:flex;gap:8px;align-items:stretch}.bca-tsua .inp{flex:1;min-width:0;font-size:16px;padding:9px 12px;text-transform:uppercase}.bca-tsua .btn{flex:none;width:auto;padding:0 16px}
 /* b173 (16/11): bảng lương công nhân theo công ty (hộp mở từ tab Lao động) */
 .bl-hd{display:flex;align-items:baseline;justify-content:space-between;gap:10px}
 .bl-hd b{font-size:20px;font-weight:700;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -5628,6 +5636,10 @@ textarea.inp{font-family:inherit}
     }, function (er) { ccTd(''); toastLoi(er.message); });
   }
   var BAN_MOI = [
+    { so: 181, ds: [{ i: '🔒', t: 'Ảnh bảng công: người mới phải chọn nguồn tuyển', m: 'Khi nhập giờ từ ảnh bảng công, người mới chưa chọn nguồn tuyển thì nút Ghi bị khoá và app báo rõ tên người, ngày làm. Không còn trường hợp ghi xong mà người mới bị bỏ sót. Google đọc sai tên người mới thì sửa được tên ngay trên app.',
+      c: [['Chọn nguồn tuyển', 'Tab Lao động → MINGJIE → [[Nhập giờ từ ảnh bảng công]] → người có viền đỏ → chọn nguồn tuyển → [[Ghi vào bảng công]]'],
+        ['Sửa tên đọc sai', 'Người có nhãn Người mới → [[Sửa tên]] → gõ đúng họ tên → [[Lưu tên]]. Tên trùng người đã có trên bảng công thì app tự chuyển thành người đó.'],
+        ['Dòng đọc nhầm', 'Dòng không phải người thật → [[Sửa giờ]] → xoá hết giờ → dòng chuyển sang Bỏ qua, không thêm vào bảng công.']] }] },
     { so: 180, ds: [{ i: '➕', t: 'Người mới trong ảnh bảng công tự vào bảng công', m: 'Ảnh bảng công có người chưa có trên bảng công thì máy tự thêm khi bấm Ghi: lấy số CCCD, ngày sinh từ danh sách đi làm hoặc danh sách lao động; ngày vào là ngày đầu tiên có giờ. Chỉ cần chọn nguồn tuyển nếu máy chưa biết.',
       c: [['Thêm người mới', 'Tab Lao động → MINGJIE → [[Nhập giờ từ ảnh bảng công]] → chọn ảnh → người có nhãn Người mới: kiểm nguồn tuyển → [[Ghi vào bảng công]]']] }] },
     { so: 179, ds: [{ i: '📸', t: 'Nhập giờ MINGJIE từ ảnh bảng công', m: 'Chọn ảnh bảng công MINGJIE gửi, máy đọc tên, số giờ và vị trí (ngồi máy, lắp ráp) từng ngày, đối chiếu với bảng công rồi ghi một lần. Người mới chưa có trên bảng công thì máy tự thêm (lấy CCCD từ danh sách đi làm nếu có). Tên đọc sai thì chọn lại đúng người. Không có ảnh vẫn chọn được vị trí theo ngày.',
@@ -6994,13 +7006,25 @@ textarea.inp{font-family:inherit}
     if (bcaSoN(a[2]) || bcaSoN(a[3])) o.push('Đêm ' + f(a[2]) + (bcaSoN(a[3]) ? ' + ' + f(a[3]) : ''));
     return o.length ? o.join(' · ') : 'Nghỉ';
   }
+  function bcaMoiNg(x) { return !x.r && !!x.them; }   // người mới: chưa có trên bảng công, máy thêm khi ghi
+  function bcaCoGio(a) { return (a || []).some(function (v) { return bcaSoN(v) > 0; }); }
   function bcaTT(x) {   // tình trạng 1 dòng: gioDoi, vtDoi, doi
     var gd = bcaChuan(x.cu) !== bcaChuan(x.moi), vd = !!(BCA.d && BCA.d.vtCo && x.vt && x.vt !== x.vtCu);
-    return { gd: gd, vd: vd, doi: (x.r > 0 || !!x.them) && (gd || vd) };
+    if (bcaMoiNg(x)) return { gd: gd, vd: vd, doi: bcaCoGio(x.moi) };   // b181: người mới chỉ ghi khi có giờ (sửa giờ về trống = bỏ dòng đọc sai)
+    return { gd: gd, vd: vd, doi: x.r > 0 && (gd || vd) };
   }
   function bcaNgayChu(n) { var d = new Date(Date.UTC(1899, 11, 30) + n.s * 864e5); return ddmm(d) + (n.cn ? ' · CN' : ''); }
   function bcaXoaGio(x) { return !bcaChuan(x.moi).replace(/\|/g, '') && !!bcaChuan(x.cu).replace(/\|/g, ''); }   // ảnh ghi nghỉ mà bảng công đang có giờ
-  function bcaChon(n) { var dem = 0; n.ds.forEach(function (x) { if (x.ghi === undefined) x.ghi = bcaTT(x).doi && !bcaXoaGio(x) && (!x.them || !!x.them.nguon); if (x.ghi && bcaTT(x).doi) dem++; }); return dem; }
+  // b181 (20/11): người mới BẮT BUỘC ghi (không bỏ dấu được) và BẮT BUỘC chọn nguồn tuyển – trước đây người mới chưa có nguồn bị bỏ qua im lặng khi bấm Ghi
+  function bcaChon(n) { var dem = 0; n.ds.forEach(function (x) { if (bcaMoiNg(x)) x.ghi = bcaTT(x).doi; else if (x.ghi === undefined) x.ghi = bcaTT(x).doi && !bcaXoaGio(x); if (x.ghi && bcaTT(x).doi) dem++; }); return dem; }
+  function bcaThieuNg(x) { return bcaMoiNg(x) && bcaTT(x).doi && !x.them.nguon; }
+  function bcaDsThieu() {   // người mới chưa chọn nguồn tuyển (mỗi người 1 lần, ngày đầu tiên)
+    var out = [], co = {};
+    BCA.d.ngay.forEach(function (n, i) { n.ds.forEach(function (x) { if (bcaThieuNg(x) && !co[x.them.k0]) { co[x.them.k0] = 1; out.push({ i: i, x: x, n: n }); } }); });
+    return out;
+  }
+  function bcaCung(x, f) { BCA.d.ngay.forEach(function (n) { n.ds.forEach(function (y) { if (bcaMoiNg(y) && y.them.k0 === x.them.k0) f(y, n); }); }); }   // cùng 1 người mới ở các ngày khác
+  function bcaHoTen(t) { return String(t || '').replace(/\s+/g, ' ').trim().toUpperCase(); }
   function bcaVe() {
     var nd = document.getElementById('bcaNd'); if (!nd) return;
     var h = '<div class="bl-hd"><b>' + esc(BCA.cty) + '</b><span class="meta">Nhập giờ từ ảnh bảng công</span></div>';
@@ -7045,20 +7069,25 @@ textarea.inp{font-family:inherit}
     if (!d.ngay[BCA.ngay]) BCA.ngay = d.ngay.length - 1;
     var n = d.ngay[BCA.ngay], tong = 0, thieuVt = d.vtCo && n.ds.some(function (x) { return x.r && !x.vt; });
     d.ngay.forEach(function (x) { tong += bcaChon(x); });
-    if (d.ngay.length > 1) h += '<div class="bca-ngs">' + d.ngay.map(function (x, i) { var c = bcaChon(x); return '<button data-i="' + i + '"' + (i === BCA.ngay ? ' class="on"' : '') + '>' + esc(bcaNgayChu(x)) + (c ? '<i>' + c + '</i>' : '') + '</button>'; }).join('') + '</div>';
+    var thieuNg = bcaDsThieu();
+    if (d.ngay.length > 1) h += '<div class="bca-ngs">' + d.ngay.map(function (x, i) { var c = bcaChon(x), th = x.ds.some(bcaThieuNg); return '<button data-i="' + i + '" class="' + (i === BCA.ngay ? 'on' : '') + (th ? ' thieu' : '') + '">' + esc(bcaNgayChu(x)) + (c ? '<i>' + c + '</i>' : '') + '</button>'; }).join('') + '</div>';
     else h += '<div class="bca-sec">Ngày ' + esc(bcaNgayChu(n)) + '</div>';
     if ((d.canh || []).length) h += '<div class="note warn cau">' + d.canh.map(esc).join('<br>') + '</div>';
     if (n.thieu && n.thieu.length) h += '<div class="note warn cau">Có giờ trên bảng công nhưng không có trong ảnh: ' + n.thieu.map(function (t) { return esc(hoaDau(t)); }).join(', ') + '. Kiểm lại xem ảnh đã chụp đủ người chưa.</div>';
     var ds = n.ds.slice().sort(function (a, b) { var p = function (x) { return !x.r && !x.them ? 0 : x.them ? 1 : bcaTT(x).doi ? 2 : 3; }; return p(a) - p(b); });
     h += '<div class="bca-ds">' + ds.map(function (x) { return bcaDong(x, n.ds.indexOf(x)); }).join('') + '</div>';
-    h += '<div class="bca-day"><button class="btn" id="bcaGhi"' + (tong ? '' : ' disabled') + '>' + (tong ? 'Ghi ' + tong + ' thay đổi vào bảng công' : thieuVt ? 'Chọn vị trí rồi bấm Ghi' : 'Bảng công đã khớp, không cần ghi') + '</button>' +
+    h += '<div class="bca-day">' +
+      (thieuNg.length ? '<div class="note bad cau">Chưa chọn nguồn tuyển: ' + thieuNg.map(function (q) { return esc(hoaDau(q.x.them.ten)) + ' (' + esc(bcaNgayChu(q.n)) + ')'; }).join(', ') + '.</div>' : '') +
+      '<button class="btn' + (thieuNg.length ? ' khoa' : '') + '" id="bcaGhi"' + (tong || thieuNg.length ? '' : ' disabled') + '>' + (thieuNg.length ? 'Chọn nguồn tuyển để ghi' : tong ? 'Ghi ' + tong + ' thay đổi vào bảng công' : thieuVt ? 'Chọn vị trí rồi bấm Ghi' : 'Bảng công đã khớp, không cần ghi') + '</button>' +
       '<button class="btn ghost" id="bcaThoi">' + (tong ? 'Thôi' : 'Đóng') + '</button></div>';
     nd.innerHTML = h;
     nd.querySelectorAll('.bca-ngs button').forEach(function (b) { b.onclick = function () { BCA.ngay = +b.getAttribute('data-i'); bcaVe(); }; });
     nd.querySelectorAll('.bca-r').forEach(function (el) {
       var x = n.ds[+el.getAttribute('data-i')];
-      el.querySelectorAll('.bca-ng button').forEach(function (b) { b.onclick = function () { x.them.nguon = b.getAttribute('data-n'); x.ghi = bcaTT(x).doi; bcaVe(); }; });
-      var cb = el.querySelector('.bca-tick'); if (cb) cb.onclick = function () { x.ghi = !x.ghi; bcaVe(); };
+      el.querySelectorAll('.bca-ng button').forEach(function (b) { b.onclick = function () { var v = b.getAttribute('data-n'); bcaCung(x, function (y) { y.them.nguon = v; }); bcaVe(); }; });
+      var cb = el.querySelector('button.bca-tick'); if (cb) cb.onclick = function () { x.ghi = !x.ghi; bcaVe(); };
+      var st = el.querySelector('.bca-st'); if (st) st.onclick = function () { BCA.st = BCA.st === x.k ? '' : x.k; bcaVe(); var ip = document.getElementById('bcaTen'); if (ip) ip.focus(); };
+      var stl = el.querySelector('#bcaTenLuu'); if (stl) stl.onclick = function () { bcaSuaTen(x, n, document.getElementById('bcaTen').value); };
       el.querySelectorAll('.bca-vt button').forEach(function (b) { b.onclick = function () { x.vt = b.getAttribute('data-v'); x.ghi = bcaTT(x).doi && !bcaXoaGio(x); bcaVe(); }; });
       var sg = el.querySelector('.bca-sua'); if (sg) sg.onclick = function () { BCA.mo[x.k || x.r] = !BCA.mo[x.k || x.r]; bcaVe(); };
       el.querySelectorAll('.bca-o input').forEach(function (ip) { ip.onchange = function () { var v = String(ip.value).trim().replace(',', '.'); x.moi[+ip.getAttribute('data-k')] = v === '' || !Number(v) ? '' : Number(v); x.ghi = bcaTT(x).doi; bcaVe(); }; });
@@ -7068,25 +7097,65 @@ textarea.inp{font-family:inherit}
       };
     });
     document.getElementById('bcaThoi').onclick = function () { BCA.sh.remove(); };
-    document.getElementById('bcaGhi').onclick = bcaGhi;
+    document.getElementById('bcaGhi').onclick = function () {
+      var th = bcaDsThieu();
+      if (th.length) { BCA.ngay = th[0].i; BCA.nhay = th[0].x.k; bcaVe(); return; }   // b181: chưa chọn nguồn -> đưa tới đúng người
+      bcaGhi();
+    };
+    if (BCA.nhay) {   // cuộn tới người cần xử lý, nháy viền
+      var dn = nd.querySelector('.bca-r[data-k="' + BCA.nhay + '"]'); BCA.nhay = '';
+      if (dn) { dn.scrollIntoView({ block: 'center', behavior: 'smooth' }); dn.classList.add('nhay'); setTimeout(function () { dn.classList.remove('nhay'); }, 1600); }
+    }
+  }
+  // b181 (20/11): sửa tên người mới khi Google đọc sai (sai dấu, thiếu chữ). Tên trùng người đã có trên bảng công -> chuyển thành người đó.
+  function bcaSuaTen(x, n, v) {
+    v = bcaHoTen(v);
+    if (!/^[A-ZÀ-ỸĐ]+( [A-ZÀ-ỸĐ]+)+$/.test(v)) { toast('Họ tên phải có ít nhất 2 chữ, không có số hay ký hiệu.'); return; }
+    var co = null;   // người đã có trên bảng công trùng tên (tìm trong các dòng ảnh + danh sách người không có trong ảnh)
+    BCA.d.ngay.forEach(function (m) { (m.ds || []).concat(m.khac || []).forEach(function (q) { if (q.r > 0 && bcaHoTen(q.ten) === v) co = co || q; }); });
+    if (co) {
+      var trung = [];
+      bcaCung(x, function (y, m) {
+        if ((m.ds || []).some(function (q) { return q !== y && q.r === co.r; })) { trung.push(bcaNgayChu(m)); return; }
+        var p = (m.khac || []).filter(function (q) { return q.r === co.r; })[0] || { cu: ['', '', '', ''], vtCu: '', ng: 1 };
+        y.r = co.r; y.ten = co.ten; y.cu = p.cu; y.vtCu = p.vtCu; y.ng = p.ng; y.them = null; y.ghi = bcaTT(y).doi && !bcaXoaGio(y);
+      });
+      BCA.st = '';
+      if (trung.length) toast(hoaDau(co.ten) + ' đã có dòng khác trong ảnh ngày ' + trung.join(', ') + '. Kiểm lại giờ ngày đó.');
+      else toast('Đã chuyển thành ' + hoaDau(co.ten) + ' (đã có trên bảng công).');
+      bcaVe(); return;
+    }
+    bcaCung(x, function (y) {
+      var t = y.them;
+      if (!t.goc) t.goc = { ten: t.ten, so: t.so, ns: t.ns, tu: t.tu };
+      t.ten = v; t.tenSua = v !== bcaHoTen(t.goc.ten) ? 1 : 0;
+      if (t.tenSua) { t.so = ''; t.ns = ''; t.tu = ''; }   // CCCD cũ lấy theo tên đọc sai -> máy tra lại theo tên mới khi ghi
+      else { t.ten = t.goc.ten; t.so = t.goc.so; t.ns = t.goc.ns; t.tu = t.goc.tu; }
+    });
+    BCA.st = ''; bcaVe();
   }
   function bcaDong(x, i) {
-    var t = bcaTT(x), h = '<div class="bca-r' + (x.r || x.them ? '' : ' chua') + '" data-i="' + i + '">';
-    var nhan = !x.r && x.them ? '<span class="pill good">Người mới</span>' : !x.r ? '<span class="pill bad">Chưa khớp</span>' : !t.doi ? (BCA.d.vtCo && !x.vt ? '<span class="pill warn">Thiếu vị trí</span>' : '<span class="pill bca-p0">Khớp</span>') :
+    var t = bcaTT(x), moiNg = bcaMoiNg(x), h = '<div class="bca-r' + (x.r || x.them ? '' : ' chua') + (bcaThieuNg(x) ? ' thieu' : '') + '" data-i="' + i + '" data-k="' + esc(x.k || '') + '">';
+    var nhan = moiNg ? (t.doi ? '<span class="pill good">Người mới</span>' : '<span class="pill bca-p0">Bỏ qua</span>') : !x.r ? '<span class="pill bad">Chưa khớp</span>' : !t.doi ? (BCA.d.vtCo && !x.vt ? '<span class="pill warn">Thiếu vị trí</span>' : '<span class="pill bca-p0">Khớp</span>') :
       t.gd ? (!bcaChuan(x.cu).replace(/\|/g, '') ? '<span class="pill good">Mới</span>' : !bcaChuan(x.moi).replace(/\|/g, '') ? '<span class="pill bad">Ảnh ghi nghỉ</span>' : '<span class="pill warn">Khác giờ</span>') : '<span class="pill good">Vị trí</span>';
-    h += '<div class="bca-l1">' + ((x.r || x.them) && t.doi ? '<button class="bca-tick' + (x.ghi ? ' on' : '') + '" aria-label="Chọn ghi"></button>' : '<span class="bca-tick an"></span>') +
+    // b181: người mới luôn được ghi (dấu chọn cố định, không bỏ được); muốn bỏ dòng đọc sai thì sửa giờ về trống
+    h += '<div class="bca-l1">' + (moiNg ? '<span class="bca-tick' + (t.doi ? ' on' : ' an') + '"></span>' : x.r && t.doi ? '<button class="bca-tick' + (x.ghi ? ' on' : '') + '" aria-label="Chọn ghi"></button>' : '<span class="bca-tick an"></span>') +
       '<span class="ten">' + esc(hoaDau(x.ten || (x.them && x.them.ten) || x.tenAnh)) + '</span>' + nhan + '</div>';
+    if (moiNg && BCA.st === x.k) h += '<div class="bca-tsua"><input class="inp" id="bcaTen" autocomplete="off" autocapitalize="characters" value="' + esc(hoaDau(x.them.ten)) + '"><button class="btn ghost" id="bcaTenLuu">Lưu tên</button></div>';
+    if (moiNg && x.them.tenSua) h += '<div class="meta cau">Đã sửa tên. Ảnh ghi "' + esc(hoaDau(x.them.goc.ten)) + '". Khi ghi, máy tra lại số CCCD và ngày sinh theo tên mới.</div>';
     h += '<div class="bca-l2"><span class="ten">' + esc(bcaGioChu(x.moi)) + '</span>' +
+      (moiNg && !x.tay ? '<button class="link bca-st">' + (BCA.st === x.k ? 'Huỷ sửa tên' : 'Sửa tên') + '</button>' : '') +
       (x.tay ? '' : '<button class="link bca-sua">' + (BCA.mo[x.k || x.r] ? 'Xong' : 'Sửa giờ') + '</button>') + '</div>';
     if (!x.tay && t.gd && x.r && bcaChuan(x.cu).replace(/\|/g, '')) h += '<div class="bca-l3 ten">Bảng công đang ghi: ' + esc(bcaGioChu(x.cu)) + '</div>';
-    if (!x.r && x.them) {   // người mới: thêm vào bảng công khi ghi
+    if (!x.r && x.them && !t.doi) {   // b181: người mới đã sửa giờ về trống -> không thêm
+      h += '<div class="meta cau">Không có giờ nên không thêm người này vào bảng công. Nếu đây là người thật, bấm Sửa giờ để nhập lại giờ.</div>';
+    } else if (!x.r && x.them) {   // người mới: thêm vào bảng công khi ghi
       var th = x.them, tt = [];
       if (th.so) tt.push('CCCD ' + th.so); if (th.ns) tt.push('sinh ' + th.ns);
-      h += '<div class="meta cau">Chưa có trên bảng công. Khi ghi, máy thêm người này vào bảng công' + (tt.length ? ' (' + esc(tt.join(', ')) + (th.tu ? ', lấy từ ' + esc(th.tu) : '') + ')' : '') + '.' + (th.so ? '' : ' Chưa có số CCCD, bổ sung sau trong danh sách lao động.') + '</div>';
-      if ((BCA.d.nguon || []).length) h += '<div class="bca-ng"><span class="meta">Nguồn tuyển</span>' + BCA.d.nguon.map(function (n) { return '<button data-n="' + esc(n) + '"' + (th.nguon === n ? ' class="on"' : '') + '>' + esc(n) + '</button>'; }).join('') + '</div>';
-      if (!th.nguon) h += '<div class="note warn cau">Chọn nguồn tuyển để thêm người này.</div>';
+      h += '<div class="meta cau">Chưa có trên bảng công. Khi ghi, máy thêm người này vào bảng công' + (tt.length ? ' (' + esc(tt.join(', ')) + (th.tu ? ', lấy từ ' + esc(th.tu) : '') + ')' : '') + '.' + (th.so || th.tenSua ? '' : ' Chưa có số CCCD, bổ sung sau trong danh sách lao động.') + '</div>';
+      if ((BCA.d.nguon || []).length) h += '<div class="bca-ng"><span class="meta' + (th.nguon ? '' : ' bat') + '">' + (th.nguon ? 'Nguồn tuyển' : 'Nguồn tuyển (bắt buộc)') + '</span>' + BCA.d.nguon.map(function (n) { return '<button data-n="' + esc(n) + '"' + (th.nguon === n ? ' class="on"' : '') + '>' + esc(n) + '</button>'; }).join('') + '</div>';
       var ck = BCA.d.ngay[BCA.ngay].khac || [];
-      if (ck.length) h += '<select class="inp bca-pick"><option value="">Hoặc chọn người đã có trên bảng công…</option>' + ck.map(function (q) { return '<option value="' + q.r + '">' + esc(hoaDau(q.ten)) + '</option>'; }).join('') + '</select>';
+      if (ck.length) h += '<select class="inp bca-pick"><option value="">Hoặc chọn người đã có…</option>' + ck.map(function (q) { return '<option value="' + q.r + '">' + esc(hoaDau(q.ten)) + '</option>'; }).join('') + '</select>';
     } else if (!x.r) {
       var cs = (x.chon && x.chon.length ? x.chon : (BCA.d.ngay[BCA.ngay].khac || []));
       h += '<div class="meta cau">Ảnh ghi "' + esc(x.tenAnh) + '"' + (x.chon && x.chon.length ? ' – bảng công có ' + x.chon.length + ' người trùng tên, chọn đúng người.' : ' – không thấy tên này trên bảng công. Chọn đúng người, hoặc thêm người này vào bảng công rồi đọc lại ảnh.') + '</div>' +
@@ -7105,8 +7174,8 @@ textarea.inp{font-family:inherit}
     apiT(q).then(function (o) {
       BCA.dang = '';
       if (!o || o.loi) { BCA.d = null; bcaVe(); toastLoi((o && o.loi) || 'Chưa đọc được.'); return; }
-      o.ngay.forEach(function (n) { n.ds.forEach(function (x, i) { x.k = n.s + '_' + i; }); });
-      BCA.d = o; BCA.ngay = o.ngay.length - 1; bcaVe();
+      o.ngay.forEach(function (n) { n.ds.forEach(function (x, i) { x.k = n.s + '_' + i; if (x.them) x.them.k0 = bcaHoTen(x.them.ten); }); });
+      BCA.d = o; BCA.ngay = o.ngay.length - 1; BCA.st = ''; BCA.nhay = ''; bcaVe();
     }, function (e) { BCA.dang = ''; BCA.d = null; bcaVe(); toastLoi(e.message); });
   }
   function bcaNen(f) {   // ảnh chụp màn hình -> JPEG rộng tối đa 1800 px (đủ nét để đọc số nhỏ)
