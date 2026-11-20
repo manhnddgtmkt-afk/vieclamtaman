@@ -13,7 +13,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
 <script src="config.js"></script>
-<script>window.PB = { so: 184, luc: "20/11 19:42" };</script>
+<script>window.PB = { so: 185, luc: "20/11 19:53" };</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap">
 <style>
@@ -1242,7 +1242,7 @@ textarea.inp{font-family:inherit}
   }
   function dangXuat(het) {
     if (!het && S.t) api({ v: 'ra', t: S.t }).catch(function () { });
-    S.t = null; S.toi = null; S.data = {}; luu('vlta_t', null); luu('vlta_ds', null); luu('vlta_toi', null); luuSo('vlta_tq', null); luuSo('vlta_tn', null); luuSo('vlta_quy', null); QUY = null; TQ = null; TN = null; PC = {};
+    S.t = null; S.toi = null; S.data = {}; luu('vlta_t', null); luu('vlta_bl', null); BL.d = {}; luu('vlta_ds', null); luu('vlta_toi', null); luuSo('vlta_tq', null); luuSo('vlta_tn', null); luuSo('vlta_quy', null); QUY = null; TQ = null; TN = null; PC = {};
     var wh = document.querySelector('.wpHop'); if (wh) wh.remove();
     veDangNhap(); if (het) setTimeout(function () { toast('Phiên đăng nhập đã hết, mời đăng nhập lại.'); }, 50);
   }
@@ -1766,6 +1766,7 @@ textarea.inp{font-family:inherit}
     document.getElementById('moUT').onclick = moUTTuDs;
     hd.insertAdjacentHTML('beforeend', '<button class="ckt nghi" id="moBL"><span class="ell" style="flex:1">Bảng lương công nhân</span><i>›</i></button>');   // b173
     document.getElementById('moBL').onclick = function () { blMo(S.cty); };
+    if (!BL.d[S.cty]) blTai(S.cty, 1).then(null, function () { });   // b185: máy chưa có bảng lương công ty này thì tải sẵn ngầm
     if (BCA_CTY.indexOf(S.cty) >= 0 && d.het) {   // b179: công ty gửi bảng công dạng ảnh
       hd.insertAdjacentHTML('beforeend', '<button class="ckt nghi" id="moBCA"><span class="ell" style="flex:1">Nhập giờ từ ảnh bảng công</span><i>›</i></button>');
       document.getElementById('moBCA').onclick = function () { bcaMo(S.cty); };
@@ -5787,6 +5788,7 @@ textarea.inp{font-family:inherit}
     }, function (er) { ccTd(''); toastLoi(er.message); });
   }
   var BAN_MOI = [
+    { so: 185, ds: [{ i: '⚡', t: 'Bảng lương công nhân mở ngay, không phải chờ', m: 'Bảng lương được lưu trên điện thoại sau lần xem đầu tiên, các lần sau bấm vào là hiện ngay. App vẫn tự kiểm tra với máy chủ phía sau: khi trang cơ chế lương có thay đổi, bảng tự cập nhật và báo Bảng lương vừa cập nhật.' }] },
     { so: 184, ds: [{ i: '💰', t: 'Bảng lương công nhân dễ xem hơn', m: 'Tiền công gom vào một bảng gọn, chọn Ngày thường hoặc Chủ nhật để xem từng bảng (MINGJIE chọn thêm Ngồi máy hoặc Lắp ráp). Mỗi mốc giờ ghi rõ bao nhiêu tiếng hành chính, bao nhiêu tiếng tăng ca. Giờ làm việc vẽ thành thanh thời gian, quy định có biểu tượng cộng tiền, trừ tiền.',
       c: [['Xem bảng lương', 'Tab Lao động → chọn công ty → [[Bảng lương công nhân]] → chọn [[Ngày thường]] hoặc [[Chủ nhật]]']] }] },
     { so: 183, ds: [{ i: '👥', t: 'Danh sách đi làm: gợi ý sẵn người đã đi làm', m: 'Mở mục Danh sách, chọn công ty là app hiện ngay những người đã đi làm ở công ty đó (lấy từ bảng công kỳ này và kỳ trước), người làm gần nhất đứng đầu. Chạm tên để thêm, không phải tìm trong kho CCCD.',
@@ -7079,7 +7081,21 @@ textarea.inp{font-family:inherit}
   var UTG = {};
   function moUT() { S.utMo = 1; S.utMoc = {}; window.scrollTo(0, 0); veUT(); taiUT(); }
   // ---------- b173 (16/11): BẢNG LƯƠNG CÔNG NHÂN – đọc trang cơ chế lương của file công ty (máy chủ APP_VIEC.bangLuong), mọi người xem được ----------
-  var BL = { d: {}, sh: null, cty: '', loai: '', ngay: 'th' };
+  var BL = { d: {}, sh: null, cty: '', loai: '', ngay: 'th', tai: {} };
+  // b185 (20/11): bảng lương lưu trên máy (vlta_bl) – bấm vào hiện ngay, máy chủ kiểm ngầm, có đổi mới vẽ lại
+  try { BL.d = JSON.parse(doc('vlta_bl') || '{}') || {}; } catch (e) { BL.d = {}; }
+  function blKy(o) { var x = {}; for (var k in o) if (k !== 'luc') x[k] = o[k]; return JSON.stringify(x); }
+  function blTai(cty, ngam) {   // hỏi máy chủ; trả Promise {doi: true khi nội dung khác bản đang giữ}
+    if (BL.tai[cty]) return BL.tai[cty];
+    var p = BL.tai[cty] = apiT({ v: 'bangLuong', cty: cty, im: (ngam || BL.d[cty]) ? 1 : 0 }).then(function (o) {
+      delete BL.tai[cty];
+      if (!o || o.loi) throw new Error((o && o.loi) || 'Máy chủ không trả bảng lương.');
+      var cu = BL.d[cty], doi = !cu || blKy(cu) !== blKy(o);
+      BL.d[cty] = o; luu('vlta_bl', JSON.stringify(BL.d));
+      return { doi: doi, coCu: !!cu };
+    }, function (e) { delete BL.tai[cty]; throw e; });
+    return p;
+  }
   function blGio(g) { return String(g).replace('.', ','); }
   function blHoa(t) { t = String(t || '').toLowerCase(); return t.charAt(0).toUpperCase() + t.slice(1); }
   function blNgay(s) { var m = /(\d{1,2})\/(\d{1,2})\/(\d{4})/.exec(s || ''); return m ? new Date(+m[3], m[2] - 1, +m[1]) : null; }
@@ -7090,9 +7106,10 @@ textarea.inp{font-family:inherit}
     if (BL.sh) BL.sh.remove();
     BL.sh = moSheet('<div id="blNd" class="bl-k"></div>');
     blVe();
-    apiT({ v: 'bangLuong', cty: cty, im: BL.d[cty] ? 1 : 0 }).then(function (o) {
-      if (o && o.loi) { if (!BL.d[cty]) blVe(o.loi); return; }
-      BL.d[cty] = o; if (BL.cty === cty) blVe();
+    var coSan = !!BL.d[cty];
+    blTai(cty).then(function (r) {
+      if (BL.cty !== cty || !document.getElementById('blNd')) return;
+      if (r.doi) { blVe(); if (coSan) toast('Bảng lương vừa cập nhật'); }
     }, function (e) { if (!BL.d[cty] && BL.cty === cty) blVe(e.message); });
   }
   // b184 (20/11): vẽ lại cho dễ xem – thanh chọn loại việc + Ngày thường/Chủ nhật, 1 bảng sọc (biểu tượng ca chỉ ở tiêu đề cột), giờ làm việc dạng thanh thời gian dưới bảng, quy định có biểu tượng
