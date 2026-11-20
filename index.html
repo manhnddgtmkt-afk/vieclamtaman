@@ -13,7 +13,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
 <script src="config.js"></script>
-<script>window.PB = { so: 185, luc: "20/11 19:53" };</script>
+<script>window.PB = { so: 186, luc: "20/11 20:02" };</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap">
 <style>
@@ -1306,7 +1306,7 @@ textarea.inp{font-family:inherit}
         '<button id="tdVi"><span>Khoá đọc ảnh CCCD<small id="tdViTt">Đang kiểm tra…</small></span><span class="ch" style="margin-left:auto">›</span></button>' +
         '<div id="eVi" class="hidden" style="padding:0 16px 12px"><div class="meta" style="margin-bottom:8px">Dán khoá Cloud Vision (bắt đầu bằng AIza…). Khoá chỉ lưu trên máy chủ, không gửi xuống điện thoại của nhân viên.</div><div class="row"><input class="inp" id="tVi" placeholder="AIza…" autocomplete="off" autocapitalize="off" spellcheck="false" style="font-size:16px;padding:11px 14px"><button class="btn sm" id="tViOk">Lưu</button></div><button class="btn lk" id="tViXoa" style="padding-left:0">Bỏ khoá, quay về đọc bằng Drive</button></div>' +
         '<button id="tdGh"><span>Khoá GitHub (xử lý CCCD trên máy chủ)<small id="tdGhTt">Đang kiểm tra…</small></span><span class="ch" style="margin-left:auto">›</span></button>' +
-        '<div id="eGh" class="hidden" style="padding:0 16px 12px"><div class="meta" style="margin-bottom:8px">Dán khoá GitHub (bắt đầu bằng github_pat_…), loại chỉ chọn kho taman-ma và quyền Actions: Read and write. Khoá chỉ lưu trên máy chủ, dùng cho nút Xử lý ngay trên máy chủ ở tab CCCD.</div><div class="row"><input class="inp" id="tGh" placeholder="github_pat_…" autocomplete="off" autocapitalize="off" spellcheck="false" style="font-size:16px;padding:11px 14px"><button class="btn sm" id="tGhOk">Lưu</button></div><button class="btn lk" id="tGhXoa" style="padding-left:0">Bỏ khoá</button></div>' +
+        '<div id="eGh" class="hidden" style="padding:0 16px 12px"><div class="meta" style="margin-bottom:8px">Dán khoá GitHub (bắt đầu bằng github_pat_…), loại chỉ chọn kho taman-ma và quyền Actions: Read and write. Khoá chỉ lưu trên máy chủ, dùng cho nút Xử lý ngay trên máy chủ ở tab Giấy tờ.</div><div class="row"><input class="inp" id="tGh" placeholder="github_pat_…" autocomplete="off" autocapitalize="off" spellcheck="false" style="font-size:16px;padding:11px 14px"><button class="btn sm" id="tGhOk">Lưu</button></div><button class="btn lk" id="tGhXoa" style="padding-left:0">Bỏ khoá</button></div>' +
         '<button id="tdMa"><span>Cập nhật ứng dụng<small id="tdMaTt">Lấy bản mới nhất</small></span><span class="v" style="color:var(--blue)">⟳</span></button></div>' : '') +
       '<div class="msg" id="tdm"></div><button class="dx" id="tdx">Đăng xuất</button>');
     function an(id, hien) { document.getElementById(id).classList.toggle('hidden', hien === undefined ? undefined : !hien); }
@@ -1477,9 +1477,9 @@ textarea.inp{font-family:inherit}
   // ---------- khung chính: thanh dưới theo vai trò ----------
   function cacTab() {
     var v = (S.toi || {}).vai;
-    if (v === 'chu') return [['ld', 'Lao động', 'ld'], ['cc', 'CCCD', 'cc'], ['vdo', 'Content', 'vdo'], ['quy', 'Thu chi', 'quy'], ['tq', 'Tổng quan', 'tq']];
-    if (v === 'ketoan') return [['ld', 'Lao động', 'ld'], ['cc', 'CCCD', 'cc'], ['vdo', 'Content', 'vdo'], ['quy', 'Thu chi', 'quy'], ['tn', 'Thu nhập', 'tn']];
-    return [['ld', 'Lao động', 'ld'], ['cc', 'CCCD', 'cc'], ['vdo', 'Content', 'vdo'], ['tn', 'Thu nhập', 'tn']];
+    if (v === 'chu') return [['ld', 'Lao động', 'ld'], ['cc', 'Giấy tờ', 'gt'], ['vdo', 'Content', 'vdo'], ['quy', 'Thu chi', 'quy'], ['tq', 'Tổng quan', 'tq']];
+    if (v === 'ketoan') return [['ld', 'Lao động', 'ld'], ['cc', 'Giấy tờ', 'gt'], ['vdo', 'Content', 'vdo'], ['quy', 'Thu chi', 'quy'], ['tn', 'Thu nhập', 'tn']];
+    return [['ld', 'Lao động', 'ld'], ['cc', 'Giấy tờ', 'gt'], ['vdo', 'Content', 'vdo'], ['tn', 'Thu nhập', 'tn']];
   }
   var SVG0 = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">';
   var ICON = {
@@ -1488,6 +1488,7 @@ textarea.inp{font-family:inherit}
     tq: SVG0 + '<path d="M5 20V11M12 20V5M19 20v-6"/></svg>',
     tn: SVG0 + '<path d="M12 3l2.6 5.4 5.9.8-4.3 4.1 1 5.8L12 16.4 6.8 19.1l1-5.8L3.5 9.2l5.9-.8z"/></svg>',
     vdo: SVG0 + '<rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="M10 9.2v5.6l4.8-2.8z"/></svg>',
+    gt: SVG0 + '<path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h6"/></svg>',   // b186: tab Giấy tờ
     cc: SVG0 + '<rect x="3" y="5" width="18" height="14" rx="2.5"/><circle cx="8.5" cy="11" r="2"/><path d="M5.5 16c.6-1.5 1.7-2.2 3-2.2s2.4.7 3 2.2M14 10h4M14 13.5h4"/></svg>',
     goi: SVG0 + '<path d="M5 4h3.5l1.8 4.5-2.3 1.4a11 11 0 0 0 6.1 6.1l1.4-2.3L20 15.5V19a1.5 1.5 0 0 1-1.6 1.5A16 16 0 0 1 3.5 5.6 1.5 1.5 0 0 1 5 4z"/></svg>',
     zalo: SVG0 + '<path d="M4 5h16v11H9l-5 4z"/></svg>',
@@ -3625,8 +3626,11 @@ textarea.inp{font-family:inherit}
   // mức chỉnh ảnh (sáng tối / tương phản / độ nét): mức chung nhớ trên máy; người nào chỉnh riêng thì lưu trên 2 mặt của người đó
   CCS.chinh = (function () { try { var o = JSON.parse(doc('vlta_cc_chinh2') || 'null'); if (o && o.tp >= 0) return o; } catch (e) { } return { sang: CC.CHINH_MD.sang, tp: CC.CHINH_MD.tp, net: CC.CHINH_MD.net }; })();
   function ccOpt(p) { return (p.t && p.t.chinh) || (p.s && p.s.chinh) || CCS.chinh; }
+  function ccPhu() {   // b186: dòng phụ dưới tiêu đề tab Giấy tờ theo mục đang mở
+    return CCS.kho ? 'Kho CCCD đã lưu trên Drive' : CCS.dslMo ? 'Lập danh sách đi làm theo ca' : CCS.theMo ? 'In thẻ ra vào HOJEONG' : 'In CCCD: ghép 2 mặt, in A4, lưu Drive';
+  }
   function veCCCD() {
-    khung('In CCCD', 'Ghép 2 mặt · in A4 · lưu Drive', '', '<div id="ccThan" class="ccw"></div>');
+    khung('Giấy tờ đi làm', ccPhu(), '', '<div id="ccThan" class="ccw"></div>');
     ccVe(); ccTamDem();
   }
   function ccCap() {   // 0) cặp anh ghép tay ; 1) mặt trước + mặt sau cùng số CCCD (máy chủ đọc) ; 2) ảnh chưa có số: ghép theo thứ tự chọn
@@ -3831,6 +3835,7 @@ textarea.inp{font-family:inherit}
   function ccVe() {
     if (THUC.on && !ccBan()) ccThuc(0);
     var t = document.getElementById('ccThan'); if (!t || S.tab !== 'cc') return;
+    var phu = document.querySelector('.top small'); if (phu) phu.textContent = ccPhu();   // b186
     if (CCS.kho) { ccVeKho(t); return; }
     if (CCS.duyet) { ccVeDuyet(t); return; }
     if (CCS.dslMo && !CCS.dang && !CCS.soat) { dslVe(t); return; }
@@ -5788,11 +5793,12 @@ textarea.inp{font-family:inherit}
     }, function (er) { ccTd(''); toastLoi(er.message); });
   }
   var BAN_MOI = [
+    { so: 186, ds: [{ i: '📄', t: 'Tab CCCD đổi tên thành Giấy tờ', m: 'Tab này có cả In CCCD, Thẻ HOJEONG và Danh sách đi làm nên đổi tên thành Giấy tờ cho đúng. Cách dùng bên trong giữ nguyên.' }] },
     { so: 185, ds: [{ i: '⚡', t: 'Bảng lương công nhân mở ngay, không phải chờ', m: 'Bảng lương được lưu trên điện thoại sau lần xem đầu tiên, các lần sau bấm vào là hiện ngay. App vẫn tự kiểm tra với máy chủ phía sau: khi trang cơ chế lương có thay đổi, bảng tự cập nhật và báo Bảng lương vừa cập nhật.' }] },
     { so: 184, ds: [{ i: '💰', t: 'Bảng lương công nhân dễ xem hơn', m: 'Tiền công gom vào một bảng gọn, chọn Ngày thường hoặc Chủ nhật để xem từng bảng (MINGJIE chọn thêm Ngồi máy hoặc Lắp ráp). Mỗi mốc giờ ghi rõ bao nhiêu tiếng hành chính, bao nhiêu tiếng tăng ca. Giờ làm việc vẽ thành thanh thời gian, quy định có biểu tượng cộng tiền, trừ tiền.',
       c: [['Xem bảng lương', 'Tab Lao động → chọn công ty → [[Bảng lương công nhân]] → chọn [[Ngày thường]] hoặc [[Chủ nhật]]']] }] },
     { so: 183, ds: [{ i: '👥', t: 'Danh sách đi làm: gợi ý sẵn người đã đi làm', m: 'Mở mục Danh sách, chọn công ty là app hiện ngay những người đã đi làm ở công ty đó (lấy từ bảng công kỳ này và kỳ trước), người làm gần nhất đứng đầu. Chạm tên để thêm, không phải tìm trong kho CCCD.',
-      c: [['Thêm cả ca', 'Tab CCCD → [[Danh sách]] → chọn công ty, ngày, ca → mục Người đã đi làm, dòng Ca ngày / Ca đêm gần nhất → [[Thêm cả … người]] để thêm hết người làm ca đó'],
+      c: [['Thêm cả ca', 'Tab Giấy tờ → [[Danh sách]] → chọn công ty, ngày, ca → mục Người đã đi làm, dòng Ca ngày / Ca đêm gần nhất → [[Thêm cả … người]] để thêm hết người làm ca đó'],
         ['Thêm từng người', 'Chạm tên ở mục Người đã đi làm. Người đã thêm chuyển xuống danh sách bên dưới; bấm × để bỏ thì người đó trở lại mục gợi ý.']] },
       { i: '📋', t: 'MINGJIE: danh sách đi làm không chia Ngồi máy / Lắp ráp', m: 'MINGJIE tự phân việc khi người lao động đến công ty, nên danh sách gửi MINGJIE là một bảng chung. Vị trí làm việc từng ngày vẫn lấy theo ảnh bảng công MINGJIE gửi.' }] },
     { so: 181, ds: [{ i: '🔒', t: 'Ảnh bảng công: người mới phải chọn nguồn tuyển', m: 'Khi nhập giờ từ ảnh bảng công, người mới chưa chọn nguồn tuyển thì nút Ghi bị khoá và app báo rõ tên người, ngày làm. Không còn trường hợp ghi xong mà người mới bị bỏ sót. Google đọc sai tên người mới thì sửa được tên ngay trên app.',
@@ -5804,10 +5810,10 @@ textarea.inp{font-family:inherit}
     { so: 179, ds: [{ i: '📸', t: 'Nhập giờ MINGJIE từ ảnh bảng công', m: 'Chọn ảnh bảng công MINGJIE gửi, máy đọc tên, số giờ và vị trí (ngồi máy, lắp ráp) từng ngày, đối chiếu với bảng công rồi ghi một lần. Người mới chưa có trên bảng công thì máy tự thêm (lấy CCCD từ danh sách đi làm nếu có). Tên đọc sai thì chọn lại đúng người. Không có ảnh vẫn chọn được vị trí theo ngày.',
       c: [['Nhập từ ảnh', 'Tab Lao động → MINGJIE → [[Nhập giờ từ ảnh bảng công]] → [[Chọn ảnh bảng công]] → kiểm từng người → [[Ghi vào bảng công]]']] }] },
     { so: 178, ds: [{ i: '✏️', t: 'Sửa danh sách đi làm đã xuất', m: 'Danh sách đi làm đã xuất giờ sửa được ngay trên điện thoại: bỏ người, thêm người, đổi loại việc, sửa họ tên, mã nhân viên, số điện thoại, ghi chú. Công ty, ngày và ca giữ nguyên. Lưu xong có Hoàn tác trong 10 giây.',
-      c: [['Sửa danh sách', 'Tab CCCD → [[Danh sách]] → chạm danh sách đã xuất → [[Sửa danh sách]] → bỏ chọn, thêm người hoặc giữ ngón lên tên để sửa → [[Lưu danh sách]]']] }] },
+      c: [['Sửa danh sách', 'Tab Giấy tờ → [[Danh sách]] → chạm danh sách đã xuất → [[Sửa danh sách]] → bỏ chọn, thêm người hoặc giữ ngón lên tên để sửa → [[Lưu danh sách]]']] }] },
     { so: 177, ds: [{ i: '🖨️', t: 'Danh sách in có sẵn dòng trống', m: 'Trang in danh sách đi làm luôn có ít nhất 10 dòng, mỗi khối có thêm 3 dòng trống đánh sẵn số thứ tự để viết tay thêm người. MINGJIE in đủ 2 khối Lắp ráp và Ngồi máy, kể cả khối chưa có người. File Google Sheet gửi công ty giữ nguyên.' }] },
     { so: 176, ds: [{ i: '📋', t: 'Lập danh sách đi làm trước mỗi ca', m: 'Chọn người trong kho CCCD hoặc chọn ảnh CCCD mới, app tạo danh sách đi làm của ca đó trên Google Sheet của công ty (mỗi tháng 1 file, mỗi ca 1 trang), tự điền ngày sinh, giới tính, số CCCD, địa chỉ. Người mới chưa có trong kho được lưu vào kho luôn. Làm được cho HOJEONG và MINGJIE.',
-      c: [['Lập danh sách', 'Tab CCCD → [[Danh sách]] → chọn công ty, ngày, ca → [[Thêm người]] → tích người → [[Xuất danh sách]]'],
+      c: [['Lập danh sách', 'Tab Giấy tờ → [[Danh sách]] → chọn công ty, ngày, ca → [[Thêm người]] → tích người → [[Xuất danh sách]]'],
         ['HOJEONG theo thẻ đã in', 'Mục [[Thẻ HOJEONG]] → tích người, gõ mã thẻ → [[Lập danh sách đi làm]] → chọn ca → [[Xuất danh sách]]. Mã nhân viên lấy theo mã thẻ.'],
         ['MINGJIE theo loại việc', 'Chọn [[Lắp ráp]] rồi tích người, chọn [[Ngồi máy]] rồi tích tiếp. Danh sách chia 2 khối, chạm nhãn loại việc ở từng người để đổi.'],
         ['In và gửi', 'Sau khi xuất: [[In danh sách]] in bằng máy đen trắng khổ A4, [[Gửi qua Zalo]] gửi file của ca đó. Danh sách cũ chạm ở mục Danh sách đã xuất gần đây để in lại.']] }] },
@@ -8496,7 +8502,7 @@ textarea.inp{font-family:inherit}
         var tr = mat.filter(function (r) { return (r.mat2 || r.mat) === 'truoc'; })[0], sa = mat.filter(function (r) { return (r.mat2 || r.mat) === 'sau'; })[0];
         x.anh = tr && sa && tr.ro && sa.ro && !(tr.kem && tr.kem.length) && !(sa.kem && sa.kem.length) && so ? { truoc: tr.the, sau: sa.the, so: so, ns: ns } : null;
         tt.innerHTML = (so || ten ? '✓ Đã đọc ' + [ten ? 'họ tên' : '', so ? 'số CCCD' : '', x.ns ? 'ngày sinh' : ''].filter(String).join(', ') + '. Kiểm tra lại trước khi lưu.' : '<span style="color:var(--warn)">Chưa đọc được chữ, gõ tay họ tên và số CCCD.</span>') +
-          (x.anh ? ' Ảnh 2 mặt sẽ được lưu vào kho CCCD.' : (mat.length ? ' Ảnh chưa đủ 2 mặt rõ nét nên không lưu kho (lưu ở tab CCCD nếu cần).' : ''));
+          (x.anh ? ' Ảnh 2 mặt sẽ được lưu vào kho CCCD.' : (mat.length ? ' Ảnh chưa đủ 2 mặt rõ nét nên không lưu kho (lưu ở tab Giấy tờ nếu cần).' : ''));
         if (sau) sau();
       };
       apiT({ v: 'cccdDocNhieu', ds: anh, lang: 1 }).then(function (o) {
