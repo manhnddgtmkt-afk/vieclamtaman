@@ -743,7 +743,7 @@ textarea.inp{font-family:inherit}
 .thx{border:1px dashed var(--edge);font-size:11px;color:var(--muted);padding:0}
 .dsd1{display:flex;flex-direction:column;gap:10px}.dsdh{font-size:16px}.dsdn{gap:10px;align-items:center}.dsdn .meta{flex:none}.dsdn .inp{flex:1;margin:0;min-width:0}.dsd1 .seg button{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .dsdt{padding:0 4px;margin:4px 0 6px;gap:10px}.dsdt .meta{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}.dsdt .btn{flex:none;width:auto}.dsdg .dsdi{gap:10px;align-items:center}.dsdg .dsdi.on .thc{background:var(--cta);border-color:var(--cta)}.dsdc{min-width:0;flex:1}.dsdw{color:var(--warn);margin-top:2px}
-.dscu .dsct{gap:10px;margin-top:2px}.dscu .dsct .meta{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0;font-weight:600}.dscu .dsct .btn{flex:none;width:auto}
+.dscu .dsct{gap:2px 10px;margin-top:2px;flex-wrap:wrap}.dscu .dsct .meta{white-space:nowrap;flex:none;font-weight:600}.dscu .dsct .btn{flex:none;width:auto}
 .dscl{display:flex;flex-direction:column}.dscui{display:flex;align-items:center;gap:10px;width:100%;background:none;border:0;border-top:1px solid var(--line);padding:10px 2px;text-align:left;color:inherit;font:inherit;cursor:pointer}.dscl .dscui:first-child{border-top:0}
 .dscui[hidden]{display:none}.dscp{flex:none;width:28px;height:28px;border-radius:50%;border:2px solid var(--cta);color:var(--cta);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:18px;line-height:1}.dscui.tat .dscp{border-color:var(--edge);color:var(--muted)}.dscui.tat .nm{color:var(--muted)}
 .dscu>.btn.lk{align-self:flex-start}
@@ -5355,8 +5355,8 @@ textarea.inp{font-family:inherit}
     if (con > 12) h += '<input class="inp" id="dcTim" type="search" placeholder="Tìm theo tên" autocomplete="off" value="' + esc(L.cuTim || '') + '">';
     if (nh.dau.length) {
       var them = nh.dau.filter(function (x) { return x.so; }).length;
-      h += '<div class="row sp dsct"><span class="meta ell">Ca ' + nh.caG.toLowerCase() + ' gần nhất · ' + esc(nh.ngayG) + ' · ' + nh.nDau + ' người</span>' +
-        (them ? '<button class="btn lk" id="dcCa">' + (them === nh.dau.length && nh.dau.length === nh.nDau ? 'Thêm cả ca' : 'Thêm ' + them + ' người còn lại') + '</button>' : '') + '</div>' +
+      h += '<div class="row sp dsct"><span class="meta ell">Ca ' + nh.caG.toLowerCase() + ' gần nhất: ' + esc(nh.ngayG) + '</span>' +
+        (them ? '<button class="btn lk" id="dcCa">' + (them === nh.dau.length && nh.dau.length === nh.nDau ? 'Thêm cả ' + them + ' người' : 'Thêm ' + them + ' người còn lại') + '</button>' : '') + '</div>' +
         '<div class="dscl">' + nh.dau.map(dslCuDong).join('') + '</div>';
     } else if (nh.nDau) h += '<div class="meta cau">Ca ' + nh.caG.toLowerCase() + ' gần nhất (' + esc(nh.ngayG) + '): đã thêm đủ ' + nh.nDau + ' người vào danh sách.</div>';
     if (nh.khac.length) {
@@ -5742,8 +5742,8 @@ textarea.inp{font-family:inherit}
     }, function (er) { ccTd(''); toastLoi(er.message); });
   }
   var BAN_MOI = [
-    { so: 182, ds: [{ i: '👥', t: 'Danh sách đi làm: gợi ý sẵn người đã đi làm', m: 'Mở mục Danh sách, chọn công ty là app hiện ngay những người đã đi làm ở công ty đó (lấy từ bảng công kỳ này và kỳ trước), người làm gần nhất đứng đầu. Chạm tên để thêm, không phải tìm trong kho CCCD.',
-      c: [['Thêm cả ca', 'Tab CCCD → [[Danh sách]] → chọn công ty, ngày, ca → mục Người đã đi làm → [[Thêm cả ca]] để thêm hết người làm ca ngày / ca đêm gần nhất'],
+    { so: 183, ds: [{ i: '👥', t: 'Danh sách đi làm: gợi ý sẵn người đã đi làm', m: 'Mở mục Danh sách, chọn công ty là app hiện ngay những người đã đi làm ở công ty đó (lấy từ bảng công kỳ này và kỳ trước), người làm gần nhất đứng đầu. Chạm tên để thêm, không phải tìm trong kho CCCD.',
+      c: [['Thêm cả ca', 'Tab CCCD → [[Danh sách]] → chọn công ty, ngày, ca → mục Người đã đi làm, dòng Ca ngày / Ca đêm gần nhất → [[Thêm cả … người]] để thêm hết người làm ca đó'],
         ['Thêm từng người', 'Chạm tên ở mục Người đã đi làm. Người đã thêm chuyển xuống danh sách bên dưới; bấm × để bỏ thì người đó trở lại mục gợi ý.']] },
       { i: '📋', t: 'MINGJIE: danh sách đi làm không chia Ngồi máy / Lắp ráp', m: 'MINGJIE tự phân việc khi người lao động đến công ty, nên danh sách gửi MINGJIE là một bảng chung. Vị trí làm việc từng ngày vẫn lấy theo ảnh bảng công MINGJIE gửi.' }] },
     { so: 181, ds: [{ i: '🔒', t: 'Ảnh bảng công: người mới phải chọn nguồn tuyển', m: 'Khi nhập giờ từ ảnh bảng công, người mới chưa chọn nguồn tuyển thì nút Ghi bị khoá và app báo rõ tên người, ngày làm. Không còn trường hợp ghi xong mà người mới bị bỏ sót. Google đọc sai tên người mới thì sửa được tên ngay trên app.',
