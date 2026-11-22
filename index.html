@@ -13,7 +13,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
 <script src="config.js"></script>
-<script>window.PB = { so: 187, luc: "21/11 14:44" };</script>
+<script>window.PB = { so: 188, luc: "22/11 19:18" };</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap">
 <style>
@@ -906,6 +906,7 @@ textarea.inp{font-family:inherit}
 .kbvGhim{font-size:14.5px;line-height:1.45;padding:8px 10px;border-radius:10px;background:var(--soft);white-space:normal;overflow-wrap:anywhere}
 .kbvXn1{font-size:13px;color:var(--warn);font-weight:600;white-space:normal}
 .kbvG{margin-top:14px}.kbvG>summary{list-style:none;display:flex;align-items:center;justify-content:space-between;gap:10px;min-height:48px;padding:10px 14px;background:var(--card);border:1px solid var(--line);border-radius:14px;font-weight:600;cursor:pointer}.kbvG>summary::-webkit-details-marker{display:none}.kbvG>summary::after{content:'\203A';flex:none;font-size:20px;line-height:1;color:var(--muted);transform:rotate(90deg);transition:transform .15s}.kbvG[open]>summary::after{transform:rotate(-90deg)}.kbvG>summary>.ell{flex:1}.kbvG[open]>summary{margin-bottom:8px}.kbvSum{display:flex;align-items:center;gap:8px;flex:none}.kbvSum .meta{font-weight:500}
+.vlsTd{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin:22px 2px 8px;padding-top:14px;border-top:1px solid var(--line)}.vlsTd b{font-size:16px}.vlsTd .meta{flex:none}.vlsTrong{margin:0 2px}.vlsNh{font-size:13.5px;font-weight:700;color:var(--bad);margin:0 2px 8px}.vlsNh.ok{color:var(--good);font-weight:600}.vlsC{padding:8px 10px}.vlsA{flex:0 0 auto;width:52px;height:80px;border-radius:10px;overflow:hidden;background:#1B2333}.vlsA img{width:100%;height:100%;object-fit:cover;display:block}.vlsC.het .vlsA{background:var(--line)}.vlsC.het .vdoN{color:var(--muted)}.vdoS.vlsChua{color:var(--bad)}.vlsC .vdoN{font-size:15px}
 .kbvSh h3{font-size:18px}.kbvTt{align-items:flex-start}.kbvTt .btn.lk{padding:4px 0 4px 8px;flex:none}
 .kbvBox{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 14px;display:flex;flex-direction:column;gap:6px;min-width:0}.kbvBox.ghim{background:var(--soft)}.kbvBox.xn{background:var(--warn-bg);border-color:transparent}.kbvBox.xn .kbvL{color:var(--warn)}
 .kbvL{font-size:12.5px;font-weight:700;color:var(--muted);white-space:normal}.kbvLr{display:flex;align-items:center;justify-content:space-between;gap:10px}.kbvLr .btn.lk{padding:2px 0;flex:none}
@@ -5898,6 +5899,7 @@ textarea.inp{font-family:inherit}
     }, function (er) { ccTd(''); toastLoi(er.message); });
   }
   var BAN_MOI = [
+    { so: 188, ds: [{ i: '🎬', v: 'chu', t: 'Xem lại video đã duyệt và ai đã tải', m: 'Trong tab Content, phần Video đã dựng, mỗi tab sale có thêm mục Đã duyệt trong 7 ngày gần nhất. Video chưa tải hiện sẵn ở trên. Video đã tải ghi rõ ai tải, lúc mấy giờ. Mỗi video ghi ngày tự xoá, kể cả video đã vào Thùng rác.' }] },
     { so: 187, ds: [{ i: '📝', t: 'CHUNQIU: danh sách nhận việc và tờ thông tin', m: 'Giấy tờ › Danh sách › chọn CHUNQIU. Chọn ngày nhận việc (không chia ca) và người đi phỏng vấn. Máy tự đọc quê quán, thường trú trên ảnh CCCD. Chỗ chữ đỏ là còn thiếu, bấm Sửa để điền theo VNeID. Xuất xong bấm Gửi qua Zalo cho nhân sự CHUNQIU trước 08:00 sáng, và In tờ thông tin ứng tuyển để phát cho người lao động điền trước.' }] },
     { so: 186, ds: [{ i: '📄', t: 'Tab CCCD đổi tên thành Giấy tờ', m: 'Tab này có cả In CCCD, Thẻ HOJEONG và Danh sách đi làm nên đổi tên thành Giấy tờ cho đúng. Cách dùng bên trong giữ nguyên.' }] },
     { so: 185, ds: [{ i: '⚡', t: 'Bảng lương công nhân mở ngay, không phải chờ', m: 'Bảng lương được lưu trên điện thoại sau lần xem đầu tiên, các lần sau bấm vào là hiện ngay. App vẫn tự kiểm tra với máy chủ phía sau: khi trang cơ chế lương có thay đổi, bảng tự cập nhật và báo Bảng lương vừa cập nhật.' }] },
@@ -6169,7 +6171,7 @@ textarea.inp{font-family:inherit}
   setInterval(kiemBanMoi, 600000); setTimeout(kiemBanMoi, 1500);   // mở lại app: số phút + phiếu quá 2 tiếng mới nhất
   // ---------- 06/11: tab Video – video dựng xong (Drive EDIT VIDEO/KET QUA): xem trước, tải về điện thoại ----------
   var VDO = { ds: null, khoa: '', thang: 0, giu: [3, 7], luc: 0, file: {}, dang: {}, tai0: 0, chu: 0 };   // bản 139: chu = 1 khi tài khoản chủ (thấy video mọi sale)   // thang = 1: tải / xem thẳng từ Drive bằng khóa (đang tắt)
-  (function () { var o = docSo('vlta_vdo2'); if (o && o.ds) { VDO.ds = o.ds; VDO.chu = o.chu || 0; VDO.wp = o.wp || ''; VDO.nhom = o.nhom || []; VDO.khoa = o.khoa || ''; VDO.giu = o.giu || VDO.giu; VDO.luc = o.luc || 0; VDO.lyMau = o.lyMau || []; } })();
+  (function () { var o = docSo('vlta_vdo2'); if (o && o.ds) { VDO.ds = o.ds; VDO.chu = o.chu || 0; VDO.wp = o.wp || ''; VDO.nhom = o.nhom || []; VDO.khoa = o.khoa || ''; VDO.giu = o.giu || VDO.giu; VDO.luc = o.luc || 0; VDO.lyMau = o.lyMau || []; VDO.ls = o.ls || []; } })();
   var VDO_KHUC = 8 * 1048576, VDO_KHUC_MC = 4 * 1048576, VDO_LUONG_MC = 4;   // khúc tải thẳng / khúc máy chủ đọc hộ, số luồng máy chủ
   // 06/11 bản 124: tải thẳng từ Drive bằng khóa API bị Google chặn theo địa chỉ mạng ("automated queries") -> tải qua máy chủ (tài khoản chủ), xem trước bằng trình phát Google Drive
   function vdoMB(b) { var m = (Number(b) || 0) / 1048576; return (m >= 10 ? Math.round(m) : m.toFixed(1).replace('.', ',')) + ' MB'; }
@@ -6641,10 +6643,10 @@ textarea.inp{font-family:inherit}
     apiT({ v: 'vdoDs', im: (im || VDO.ds) ? 1 : 0 }).then(function (o) {
       VDO.tai0 = 0;
       if (o.loi) { if (!im && !VDO.ds) vdoVe(o.loi); return; }
-      lyGop(o.ds); var doi = !giongJ(o.ds, VDO.ds);
-      VDO.ds = o.ds || []; VDO.lyMau = o.lyMau || []; VDO.khoa = o.khoa || ''; VDO.giu = o.giu || VDO.giu; VDO.luc = o.luc || Date.now(); VDO.chu = o.chu || 0; VDO.nhom = o.nhom || []; VDO.wp = o.wp || VDO.wp || ''; if (o.wp) luu('vlta_wpk', o.wp);
+      lyGop(o.ds); var doi = !giongJ(o.ds, VDO.ds) || !giongJ(o.ls || [], VDO.ls || []);
+      VDO.ds = o.ds || []; VDO.lyMau = o.lyMau || []; VDO.khoa = o.khoa || ''; VDO.giu = o.giu || VDO.giu; VDO.luc = o.luc || Date.now(); VDO.chu = o.chu || 0; VDO.nhom = o.nhom || []; VDO.ls = o.ls || []; VDO.wp = o.wp || VDO.wp || ''; if (o.wp) luu('vlta_wpk', o.wp);
       Object.keys(VDO.file).forEach(function (id) { if (!vdoTim(id)) delete VDO.file[id]; });   // video đã bị dọn: bỏ file trong máy
-      luuSo('vlta_vdo2', { ds: VDO.ds, khoa: VDO.khoa, giu: VDO.giu, luc: VDO.luc, chu: VDO.chu, wp: VDO.wp, nhom: VDO.nhom, lyMau: VDO.lyMau });
+      luuSo('vlta_vdo2', { ds: VDO.ds, khoa: VDO.khoa, giu: VDO.giu, luc: VDO.luc, chu: VDO.chu, wp: VDO.wp, nhom: VDO.nhom, lyMau: VDO.lyMau, ls: VDO.ls });
       if (doi || !im) vdoVe();
       vdoBadge(); vdoBaoMoi(); wpGiu(); lyGuiCho();
     }, function (e) { VDO.tai0 = 0; if (!im && !VDO.ds) vdoVe(e.message); });
@@ -6690,14 +6692,39 @@ textarea.inp{font-family:inherit}
         '<div class="vdoI"><div class="vdoN ell">' + esc(vdoTen(v)) + '</div>' + '' + '<div class="meta ell">' + vdoLucDong(v) + ' · ' + vdoMB(v.kb) + '</div>' + vdoTrangThai(v) + lyDongThe(v) +
         '<div class="vdoB" id="vdoB_' + esc(v.id) + '">' + vdoNut(v) + '</div></div></div>';
     }).join('') + '</div>';
+    if (VDO.chu && tb && tb.k !== '_ca' && tb.k !== '_ro') h += vlsHtml(tb.k);   // bản 188: lịch sử video đã duyệt 7 ngày của sale này
     el.innerHTML = h;
     vdoGan(el);
+    var lg = document.getElementById('vlsDa'); if (lg) lg.ontoggle = function () { VDO.lsMo = lg.open; };
     if (VDO.chu) el.querySelectorAll('.vdoC[data-id]').forEach(function (c) {   // bản 147: chủ giữ ngón tay trên thẻ -> Duyệt / Xoá / Thôi
       giuNgon(c, null, function () { var v = vdoTim(c.getAttribute('data-id')); if (v) { c.dataset.giu = Date.now(); vdoMenu(v); } });
       c.addEventListener('click', function (ev) { if (Date.now() - Number(c.dataset.giu || 0) < 800) { ev.preventDefault(); ev.stopPropagation(); } }, true);   // nhả tay sau khi giữ: không mở xem
     });
     el.querySelectorAll('[data-vdoloc]').forEach(function (b) { b.onclick = function () { VDO.loc = b.getAttribute('data-vdoloc'); luu('vlta_vdoLoc', VDO.loc); vdoVe(); }; });
     var da = document.getElementById('vdoDall'); if (da) da.onclick = function () { vdoDuyet(ds.map(function (v) { return v.id; })); };
+  }
+  // bản 188 (22/11): chủ xem lại video đã duyệt trong 7 ngày gần nhất: ai đã tải, lúc nào, video tự xoá ngày nào
+  function vlsHtml(k) {
+    var ds = (VDO.ls || []).filter(function (x) { return x.k === k; }).sort(function (a, b) { return b.duyet - a.duyet; });
+    var h = '<div class="vlsTd"><b>Đã duyệt trong 7 ngày gần nhất</b>' + (ds.length ? '<span class="meta">' + ds.length + ' video</span>' : '') + '</div>';
+    if (!ds.length) return h + '<div class="meta vlsTrong">Chưa duyệt video nào trong 7 ngày qua.</div>';
+    var chua = ds.filter(function (x) { return !(x.tai || []).length && !x.xoa; }), con = ds.filter(function (x) { return chua.indexOf(x) < 0; });
+    if (chua.length) h += '<div class="vlsNh">Chưa tải · ' + chua.length + ' video</div><div class="list">' + chua.map(vlsThe).join('') + '</div>';
+    else h += '<div class="vlsNh ok">Tất cả video đã duyệt đều đã được tải về</div>';
+    if (con.length) {
+      var coXoa = con.some(function (x) { return !(x.tai || []).length; });
+      h += '<details class="kbvG" id="vlsDa"' + (VDO.lsMo ? ' open' : '') + '><summary><span class="ell">' + (coXoa ? 'Đã tải hoặc đã xoá' : 'Đã tải') + '</span><span class="meta">' + con.length + ' video</span></summary><div class="list">' + con.map(vlsThe).join('') + '</div></details>';
+    }
+    return h;
+  }
+  function vlsThe(x) {
+    var tt = x.tai || [], ten = [], da = {};
+    tt.forEach(function (y) { if (!da[y.ten]) { da[y.ten] = 1; ten.push(y.ten); } });
+    var trang = tt.length ? '<div class="vdoS ok ell">✓ ' + esc(ten.join(', ')) + ' đã tải lúc ' + vdoLuc(tt[0].luc) + '</div>' : '<div class="vdoS vlsChua ell">Chưa tải</div>';
+    var het = x.xoa ? (x.ly === 'chu' ? 'Bạn đã xoá ngày ' : x.ly === 'tu' ? 'Đã tự xoá ngày ' : 'Không còn trên Drive từ ngày ') + vdoNgay(x.xoa) : x.het ? 'Tự xoá ngày ' + vdoNgay(x.het) : '';
+    return '<div class="vdoC vlsC' + (x.xoa ? ' het' : '') + '"><div class="vlsA">' + (x.anh && !x.xoa ? '<img src="' + x.anh + '" alt="">' : '') + '</div>' +
+      '<div class="vdoI"><div class="vdoN ell">' + esc(vdoTen(x)) + '</div>' + trang +
+      '<div class="meta ell">Duyệt lúc ' + vdoLuc(x.duyet) + '</div>' + (het ? '<div class="meta ell">' + het + '</div>' : '') + '</div></div>';
   }
   function vdoTabs() {   // [{k, ten, ds}] – Cá nhân, từng sale (video chờ duyệt), Chưa rõ sale (chỉ khi có)
     var ds = VDO.ds || [], tabs = [{ k: '_ca', ten: 'Cá nhân', ds: ds.filter(function (v) { return v.cua; }) }];
@@ -6715,13 +6742,17 @@ textarea.inp{font-family:inherit}
   }
   function vdoDuyet(ids) {   // chủ duyệt: ẩn ngay khỏi máy chủ, máy chủ ghi + báo máy sale
     var bo = (VDO.ds || []).filter(function (v) { return ids.indexOf(v.id) >= 0 && v.cho; }); if (!bo.length) return;
-    VDO.ds = VDO.ds.filter(function (v) { return bo.indexOf(v) < 0; }); vdoVe(); vdoBadge();
+    VDO.ds = VDO.ds.filter(function (v) { return bo.indexOf(v) < 0; });
+    var ls0 = VDO.ls || [], luc = Date.now();   // bản 188: hiện ngay trong mục Đã duyệt
+    VDO.ls = bo.map(function (v) { return { id: v.id, ten: v.ten, k: v.k, ai: v.ai, duyet: luc, tai: [], het: luc + (VDO.giu[1] || 7) * 86400000, xoa: 0, anh: v.anh }; })
+      .concat(ls0.filter(function (x) { return !bo.some(function (v) { return v.id === x.id; }); }));
+    vdoVe(); vdoBadge();
     apiT({ v: 'vdoDuyet', ids: bo.map(function (v) { return v.id; }), im: 1 }).then(function (o) {
       if (o.loi) throw new Error(o.loi);
       toast('Đã duyệt ' + o.so + ' video. Máy của ' + (o.ai || []).join(', ') + ' sẽ báo có video mới.');
       VDO.tai0 = 0; taiVideo(1);
     }, function () { throw new Error('Chưa kết nối được máy chủ.'); }).catch(function (e) {
-      VDO.ds = bo.concat(VDO.ds || []); vdoVe(); vdoBadge(); toastLoi('Chưa duyệt được: ' + (e.message || 'thử lại sau.'));
+      VDO.ds = bo.concat(VDO.ds || []); VDO.ls = ls0; vdoVe(); vdoBadge(); toastLoi('Chưa duyệt được: ' + (e.message || 'thử lại sau.'));
     });
   }
   function vdoMenu(v) {   // bản 147: menu giữ ngón tay của chủ
@@ -6938,7 +6969,7 @@ textarea.inp{font-family:inherit}
     var f = VDO.file[v.id]; if (!f) { vdoTaiVe(v); return; }
     function ghi() {
       delete VDO.file[v.id];   // giải phóng bộ nhớ (video nặng); cần lại thì bấm Tải lại
-      apiT({ v: 'vdoTai', id: v.id, ten: v.ten, im: 1 }).then(function (o) { if (o && o.tai) { v.tai = o.tai; v.het = o.het; } luuSo('vlta_vdo2', { ds: VDO.ds, khoa: VDO.khoa, giu: VDO.giu, luc: VDO.luc, chu: VDO.chu, wp: VDO.wp, nhom: VDO.nhom, lyMau: VDO.lyMau }); vdoVe(); vdoBadge(); }, function () { vdoVe(); });
+      apiT({ v: 'vdoTai', id: v.id, ten: v.ten, im: 1 }).then(function (o) { if (o && o.tai) { v.tai = o.tai; v.het = o.het; } luuSo('vlta_vdo2', { ds: VDO.ds, khoa: VDO.khoa, giu: VDO.giu, luc: VDO.luc, chu: VDO.chu, wp: VDO.wp, nhom: VDO.nhom, lyMau: VDO.lyMau, ls: VDO.ls }); vdoVe(); vdoBadge(); }, function () { vdoVe(); });
       v.tai = (v.tai || []).concat([{ ten: S.toi.ten, luc: Date.now(), ban: 1 }]); if (v.tai.length === 1) v.het = Date.now() + VDO.giu[0] * 86400000;
       vdoVe(); vdoBadge(); toast('Đã lưu video vào máy.');
     }
@@ -7050,7 +7081,7 @@ textarea.inp{font-family:inherit}
     function hoanTat() {
       var giay = Math.round((Date.now() - t0) / 1000), xemP = Math.min(1, xem || 0);
       ly.hieu = { luc: Date.now(), xem: xemP, giay: giay, sai: sai, h: ly.h, ten: (S.toi && S.toi.ten) || '' };
-      luuSo('vlta_vdo2', { ds: VDO.ds, khoa: VDO.khoa, giu: VDO.giu, luc: VDO.luc, chu: VDO.chu, wp: VDO.wp, nhom: VDO.nhom, lyMau: VDO.lyMau });
+      luuSo('vlta_vdo2', { ds: VDO.ds, khoa: VDO.khoa, giu: VDO.giu, luc: VDO.luc, chu: VDO.chu, wp: VDO.wp, nhom: VDO.nhom, lyMau: VDO.lyMau, ls: VDO.ls });
       var lda = docSo('vlta_lyDa') || {}; lda[v.id + '|' + ly.h] = ly.hieu; luuSo('vlta_lyDa', lda);
       apiT(lyQ(v, ly, xemP, giay, sai, ds.length)).then(function () { }, function () { var c = docSo('vlta_lyCho') || []; c.push(lyQ(v, ly, xemP, giay, sai, ds.length)); luuSo('vlta_lyCho', c.slice(-20)); });
       dong(); vdoVe();
