@@ -13,7 +13,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
 <script src="config.js"></script>
-<script>window.PB = { so: 190, luc: "23/11 14:50" };</script>
+<script>window.PB = { so: 191, luc: "23/11 14:57" };</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap">
 <style>
@@ -5357,43 +5357,45 @@ textarea.inp{font-family:inherit}
       canh: s ? '' : d && !d.tay ? d.canh || '' : '', qqT: d ? d.qqT || '' : '', ttT: d ? d.ttT || '' : '', co: !!(s || d), cho: !!(e.so && L.dcCho[e.so]), khongAnh: !!(d && d.khongAnh) };
   }
   function dslDcGui(e) { var d = dslDcCua(e); return d.co ? { qq: d.qq, tt: d.tt, sdt: d.sdt } : {}; }
-  function dslDcTai(ds, lan) {   // hỏi máy chủ địa chỉ của người chưa có; người chưa đọc ảnh thì máy chủ đọc ngay (~20 giây/lượt), còn lại hỏi lại sau 25 giây
-    var L = CCS.dsl, sos = ds.filter(function (e) { return /^\d{12}$/.test(String(e.so || '')) && !L.dc[e.so] && !e.dcS && (!L.dcCho[e.so] || lan); }).map(function (e) { return e.so; });
-    if (!sos.length || (L.dcDang && !lan)) return;
-    L.dcDang = 1; sos.forEach(function (so) { L.dcCho[so] = 1; });
-    function ve() { if (S.tab === 'cc' && CCS.dslMo && !CCS.kho && !document.querySelector('.sheet') && !/INPUT|TEXTAREA/.test((document.activeElement || {}).tagName || '')) ccVe(); }
-    apiT({ v: 'dcLay', sos: sos, doc: 1, im: 1 }).then(function (o) {
-      L.dcDang = 0; if (!o || o.loi) { sos.forEach(function (so) { delete L.dcCho[so]; }); ve(); return; }
+  // 23/11 (bản 191, anh Mạnh chốt): MỌI người đều cắt vùng địa chỉ + làm nét trên điện thoại (CC.dcCat) rồi mới gửi máy chủ đọc (dcNet, Vision);
+  //      không đọc ảnh nguyên nữa. Máy chủ chỉ trả địa chỉ đã có; người chưa có / chưa đọc bằng ảnh làm nét thì app tự làm, 2 người cùng lúc.
+  function dslDcVe() { if (S.tab === 'cc' && CCS.dslMo && !CCS.kho && !document.querySelector('.sheet') && !/INPUT|TEXTAREA/.test((document.activeElement || {}).tagName || '')) ccVe(); }
+  function dslDcTai(ds) {
+    var L = CCS.dsl, sos = ds.filter(function (e) { return /^\d{12}$/.test(String(e.so || '')) && !L.dc[e.so] && !e.dcS && !L.dcCho[e.so]; }).map(function (e) { return e.so; });
+    if (!sos.length) return;
+    sos.forEach(function (so) { L.dcCho[so] = 1; });
+    apiT({ v: 'dcLay', sos: sos, doc: 0, im: 1 }).then(function (o) {
+      if (!o || o.loi) { sos.forEach(function (so) { delete L.dcCho[so]; }); dslDcVe(); return; }
       Object.keys(o.m || {}).forEach(function (so) { L.dc[so] = o.m[so]; delete L.dcCho[so]; });
       (o.khongKho || []).forEach(function (so) { L.dc[so] = { qq: '', tt: '', sdt: '', canh: '', khongAnh: 1 }; delete L.dcCho[so]; });
-      var con = (o.cho || []).filter(function (so) { return L.dcCho[so]; });
-      if (con.length && (lan || 0) < 8) setTimeout(function () { dslDcTai(con.map(function (so) { return { so: so }; }), (lan || 0) + 1); }, 25000);
-      else con.forEach(function (so) { delete L.dcCho[so]; L.dc[so] = L.dc[so] || { qq: '', tt: '', sdt: '', canh: 'Máy chủ chưa đọc kịp ảnh CCCD, bấm Sửa để điền theo CCCD' }; });
-      ve(); dslDcNet();
-    }, function () { L.dcDang = 0; sos.forEach(function (so) { delete L.dcCho[so]; }); ve(); });
+      (o.cho || []).forEach(function (so) { delete L.dcCho[so]; L.dc[so] = L.dc[so] || { qq: '', tt: '', sdt: '', canh: '' }; });
+      dslDcVe(); dslDcNet(); dslDcNet();
+    }, function () { sos.forEach(function (so) { delete L.dcCho[so]; }); dslDcVe(); });
   }
-  // 23/11 (bản 190): ảnh mờ / đọc thiếu -> lấy ảnh kho, cắt vùng địa chỉ + làm nét trên điện thoại (CC.dcCat), gửi máy chủ đọc lại (dcNet); lần lượt từng người
-  function dslDcNetCan(d) { return !!d && !d.tay && !d.net && !d.khongAnh && (!d.qq || !d.tt || /Ảnh mờ|Không đọc được|Không nhận ra tỉnh|Chưa đọc được/.test(d.canh || '')); }
+  function dslDcNetCan(d) { return !!d && !d.tay && !d.net && !d.khongAnh; }
+  function dslDcCho(so) { var L = CCS.dsl; return dslDcNetCan(L.dc[so]) && (!L.dcNet || L.dcNet[so] !== 'xong'); }
   function dslDcNet() {
-    var L = CCS.dsl; L.dcNet = L.dcNet || {};
-    if (L.dcNetDang) return;
+    var L = CCS.dsl; L.dcNet = L.dcNet || {}; L.dcNetSo = L.dcNetSo || 0;
+    if (L.dcNetSo >= 2) return;
     var so = Object.keys(L.dc).filter(function (k) { return dslDcNetCan(L.dc[k]) && !L.dcNet[k]; })[0];
     if (!so) return;
-    L.dcNetDang = 1; L.dcNet[so] = 'dang';
-    function ve() { if (S.tab === 'cc' && CCS.dslMo && !CCS.kho && !document.querySelector('.sheet') && !/INPUT|TEXTAREA/.test((document.activeElement || {}).tagName || '')) ccVe(); }
-    function xong(m) { if (m) L.dc[so] = m; L.dcNet[so] = 'xong'; L.dcNetDang = 0; ve(); setTimeout(dslDcNet, 50); }
-    ve();
+    L.dcNetSo++; L.dcNet[so] = 'dang';
+    function xong(m) { if (m) L.dc[so] = m; L.dcNet[so] = 'xong'; L.dcNetSo--; dslDcVe(); setTimeout(dslDcNet, 50); }
+    function duPhong() {   // hết lượt đọc / lỗi: máy chủ đọc ảnh nguyên như trước
+      return apiT({ v: 'dcLay', sos: [so], doc: 1, im: 1 }).then(function (o) { xong(o && o.m && o.m[so] ? o.m[so] : null); }, function () { xong(null); });
+    }
+    dslDcVe();
     ccLayAnh({ so: so }).then(function (a) { return ccCanvasU(a.anh); }).then(function (cv) {
-      var ds = CC.dcCat(cv);
-      return apiT({ v: 'dcNet', so: so, ds: ds });
-    }).then(function (o) { xong(o && o.m ? o.m : null); }, function () { xong(null); });
+      return apiT({ v: 'dcNet', so: so, ds: CC.dcCat(cv) });
+    }).then(function (o) { if (o && o.m) xong(o.m); else duPhong(); }, function (er) {
+      if (/Không tìm thấy ảnh/.test(String(er && er.message || ''))) { var d = L.dc[so] || {}; d.khongAnh = 1; L.dc[so] = d; xong(null); } else duPhong();
+    });
   }
   function dslDcDong(e) {   // 3 dòng địa chỉ dưới tên người (CHUNQIU)
     var d = dslDcCua(e), h = '';
     if (!e.so) return '';
-    if (!d.co && d.cho) return '<div class="sub cau">Đang đọc quê quán, thường trú trên ảnh CCCD…</div>';
+    if ((!d.co && d.cho) || (!e.dcS && dslDcCho(e.so))) return '<div class="sub cau">Đang cắt, làm nét ảnh CCCD rồi đọc quê quán, thường trú…</div>';
     if (!d.co) return '';
-    if (CCS.dsl.dcNet && CCS.dsl.dcNet[e.so] === 'dang') h += '<div class="sub cau">Ảnh CCCD chưa rõ – đang làm nét và đọc lại…</div>';
     var dong = function (nhan, v, thieu) { return v ? '<div class="sub cau dsda"><span>' + nhan + ':</span> ' + esc(v) + '</div>' : '<div class="sub cau dsdd">' + esc(thieu) + '</div>'; };
     h += dong('Quê quán', d.qq, d.khongAnh ? 'Chưa có ảnh CCCD trong kho – bấm Sửa, điền quê quán theo CCCD' : 'Chưa có quê quán – bấm Sửa, điền theo CCCD');
     h += dong('Thường trú', d.tt, 'Chưa có thường trú – bấm Sửa, điền theo CCCD');
@@ -5945,7 +5947,8 @@ textarea.inp{font-family:inherit}
     }, function (er) { ccTd(''); toastLoi(er.message); });
   }
   var BAN_MOI = [
-    { so: 190, ds: [{ i: '🪪', t: 'CHUNQIU: quê quán, thường trú ghi đúng như trên CCCD', m: 'Quê quán ghi gọn: thẻ cũ có huyện thì ghi huyện, tỉnh; thẻ ghi xã, tỉnh thì giữ xã, tỉnh. Thường trú ghi nguyên như trên thẻ. Ảnh CCCD chưa rõ thì app tự cắt vùng địa chỉ, làm nét rồi đọc lại. Ảnh bị mất dòng địa chỉ thì vẫn báo đỏ để bấm Sửa.' }] },
+    { so: 191, ds: [{ i: '🔍', t: 'CHUNQIU: ảnh CCCD được làm nét trước khi đọc', m: 'Mọi người trong danh sách đều được app cắt vùng địa chỉ trên ảnh CCCD, làm nét rồi mới đọc quê quán, thường trú, nên đọc chính xác hơn. Mỗi người chỉ đọc 1 lần, lần sau app nhớ.' }] },
+    { so: 190, ds: [{ i: '🪪', t: 'CHUNQIU: quê quán, thường trú ghi đúng như trên CCCD', m: 'Quê quán ghi gọn: thẻ cũ có huyện thì ghi huyện, tỉnh; thẻ ghi xã, tỉnh thì giữ xã, tỉnh. Thường trú ghi nguyên như trên thẻ. Ảnh bị mất dòng địa chỉ thì vẫn báo đỏ để bấm Sửa.' }] },
     { so: 189, ds: [{ i: '📌', v: 'chu', t: 'Thanh Cá nhân, Hòa, Long luôn nằm trên cùng', m: 'Ở phần Video đã dựng, khi vuốt xem video, thanh chọn Cá nhân, Hòa, Long giữ nguyên trên cùng màn hình để chuyển người bất cứ lúc nào. Đang ở giữa danh sách mà chuyển người thì app tự về đầu danh sách của người đó.' }] },
     { so: 188, ds: [{ i: '🎬', v: 'chu', t: 'Xem lại video đã duyệt và ai đã tải', m: 'Trong tab Content, phần Video đã dựng, mỗi tab sale có thêm mục Đã duyệt trong 7 ngày gần nhất. Video chưa tải hiện sẵn ở trên. Video đã tải ghi rõ ai tải, lúc mấy giờ. Mỗi video ghi ngày tự xoá, kể cả video đã vào Thùng rác.' }] },
     { so: 187, ds: [{ i: '📝', t: 'CHUNQIU: danh sách nhận việc và tờ thông tin', m: 'Giấy tờ › Danh sách › chọn CHUNQIU. Chọn ngày nhận việc (không chia ca) và người đi phỏng vấn. Máy tự đọc quê quán, thường trú trên ảnh CCCD. Chỗ chữ đỏ là còn thiếu, bấm Sửa để điền theo VNeID. Xuất xong bấm Gửi qua Zalo cho nhân sự CHUNQIU trước 08:00 sáng, và In tờ thông tin ứng tuyển để phát cho người lao động điền trước.' }] },
