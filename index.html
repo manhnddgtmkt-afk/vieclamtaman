@@ -13,7 +13,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
 <script src="config.js"></script>
-<script>window.PB = { so: 193, luc: "23/11 15:57" };</script>
+<script>window.PB = { so: 194, luc: "23/11 23:56" };</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap">
 <style>
@@ -907,6 +907,7 @@ textarea.inp{font-family:inherit}
 #tqSeg button+button::before{content:'';position:absolute;left:0;top:28%;height:44%;width:1px;background:var(--muted);opacity:.35}
 #tqSeg button.on::before,#tqSeg button.on+button::before{opacity:0}
 .tqMeta{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;margin:-8px 4px 0}.tqMeta>span{white-space:nowrap}.tqMeta .glVao{margin-left:auto}
+.tqNut{display:flex;gap:6px;margin-left:auto;flex-wrap:wrap;justify-content:flex-end}.tqNut .glVao{margin-left:0}
 .glVao{display:inline-flex;align-items:center;gap:5px;flex:none;border:1px solid var(--line);background:var(--card);color:var(--blue);border-radius:999px;padding:5px 11px 5px 9px;font:inherit;font-size:13.5px;font-weight:600;white-space:nowrap;cursor:pointer}
 .glVao svg{width:15px;height:15px;flex:none}
 .glBar{display:flex;align-items:center;gap:8px;margin:0 0 2px}.glBar .link{padding:4px 0;font-size:15px}.glBar b{margin-left:auto;font-size:15px;font-weight:600;color:var(--muted)}
@@ -1098,6 +1099,53 @@ textarea.inp{font-family:inherit}
 .bl-mu span:nth-child(odd){color:var(--muted)}
 .bl-mu span:nth-child(even){text-align:right;font-weight:700;white-space:nowrap;font-variant-numeric:tabular-nums}
 @media (max-width:370px){.bl-t .bl-r{padding:7px 10px;column-gap:4px}.bl-v{font-size:15px}.bl-ca{column-gap:8px}.bl-ca>b{font-size:13.5px}}
+/* 24/11: trang lương sale cơ chế mới (lớp tn-) */
+.tn-k{--tn-xanh:#1D9E75;--tn-xanh-bg:#E1F5EE;--tn-vang:#EF9F27}
+@media (prefers-color-scheme:dark){.tn-k{--tn-xanh-bg:#0F3A2E}}
+.tn-hd{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px}
+.tn-hd .tn-ten{min-width:0}.tn-hd .tn-ten b{display:block;font-size:17px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tn-hd .tn-ten span{display:block;font-size:12.5px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tn-hang{flex:0 0 auto;font-size:12.5px;font-weight:700;padding:4px 10px;border-radius:999px;white-space:nowrap}
+.tn-chips{display:flex;gap:8px;overflow-x:auto;margin:0 0 10px;padding-bottom:2px}
+.tn-chips button{flex:0 0 auto;border:1.5px solid var(--line);background:var(--card);color:var(--fg);border-radius:999px;padding:6px 14px;font-weight:600;font-size:14px}
+.tn-chips button.on{border-color:var(--blue);color:var(--blue);background:var(--tint)}
+.tn-big{font-size:34px;font-weight:800;letter-spacing:-.02em;line-height:1.15;font-variant-numeric:tabular-nums;white-space:nowrap}
+.tn-ct{display:grid;grid-template-columns:minmax(0,1fr) auto;column-gap:10px;row-gap:5px;margin-top:10px;padding-top:10px;border-top:1px solid var(--line);font-size:14px}
+.tn-ct span{min-width:0}.tn-ct span small{display:block;font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tn-ct b{text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}
+.tn-ct .x{color:var(--tn-xanh)}
+.tn-mt{border:1.5px solid var(--tn-xanh);background:var(--tn-xanh-bg);border-radius:16px;padding:12px 14px;margin-top:12px}
+.tn-mt .n{font-size:12.5px;color:var(--tn-xanh);font-weight:700}
+.tn-mt .t{font-size:17px;font-weight:800;margin-top:2px}
+.tn-mt .c{font-size:13.5px;margin-top:4px;line-height:1.45}
+.tn-trk{position:relative;height:12px;border-radius:6px;background:var(--soft);margin:34px 6px 38px}
+.tn-trk .f{position:absolute;left:0;top:0;bottom:0;border-radius:6px;background:var(--tn-xanh);width:0;transition:width 1.3s cubic-bezier(.2,.7,.2,1)}
+.tn-trk .m{position:absolute;top:-4px;width:2px;height:20px;background:var(--muted);opacity:.55}
+.tn-trk .m.dat{background:var(--tn-xanh);opacity:1}
+.tn-trk .l{position:absolute;top:20px;transform:translateX(-50%);font-size:11.5px;color:var(--muted);text-align:center;line-height:1.25;white-space:nowrap}
+.tn-trk .l.dat{color:var(--tn-xanh);font-weight:700}
+.tn-trk .ban{position:absolute;top:-31px;transform:translateX(-50%);font-size:12px;font-weight:700;background:#085041;color:#E1F5EE;padding:2px 8px;border-radius:7px;white-space:nowrap}
+.tn-sec{font-weight:800;font-size:15px;margin:2px 0 8px}
+.tn-ds{display:grid;grid-template-columns:24px minmax(0,1fr) auto;column-gap:10px;align-items:center}
+.tn-ds>div{display:contents}
+.tn-ds>div>*{padding:8px 0;border-top:1px solid var(--line)}
+.tn-ds>div:first-child>*{border-top:0}
+.tn-ds i{width:22px;height:22px;border-radius:50%;display:grid;place-items:center;font-style:normal;font-size:12px;border:1.5px solid var(--line);color:var(--muted)}
+.tn-ds i.ok{background:var(--tn-xanh);border-color:var(--tn-xanh);color:#fff}
+.tn-ds span{min-width:0;font-size:14px}.tn-ds span small{display:block;font-size:12px;color:var(--muted)}
+.tn-ds b{white-space:nowrap;text-align:right;font-variant-numeric:tabular-nums;font-size:14px}
+.tn-ds b.ok{color:var(--tn-xanh)}
+.tn-bar{height:10px;border-radius:5px;background:var(--soft);overflow:hidden;margin:8px 0 4px}
+.tn-bar>i{display:block;height:100%;width:0;background:var(--tn-vang);border-radius:5px;transition:width 1.1s ease-out}
+.tn-vd{font-size:13px;color:var(--muted);display:grid;grid-template-columns:auto minmax(0,1fr);column-gap:10px;row-gap:3px;margin-top:8px}
+.tn-vd span:nth-child(even){white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--fg)}
+.tn-bt{display:grid;grid-template-columns:minmax(0,1fr) auto;column-gap:10px;row-gap:6px;font-size:14px}
+.tn-bt b{text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}.tn-bt .toi{font-weight:800;color:var(--blue)}
+.tn-phao{position:fixed;inset:0;pointer-events:none;z-index:60;overflow:hidden}
+.tn-phao i{position:absolute;top:-14px;width:7px;height:11px;border-radius:2px;animation:tnRoi 2.6s linear forwards}
+@keyframes tnRoi{to{transform:translateY(110vh) rotate(540deg)}}
+@media (prefers-reduced-motion:reduce){.tn-phao{display:none}.tn-trk .f,.tn-bar>i{transition:none}}
+@media (max-width:340px){.tn-big{font-size:28px}.tn-trk .l{font-size:10.5px}}
 </style>
 </head>
 <body>
@@ -5992,6 +6040,8 @@ textarea.inp{font-family:inherit}
     }, function (er) { ccTd(''); toastLoi(er.message); });
   }
   var BAN_MOI = [
+    { so: 194, ds: [{ i: '💰', t: 'Trang lương mới cho nhân viên kinh doanh', m: 'Từ kỳ 26/11 – 25/12, tab Thu nhập hiện lương tạm tính theo cơ chế mới: lương theo giờ quản lý, thưởng mốc giờ, phụ cấp phụ trách công ty và phụ cấp truyền thông. Có mục tiêu gần nhất, thanh tiến độ các mốc và bậc thang thu nhập.' },
+      { i: '🎬', t: 'Mỗi video được duyệt cộng ngay phụ cấp truyền thông', m: 'Mỗi video được duyệt +33.333đ, đủ 30 video nhận 1.000.000đ. Thông báo duyệt video ghi rõ số tiền vừa được cộng.' }] },
     { so: 193, ds: [{ i: '🔔', t: 'Chuông thông báo ở góc trên', m: 'Video chờ duyệt, phiếu đã gửi chưa ghi chuyển, thay đổi trên bảng công và lịch hẹn nhận việc được gom vào chuông. Có tin mới thì chuông chuyển vàng và rung nhẹ; chạm vào chuông để xem, chạm từng dòng để mở đúng chỗ cần làm.' },
       { i: '⬆️', t: 'Thông báo hiện ở phía trên, vuốt lên để tắt', m: 'Thông báo như "Đã lưu", "Hoàn tác" trượt từ trên xuống giống iPhone, không còn che nút ở cuối màn hình. Vuốt lên để tắt ngay, giữ ngón tay trên thông báo để đọc lâu hơn.' }] },
     { so: 192, ds: [{ i: '🪪', t: 'CHUNQIU: người mới chọn ảnh CCCD trong album', m: 'App đọc quê quán, thường trú ngay từ ảnh vừa chọn (cắt, làm nét rồi đọc), không phải chờ. Khi xuất danh sách, ảnh CCCD người mới được lưu vào kho như HOJEONG, MINGJIE.' }] },
@@ -9172,17 +9222,27 @@ textarea.inp{font-family:inherit}
   }
   // ---------- thu nhập của tôi ----------
   function veThuNhap() {
-    khung('Thu nhập của tôi', S.toi.ten + ' · ' + S.toi.chuc, '', '<div class="sk" style="height:140px"></div><div class="sk" style="height:220px"></div>');
+    var chuX = laChu();
+    khung(chuX ? 'Lương kinh doanh' : 'Thu nhập của tôi', chuX ? 'Trang lương sale xem trên app' : S.toi.ten + ' · ' + S.toi.chuc, '', '<div class="sk" style="height:140px"></div><div class="sk" style="height:220px"></div>');
+    if (chuX) { var c = TN_CHU[S.tnSale || '']; if (c) hienTN(c); taiTN(false, !!c); return; }
     if (TN) hienTN(TN);
     taiTN(false, !!TN);
   }
+  var TN_CHU = {};   // 24/11: chủ xem trang lương từng sale (theo tên)
   function taiTN(moi, im) {
-    apiT({ v: 'thuNhap', moi: moi ? 1 : 0, im: im ? 1 : 0 }).then(function (o) {
+    var chuX = laChu(), sl = S.tnSale || '';
+    apiT({ v: 'thuNhap', moi: moi ? 1 : 0, im: im ? 1 : 0, sale: chuX ? sl : '' }).then(function (o) {
+      if (chuX) {
+        if (!sl && o.ct && o.ct.sales && o.ct.sales.length) { S.tnSale = o.ct.sales[0]; TN_CHU[''] = o; taiTN(false, false); return; }
+        if (im && (o.loi || giongJ(o, TN_CHU[sl]))) return;
+        if (!o.loi) TN_CHU[sl] = o; hienTN(o); return;
+      }
       if (im && (o.loi || giongJ(o, TN))) return;
       if (!o.loi) { TN = o; luuSo('vlta_tn', o); } hienTN(o);
     }, function (e) { if (im) return; var t = document.getElementById('than'); if (t && !TN) t.innerHTML = '<div class="empty">' + esc(e.message) + '</div>'; });
   }
   function hienTN(o) {
+    if (o && !o.loi && o.ct && !o.ct.chua) { hienTN2(o); return; }   // 24/11: cơ chế lương mới
     (function () {
       var t = document.getElementById('than'); if (!t || S.tab !== 'tn') return;
       if (o.loi) { t.innerHTML = '<div class="empty">' + esc(o.loi) + '</div>'; return; }
@@ -9196,9 +9256,129 @@ textarea.inp{font-family:inherit}
         '<span>Đã thanh toán</span><b class="num">' + esc(gt('Đã thanh toán')) + '</b></div></div>' +
         (o.tra ? '<div class="card">' + traSaleDong({ tieu: o.tra.tieu, dau: o.tra.dau, dong: [o.tra.dong] }, o.tra.dong) + '</div>' : '') +
         (o.ghiChu ? '<div class="note">' + esc(o.ghiChu) + '</div>' : '') +
+        (o.ct && o.ct.chua ? '<div class="note">Từ ngày 26/11 áp dụng cơ chế lương mới: lương tính theo giờ quản lý, phụ cấp phụ trách công ty và phụ cấp truyền thông theo video được duyệt.</div>' : '') +
         '<div class="meta" style="text-align:center">' + esc(o.capNhat) + ' · <a href="#" id="tnMoi" style="color:var(--blue)">làm mới</a></div>';
       document.getElementById('tnMoi').onclick = function (e) { e.preventDefault(); this.textContent = 'đang tải…'; taiTN(true); };
     })();
+  }
+
+  // ---------- 24/11: trang lương sale cơ chế mới (kỳ 26 tháng trước – 25 tháng này) ----------
+  // Số giờ chỉ theo dữ liệu công ty gửi (bảng TONG_HOP tính); phụ cấp truyền thông đếm thẳng video được duyệt nên tiền nhảy ngay.
+  var TN_CFG0 = { b1: 2000, g1: 2500, b2: 3000, g2: 1500, g3: 2000, moc: [[3000, 200000], [4000, 300000], [5000, 500000], [7000, 1000000], [10000, 2000000]], pcChinh: 500000, pcDong: 200000 };
+  function tnLuongGio(c, g) { return Math.round(Math.min(g, c.b1) * c.g1 + Math.max(0, Math.min(g, c.b2) - c.b1) * c.g2 + Math.max(0, g - c.b2) * c.g3); }
+  function tnMoc(c, g) { var s = 0; c.moc.forEach(function (m) { if (g >= m[0]) s += m[1]; }); return s; }
+  function tnHang(g) {
+    if (g >= 5000) return { t: 'Kim cương', bg: '#E6F1FB', fg: '#0C447C' };
+    if (g >= 3000) return { t: 'Bạch kim', bg: '#EEEDFE', fg: '#3C3489' };
+    if (g >= 2000) return { t: 'Vàng', bg: '#FAEEDA', fg: '#633806' };
+    if (g >= 1000) return { t: 'Bạc', bg: '#F1EFE8', fg: '#444441' };
+    return { t: 'Đồng', bg: '#FAECE7', fg: '#712B13' };
+  }
+  function tnGio(g) { var r = Math.round(g * 10) / 10, p = String(Math.abs(r)).split('.'); return (r < 0 ? '−' : '') + p[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',') + (p[1] ? '.' + p[1] : ''); }
+  function tnD(x) { return vnd(x) + 'đ'; }
+  function tnNgay(ms) { var d = new Date(ms); return ('0' + d.getDate()).slice(-2) + '/' + ('0' + (d.getMonth() + 1)).slice(-2); }
+  function tnNgayLam(denMs) {   // số ngày làm việc còn lại trong kỳ (tính hôm nay, bỏ Chủ nhật)
+    var d = new Date(), n = 0, den = new Date(denMs); d.setHours(0, 0, 0, 0); den.setHours(0, 0, 0, 0);
+    for (; d <= den; d.setDate(d.getDate() + 1)) if (d.getDay() !== 0) n++;
+    return n;
+  }
+  function tnPhao() {
+    try { if (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) return; } catch (e) { }
+    var w = document.createElement('div'), mau = ['#1D9E75', '#EF9F27', '#378ADD', '#D4537E', '#97C459'];
+    w.className = 'tn-phao';
+    for (var i = 0; i < 40; i++) { var p = document.createElement('i'); p.style.left = (Math.random() * 100) + '%'; p.style.background = mau[i % 5]; p.style.animationDelay = (Math.random() * 0.9) + 's'; w.appendChild(p); }
+    document.body.appendChild(w);
+    try { navigator.vibrate && navigator.vibrate([30, 40, 30]); } catch (e) { }
+    setTimeout(function () { w.remove(); }, 3800);
+  }
+  function tnDem(el, tu, den) {   // số tiền đếm lên
+    if (!el) return;
+    var t0 = performance.now(), d = 1100;
+    if (tu === den) { el.textContent = tnD(den); return; }
+    function b(t) { var p = Math.min(1, (t - t0) / d), v = tu + (den - tu) * (1 - Math.pow(1 - p, 3)); el.textContent = tnD(v); if (p < 1) requestAnimationFrame(b); }
+    requestAnimationFrame(b);
+  }
+  function hienTN2(o) {
+    var t = document.getElementById('than'); if (!t || S.tab !== 'tn') return;
+    var ct = o.ct, x = ct.x || null, c = (x && x.cfg) || TN_CFG0, vd = ct.video || { n: 0, tien: 0, so: 30, toiDa: 1000000, ds: [] };
+    var g = x ? Number(x.gio) || 0 : 0, lg = tnLuongGio(c, g), mc = tnMoc(c, g), pc = x ? x.pcTien || 0 : 0, tong = lg + mc + pc + (vd.tien || 0);
+    var hang = tnHang(g), chuX = laChu(), moiVd = Math.round((vd.toiDa || 1000000) / (vd.so || 30));
+    // mốc kế tiếp: kỳ trước (nếu cao hơn), đủ 2.000 giờ, các mốc thưởng
+    var dich = [];
+    if (ct.kyTruoc && ct.kyTruoc.gio > g) dich.push({ g: ct.kyTruoc.gio, t: 'Vượt kỳ trước (' + tnGio(ct.kyTruoc.gio) + ' giờ)' });
+    dich.push({ g: c.b1, t: 'Đạt ' + tnGio(c.b1) + ' giờ: lương theo giờ đủ ' + tnD(tnLuongGio(c, c.b1)) });
+    c.moc.forEach(function (m) { dich.push({ g: m[0], t: 'Đạt ' + tnGio(m[0]) + ' giờ: thưởng ' + tnD(m[1]) }); });
+    dich = dich.filter(function (d) { return d.g > g; }).sort(function (a, b) { return a.g - b.g; });
+    var toi = dich[0] || null, nl = tnNgayLam(ct.kyDen);
+    var mtHtml = '';
+    if (toi) {
+      var con = Math.ceil((toi.g - g) * 10) / 10, them = tnLuongGio(c, toi.g) + tnMoc(c, toi.g) - lg - mc, nguoi = nl > 0 ? Math.ceil(con / (nl * 10)) : 0;
+      mtHtml = '<div class="tn-mt"><div class="n">Mục tiêu gần nhất</div><div class="t">' + esc(toi.t) + '</div>' +
+        '<div class="c">Còn <b>' + tnGio(con) + ' giờ</b>, lương thêm <b>+' + tnD(them) + '</b>.' +
+        (nguoi > 0 && nguoi <= 15 ? ' Tương đương thêm khoảng ' + nguoi + ' người đi làm đều mỗi ngày đến hết kỳ (' + tnNgay(ct.kyDen) + ').' : '') + '</div></div>';
+    }
+    // thanh tiến độ: 0 -> mốc thứ 2 phía trên số giờ hiện tại
+    var diem = [c.b1, c.b2].concat(c.moc.map(function (m) { return m[0]; })).filter(function (v, i, a) { return a.indexOf(v) === i; }).sort(function (a, b) { return a - b; });
+    var tren = diem.filter(function (v) { return v > g; }), cuoi = tren[1] || tren[0] || Math.max(g, diem[diem.length - 1]);
+    var pct = function (v) { return Math.max(0, Math.min(100, v / (cuoi * 1.08) * 100)); }, lbTruoc = -99;
+    var mk = diem.filter(function (v) { return v <= cuoi; }).map(function (v) {
+      var dat = g >= v, p = pct(v), coLb = p - lbTruoc >= 17; if (coLb) lbTruoc = p; var lb = v === c.b1 ? 'Vàng' : (c.moc.filter(function (m) { return m[0] === v; })[0] ? '+' + vnd(c.moc.filter(function (m) { return m[0] === v; })[0][1] / 1000) + 'k' : '');
+      return '<i class="m' + (dat ? ' dat' : '') + '" style="left:' + p + '%"></i>' + (coLb ? '<span class="l' + (dat ? ' dat' : '') + '" style="left:' + Math.min(92, Math.max(8, p)) + '%">' + (dat ? '✓ ' : '') + tnGio(v) + (lb ? '<br>' + lb : '') + '</span>' : '');
+    }).join('');
+    if (ct.kyTruoc && ct.kyTruoc.gio > 0 && ct.kyTruoc.gio < cuoi) mk += '<i class="m" style="left:' + pct(ct.kyTruoc.gio) + '%;background:var(--tn-vang);opacity:1"></i>';
+    var trk = '<div class="tn-trk"><div class="f" data-w="' + pct(g) + '"></div>' + mk + '<span class="ban" style="left:' + Math.min(88, Math.max(12, pct(g))) + '%">' + tnGio(g) + ' giờ</span></div>';
+    // các mốc thưởng
+    var ds = '<div class="tn-ds">' +
+      '<div><i class="' + (g >= c.b1 ? 'ok' : '') + '">' + (g >= c.b1 ? '✓' : '') + '</i><span>Đủ ' + tnGio(c.b1) + ' giờ<small>' + (g >= c.b1 ? 'Đã đạt' : 'Còn ' + tnGio(c.b1 - g) + ' giờ') + '</small></span><b class="' + (g >= c.b1 ? 'ok' : '') + '">' + tnD(tnLuongGio(c, c.b1)) + '</b></div>' +
+      c.moc.map(function (m) { var dat = g >= m[0]; return '<div><i class="' + (dat ? 'ok' : '') + '">' + (dat ? '✓' : '') + '</i><span>Mốc ' + tnGio(m[0]) + ' giờ<small>' + (dat ? 'Đã đạt' : 'Còn ' + tnGio(m[0] - g) + ' giờ') + '</small></span><b class="' + (dat ? 'ok' : '') + '">+' + tnD(m[1]) + '</b></div>'; }).join('') +
+      '</div>';
+    // phụ cấp quản lý
+    var pcDong = (x && x.pc || []).map(function (p) {
+      return '<span>' + esc(p.cty) + '<small>' + (p.loai === 'chinh' ? 'Phụ trách chính' : 'Đồng phụ trách') + (p.co ? '' : ' · chưa có người') + '</small></span><b' + (p.co ? '' : ' style="color:var(--muted)"') + '>' + tnD(p.tien) + '</b>';
+    }).join('');
+    // bậc thang thu nhập
+    var bt = '<div class="tn-bt"><span class="toi">Kỳ này đến nay</span><b class="toi">' + tnD(tong) + '</b>' +
+      diem.filter(function (v) { return v > g; }).slice(0, 3).map(function (v) { return '<span>Nếu đạt ' + tnGio(v) + ' giờ</span><b>' + tnD(tnLuongGio(c, v) + tnMoc(c, v) + pc + (vd.tien || 0)) + '</b>'; }).join('') + '</div>';
+    var chips = chuX && ct.sales && ct.sales.length ? '<div class="tn-chips">' + ct.sales.map(function (s) { return '<button data-s="' + esc(s) + '"' + (s === (S.tnSale || ct.ten) ? ' class="on"' : '') + '>' + esc(s) + '</button>'; }).join('') + '</div>' : '';
+    t.innerHTML = '<div class="tn-k">' + chips +
+      '<div class="card hero"><div class="tn-hd"><div class="tn-ten"><b>' + esc(ct.ten || S.toi.ten) + '</b><span>Kỳ ' + tnNgay(ct.kyTu) + ' – ' + tnNgay(ct.kyDen) + ' · trả 05/' + ('0' + (new Date(ct.kyDen).getMonth() + 2 > 12 ? 1 : new Date(ct.kyDen).getMonth() + 2)).slice(-2) + '</span></div>' +
+      '<span class="tn-hang" style="background:' + hang.bg + ';color:' + hang.fg + '">Hạng ' + hang.t + '</span></div>' +
+      '<div class="meta">Lương tạm tính kỳ này</div><div class="tn-big" id="tnTong">' + tnD(tong) + '</div>' +
+      '<div class="tn-ct">' +
+      '<span>Lương theo giờ<small>' + tnGio(g) + ' giờ quản lý' + (g > c.b1 ? '' : ' × ' + vnd(c.g1) + 'đ') + '</small></span><b>' + tnD(lg) + '</b>' +
+      (mc ? '<span>Thưởng mốc giờ</span><b class="x">+' + tnD(mc) + '</b>' : '') +
+      '<span>Phụ cấp phụ trách công ty</span><b>' + tnD(pc) + '</b>' +
+      '<span>Phụ cấp truyền thông<small>' + vd.n + '/' + vd.so + ' video được duyệt</small></span><b>' + tnD(vd.tien) + '</b>' +
+      '</div>' + mtHtml + trk + '</div>' +
+      '<div class="card"><div class="tn-sec">Phụ cấp truyền thông</div>' +
+      '<div class="row sp"><span style="white-space:nowrap">' + vd.n + '/' + vd.so + ' video</span><b class="num" style="white-space:nowrap">' + tnD(vd.tien) + ' / ' + tnD(vd.toiDa) + '</b></div>' +
+      '<div class="tn-bar"><i data-w="' + Math.min(100, vd.n / vd.so * 100) + '"></i></div>' +
+      '<div class="meta">' + (vd.n >= vd.so ? 'Đã nhận đủ phụ cấp truyền thông kỳ này.' : 'Mỗi video được duyệt +' + tnD(moiVd) + ', còn ' + (vd.so - vd.n) + ' video nữa nhận đủ ' + tnD(vd.toiDa) + '.') + '</div>' +
+      (vd.ds && vd.ds.length ? '<div class="tn-vd">' + vd.ds.slice(0, 5).map(function (v) { return '<span>' + tnNgay(v.l) + '</span><span>' + esc(v.t) + '</span>'; }).join('') + '</div>' : '') + '</div>' +
+      '<div class="card"><div class="tn-sec">Các mốc thưởng kỳ này</div>' + ds + '<div class="meta" style="margin-top:8px">Đơn giá: ' + vnd(c.g1) + 'đ/giờ đến giờ ' + tnGio(c.b1) + ', ' + vnd(c.g2) + 'đ/giờ đến giờ ' + tnGio(c.b2) + ', ' + vnd(c.g3) + 'đ/giờ từ giờ ' + tnGio(c.b2 + 1) + '.</div></div>' +
+      (pcDong ? '<div class="card"><div class="tn-sec">Phụ cấp phụ trách công ty</div><div class="tn-ct" style="border-top:0;margin-top:0;padding-top:0">' + pcDong + '</div>' +
+        '<div class="meta" style="margin-top:8px">Phụ trách chính ' + tnD(c.pcChinh || 500000) + ', đồng phụ trách ' + tnD(c.pcDong || 200000) + ' mỗi công ty có người đi làm trong kỳ.</div></div>' : '') +
+      '<div class="card"><div class="tn-sec">Bậc thang thu nhập</div>' + bt + '<div class="meta" style="margin-top:8px">Đã gồm phụ cấp hiện có. Giờ theo dữ liệu công ty gửi.</div></div>' +
+      (o.tra ? '<div class="card">' + traSaleDong({ tieu: o.tra.tieu, dau: o.tra.dau, dong: [o.tra.dong] }, o.tra.dong) + '</div>' : '') +
+      '<div class="meta" style="text-align:center">' + (x && x.capNhat ? 'Giờ cập nhật ' + esc(x.capNhat) : 'Kỳ mới, chưa có số giờ từ công ty') + ' · <a href="#" id="tnMoi" style="color:var(--blue)">làm mới</a></div></div>';
+    document.getElementById('tnMoi').onclick = function (e) { e.preventDefault(); this.textContent = 'đang tải…'; taiTN(true); };
+    t.querySelectorAll('.tn-chips button').forEach(function (b) { b.onclick = function () { S.tnSale = b.getAttribute('data-s'); var cc = TN_CHU[S.tnSale]; if (cc) hienTN(cc); taiTN(false, !!cc); }; });
+    requestAnimationFrame(function () { requestAnimationFrame(function () { t.querySelectorAll('[data-w]').forEach(function (e) { e.style.width = e.getAttribute('data-w') + '%'; }); }); });
+    // tiền tăng / vượt mốc so với lần xem trước (mỗi kỳ, mỗi người)
+    var k = 'vlta_tnx_' + ct.ky + '_' + (ct.ten || ''), cu = docSo(k);
+    tnDem(document.getElementById('tnTong'), cu ? Math.min(cu.tong, tong) : tong, tong);
+    if (!chuX && cu) {
+      var vuot = diem.filter(function (v) { return cu.g < v && g >= v; });
+      if (vuot.length) {
+        var v1 = vuot[vuot.length - 1], m1 = c.moc.filter(function (m) { return m[0] === v1; })[0];
+        tnPhao(); bnrDua({ m: 'Bạn vừa đạt mốc ' + tnGio(v1) + ' giờ' + (m1 ? ' · thưởng +' + tnD(m1[1]) : v1 === c.b1 ? ' · lên hạng Vàng' : ''), ms: 5000 });
+      } else if (tong > cu.tong) {
+        var lyDo = vd.n > cu.vd && g === cu.g ? (vd.n - cu.vd) + ' video vừa được duyệt' : g > cu.g ? 'số giờ công ty vừa cập nhật +' + tnGio(g - cu.g) + ' giờ' : 'số liệu vừa cập nhật';
+        bnrDua({ m: 'Lương tạm tính +' + tnD(tong - cu.tong) + ': ' + lyDo, ms: 4500 });
+      }
+      if (vd.n >= vd.so && cu.vd < vd.so) tnPhao();
+    }
+    luuSo(k, { tong: tong, g: g, vd: vd.n });
   }
 
   // ---------- thu chi + quỹ ----------
@@ -9951,10 +10131,11 @@ textarea.inp{font-family:inherit}
       }
       t.innerHTML = '<div class="row sp"><select class="inp ky" id="tqKy" aria-label="Chọn kỳ">' + ds.map(function (x) { return '<option value="' + esc(x) + '"' + (x === o.ky ? ' selected' : '') + '>Kỳ ' + esc(tqThang(x)) + '</option>'; }).join('') + '</select>' +
         '<button class="link" id="tqMoi">⟳ Số mới</button></div>' + kyTam +
-        '<div class="meta tqMeta"><span>' + (cn ? 'Cập nhật ' + cn[1] + ' · ' + cn[2] : esc(o.capNhat)) + '</span>' + (laChu() ? '<button class="glVao" id="glVao">' + GLI + 'Giả lập tài chính ›</button>' : '') + '</div>' +
+        '<div class="meta tqMeta"><span>' + (cn ? 'Cập nhật ' + cn[1] + ' · ' + cn[2] : esc(o.capNhat)) + '</span>' + (laChu() ? '<div class="tqNut"><button class="glVao" id="tnVao">Lương sale ›</button><button class="glVao" id="glVao">' + GLI + 'Giả lập tài chính ›</button></div>' : '') + '</div>' +
         '<div class="seg" id="tqSeg"><button data-n="ln"' + (nhom === 'ln' ? ' class="on"' : '') + '>Lợi nhuận</button><button data-n="tien"' + (nhom === 'tien' ? ' class="on"' : '') + '>Tiền & công nợ</button><button data-n="vs"' + (nhom === 'vs' ? ' class="on"' : '') + '>Vendor & sale</button></div>' +
         than;
       document.querySelectorAll('#tqSeg button').forEach(function (b) { b.onclick = function () { S.tqNhom = b.getAttribute('data-n'); luu('vlta_tqn', S.tqNhom); var gh0 = document.getElementById('glHost'); if (gh0) gh0.remove(); hienTQ(o); }; });
+      var tv = document.getElementById('tnVao'); if (tv) tv.onclick = function () { moTab('tn'); };   // 24/11: chủ xem trang lương sale
       var gv = document.getElementById('glVao'); if (gv) gv.onclick = function () { S.tqTruoc = nhom; S.tqNhom = 'gl'; luu('vlta_tqn', 'gl'); hienTQ(o); window.scrollTo(0, 0); };
       document.getElementById('tqKy').onchange = function () {
         var k = this.value;
