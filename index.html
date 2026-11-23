@@ -13,7 +13,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
 <script src="config.js"></script>
-<script>window.PB = { so: 194, luc: "23/11 23:56" };</script>
+<script>window.PB = { so: 195, luc: "24/11 00:25" };</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap">
 <style>
@@ -6040,6 +6040,7 @@ textarea.inp{font-family:inherit}
     }, function (er) { ccTd(''); toastLoi(er.message); });
   }
   var BAN_MOI = [
+    { so: 195, ds: [{ i: '📅', t: 'BEST tính giờ trọn tháng', m: 'Lương kinh doanh: giờ BEST tính từ ngày 1 đến cuối tháng như trước, trả ngày 5. Các công ty khác tính từ ngày 26 tháng trước đến ngày 25.' }] },
     { so: 194, ds: [{ i: '💰', t: 'Trang lương mới cho nhân viên kinh doanh', m: 'Từ kỳ 26/11 – 25/12, tab Thu nhập hiện lương tạm tính theo cơ chế mới: lương theo giờ quản lý, thưởng mốc giờ, phụ cấp phụ trách công ty và phụ cấp truyền thông. Có mục tiêu gần nhất, thanh tiến độ các mốc và bậc thang thu nhập.' },
       { i: '🎬', t: 'Mỗi video được duyệt cộng ngay phụ cấp truyền thông', m: 'Mỗi video được duyệt +33.333đ, đủ 30 video nhận 1.000.000đ. Thông báo duyệt video ghi rõ số tiền vừa được cộng.' }] },
     { so: 193, ds: [{ i: '🔔', t: 'Chuông thông báo ở góc trên', m: 'Video chờ duyệt, phiếu đã gửi chưa ghi chuyển, thay đổi trên bảng công và lịch hẹn nhận việc được gom vào chuông. Có tin mới thì chuông chuyển vàng và rung nhẹ; chạm vào chuông để xem, chạm từng dòng để mở đúng chỗ cần làm.' },
@@ -9355,7 +9356,7 @@ textarea.inp{font-family:inherit}
       '<div class="tn-bar"><i data-w="' + Math.min(100, vd.n / vd.so * 100) + '"></i></div>' +
       '<div class="meta">' + (vd.n >= vd.so ? 'Đã nhận đủ phụ cấp truyền thông kỳ này.' : 'Mỗi video được duyệt +' + tnD(moiVd) + ', còn ' + (vd.so - vd.n) + ' video nữa nhận đủ ' + tnD(vd.toiDa) + '.') + '</div>' +
       (vd.ds && vd.ds.length ? '<div class="tn-vd">' + vd.ds.slice(0, 5).map(function (v) { return '<span>' + tnNgay(v.l) + '</span><span>' + esc(v.t) + '</span>'; }).join('') + '</div>' : '') + '</div>' +
-      '<div class="card"><div class="tn-sec">Các mốc thưởng kỳ này</div>' + ds + '<div class="meta" style="margin-top:8px">Đơn giá: ' + vnd(c.g1) + 'đ/giờ đến giờ ' + tnGio(c.b1) + ', ' + vnd(c.g2) + 'đ/giờ đến giờ ' + tnGio(c.b2) + ', ' + vnd(c.g3) + 'đ/giờ từ giờ ' + tnGio(c.b2 + 1) + '.</div></div>' +
+      '<div class="card"><div class="tn-sec">Các mốc thưởng kỳ này</div>' + ds + '<div class="meta" style="margin-top:8px">Đơn giá: ' + vnd(c.g1) + 'đ/giờ đến giờ ' + tnGio(c.b1) + ', ' + vnd(c.g2) + 'đ/giờ đến giờ ' + tnGio(c.b2) + ', ' + vnd(c.g3) + 'đ/giờ từ giờ ' + tnGio(c.b2 + 1) + '.<br>Riêng BEST tính giờ trọn tháng (1 – cuối tháng), trả cùng ngày 5.</div></div>' +
       (pcDong ? '<div class="card"><div class="tn-sec">Phụ cấp phụ trách công ty</div><div class="tn-ct" style="border-top:0;margin-top:0;padding-top:0">' + pcDong + '</div>' +
         '<div class="meta" style="margin-top:8px">Phụ trách chính ' + tnD(c.pcChinh || 500000) + ', đồng phụ trách ' + tnD(c.pcDong || 200000) + ' mỗi công ty có người đi làm trong kỳ.</div></div>' : '') +
       '<div class="card"><div class="tn-sec">Bậc thang thu nhập</div>' + bt + '<div class="meta" style="margin-top:8px">Đã gồm phụ cấp hiện có. Giờ theo dữ liệu công ty gửi.</div></div>' +
