@@ -40,7 +40,7 @@ window.__clk=function(t,goc){var b=[...(goc||document).querySelectorAll('button,
 window.__dong=function(){document.querySelectorAll('.sheet,.bmoi').forEach(e=>e.remove())};
 window.__cty=async function(ma){var c2=document.getElementById('ctyChon');if(c2){c2.click();await w(300);var bb=document.querySelector('#ctyDs [data-c="'+ma+'"]');if(bb)bb.click();else __dong()}else{var sb=document.querySelector('#ctySeg [data-c="'+ma+'"],#htSeg [data-c="'+ma+'"]');if(sb)sb.click()}await w(3000)};
 window.__run=async function(theme,phan){document.documentElement.setAttribute('data-theme',theme);var R={};
- window.__da=[];async function ghi(ten){window.__da.push(ten);for(var r of [0,1]){__rong(r);await w(200);if(window.__duoiLai){__duoiLai();await w(150)}for(var x of __chk()){(R[x]=R[x]||[]).push(ten+(r?'/rộng':''))}}__rong(0)}
+ window.__da=[];async function ghi(ten){window.__da.push(ten);for(var r of [0,1]){__rong(r);await w(200);if(window.__canDoi){__canDoi();await w(60)}if(window.__duoiLai){__duoiLai();await w(150)}for(var x of __chk()){(R[x]=R[x]||[]).push(ten+(r?'/rộng':''))}}__rong(0)}
  if(phan===1){__tab('Lao động');await w(1500);await __cty('HOJEONG');await ghi('Lao động');var it=document.querySelector('#list .it');if(it){it.click();await w(2600);await ghi('Hồ sơ tuần');__clk('Bảng công');await w(1300);await ghi('Hồ sơ công');__clk('Phiếu tháng');await w(2000);await ghi('Hồ sơ tháng');if(__clk('Ghi ứng')){await w(700);await ghi('Ghi ứng');__dong()}__tab('Lao động');await w(1800)}
   var bl=document.getElementById('moBL');if(bl){bl.click();await w(1500);await ghi('Bảng lương');__dong()}
   var ut=document.getElementById('moUT');if(ut){ut.click();await w(1800);await ghi('Ứng/trả gần đây');__dong();__tab('Lao động');await w(1500)}
@@ -81,6 +81,19 @@ window.__tuTach=function(){var out=[],GH=new Set('chủ nhật|công ty|công nh
  return out};
 var __goc=window.__chk;window.__chk=function(){return __goc().concat(__doan(),__cauNoi(),__tuTach())};
 
+// b213: dấu · đầu/cuối dòng, khối hàng lệch kiểu (hàng số cùng dòng lẫn hàng số xuống dưới), lưới ô lệch số dòng
+window.__b213=function(){var out=[],gs=[document],hh=document.getElementById('glHost');if(hh&&hh.shadowRoot)gs.push(hh.shadowRoot);
+ function y(r){return r.top+r.height/2}
+ for(var g of gs){var w=document.createTreeWalker(g,4),n;while((n=w.nextNode())){var v=n.nodeValue,p=n.parentElement;if(!p||v.indexOf('·')<0||p.closest('script,style,#phieu'))continue;var rc=p.getBoundingClientRect();if(!rc.width||!rc.height)continue;var dd=p.closest('details');if(dd&&!dd.open&&!p.closest('summary'))continue;
+  for(var i=0;i<v.length;i++){if(v[i]!=='·')continue;var r=document.createRange();r.setStart(n,i);r.setEnd(n,i+1);var a=r.getClientRects()[0];if(!a)continue;var j=i-1;while(j>=0&&/\s/.test(v[j]))j--;var k=i+1;while(k<v.length&&/\s/.test(v[k]))k++;
+   if(j>=0){var r1=document.createRange();r1.setStart(n,j);r1.setEnd(n,j+1);var b=r1.getClientRects()[0];if(b&&y(a)-y(b)>a.height/2)out.push('Dấu · đầu dòng | '+v.trim().slice(0,60))}
+   if(k<v.length){var r2=document.createRange();r2.setStart(n,k);r2.setEnd(n,k+1);var c=r2.getClientRects()[0];if(c&&y(c)-y(a)>a.height/2)out.push('Dấu · cuối dòng | '+v.trim().slice(0,60))}}}
+  var HANG=[['.tqr','>span','>b'],['.qRow','>span','>b'],['.yR','>span','>b'],['.tc3>div','>span','>b'],['.lnR','>span>b','>b'],['.tr1','>.tn','>b',1],['.q2r','>span','>b'],['.cqR','>span:first-child','>.tien'],['.q2pr','>span:first-child','>.num'],['.q2sr','>span','>b']];
+  for(var t of HANG){var nh=new Map();for(var r of g.querySelectorAll(t[0])){if(!r.getClientRects().length)continue;var dd2=r.closest('details');if(dd2&&!dd2.open)continue;var pp=t[3]?r.parentElement.parentElement:r.parentElement;if(!nh.has(pp))nh.set(pp,[]);nh.get(pp).push(r)}
+   nh.forEach(function(rs){var duoi=0,canh=0;for(var r of rs){var l=r.querySelector(':scope'+t[1]),v2=r.querySelector(':scope'+t[2]);if(!l||!v2||!v2.getClientRects().length)continue;var a=l.getBoundingClientRect(),b=v2.getBoundingClientRect();if(b.top>=a.bottom-2)duoi++;else canh++}if(duoi&&canh)out.push('Khối lệch kiểu '+t[0]+' | '+(rs[0].innerText||'').trim().replace(/\n/g,' / ').slice(0,50))})}
+  for(var lu of g.querySelectorAll('.g3,.nhaO')){if(!lu.getClientRects().length)continue;var ds=[...lu.querySelectorAll(':scope>div>span,:scope>div>small')].filter(x=>x.parentElement.parentElement===lu).map(x=>{var rr=document.createRange();rr.selectNodeContents(x);var tt=[];for(var q of rr.getClientRects()){if(q.width<1)continue;var yy=Math.round(y(q));if(!tt.some(z=>Math.abs(z-yy)<q.height/2))tt.push(yy)}return tt.length});if(ds.length&&Math.min(...ds)!==Math.max(...ds))out.push('Lưới lệch dòng | '+(lu.innerText||'').trim().replace(/\n/g,' / ').slice(0,50))}}
+ return out};
+var __goc2=window.__chk;window.__chk=function(){return __goc2().concat(__b213())};
 
 return 'harness ok '+(window.PB&&PB.so);
 })()
