@@ -13,7 +13,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
 <script src="config.js"></script>
-<script>window.PB = { so: 211, luc: "24/11 21:55" };</script>
+<script>window.PB = { so: 211, luc: "24/11 22:03" };</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap">
 <style>
@@ -1281,6 +1281,24 @@ b.yT0{display:block;margin-bottom:2px}
     var v2 = v.replace(/(\S{1,24})[ \t]+(\S{1,14})(\s*)$/, function (m, a, b, c) { return a.length + b.length <= 24 ? a + '\u00a0' + b + c : m; });
     if (v2 !== v) tn.nodeValue = v2;
   }
+  // b212: dòng cuối quá ngắn (< 30% khung, vd chỉ còn "ngày.") -> nối thêm 1 chữ cho dòng cuối dài ra; đo sau khi vẽ, tối đa 2 lần
+  var DUOI = [];
+  function duoiXep(tn) { var v = tn.nodeValue; if (v.length < 20 || (tn.nextSibling && !/[.!?…:;)”"]\s*$/.test(v))) return; DUOI.push(tn); if (DUOI.length === 1) requestAnimationFrame(duoiSua); }
+  function khungRong(el) { while (el && getComputedStyle(el).display === 'inline') el = el.parentElement; if (!el) return 0; var st = getComputedStyle(el), r = el.getBoundingClientRect(); return r.width - (parseFloat(st.paddingLeft) || 0) - (parseFloat(st.paddingRight) || 0); }
+  function duoiSua() {
+    var ds = DUOI; DUOI = [];
+    ds.forEach(function (tn) {
+      for (var lan = 0; lan < 2; lan++) {
+        if (!tn.isConnected || !tn.parentElement) return;
+        var r = document.createRange(); r.selectNodeContents(tn);
+        var rs = [].filter.call(r.getClientRects(), function (q) { return q.width > 1; }); if (rs.length < 2) return;
+        var cuoi = rs[rs.length - 1], truoc = rs[rs.length - 2]; if (Math.abs(cuoi.top - truoc.top) < cuoi.height / 2) return;
+        var W = khungRong(tn.parentElement); if (!W || cuoi.width >= W * 0.3) return;
+        var v = tn.nodeValue, i = v.replace(/\s+$/, '').lastIndexOf(' '); if (i < 0 || v.length - i > 32) return;
+        tn.nodeValue = v.slice(0, i) + '\u00a0' + v.slice(i + 1);
+      }
+    });
+  }
   function chiaVe(tn) {   // câu dài: chỉ ngắt ở dấu phẩy, dấu ·, trước ngoặc dài – mỗi vế là 1 khối không bị cắt giữa (vế quá dài vẫn tự xuống dòng bên trong)
     var v = tn.nodeValue; if (v.length < 30 || !/, |\s·\s| \(/.test(v)) return;
     var ps = v.replace(/, (?=\S)/g, ',\u0001').replace(/ · /g, ' ·\u0001').replace(/ \((?=[^)]{10,}\))/g, '\u0001(').split('\u0001').filter(function (x) { return x !== ''; });
@@ -1304,7 +1322,7 @@ b.yT0{display:block;margin-bottom:2px}
     }
     var v2 = chuDinh(tn.nodeValue); if (v2 !== tn.nodeValue) tn.nodeValue = v2;
     noiCuoi(tn);
-    if (!flex) chiaVe(tn);
+    if (!flex) duoiXep(tn);   // b212: bỏ chia vế thành khối (vế không vừa chỗ trống nhảy cả xuống dòng -> dòng trên hụt, chữ dồn trái)
   }
   var CAN_RE = /\S[ \t]+\S/;   // có dấu cách mới cần xử lý
   function tachCau(goc) { if (!goc) return; var w = document.createTreeWalker(goc, 4), ds = [], n; while ((n = w.nextNode())) if (n.nodeValue.length > 6 && CAN_RE.test(n.nodeValue)) ds.push(n); ds.forEach(tachCauNode); }
