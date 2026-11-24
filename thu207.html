@@ -6419,7 +6419,7 @@ b.yT0{display:block;margin-bottom:2px}
   // 06/11: mục mới dạng {i biểu tượng, t tiêu đề, m câu nói làm được gì, c [[tên cách dùng, các bước]], v vai}; trong bước: [[Nút trong app]], *Lựa chọn của điện thoại*
   function bmChu(t) { return esc(t).replace(/\[\[(.+?)\]\]/g, '<span class="bmk">$1</span>').replace(/\*(.+?)\*/g, '<i>$1</i>'); }
   function bmMuc(x) {
-    if (typeof x === 'string') return '<ul class="bmds"><li>' + esc(x) + '</li></ul>';
+    if (typeof x === 'string') return '<ul class="bmds"><li>' + yCauH(esc(x)) + '</li></ul>';
     return '<div class="bmb">' + (x.i ? '<div class="bmt"><span class="bmn">' + esc(x.i) + '</span><b>' + esc(x.t) + '</b></div>' : '<div class="bmt"><b>' + esc(x.t) + '</b></div>') +
       (x.m ? '<div class="bmm">' + yCauH(bmChu(x.m)) + '</div>' : '') +   // b207: mỗi câu 1 dòng, không viết thành đoạn
       (x.c || []).map(function (c) { return '<div class="bmct">' + esc(c[0]) + '</div><div class="bmm">' + bmChu(c[1]) + '</div>'; }).join('') + '</div>';
