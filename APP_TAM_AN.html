@@ -318,6 +318,8 @@ body .tbMeta{max-width:none;text-align:left;white-space:nowrap;overflow:hidden;t
 body .tbk-h b{min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}body .tbk-h .link{flex:none;white-space:nowrap}
 .cqR>span:first-child{min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.cqR>.tien{flex:none}
 .bmoi b,.bmoi h3,.bmoi .bmm,.bmoi li{text-wrap:balance}
+.bmoi{padding:16px!important}.bmoi>div{max-width:400px!important}.bmb .bmm{font-size:14.5px;line-height:1.45;color:var(--fg2)}.bmb .bmm .yL+.yL{margin-top:4px}.bmb .bmt{font-size:15px;gap:8px}.bmb .bmn{width:28px;height:28px;border-radius:8px;font-size:15px}
+.bmb .bmm .yL{position:relative;padding-left:14px}.bmb .bmm .yL::before{content:'';position:absolute;left:2px;top:.62em;width:5px;height:5px;border-radius:50%;background:var(--muted)}.bmb .bmm .yL:only-child{padding-left:0}.bmb .bmm .yL:only-child::before{display:none}
 body .tch b{font-size:clamp(11.5px,3.4vw,13px)}.gcL span{overflow-wrap:anywhere}.utTong .meta{flex:none;white-space:nowrap}
 /* danh sách: gom trong 1 khối trắng, mỗi dòng tối đa 2 dòng chữ */
 .list{gap:16px}
@@ -1194,6 +1196,11 @@ body #ldNut .ckt.nghi{margin:0;border-radius:0;background:none;min-height:50px}b
 .kbvTom{padding:12px 16px;margin-bottom:12px}.kbvTg{display:grid;grid-template-columns:minmax(0,1fr) repeat(3,62px);gap:6px 8px;align-items:baseline;margin-top:6px}
 .kbvTg small{font-size:11.5px;color:var(--muted);text-align:right;white-space:nowrap}.kbvTg b{font-size:14.5px;font-weight:600}.kbvTg b.num{text-align:right}.kbvTg b.c{color:var(--warn)}
 .tqMeta+.q2viec{margin-bottom:12px}
+/* b207: khoản bất thường dưới số lợi nhuận tháng */
+.lnBt{margin-top:12px;padding:8px 12px 4px;border-radius:12px;background:var(--soft)}
+.lnR{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:7px 0;border-top:1px solid var(--line)}.lnBt .yH+.lnR{border-top:0}
+.lnR>span{min-width:0;display:flex;flex-direction:column}.lnR>span b{font-size:14px;font-weight:500;color:var(--fg)}.lnR>span small{font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lnR>b{white-space:nowrap;font-size:14px;font-weight:600;color:var(--fg2)}.lnR.kq>span b{font-weight:600}.lnR.kq{flex-wrap:wrap;gap:2px 10px}.lnR.kq>b{font-size:15px;font-weight:700;margin-left:auto}.lnR.kq>span{min-width:auto}.lnR.kq>span b{white-space:nowrap;font-size:13.5px}
 .yBox details>summary{list-style:none;cursor:pointer;font-size:12.5px;color:var(--blue);padding:4px 0}.yBox details>summary::-webkit-details-marker{display:none}
 .ySt{margin:8px 0 0;padding-left:20px;font-size:13.5px;line-height:1.45;color:var(--fg2);text-align:left}.ySt li+li{margin-top:4px}
 .yN{white-space:nowrap}
@@ -6155,11 +6162,14 @@ b.yT0{display:block;margin-bottom:2px}
     }, function (er) { ccTd(''); toastLoi(er.message); });
   }
   var BAN_MOI = [
-    { so: 206, ds: [{ i: '📊', v: 'chu', t: 'Bảng Doanh thu và các khoản trừ cộng ra đúng', m: 'Thêm dòng Phí pháp nhân và dòng Thưởng TREND chưa có doanh thu. Mục Từng công ty có cả TREND, cộng lại bằng Lợi nhuận từ các công ty.' },
-      { i: '🧭', v: 'chu', t: 'Tổng quan gọn theo từng mục', m: 'Việc cần xử lý nằm ngay trên thanh Lợi nhuận / Tiền & công nợ / Vendor & sale. Mục Lợi nhuận chỉ còn số lợi nhuận.' },
-      { i: '🎬', v: 'chu', t: 'Content: tình hình quay của từng sale', m: 'Đầu phần Kịch bản có bảng Đã quay, Đã đăng trong 7 ngày và số bài còn chưa quay của từng sale.' },
-      { i: '🧾', t: 'Sổ thu chi dễ đọc hơn', m: 'Mỗi khoản lấy nội dung làm tên, loại khoản ghi ở dòng dưới. Số người đi làm ở tab Lao động thành thẻ riêng, số cũ được ghi rõ.' }] },
-    { so: 204, ds: [{ i: '📐', t: 'Chữ trình bày từng ý một dòng', m: 'Các khoản trong Thu chi, Tổng quan và Giả lập hiện thành từng hàng, tên bên trái, số bên phải. Ghi chú, hướng dẫn mỗi ý một dòng, không còn chữ bị ngắt giữa chừng.' }] },
+    { so: 207, ds: [{ i: '🔍', v: 'chu', t: 'Khoản bất thường', m: 'Nằm ngay dưới số lợi nhuận tháng. Gồm lương, thưởng đã trả nhưng chưa có doanh thu. Gồm cả khoản chi một lần như phong bì, quà, sim. Dòng cuối là lợi nhuận nếu bỏ các khoản đó.' },
+      { i: '📝', t: 'Có gì mới dễ đọc hơn', m: 'Mỗi ý một dòng, có dấu chấm đầu dòng. Tiêu đề ngắn, nằm gọn một dòng.' }] },
+    { so: 206, ds: [{ i: '📊', v: 'chu', t: 'Lợi nhuận cộng ra đúng', m: 'Bảng Doanh thu và các khoản trừ có thêm Phí pháp nhân. Thưởng TREND chưa có doanh thu là một dòng riêng. Tổng các công ty khớp với dòng tổng.' },
+      { i: '🧭', v: 'chu', t: 'Tổng quan gọn hơn', m: 'Việc cần xử lý nằm trên cùng. Mục Lợi nhuận chỉ còn số lợi nhuận.' },
+      { i: '🎬', v: 'chu', t: 'Tình hình quay video', m: 'Đầu phần Kịch bản có bảng của từng sale. Gồm số bài đã quay, đã đăng trong 7 ngày. Kèm số bài còn chưa quay.' },
+      { i: '🧾', t: 'Sổ thu chi dễ đọc hơn', m: 'Mỗi khoản lấy nội dung làm tên. Loại khoản ghi ở dòng dưới.' },
+      { i: '👷', t: 'Thẻ người đi làm riêng', m: 'Số người đi làm tách khỏi thẻ Còn phải trả. Số cũ được làm mờ, ghi rõ cũ mấy ngày.' }] },
+    { so: 204, ds: [{ i: '📐', t: 'Mỗi dòng một ý', m: 'Các khoản hiện thành từng hàng, tên trái, số phải. Ghi chú, hướng dẫn mỗi ý một dòng.' }] },
     { so: 200, ds: [{ i: '🧮', v: 'chu', t: 'Giả lập tài chính gọn chữ hơn', m: 'Nhãn ngắn lại, không còn bị xuống 2 dòng: Đơn giá tối thiểu, Chiết khấu tối đa, Lao động tối thiểu / ngày, Tăng lương tối đa. Bảng lương công nhân: tên mức và ô nhập trên một hàng, giải thích nằm ngay dưới.' }] },
     { so: 199, ds: [{ i: '✖️', t: 'Hộp nào cũng có nút × để đóng', m: 'Mọi hộp nổi (Ghi khoản, Thông báo, Chọn công ty…) có nút × ở góc trên. Các nút nhỏ như ‹, Sửa ứng / trả dễ bấm trúng hơn.' },
       { i: '📅', t: 'Bảng công ghi rõ tháng', m: 'Ô ngày đầu kỳ và ngày 01 ghi kèm tháng, ví dụ 26/10 và 01/11. Ứng / trả lương trong kỳ xếp khoản mới nhất lên đầu.' },
@@ -6400,9 +6410,9 @@ b.yT0{display:block;margin-bottom:2px}
   // 06/11: mục mới dạng {i biểu tượng, t tiêu đề, m câu nói làm được gì, c [[tên cách dùng, các bước]], v vai}; trong bước: [[Nút trong app]], *Lựa chọn của điện thoại*
   function bmChu(t) { return esc(t).replace(/\[\[(.+?)\]\]/g, '<span class="bmk">$1</span>').replace(/\*(.+?)\*/g, '<i>$1</i>'); }
   function bmMuc(x) {
-    if (typeof x === 'string') return '<ul class="bmds"><li>' + esc(x) + '</li></ul>';
+    if (typeof x === 'string') return '<ul class="bmds"><li>' + yCauH(esc(x)) + '</li></ul>';
     return '<div class="bmb">' + (x.i ? '<div class="bmt"><span class="bmn">' + esc(x.i) + '</span><b>' + esc(x.t) + '</b></div>' : '<div class="bmt"><b>' + esc(x.t) + '</b></div>') +
-      (x.m ? '<div class="bmm">' + bmChu(x.m) + '</div>' : '') +
+      (x.m ? '<div class="bmm">' + yCauH(bmChu(x.m)) + '</div>' : '') +   // b207: mỗi câu 1 dòng, không viết thành đoạn
       (x.c || []).map(function (c) { return '<div class="bmct">' + esc(c[0]) + '</div><div class="bmm">' + bmChu(c[1]) + '</div>'; }).join('') + '</div>';
   }
   function hopMoi(ds, tieu) {   // ghi đủ mọi điểm mới; dài thì cuộn bên trong hộp
@@ -10039,12 +10049,34 @@ b.yT0{display:block;margin-bottom:2px}
       return '<div class="q2r"><span>' + (v >= 0 ? '+ ' : '− ') + esc(r[0]) + '</span><b class="num ' + (v >= 0 ? 'c-xanh' : 'mo') + '">' + (v >= 0 ? '+' : '−') + vnd0(Math.abs(v)) + '</b><div class="q2bar">' + bar + '</div></div>';
     }).join('') + '<div class="yLeg"><span><i style="background:var(--q2xam)"></i>Đang có</span><span><i style="background:var(--good)"></i>Cộng vào</span><span><i style="background:var(--q2do)"></i>Trừ đi</span><em>Đơn vị: đồng</em></div></div>';
   }
+  function lnBatThuong(o, so) {   // b207: khoản bất thường làm lệch lợi nhuận tháng – công ty đã trả lương/thưởng nhưng chưa có doanh thu, chi một lần (danh sách anh chốt 23/11)
+    var m1 = tqMuc(o, '1.'), cp = tqMuc(o, 'CHI PHÍ CHUNG'), ds = [];
+    if (m1) {
+      var cDt = m1.dau.filter(function (d) { return /^Doanh thu/i.test(d); })[0], cLg = m1.dau.filter(function (d) { return /^Lương công nhân/i.test(d); })[0];
+      if (cDt && cLg) m1.dong.forEach(function (r) { if (!r[0] || /^Tổng/i.test(r[0])) return; var l = q2So(tqGt(m1, r, cLg)); if (l > 0 && !(q2So(tqGt(m1, r, cDt)) > 0)) ds.push({ t: (/TREND/i.test(r[0]) ? 'Thưởng ' : 'Lương ') + r[0], phu: 'Đã trả, chưa có doanh thu', v: l }); });
+    }
+    if (cp) {   // chỉ lấy khoản lá (dòng con, hoặc nhóm không có dòng con) để không cộng trùng
+      var la = [], cur = null;
+      cp.dong.forEach(function (r) { if (!r[0] || /^Tổng/i.test(r[0]) || !tqCo(r[1])) return; if (/^\s/.test(r[0])) { if (cur) cur.con = 1; la.push(r); } else { if (cur && !cur.con) la.push(cur.r); cur = { r: r, con: 0 }; } });
+      if (cur && !cur.con) la.push(cur.r);
+      var mot = la.filter(function (r) { var n = r[0].trim(); return !/phần tháng \d+\/\d+/i.test(n) && /phong bì|quà|(?:^|[\s,])sim(?:[\s,]|$)|tài khoản|mua máy|mua điện thoại|(?:^|[\s,])(?:áo|dép)(?:[\s,]|$)|hoàn công/i.test(n); })
+        .sort(function (a, b) { return q2So(b[1]) - q2So(a[1]); });
+      var tm = mot.reduce(function (a, r) { return a + q2So(r[1]); }, 0);
+      if (tm) { var ten = boCP(mot[0][0].trim()).replace(/:.*$/, ''); ds.push({ t: 'Chi một lần', phu: ten + (mot.length > 1 ? ' và ' + (mot.length - 1) + ' khoản khác' : ''), v: tm }); }
+    }
+    var tong = ds.reduce(function (a, x) { return a + x.v; }, 0);
+    if (tong < 1e6) return '';   // khoản nhỏ thì không hiện cho đỡ rối
+    var kt = so + tong;
+    return '<div class="lnBt"><div class="yH">Khoản bất thường trong tháng</div>' + ds.map(function (x) {
+      return '<div class="lnR"><span><b>' + esc(x.t) + '</b><small>' + esc(x.phu) + '</small></span><b class="num">' + vnd0(x.v) + '</b></div>';
+    }).join('') + '<div class="lnR kq"><span><b>Nếu bỏ các khoản trên</b></span><b class="num" style="color:var(--' + (kt < 0 ? 'bad' : 'good') + ')">' + (kt > 0 ? '+' : '') + vnd(kt) + '</b></div></div>';
+  }
   function tqNhomLN(o) {
     var t = o.the, m1 = tqMuc(o, '1.'), m4 = tqMuc(o, '4.'), cp = tqMuc(o, 'CHI PHÍ CHUNG'), h = '';
     if (t[0]) {   // số lớn: lợi nhuận tháng + so với tháng trước (lấy từ dòng phụ của thẻ "… · tháng 9: -34,807,395")
       var so = q2So(t[0][1]), am = so < 0, mT = /tháng\s+(\d+):\s*([-−]?[\d,]+)/i.exec(t[0][2] || ''), chip = '';
       if (mT) { var doi = so - q2So(mT[2]); chip = '<div class="q2chips"><span class="q2tag ' + (doi >= 0 ? 'l' : 'd') + '">' + (doi >= 0 ? '▲ ' : '▼ ') + vnd(Math.abs(doi)) + ' so với tháng ' + mT[1] + '</span><span class="q2tag x">tháng ' + mT[1] + ': ' + esc(tienVN(dauTru(mT[2]))) + '</span></div>'; }
-      h += '<div class="card q2hero"><div class="meta">' + esc(t[0][0]) + (/tạm tính/i.test(t[0][2] || '') ? ' · tạm tính' : '') + '</div><div class="big num" style="color:var(--' + (am ? 'bad' : 'good') + ')">' + esc(tienVN(dauTru(t[0][1]))) + '</div>' + chip + (t[4] ? '<div class="q2sr" style="margin-top:10px;font-size:13px"><span class="ell">Lãi cộng dồn' + (/(\d+)\s*tháng/i.test(t[4][2] || '') ? ' ' + /(\d+)\s*tháng/i.exec(t[4][2])[1] + ' tháng' : '') + '</span><b class="num" style="font-size:15px;color:var(--' + (q2So(t[4][1]) < 0 ? 'bad' : 'good') + ')">' + esc(tienVN(dauTru(t[4][1]))) + '</b></div>' : '') + (/tạm tính/i.test(t[0][2] || '') ? '<div class="meta" style="margin-top:6px">Tháng chưa kết thúc – số tính đến các khoản đã ghi</div>' : '') + '</div>';
+      h += '<div class="card q2hero"><div class="meta">' + esc(t[0][0]) + (/tạm tính/i.test(t[0][2] || '') ? ' · tạm tính' : '') + '</div><div class="big num" style="color:var(--' + (am ? 'bad' : 'good') + ')">' + esc(tienVN(dauTru(t[0][1]))) + '</div>' + chip + lnBatThuong(o, so) + (t[4] ? '<div class="q2sr" style="margin-top:10px;font-size:13px"><span class="ell">Lãi cộng dồn' + (/(\d+)\s*tháng/i.test(t[4][2] || '') ? ' ' + /(\d+)\s*tháng/i.exec(t[4][2])[1] + ' tháng' : '') + '</span><b class="num" style="font-size:15px;color:var(--' + (q2So(t[4][1]) < 0 ? 'bad' : 'good') + ')">' + esc(tienVN(dauTru(t[4][1]))) + '</b></div>' : '') + (/tạm tính/i.test(t[0][2] || '') ? '<div class="meta" style="margin-top:6px">Tháng chưa kết thúc – số tính đến các khoản đã ghi</div>' : '') + '</div>';
     }
     var tg1 = m1 ? m1.dong.filter(function (r) { return /^Tổng/i.test(r[0]); })[0] : null;
     if (tg1) {   // doanh thu đi đâu: mỗi bước thanh xám = còn lại, đỏ = phần bị trừ
