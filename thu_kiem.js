@@ -1,6 +1,6 @@
 (function(){
 var s=document.createElement('style');s.textContent='.wpHop{display:none!important}.wpKhoa,.wpKhoa body{overflow:visible!important}';document.head.appendChild(s);
-var w=ms=>new Promise(r=>setTimeout(r,ms));window.__w=w;
+var w=ms=>new Promise(r=>setTimeout(r,Math.round(ms*(window.__k||1))));window.__w=w;
 var tg=el=>el.tagName.toLowerCase()+(el.id?'#'+el.id:'')+(typeof el.className==='string'&&el.className.trim()?'.'+el.className.trim().split(/\s+/).slice(0,2).join('.'):'')+' "'+(el.innerText||el.placeholder||'').trim().replace(/\n/g,' / ').slice(0,40)+'"';
 function tatCa(){var a=[...document.querySelectorAll('body *')];var h=document.getElementById('glHost');if(h&&h.shadowRoot)a=a.concat([...h.shadowRoot.querySelectorAll('*')]);return a}
 function anc(el){for(var p=el.parentElement;p&&p!==document.body;p=p.parentElement){var o=getComputedStyle(p).overflowX;if(o==='auto'||o==='scroll'||o==='hidden')return true}return false}
