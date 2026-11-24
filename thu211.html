@@ -13,7 +13,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
 <script src="config.js"></script>
-<script>window.PB = { so: 209, luc: "24/11 21:19" };</script>
+<script>window.PB = { so: 209, luc: "24/11 21:22" };</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap">
 <style>
@@ -8107,7 +8107,7 @@ b.yT0{display:block;margin-bottom:2px}
   }
   function bcaXlHtml(o) {
     var c = esc(BCA.cty), ng = function (sv) { return ddmm(serialDate(sv)); }, so = function (x) { return String(Math.round((Number(x) || 0) * 100) / 100).replace('.', ','); };
-    var nL = (o.lech || []).length, nC = (o.chuaCo || []).length, ok = !nL && !nC && !(o.loi || []).length;
+    var nL = (o.lech || []).length, nC = (o.chuaCo || []).length, ok = !nL && !nC && !(o.ghiLoi || []).length;
     var dong = function (a, b, cls) { return '<div class="bcx-r"><span>' + a + '</span><span class="' + (cls || '') + '">' + b + '</span></div>'; };
     var bo = [o.bo ? o.bo + ' ô giờ' : '', o.vt ? o.vt + ' vị trí' : ''].filter(Boolean).join(' · ');
     var h = '<div class="bcx-the"><div class="bcx-dau"><span class="vtIc bcx-ic">' + ICON_BL + '</span><span class="vtTx"><b>' + (ok ? 'Khớp hết với file ' + c : 'Đã nạp file ' + c) + '</b>' +
@@ -8121,7 +8121,7 @@ b.yT0{display:block;margin-bottom:2px}
     if (nC) h += '<div class="bca-sec">Chưa có trên bảng công</div>' + o.chuaCo.map(function (x) {
       return '<div class="bcx-c"><b>' + esc(x.ten) + '</b><span>' + esc(x.ngay + (x.vt ? ' · ' + x.vt : '')) + '</span><small class="cau">' + esc(x.ly ? x.ly + '.' : 'Người mới cần chọn nguồn tuyển. Nhập bằng ảnh để thêm.') + '</small></div>';
     }).join('');
-    if ((o.loi || []).length) h += '<div class="note bad cau">' + o.loi.map(esc).join('<br>') + '</div>';
+    if ((o.ghiLoi || []).length) h += '<div class="note bad cau">' + o.ghiLoi.map(esc).join('<br>') + '</div>';
     if ((o.canh || []).length) h += '<div class="note warn cau">' + o.canh.map(esc).join('<br>') + '</div>';
     return h;
   }
