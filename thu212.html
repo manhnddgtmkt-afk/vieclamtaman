@@ -13,7 +13,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
 <script src="config.js"></script>
-<script>window.PB = { so: 211, luc: "24/11 22:11" };</script>
+<script>window.PB = { so: 211, luc: "24/11 22:19" };</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap">
 <style>
@@ -1274,14 +1274,14 @@ b.yT0{display:block;margin-bottom:2px}
   var GHEP_RE = new RegExp('(^|[^\\p{L}\\p{N}])(chủ nhật|công ty|công nhân|thanh toán|tăng ca|hành chính|chuyên cần|doanh thu|lợi nhuận|phiếu lương|bảng công|bảng lương|giờ công|ca ngày|ca đêm|tuần sau|tháng sau|tuần này|tháng này|hôm nay|hôm qua|vân tay|thông báo|cập nhật|danh sách|kịch bản|giấy tờ|chi phí|pháp nhân|tiền ăn|hỗ trợ|đi làm|đi muộn|nhận việc|trở lên|đủ công|cơ chế|tâm an|thu chi|ngày thường|lao động|trình duyệt|cài đặt|điện thoại|số liệu|giữ lại|cộng vào|trả lương|tiền lương|kỳ công|làm tròn|tính tròn|giờ ra|giờ vào|đơn giá|chiết khấu|giả lập|tổng quan|phải trả|còn lại|số dư|tạm tính)(?=$|[^\\p{L}\\p{N}])', 'giu');
   var DON_VI_RE = /(\d)[ \t]+(giờ|phút|công|ngày|tuần|tháng|năm|người|đ|%|bài|lần|khoản|tiếng|triệu|tr|giây|tờ|ảnh|video|lao động|ca)(?=$|[^\p{L}])/gu;
   var SO_TRUOC_RE = /(^|[^\p{L}])(thứ|Thứ|ngày|Ngày|tháng|Tháng|kỳ|Kỳ|mốc|Mốc|bản|Bản|lúc|Lúc|bài|Bài|tuần|Tuần|T)[ \t]+(?=\d)/gu;
-  function chuDinh(v) { return v.replace(DON_VI_RE, '$1 $2').replace(SO_TRUOC_RE, '$1$2 ').replace(/[ \t]+([=×–\/+])[ \t]+/g, ' $1 ').replace(GHEP_RE, function (m, a, w) { return a + w.replace(/ /g, ' '); }); }
+  function chuDinh(v) { return v.replace(DON_VI_RE, '$1 $2').replace(SO_TRUOC_RE, '$1$2 ').replace(/[ \t]+([=×–\/+])[ \t]+/g, ' $1 ').replace(/(^|[^\p{L}])(mỗi|Mỗi|từng|Từng)[ \t]+(?=\p{L})/gu, '$1$2 ').replace(GHEP_RE, function (m, a, w) { return a + w.replace(/ /g, ' '); }); }
   // b212: 2 chữ cuối câu / cuối đoạn đi liền -> dòng cuối không còn 1 chữ lẻ (thay chia đều dòng: chữ vẫn chạy hết dòng)
   function noiCuoi(tn) {
-    var v = tn.nodeValue; if (!/[.!?…:;)”"]\s*$/.test(v) && tn.nextSibling) return;
+    var v = tn.nodeValue; if ((v.trim().match(/\s+/g) || []).length < 2) return;   // b212: mọi nút chữ từ 3 chữ (nhãn đứng trước ô / nút cũng không để 1 chữ rơi lẻ)
     var v2 = v.replace(/(\S{1,24})[ \t]+(\S{1,14})(\s*)$/, function (m, a, b, c) { return a.length + b.length <= 24 ? a + '\u00a0' + b + c : m; });
     if (v2 !== v) tn.nodeValue = v2;
   }
-  // b212: dòng cuối quá ngắn (< 30% khung, vd chỉ còn "ngày.") -> nối thêm 1 chữ để dòng cuối dài ra; đo sau khi vẽ, tối đa 2 lần.
+  // b212: dòng cuối quá ngắn (< 20% khung, vd chỉ còn "ngày.") -> nối thêm 1 chữ để dòng cuối dài ra; đo sau khi vẽ, 1 lần (nối nhiều làm dòng trên hụt).
   //   Đo từ đầu khối chứa tới hết nút chữ (dòng cuối có thể gồm cả chữ đậm phía trước); chỉ xét nút chữ kết thúc dòng: cuối khối, trước câu sau (.yS) hoặc hết câu
   var DUOI = [];
   function khoiCua(el) { while (el && getComputedStyle(el).display === 'inline') el = el.parentElement; return el; }
@@ -1291,7 +1291,7 @@ b.yT0{display:block;margin-bottom:2px}
     var ds = DUOI; DUOI = [];
     ds.forEach(function (tn) {
       tn.__duoi = 0;
-      for (var lan = 0; lan < 2; lan++) {
+      for (var lan = 0; lan < 1; lan++) {
         if (!tn.isConnected) return;
         var k = khoiCua(tn.parentElement); if (!k) return;
         var st = getComputedStyle(k); if (st.whiteSpace === 'nowrap' || /flex|grid/.test(st.display)) return;
@@ -1301,7 +1301,7 @@ b.yT0{display:block;margin-bottom:2px}
         var c = rs[rs.length - 1], cung = rs.filter(function (q) { return Math.abs((q.top + q.bottom) / 2 - (c.top + c.bottom) / 2) < c.height / 2; });
         if (cung.length === rs.length) return;   // chỉ 1 dòng
         var dai = Math.max.apply(null, cung.map(function (q) { return q.right; })) - Math.min.apply(null, cung.map(function (q) { return q.left; }));
-        if (dai >= W * 0.3) return;
+        if (dai >= W * 0.2) return;
         var v = tn.nodeValue, i = v.replace(/\s+$/, '').lastIndexOf(' '); if (i < 0 || v.length - i > 32) return;
         tn.nodeValue = v.slice(0, i) + ' ' + v.slice(i + 1);
       }
