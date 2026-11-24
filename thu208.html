@@ -13,7 +13,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
 <script src="config.js"></script>
-<script>window.PB = { so: 208, luc: "24/11 20:12" };</script>
+<script>window.PB = { so: 208, luc: "24/11 20:13" };</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap">
 <style>
@@ -6552,7 +6552,7 @@ b.yT0{display:block;margin-bottom:2px}
     if (tt === 'khong') { bo(); return; }
     if (!wpPub()) apiT({ v: 'wpKhoa', im: 1 }).then(function (o) { if (o && o.pub) { luu('vlta_wpk', o.pub); wpChan(); } }, function () { });
     var h;
-    if (tt === 'hoi') h = '<div class="wpI">🔔</div><h3>Bật thông báo</h3><p class="wpP">App cần bật thông báo để báo ngay cho bạn khi có video mới và các việc cần làm, kể cả lúc không mở app.</p>' +
+    if (tt === 'hoi') h = '<div class="wpI">🔔</div><h3>Bật thông báo</h3><p class="wpP">Bật thông báo để app báo ngay cho bạn.<br>Gồm video mới và việc cần làm, kể cả lúc không mở app.</p>' +
       '<button class="btn" id="wpB"' + (WPS.dang || !wpPub() ? ' disabled' : '') + '>' + (WPS.dang ? 'Đang bật…' : wpPub() ? 'Bật thông báo' : 'Đang chuẩn bị…') + '</button>';
     else if (tt === 'chan') h = '<div class="wpI">🔕</div><h3>Thông báo đang bị chặn</h3><p class="wpP">Máy đang chặn thông báo của app. Bật lại theo các bước:</p>' +
       '<ol class="wpO">' + (wpIOS() ? '<li>Mở <b>Cài đặt</b> của iPhone</li><li>Chọn <b>Thông báo</b></li><li>Chọn <b>Tâm An</b></li><li>Bật <b>Cho phép thông báo</b></li>' : '<li>Mở cài đặt của trình duyệt</li><li>Tìm mục <b>Thông báo</b> của Tâm An</li><li>Chọn <b>Cho phép</b></li>') + '</ol>' +
