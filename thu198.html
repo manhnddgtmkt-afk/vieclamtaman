@@ -13,7 +13,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
 <script src="config.js"></script>
-<script>window.PB = { so: 198, luc: "24/11 17:13" };</script>
+<script>window.PB = { so: 198, luc: "24/11 17:17" };</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap">
 <style>
@@ -303,6 +303,17 @@ body .tch small{font-size:clamp(12px,3.6vw,15px)}body .tch{padding-left:10px;pad
 .qRow{display:flex;flex-wrap:wrap;align-items:baseline;gap:2px 12px;padding:10px 0;border-top:1px solid var(--soft);font-size:15px}
 .qRow:first-child{border-top:0}.qRow>span{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--fg2)}
 .qRow>b{font-weight:500;white-space:nowrap}.qRow>small{flex:0 0 100%;font-size:12px;color:var(--faint)}
+/* b198: ô nhập cỡ chữ 16px (đủ để iPhone không tự phóng, không to quá làm tràn ô); màn đăng nhập giữ chữ to */
+.inp{font-size:16px;padding:12px 14px;letter-spacing:0}
+body .lg-card .inp{font-size:19px;padding:15px 16px;letter-spacing:.5px}
+body textarea.inp{font-size:16px}
+/* b198: Thay đổi cần xem lại – tên người 1 dòng, người sửa + giờ xuống dòng dưới */
+body .tbPh{flex-direction:column;align-items:stretch;gap:2px}
+body .tbPh b{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+body .tbMeta{max-width:none;text-align:left;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+body .tbk-h b{min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}body .tbk-h .link{flex:none;white-space:nowrap}
+.cqR>span:first-child{min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.cqR>.tien{flex:none}
+.bmoi b,.bmoi h3,.bmoi .bmm,.bmoi li{text-wrap:balance}
 body .tch b{font-size:clamp(11.5px,3.4vw,13px)}.gcL span{overflow-wrap:anywhere}.utTong .meta{flex:none;white-space:nowrap}
 /* danh sách: gom trong 1 khối trắng, mỗi dòng tối đa 2 dòng chữ */
 .list{gap:16px}
@@ -3994,8 +4005,8 @@ textarea.inp{font-family:inherit}
       h += '<div class="card"><b>' + (CCS.dang.tai ? 'Đang tải ảnh từ CCCD TẠM ' + CCS.dang.i : 'Đang cắt và ghép ảnh ' + (CCS.dang.i + 1)) + '/' + CCS.dang.n + '…</b><div class="ccbar0"><i style="width:' + Math.round(100 * CCS.dang.i / CCS.dang.n) + '%"></i></div>' + ccNhacThuc() + '</div>';
     } else if (!CCS.ds.length) {
       h += '<div class="card cch">' + ICON.cc + '<b>In CCCD người mới</b><div class="meta">Chọn cùng lúc ảnh mặt trước và mặt sau của từng người trong album. App tự cắt sát viền, nắn thẳng, ghép 2 mặt, in mỗi người 1 tờ A4 rồi lưu vào thư mục CCCD trên Drive. Không cần in thì bấm Lưu kho.</div>' +
-        '<button class="btn" id="ccChon">Chọn ảnh trong album</button>' + (CCS.tamN ? (CCS.ghCo ? '<button class="btn ghost" id="ccMC"' + (CCS.chayMC && CCS.chayMC.dang ? ' disabled>Máy chủ đang xử lý CCCD TẠM…' : '>Xử lý ngay trên máy chủ (' + CCS.tamN + ' ảnh chờ)') + '</button>' : '') +
-          '<button class="btn ghost" id="ccTam">' + (CCS.ghCo ? 'Cắt ghép trên điện thoại (16 ảnh/lượt)' : 'Xử lý ảnh chờ trong CCCD TẠM (' + CCS.tamN + ')') + '</button>' : CCS.tamN === 0 ? '<button class="btn ghost" disabled>Không còn ảnh chờ trong CCCD TẠM</button>' : '') + '<button class="btn ghost" id="ccKho">Tìm ảnh trong kho</button></div>' + ccDuyetThe() + ccChayHtml() + ccKqHtml();
+        '<button class="btn" id="ccChon">Chọn ảnh trong album</button>' + (CCS.tamN ? (CCS.ghCo ? '<button class="btn ghost" id="ccMC"' + (CCS.chayMC && CCS.chayMC.dang ? ' disabled>Máy chủ đang xử lý ảnh chờ…' : '>Máy chủ xử lý ' + CCS.tamN + ' ảnh chờ') + '</button>' : '') +
+          '<button class="btn ghost" id="ccTam">' + (CCS.ghCo ? 'Cắt ghép trên điện thoại' : 'Xử lý ảnh chờ trong CCCD TẠM (' + CCS.tamN + ')') + '</button>' : CCS.tamN === 0 ? '<button class="btn ghost" disabled>Không còn ảnh chờ trong CCCD TẠM</button>' : '') + '<button class="btn ghost" id="ccKho">Tìm ảnh trong kho</button></div>' + ccDuyetThe() + ccChayHtml() + ccKqHtml();
     } else {
       if (CCS.tam) h += '<div class="note" style="margin-bottom:10px">Lượt này lấy ' + CCS.tam.n + ' ảnh từ <b>CCCD TẠM</b>. Bấm <b>Lưu kho</b> để đưa người đã ghép đúng vào thư mục năm sinh; ảnh gốc của họ chuyển sang CCCD TẠM/ĐÃ XỬ LÝ. Ảnh lẻ, ảnh chưa đọc được vẫn để lại trong CCCD TẠM.</div>' + ccKqHtml();
       if (CCS.doi) h += '<div class="note warn ccdoi"><span>Chạm vào ảnh muốn đổi chỗ</span><button class="btn sm ghost" id="ccDoiThoi">Thôi</button></div>';
@@ -4972,11 +4983,11 @@ textarea.inp{font-family:inherit}
     var k = CCS.kho, h = '', n = CCS.db ? CCS.db.ds.length : 0;
     h += '<div class="card cckl"><div class="row sp"><b style="font-size:17px">Tìm ảnh trong kho</b><button class="link" id="ckDong">Đóng</button></div>' +
       '<div id="ckTong" style="font-size:15px;margin:2px 0 8px;color:#1F3864">' + ckTong() + '</div>' +
-      '<input class="inp" id="ckTen" type="search" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Gõ tên, năm sinh hoặc số CCCD" value="' + esc(k.q || '') + '" style="margin:0">' +
+      '<input class="inp" id="ckTen" type="search" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Tên, năm sinh hoặc số CCCD" value="' + esc(k.q || '') + '" style="margin:0">' +
       '<div class="meta" id="ckTenG" style="margin-top:-6px">' + (n ? 'Danh bạ ' + n + ' người · không cần gõ dấu, gõ đầu chữ cũng được (vd: “hoa 1994”, “ng t huong”)' : 'Đang tải danh bạ…') + '</div>' +
       '<div class="seg" id="ckGioi">' + [['', 'Tất cả'], ['NAM', 'Nam'], ['NỮ', 'Nữ']].map(function (x) { return '<button data-gi="' + x[0] + '"' + (k.gioi === x[0] ? ' class="on"' : '') + '>' + x[1] + '</button>'; }).join('') + '</div>' +
-      '<div class="ckn"><label>Năm sinh</label><input class="inp" id="ckTu" inputmode="numeric" maxlength="4" placeholder="từ năm" value="' + esc(k.tu) + '"><span>–</span><input class="inp" id="ckDen" inputmode="numeric" maxlength="4" placeholder="đến năm" value="' + esc(k.den) + '"></div>' +
-      '<div class="ckn"><label>Số cuối CCCD</label><input class="inp" id="ckDuoi" inputmode="numeric" maxlength="12" placeholder="không bắt buộc" value="' + esc(k.duoi) + '"></div>' +
+      '<div class="ckn"><label>Năm sinh</label><input class="inp" id="ckTu" inputmode="numeric" maxlength="4" placeholder="Từ" value="' + esc(k.tu) + '"><span>–</span><input class="inp" id="ckDen" inputmode="numeric" maxlength="4" placeholder="Đến" value="' + esc(k.den) + '"></div>' +
+      '<div class="ckn"><label>Số cuối CCCD</label><input class="inp" id="ckDuoi" inputmode="numeric" maxlength="12" placeholder="Không bắt buộc" value="' + esc(k.duoi) + '"></div>' +
       '<button class="btn" id="ckTim"' + (k.dang ? ' disabled' : '') + '>' + (k.dang === 1 ? 'Đang tìm…' : 'Tìm theo năm sinh') + '</button></div>';
     h += '<div id="ckKq">' + ckKqHtml(k) + '</div>';
     h += '<div class="ccday">' + ccMay(0) + '<button class="btn ghost" id="ckLai">Quay lại</button><button class="btn ghost ccgui ccg2" id="ckGui" aria-label="Chia sẻ PDF">' + ICON_GUI + '<small>PDF</small></button><button class="btn ghost ccgui ccg2" id="ckAnh" aria-label="Lưu ảnh về máy">' + ICON_ANH + '<small>Ảnh</small></button><button class="btn" id="ckIn"></button></div><div class="ccdem"></div>';
@@ -8841,9 +8852,9 @@ textarea.inp{font-family:inherit}
     // 6. chế độ đang tuyển (để báo ứng viên)
     var dot = (d.cc.dot || []).slice().sort(function (a, b) { return a.tu < b.tu ? -1 : 1; }).filter(function (x) { return x.tu <= hn; }).pop(), lg = (d.cc.luong || []).slice().sort(function (a, b) { return a.tu < b.tu ? -1 : 1; }).filter(function (x) { return x.tu <= hn; }).pop();
     if (dot || lg) h += '<div class="card cqCheDo"><b>Chế độ báo ứng viên mới</b><div class="meta">Áp dụng cho người nhận việc từ hôm nay</div>' +
-      (lg ? '<div class="row sp"><span class="meta">Lương cơ bản Trend</span><span class="tien num">' + vnd0(lg.so) + ' đ/tháng</span></div>' : '') +
-      (dot ? '<div class="row sp"><span class="meta">Thưởng Trend (chia 3 tháng)</span><span class="tien num">' + vnd0(dot.trend) + ' đ</span></div><div class="row sp"><span class="meta">Thưởng Tâm An</span><span class="tien num">' + vnd0(dot.ta) + ' đ</span></div>' +
-        '<div class="row sp cqTong"><span>Tổng thưởng người mới</span><span class="tien num">' + vnd0((dot.trend || 0) + (dot.ta || 0)) + ' đ</span></div><div class="meta cau">' + esc(dot.ten) + ' (nhận việc từ ' + esc(cqDM(dot.tu)) + '). Tâm An trả: ' + esc(dot.cach) + '.</div>' : '') + '</div>';
+      (lg ? '<div class="row sp cqR"><span class="meta">Lương cơ bản Trend</span><span class="tien num">' + vnd0(lg.so) + ' đ/tháng</span></div>' : '') +
+      (dot ? '<div class="row sp cqR"><span class="meta">Thưởng Trend (chia 3 tháng)</span><span class="tien num">' + vnd0(dot.trend) + ' đ</span></div><div class="row sp cqR"><span class="meta">Thưởng Tâm An</span><span class="tien num">' + vnd0(dot.ta) + ' đ</span></div>' +
+        '<div class="row sp cqTong cqR"><span>Tổng thưởng người mới</span><span class="tien num">' + vnd0((dot.trend || 0) + (dot.ta || 0)) + ' đ</span></div><div class="meta cau">' + esc(dot.ten) + ' (nhận việc từ ' + esc(cqDM(dot.tu)) + '). Tâm An trả: ' + esc(dot.cach) + '.</div>' : '') + '</div>';
     if (d.luc) { var t = new Date(d.luc); h += '<div class="meta" style="text-align:center;margin-top:10px">Số liệu lúc ' + ('0' + t.getHours()).slice(-2) + ':' + ('0' + t.getMinutes()).slice(-2) + ' · kéo xuống để lấy số mới</div>'; }
     hd.innerHTML = '<div id="choBox"></div>'; l.innerHTML = h; veCho();
     cqGan(l, d);
