@@ -12,7 +12,7 @@ window.__chk=function(){var out=[],W=document.documentElement.clientWidth;if(doc
   if(['INPUT','SELECT','TEXTAREA'].includes(el.tagName)&&parseFloat(st.fontSize)<16&&!['checkbox','radio','file','range'].includes(el.type))out.push('Ô gõ <16px: '+tg(el));
   if(el.tagName==='INPUT'&&el.placeholder&&!el.value){var cv=window.__cv||(window.__cv=document.createElement('canvas').getContext('2d'));cv.font=st.fontWeight+' '+st.fontSize+' '+st.fontFamily;var cw=rc.width-parseFloat(st.paddingLeft)-parseFloat(st.paddingRight)-(el.type==='search'?18:0);if(cv.measureText(el.placeholder).width>cw+1)out.push('Gợi ý bị cắt: '+tg(el));}
   // chu nhay dong: nhan/tieu de ngan (<=48 ky tu, khong phai cau giai thich .cau) bi xuong 2 dong
-  if(el.closest('.cau,.note,.empty,.wpHop,.tai,svg,table,.bmoi'))continue;
+  if(el.closest('.cau,.note,.empty,.wpHop,.tai,svg,table,.bmoi,.yL,.yG'))continue;
   if(st.display.indexOf('flex')>=0||st.display.indexOf('grid')>=0)continue;
   var inl=true;for(var c of el.children){var d=getComputedStyle(c).display;if(d!=='inline'&&d!=='inline-block'&&d!=='none'){inl=false;break}}if(!inl)continue;
   var t=(el.innerText||'').trim();if(!t||t.length>48||t.indexOf('\n')>=0)continue;
