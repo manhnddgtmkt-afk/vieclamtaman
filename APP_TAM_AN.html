@@ -1239,7 +1239,7 @@ b.yT0{display:block;margin-bottom:2px}
       if (/^mục \d+$/i.test(q)) continue;
       if (/^(file|sheet)\s/i.test(q)) nguon = 'Nguồn: ' + q.replace(/,\s*/g, ' · '); else ghi.unshift(cham(hoa1(q))); }
     if ((m = /^Theo (file|sổ) ([^,·]{3,40}),\s*(.+)$/i.exec(t))) { nguon = nguon || 'Nguồn: ' + m[1].toLowerCase() + ' ' + m[2]; t = m[3]; }
-    if ((m = /^([^:·]{4,70}):\s+(.+)$/.exec(t)) && /·/.test(m[2])) { dau = m[1].replace(/^Đã chi, sẽ chia đều vào chi phí các tháng sau$/i, 'Đã chi, chia đều vào các tháng sau'); t = m[2]; }
+    if ((m = /^([^:·]{4,70}):\s+(.+)$/.exec(t)) && /·/.test(m[2]) && !/^[−-]?\d[\d.,]*(\s?đ)?$/.test(m[2].split(' · ')[0].trim())) { /* "tháng 9: 119.458.000 · …" không phải tiêu đề */ dau = m[1].replace(/^Đã chi, sẽ chia đều vào chi phí các tháng sau$/i, 'Đã chi, chia đều vào các tháng sau'); t = m[2]; }
     var ps = t.split(' · '), hang = [], la = [];
     if (ps.length >= 2) ps.forEach(function (x) { var k = /^(.+)\s(−?\d[\d.]*(?:,\d+)?(?:\s?đ)?)$/.exec(x.trim()); if (k) hang.push([hoa1(k[1].replace(/:\s*$/, '')), k[2]]); else la.push(cham(hoa1(x))); });
     var h = '';
@@ -6147,7 +6147,7 @@ b.yT0{display:block;margin-bottom:2px}
     }, function (er) { ccTd(''); toastLoi(er.message); });
   }
   var BAN_MOI = [
-    { so: 203, ds: [{ i: '📐', t: 'Chữ trình bày từng ý một dòng', m: 'Các khoản trong Thu chi, Tổng quan và Giả lập hiện thành từng hàng, tên bên trái, số bên phải. Ghi chú, hướng dẫn mỗi ý một dòng, không còn chữ bị ngắt giữa chừng.' }] },
+    { so: 204, ds: [{ i: '📐', t: 'Chữ trình bày từng ý một dòng', m: 'Các khoản trong Thu chi, Tổng quan và Giả lập hiện thành từng hàng, tên bên trái, số bên phải. Ghi chú, hướng dẫn mỗi ý một dòng, không còn chữ bị ngắt giữa chừng.' }] },
     { so: 200, ds: [{ i: '🧮', v: 'chu', t: 'Giả lập tài chính gọn chữ hơn', m: 'Nhãn ngắn lại, không còn bị xuống 2 dòng: Đơn giá tối thiểu, Chiết khấu tối đa, Lao động tối thiểu / ngày, Tăng lương tối đa. Bảng lương công nhân: tên mức và ô nhập trên một hàng, giải thích nằm ngay dưới.' }] },
     { so: 199, ds: [{ i: '✖️', t: 'Hộp nào cũng có nút × để đóng', m: 'Mọi hộp nổi (Ghi khoản, Thông báo, Chọn công ty…) có nút × ở góc trên. Các nút nhỏ như ‹, Sửa ứng / trả dễ bấm trúng hơn.' },
       { i: '📅', t: 'Bảng công ghi rõ tháng', m: 'Ô ngày đầu kỳ và ngày 01 ghi kèm tháng, ví dụ 26/10 và 01/11. Ứng / trả lương trong kỳ xếp khoản mới nhất lên đầu.' },
