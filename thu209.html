@@ -13,7 +13,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
 <script src="config.js"></script>
-<script>window.PB = { so: 209, luc: "24/11 20:26" };</script>
+<script>window.PB = { so: 209, luc: "24/11 20:28" };</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap">
 <style>
@@ -1269,7 +1269,7 @@ b.yT0{display:block;margin-bottom:2px}
   function chuDinh(v) { return v.replace(DON_VI_RE, '$1 $2').replace(SO_TRUOC_RE, '$1$2 ').replace(/[ \t]+([=×–\/+])[ \t]+/g, ' $1 ').replace(GHEP_RE, function (m, a, w) { return a + w.replace(/ /g, ' '); }); }
   function chiaVe(tn) {   // câu dài: chỉ ngắt ở dấu phẩy, dấu ·, trước ngoặc dài – mỗi vế là 1 khối không bị cắt giữa (vế quá dài vẫn tự xuống dòng bên trong)
     var v = tn.nodeValue; if (v.length < 30 || !/, |\s·\s| \(/.test(v)) return;
-    var ps = v.replace(/, (?=\S)/g, ',\u0001').replace(/ · /g, ' ·\u0001').replace(/ \((?=[^)]{16,}\))/g, '\u0001(').split('\u0001').filter(function (x) { return x !== ''; });
+    var ps = v.replace(/, (?=\S)/g, ',\u0001').replace(/ · /g, ' ·\u0001').replace(/ \((?=[^)]{10,}\))/g, '\u0001(').split('\u0001').filter(function (x) { return x !== ''; });
     if (ps.length < 2) return;
     var f = document.createDocumentFragment();
     ps.forEach(function (x, i) { if (i) f.appendChild(document.createTextNode(' ')); var sp = document.createElement('span'); sp.className = 'yCl'; sp.textContent = x; f.appendChild(sp); });
