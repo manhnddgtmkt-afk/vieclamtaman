@@ -13,7 +13,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
 <script src="config.js"></script>
-<script>window.PB = { so: 200, luc: "24/11 18:10" };</script>
+<script>window.PB = { so: 200, luc: "24/11 18:12" };</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap">
 <style>
@@ -10583,12 +10583,12 @@ textarea.inp{font-family:inherit}
       var tong = x.rev + x.revV, luong = x.luong + x.cc + x.luongV, khac = x.mangV - (tong - luong) + x.thuong;
       return '<details class="ctx"><summary class="bt"><span><span class="dot" style="--c:' + cl + '"></span>' + ten + ' lãi <i class="mui">›</i></span><b class="num ' + (x.lai < 0 ? 'am' : '') + '">' + fS(x.lai) + '</b><small>' + ghi + '</small></summary>' +
         '<div class="bt con"><span>Doanh thu trước VAT</span><b class="num">' + fT(tong) + '</b></div>' +
-        '<div class="bt con"><span>− Lương công nhân, chuyên cần (gồm người của vendor)</span><b class="num">' + fT(luong) + '</b></div>' +
-        '<div class="bt con"><span>− Phí pháp nhân, chiết khấu, trả vendor</span><b class="num">' + fT(-khac) + '</b></div>' +
-        '<div class="bt con"><span>− Thưởng sale (theo giờ của công ty này)</span><b class="num">' + fT(x.thuong) + '</b></div>' +
+        '<div class="bt con"><span>− Lương công nhân</span><b class="num">' + fT(luong) + '</b><small>Gồm chuyên cần và người của vendor</small></div>' +
+        '<div class="bt con"><span>− Phí và vendor</span><b class="num">' + fT(-khac) + '</b><small>Phí pháp nhân, chiết khấu, trả vendor</small></div>' +
+        '<div class="bt con"><span>− Thưởng sale</span><b class="num">' + fT(x.thuong) + '</b><small>Theo giờ của công ty này</small></div>' +
         '<div class="bt con"><span><b>= Trước chi phí cố định</b></span><b class="num">' + fS(x.mangV) + '</b></div>' +
-        '<div class="bt con"><span>− Chi phí cố định (' + fD(x.tyDT * 100, 0) + '% doanh thu)</span><b class="num">' + fT(x.gCD) + '</b></div>' +
-        '<div class="bt con"><span><i>Nếu không có ' + ten + ', toàn công ty còn</i></span><b class="num ' + (x.boDi < 0 ? 'am' : '') + '">' + fS(x.boDi) + '</b></div></details>';
+        '<div class="bt con"><span>− Chi phí cố định</span><b class="num">' + fT(x.gCD) + '</b><small>' + fD(x.tyDT * 100, 0) + '% doanh thu</small></div>' +
+        '<div class="bt con"><span><i>Bỏ ' + ten + ', cả công ty còn</i></span><b class="num ' + (x.boDi < 0 ? 'am' : '') + '">' + fS(x.boDi) + '</b></div></details>';
     }
     function veCty(r, d) {   // 26/10: lãi từng công ty nằm ngay trong ô kết quả, chạm › xem chi tiết (bỏ mục Toàn công ty lặp lại)
       var el = $g('caCty'), mo = {}; el.querySelectorAll('details').forEach(function (x, i) { if (x.open) mo[i] = 1; });
@@ -10609,7 +10609,7 @@ textarea.inp{font-family:inherit}
           : '<div class="bt"><span class="tru">+ Lao động vendor: giữ lại ' + fT(S.p.G) + ' − phí pháp nhân ' + fT(S.p.P * S.p.fee / 100) + ' = ' + fS(S.p.G - S.p.P * S.p.fee / 100) + ' đ/giờ × ' + fT((S.p.gioV || 0) * ctx().kV) + ' giờ hệ số 1</span><b class="num">' + fS(r.laiV) + '</b></div>';
       }
       h += '<div class="bt"><span>Trước chi phí cố định</span><b class="num ' + (r.mangV < 0 ? 'am' : '') + '">' + fS(r.mangV) + '</b></div>';
-      h += '<div class="bt"><span class="tru">− Chi phí cố định (' + fD(r.tyDT * 100, 0) + '% doanh thu)</span><b class="num">' + fT(r.gCD) + '</b></div>';
+      h += '<div class="bt"><span class="tru">− Chi phí cố định</span><b class="num">' + fT(r.gCD) + '</b><small>' + fD(r.tyDT * 100, 0) + '% doanh thu</small></div>';
       h += '<div class="bt tong"><span>' + esc(tenCt()) + ' lãi</span><b class="num ' + (r.lai < 0 ? 'am' : 'duong') + '">' + fS(r.lai) + '</b></div>';
       $g('bacThang').innerHTML = h;
     }
@@ -10630,7 +10630,7 @@ textarea.inp{font-family:inherit}
       it.sort(function (a, b) { return Math.abs(b.d) - Math.abs(a.d); });
       var mx = Math.max.apply(null, it.map(function (x) { return Math.abs(x.d); }).concat([1])), h = '';
       it.forEach(function (o) { var x = o.x;
-        h += '<div class="dn-r"><span><span class="dn-t2">' + esc(KH(x.t)) + '</span><small>Mỗi ' + esc(x.dv) + '</small></span><b class="num ' + (o.d < 0 ? 'am' : 'duong') + '">' + fDelta(o.d) + ' đ<small>Lợi nhuận mỗi tháng</small></b>' +
+        h += '<div class="dn-r"><span><span class="dn-t2">' + esc(KH(x.t)) + '</span><small class="cau">Mỗi ' + esc(x.dv) + '</small></span><b class="num ' + (o.d < 0 ? 'am' : 'duong') + '">' + fDelta(o.d) + ' đ<small>Lợi nhuận mỗi tháng</small></b>' +
           '<div class="bar"><s style="width:' + (Math.abs(o.d) / mx * 100).toFixed(1) + '%;' + (o.d < 0 ? 'background:var(--bad)' : '') + '"></s></div></div>'; });
       $g('doNhay').innerHTML = h + '<div class="ghi">Mỗi dòng thay đổi một chỉ số đúng một đơn vị, các chỉ số khác giữ như đang thiết lập. Muốn biết nhiều đơn vị thì nhân lên, ví dụ thêm 3 lao động = 3 × dòng "Lao động".</div>';
     }
@@ -10638,9 +10638,9 @@ textarea.inp{font-family:inherit}
       for (var i = 0; i < 60; i++) { var m = (lo + hi) / 2, fm = f(m); if (fm * a > 0) { lo = m; a = fm; } else hi = m; } return (lo + hi) / 2; }
     function veGioiHan(r) {
       var h = '', gP = giai(function (p, x) { p.P = x; }, 10000, 80000);
-      h += '<div class="gh"><span>' + KH('Đơn giá {KH} tối thiểu') + '</span><b class="num">' + (gP ? fT(Math.ceil(gP / 100) * 100) + ' đ/giờ' : '–') + '</b><small class="cau">Đang thiết lập ' + fT(S.p.P) + ' đ</small></div>';
+      h += '<div class="gh"><span>' + 'Đơn giá tối thiểu' + '</span><b class="num">' + (gP ? fT(Math.ceil(gP / 100) * 100) + ' đ/giờ' : '–') + '</b><small class="cau">Đang thiết lập ' + fT(S.p.P) + ' đ</small></div>';
       var gC = S.p.cutKieu === 'pc' ? giai(function (p, x) { p.cut = x; }, 0, 60) : giai(function (p, x) { p.cut = x; }, 0, 20000);
-      h += '<div class="gh"><span>' + KH('Chiết khấu {KH} tối đa') + '</span><b class="num">' + (gC !== null ? (S.p.cutKieu === 'pc' ? fD(Math.floor(gC * 10) / 10, 1) + '%' : fT(Math.floor(gC / 100) * 100) + ' đ/giờ') : (r.cty < 0 ? 'Đang lỗ' : 'Không giới hạn')) + '</b><small class="cau">' + (gC !== null ? 'Đang thiết lập ' + hienO(fDef('cut'), S.p.cut) + (S.p.cutKieu === 'pc' ? '%' : ' đ') : 'Không chiết khấu vẫn lỗ, cần điều chỉnh chỉ số khác') + '</small></div>';
+      h += '<div class="gh"><span>' + 'Chiết khấu tối đa' + '</span><b class="num">' + (gC !== null ? (S.p.cutKieu === 'pc' ? fD(Math.floor(gC * 10) / 10, 1) + '%' : fT(Math.floor(gC / 100) * 100) + ' đ/giờ') : (r.cty < 0 ? 'Đang lỗ' : 'Không giới hạn')) + '</b><small class="cau">' + (gC !== null ? 'Đang thiết lập ' + hienO(fDef('cut'), S.p.cut) + (S.p.cutKieu === 'pc' ? '%' : ' đ') : 'Không chiết khấu vẫn lỗ, cần điều chỉnh chỉ số khác') + '</small></div>';
       var gN = giai(function (p, x) { datN(p, x); }, 0.1, 400);
       h += '<div class="gh"><span>Lao động tối thiểu / ngày</span><b class="num">' + (gN ? fD(Math.ceil(gN), 0) + ' người' : 'Không đạt') + '</b><small class="cau">' + (gN ? 'Đang thiết lập ' + fD(r.p.N, 1) + ' người' + (ctx().loai === 'BEST' ? '' : ', giữ tỷ lệ ngày/đêm') : 'Mỗi công đang lỗ, thêm lao động không bù được') + '</small></div>';
       var gL = giai(function (p, x) { p.dL = (S.p.dL || 0) + x; }, -200000, 200000);
@@ -10768,7 +10768,7 @@ textarea.inp{font-family:inherit}
       C: ['{KH} thanh toán sau kỳ', '<p>Số ngày từ khi kết thúc kỳ công đến khi {KH} thanh toán. Ảnh hưởng đến số tiền lương công ty phải ứng trước.</p>'],
       loinhuan: ['Lợi nhuận toàn công ty', '<p>Số tiền còn lại mỗi tháng của cả công ty sau khi trừ mọi chi phí: lương công nhân, trả vendor, phí pháp nhân, chiết khấu, thưởng và lương cơ bản sale, chi phí chung.</p><p>Bên dưới là <b>lãi của từng công ty</b>: đã trừ phần chi phí cố định chia theo tỷ lệ doanh thu, cộng lại đúng bằng số lớn.</p><p>Công ty đang giả lập dùng số thiết lập ở trên; các công ty khác dùng số liệu thực tế. Đây là công cụ so sánh phương án; số chính thức xem ở tab Lợi nhuận.</p>'],
       moigio: ['Lợi nhuận từ lao động công ty', '<p>Phần lợi nhuận riêng của công ty đang xem, tính trên lao động do công ty tự trả lương (không gồm vendor), sau khi trừ lương, phí pháp nhân, chiết khấu và thưởng sale, nhưng chưa trừ chi phí cố định toàn công ty.</p><p>Chia cho số giờ, số công, số lao động để biết mỗi giờ / mỗi công / mỗi người đem lại bao nhiêu.</p>'],
-      cty: ['Toàn công ty', '<p><b>Lãi của từng công ty</b> = doanh thu trừ mọi chi phí trực tiếp (lương công nhân, vendor, phí pháp nhân, chiết khấu, thưởng sale theo giờ), rồi trừ tiếp phần chi phí cố định công ty đó phải gánh.</p><p><b>Chi phí cố định</b> (lương cơ bản sale và chi phí chung) chia cho các công ty theo tỷ lệ doanh thu trước VAT. Cộng lãi các công ty đúng bằng lợi nhuận toàn công ty.</p><p>Dòng <b>"Nếu không có …"</b> cho biết bỏ hẳn công ty đó thì toàn công ty còn bao nhiêu: chi phí cố định vẫn phải trả nên công ty nhỏ có lãi riêng thấp vẫn có thể rất đáng giữ. Chạm › để xem chi tiết.</p>'],
+      cty: ['Toàn công ty', '<p><b>Lãi của từng công ty</b> = doanh thu trừ mọi chi phí trực tiếp (lương công nhân, vendor, phí pháp nhân, chiết khấu, thưởng sale theo giờ), rồi trừ tiếp phần chi phí cố định công ty đó phải gánh.</p><p><b>Chi phí cố định</b> (lương cơ bản sale và chi phí chung) chia cho các công ty theo tỷ lệ doanh thu trước VAT. Cộng lãi các công ty đúng bằng lợi nhuận toàn công ty.</p><p>Dòng <b>"Bỏ …, cả công ty còn"</b> cho biết bỏ hẳn công ty đó thì toàn công ty còn bao nhiêu: chi phí cố định vẫn phải trả nên công ty nhỏ có lãi riêng thấp vẫn có thể rất đáng giữ. Chạm › để xem chi tiết.</p>'],
       phanbo: ['Phân bổ doanh thu', '<p>Doanh thu của {KH} được chia thành những khoản nào. Thanh màu cho thấy tỷ trọng từng khoản so với doanh thu.</p>'],
       anhhuong: ['Độ nhạy của lợi nhuận', '<p>Bảng tra cứu: nếu một chỉ số thay đổi đúng một đơn vị nhỏ (1.000 đ đơn giá, 1 lao động, 1% phí…) và mọi thứ khác giữ nguyên, thì lợi nhuận toàn công ty mỗi tháng tăng hay giảm bao nhiêu.</p><p>Xếp từ ảnh hưởng mạnh đến yếu để biết nên ưu tiên đàm phán điểm nào. Muốn biết nhiều đơn vị thì nhân lên. Đây là bảng chỉ đọc; muốn đổi kịch bản thì sửa ở phần Thiết lập giả lập.</p>'],
       gioihan: ['Giới hạn để toàn công ty không lỗ', '<p>Với các chỉ số khác giữ như đang thiết lập, mỗi dòng cho biết một chỉ số có thể đi tới mức nào thì lợi nhuận toàn công ty về 0.</p>'],
