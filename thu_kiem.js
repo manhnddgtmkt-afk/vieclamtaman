@@ -26,7 +26,7 @@ window.__tab=function(t){var b=[...document.querySelectorAll('.nav button')].fin
 window.__clk=function(t,goc){var b=[...(goc||document).querySelectorAll('button,a,[onclick],summary,.it')].filter(e=>e.getBoundingClientRect().width).find(b=>(b.innerText||'').trim().indexOf(t)>=0);if(b)b.click();return !!b};
 window.__dong=function(){document.querySelectorAll('.sheet,.bmoi').forEach(e=>e.remove())};
 window.__run=async function(theme,phan){document.documentElement.setAttribute('data-theme',theme);var R={};
- async function ghi(ten){for(var r of [0,1]){__rong(r);await w(200);for(var x of __chk()){(R[x]=R[x]||[]).push(ten+(r?'/rộng':''))}}__rong(0)}
+ window.__da=[];async function ghi(ten){window.__da.push(ten);for(var r of [0,1]){__rong(r);await w(200);for(var x of __chk()){(R[x]=R[x]||[]).push(ten+(r?'/rộng':''))}}__rong(0)}
  if(phan===1){__tab('Lao động');await w(2600);await ghi('Lao động');var it=document.querySelector('#list .it');if(it){it.click();await w(2600);await ghi('Hồ sơ tuần');__clk('Bảng công');await w(1300);await ghi('Hồ sơ công');__clk('Phiếu tháng');await w(2000);await ghi('Hồ sơ tháng');if(__clk('Ghi ứng')){await w(700);await ghi('Ghi ứng');__dong()}var bk=[...document.querySelectorAll('button')].find(b=>b.innerText.trim()=='‹');if(bk)bk.click();await w(700)}
   var bl=document.getElementById('moBL');if(bl){bl.click();await w(1500);await ghi('Bảng lương');__dong()}
   var ut=document.getElementById('moUT');if(ut){ut.click();await w(1800);await ghi('Ứng/trả gần đây');__dong();__tab('Lao động');await w(1500)}
@@ -35,10 +35,10 @@ window.__run=async function(theme,phan){document.documentElement.setAttribute('d
   if(__clk('Lương sale')){await w(1500);await ghi('Lương sale');__clk('Quay lại Tổng quan');await w(2000)}
   if(__clk('Giả lập tài chính')){await w(2500);await ghi('Giả lập');__clk('Quay lại báo cáo');await w(800)}
   __tab('Giấy tờ');await w(1800);__clk('In CCCD');await w(500);await ghi('In CCCD');if(__clk('Tìm ảnh trong kho')){await w(1500);await ghi('Kho CCCD');__clk('Đóng')}__clk('Thẻ HOJEONG');await w(900);await ghi('Thẻ');__clk('Danh sách');await w(2500);await ghi('Danh sách');
-  __tab('Content');await w(1800);await ghi('Kịch bản');__clk('Video đã dựng');await w(1500);await ghi('Video');document.getElementById('chuong').click();await w(500);await ghi('Chuông');__dong();document.getElementById('me').click();await w(600);await ghi('Tài khoản');if(__clk('Có gì mới')){await w(600);await ghi('Có gì mới')}__dong()}
+  __tab('Content');await w(1800);await ghi('Kịch bản');__clk('Video đã dựng');await w(1500);await ghi('Video');var ch=document.getElementById('chuong');if(ch){ch.click();await w(500);await ghi('Chuông');__dong()}var me=document.getElementById('me');if(me)me.click();await w(600);await ghi('Tài khoản');if(__clk('Có gì mới')){await w(600);await ghi('Có gì mới')}__dong()}
  else{__tab('Lao động');await w(2500);var cc=document.getElementById('ctyChon'),ds=[];if(cc){cc.click();await w(400);ds=[...document.querySelectorAll('#ctyDs [data-c]')].map(b=>b.getAttribute('data-c'));__dong()}else ds=[...document.querySelectorAll('#ctySeg button,#htSeg button')].map(b=>b.getAttribute('data-c'));
   for(var ma of ds.slice(0,6)){var c2=document.getElementById('ctyChon');if(c2){c2.click();await w(300);var bb=document.querySelector('#ctyDs [data-c="'+ma+'"]');if(bb)bb.click();else __dong()}else{var sb=document.querySelector('#ctySeg [data-c="'+ma+'"],#htSeg [data-c="'+ma+'"]');if(sb)sb.click()}await w(3200);await ghi('Lao động '+ma)}}
- var o={};for(var k in R)o[k]=[...new Set(R[k])].join(', ');return {w:innerWidth,theme:theme,phan:phan,n:Object.keys(o).length,loi:o}};
+ R['(đã xem: '+(window.__da||[]).join(', ')+')']=[];var o={};for(var k in R)o[k]=[...new Set(R[k])].join(', ');return {w:innerWidth,theme:theme,phan:phan,n:Object.keys(o).length,loi:o}};
 window.__all=async function(theme){var out=[];for(var p of [1,2,3]){try{out.push(await __run(theme,p))}catch(e){out.push({phan:p,err:String(e)})}}return out};
 return 'harness ok '+(window.PB&&PB.so);
 })()
