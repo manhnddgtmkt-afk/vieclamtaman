@@ -13,7 +13,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
 <script src="config.js"></script>
-<script>window.PB = { so: 195, luc: "24/11 00:25" };</script>
+<script>window.PB = { so: 196, luc: "24/11 14:44" };</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap">
 <style>
@@ -1731,7 +1731,7 @@ textarea.inp{font-family:inherit}
       if (S.tab === 'ld' && laCQ(S.cty)) cqTai(S.cty, 1);   // 12/11
       var t = S.tab;
       if (t === 'tq') taiTQ({ im: 1 }); else if (t === 'quy') taiQuy(false, false, true); else if (t === 'tn') taiTN(false, true);
-      else if (t === 'vdo') { VDO.tai0 = 0; taiVideo(1); if (GUI.sh) guiTaiDs(); KBV.tai0 = 0; kbvTai(1); }
+      else if (t === 'vdo') { VDO.tai0 = 0; taiVideo(1, 1); if (GUI.sh) guiTaiDs(); KBV.tai0 = 0; kbvTai(1); }
       else if (t === 'cc') { CCS.tamLuc = 0; ccTamDem(); }
     } catch (e) { }
     (function cho() {   // xong khi mọi lệnh máy chủ vừa gửi đã trả lời (tối đa 20 giây)
@@ -6040,6 +6040,8 @@ textarea.inp{font-family:inherit}
     }, function (er) { ccTd(''); toastLoi(er.message); });
   }
   var BAN_MOI = [
+    { so: 196, ds: [{ i: '🎬', t: 'Mục Video đã dựng ổn định hơn', m: 'Video mới hiện đều, không còn lúc hiện lúc mất. Vuốt xuống để làm mới luôn lấy danh sách mới nhất; chưa lấy được thì app báo rõ.' },
+      { i: '✅', v: 'chu', t: 'Duyệt video chắc chắn hơn', m: 'Bấm Duyệt là video rời mục chờ duyệt và không tự hiện lại. Nếu máy chủ chưa nhận được, thẻ video quay lại kèm dòng đỏ "Chưa duyệt được" và lý do để bấm Duyệt lại.' }] },
     { so: 195, ds: [{ i: '📅', t: 'BEST tính giờ trọn tháng', m: 'Lương kinh doanh: giờ BEST tính từ ngày 1 đến cuối tháng như trước, trả ngày 5. Các công ty khác tính từ ngày 26 tháng trước đến ngày 25.' }] },
     { so: 194, ds: [{ i: '💰', t: 'Trang lương mới cho nhân viên kinh doanh', m: 'Từ kỳ 26/11 – 25/12, tab Thu nhập hiện lương tạm tính theo cơ chế mới: lương theo giờ quản lý, thưởng mốc giờ, phụ cấp phụ trách công ty và phụ cấp truyền thông. Có mục tiêu gần nhất, thanh tiến độ các mốc và bậc thang thu nhập.' },
       { i: '🎬', t: 'Mỗi video được duyệt cộng ngay phụ cấp truyền thông', m: 'Mỗi video được duyệt +33.333đ, đủ 30 video nhận 1.000.000đ. Thông báo duyệt video ghi rõ số tiền vừa được cộng.' }] },
@@ -6789,20 +6791,39 @@ textarea.inp{font-family:inherit}
     else { document.getElementById('vdoGuiB').onclick = moGuiClip; vdoVe(); taiVideo(); }
     vdoBadge();
   }
-  function taiVideo(im) {
-    if (VDO.tai0) return; VDO.tai0 = 1;
-    apiT({ v: 'vdoDs', im: (im || VDO.ds) ? 1 : 0 }).then(function (o) {
+  // bản 196 (24/11): lệnh treo quá hạn (iPhone khoá màn hình / chuyển app giữa chừng) -> coi như lỗi, không để app kẹt mãi
+  function vdoHan(p, ms) {
+    return new Promise(function (ok, hong) {
+      var t = setTimeout(function () { hong(new Error('Máy chủ chưa trả lời, thử lại sau ít giây.')); }, ms);
+      p.then(function (o) { clearTimeout(t); ok(o); }, function (e) { clearTimeout(t); hong(e); });
+    });
+  }
+  function taiVideo(im, bao) {   // bao = 1: người dùng vuốt làm mới -> lỗi thì báo
+    if (VDO.tai0 && Date.now() - VDO.tai0 < 40000) return;   // bản 196: trước đây lần tải treo làm cờ kẹt mãi, app không bao giờ tải lại
+    var lan = VDO.tai0 = Date.now();
+    vdoHan(apiT({ v: 'vdoDs', im: (im || VDO.ds) ? 1 : 0 }), 40000).then(function (o) {
+      if (VDO.tai0 !== lan) return;   // lần tải cũ về muộn: bỏ
       VDO.tai0 = 0;
-      if (o.loi) { if (!im && !VDO.ds) vdoVe(o.loi); return; }
+      if (o.loi) { if (!im && !VDO.ds) vdoVe(o.loi); else if (bao) toastLoi('Chưa tải được danh sách video mới: ' + o.loi); return; }
+      vdoGiuDuyet(o);   // bản 196: video đang gửi lệnh duyệt thì không hiện lại
       lyGop(o.ds); var doi = !giongJ(o.ds, VDO.ds) || !giongJ(o.ls || [], VDO.ls || []);
       VDO.ds = o.ds || []; VDO.lyMau = o.lyMau || []; VDO.khoa = o.khoa || ''; VDO.giu = o.giu || VDO.giu; VDO.luc = o.luc || Date.now(); VDO.chu = o.chu || 0; VDO.nhom = o.nhom || []; VDO.ls = o.ls || []; VDO.wp = o.wp || VDO.wp || ''; if (o.wp) luu('vlta_wpk', o.wp);
       Object.keys(VDO.file).forEach(function (id) { if (!vdoTim(id)) delete VDO.file[id]; });   // video đã bị dọn: bỏ file trong máy
       luuSo('vlta_vdo2', { ds: VDO.ds, khoa: VDO.khoa, giu: VDO.giu, luc: VDO.luc, chu: VDO.chu, wp: VDO.wp, nhom: VDO.nhom, lyMau: VDO.lyMau, ls: VDO.ls });
       if (doi || !im) vdoVe();
       vdoBadge(); vdoBaoMoi(); wpGiu(); lyGuiCho();
-    }, function (e) { VDO.tai0 = 0; if (!im && !VDO.ds) vdoVe(e.message); });
+    }, function (e) {
+      if (VDO.tai0 !== lan) return; VDO.tai0 = 0;
+      if (!im && !VDO.ds) vdoVe(e.message); else if (bao) toastLoi('Chưa tải được danh sách video mới: ' + (e.message || 'thử lại sau.'));
+    });
+  }
+  function vdoGiuDuyet(o) {   // bản 196: giữ kết quả duyệt trên máy trong lúc lệnh Duyệt chưa có trả lời
+    var dd = VDO.dangDuyet || {}, ids = Object.keys(dd); if (!ids.length) return;
+    o.ds = (o.ds || []).filter(function (v) { return !(dd[v.id] && v.cho); });
+    if (VDO.chu) o.ls = ids.map(function (id) { return dd[id].ls; }).concat((o.ls || []).filter(function (x) { return !dd[x.id]; }));
   }
   function vdoTrangThai(v) {   // dòng trạng thái: ai đã tải / chưa ai tải + ngày tự xoá
+    if (v.cho && VDO.loiD && VDO.loiD[v.id]) return '<div class="vdoS vlsChua ell">Chưa duyệt được</div><div class="meta ell">Bấm Duyệt để gửi lại</div>';   // lý do đầy đủ nằm ở thông báo   // bản 196
     if (v.cho) return '<div class="vdoS cu">' + (v.sua ? 'Bản sửa lại · chờ duyệt' : 'Chờ duyệt') + '</div>';
     if (!v.cua && v.ro !== 1) return '<div class="vdoS cu ell">' + (v.ro === 2 ? 'Thư mục chưa có tài khoản sale' : 'Nằm ngoài thư mục sale') + '</div><div class="meta ell">Chuyển vào thư mục của sale để duyệt</div>';
     var tt = v.tai || [];
@@ -6904,18 +6925,29 @@ textarea.inp{font-family:inherit}
     VDO.loc = k; return k;
   }
   function vdoDuyet(ids) {   // chủ duyệt: ẩn ngay khỏi máy chủ, máy chủ ghi + báo máy sale
-    var bo = (VDO.ds || []).filter(function (v) { return ids.indexOf(v.id) >= 0 && v.cho; }); if (!bo.length) return;
+    // bản 196: trong lúc chờ trả lời, lần làm mới không đưa video trở lại (VDO.dangDuyet); quá 45 giây không trả lời = chưa duyệt được;
+    //   lỗi thì thẻ quay lại kèm dòng đỏ "Chưa duyệt được" + lý do, để bấm Duyệt lại
+    var dd = VDO.dangDuyet = VDO.dangDuyet || {};
+    var bo = (VDO.ds || []).filter(function (v) { return ids.indexOf(v.id) >= 0 && v.cho && !dd[v.id]; }); if (!bo.length) return;
     VDO.ds = VDO.ds.filter(function (v) { return bo.indexOf(v) < 0; });
-    var ls0 = VDO.ls || [], luc = Date.now();   // bản 188: hiện ngay trong mục Đã duyệt
-    VDO.ls = bo.map(function (v) { return { id: v.id, ten: v.ten, k: v.k, ai: v.ai, duyet: luc, tai: [], het: luc + (VDO.giu[1] || 7) * 86400000, xoa: 0, anh: v.anh }; })
-      .concat(ls0.filter(function (x) { return !bo.some(function (v) { return v.id === x.id; }); }));
+    var luc = Date.now();   // bản 188: hiện ngay trong mục Đã duyệt
+    VDO.loiD = VDO.loiD || {}; bo.forEach(function (v) { delete VDO.loiD[v.id]; dd[v.id] = { v: v, ls: { id: v.id, ten: v.ten, k: v.k, ai: v.ai, duyet: luc, tai: [], het: luc + (VDO.giu[1] || 7) * 86400000, xoa: 0, anh: v.anh } }; });
+    VDO.ls = bo.map(function (v) { return dd[v.id].ls; }).concat((VDO.ls || []).filter(function (x) { return !bo.some(function (v) { return v.id === x.id; }); }));
     vdoVe(); vdoBadge();
-    apiT({ v: 'vdoDuyet', ids: bo.map(function (v) { return v.id; }), im: 1 }).then(function (o) {
+    var xong = function () { bo.forEach(function (v) { delete dd[v.id]; }); };
+    vdoHan(apiT({ v: 'vdoDuyet', ids: bo.map(function (v) { return v.id; }), im: 1 }), 45000).then(function (o) {
       if (o.loi) throw new Error(o.loi);
+      xong();
       toast('Đã duyệt ' + o.so + ' video. Máy của ' + (o.ai || []).join(', ') + ' sẽ báo có video mới.');
       VDO.tai0 = 0; taiVideo(1);
-    }, function () { throw new Error('Chưa kết nối được máy chủ.'); }).catch(function (e) {
-      VDO.ds = bo.concat(VDO.ds || []); VDO.ls = ls0; vdoVe(); vdoBadge(); toastLoi('Chưa duyệt được: ' + (e.message || 'thử lại sau.'));
+    }, function (e) { throw new Error(/chưa trả lời/.test(e && e.message || '') ? e.message : 'Chưa kết nối được máy chủ.'); }).catch(function (e) {
+      xong();
+      var ly = e.message || 'thử lại sau.';
+      VDO.loiD = VDO.loiD || {}; bo.forEach(function (v) { VDO.loiD[v.id] = ly; });
+      VDO.ds = bo.concat((VDO.ds || []).filter(function (x) { return !bo.some(function (v) { return v.id === x.id; }); }));
+      VDO.ls = (VDO.ls || []).filter(function (x) { return !bo.some(function (v) { return v.id === x.id; }) || x.duyet !== luc; });
+      vdoVe(); vdoBadge(); toastLoi('Chưa duyệt được ' + (bo.length > 1 ? bo.length + ' video' : vdoTen(bo[0])) + ': ' + ly);
+      VDO.tai0 = 0; taiVideo(1);
     });
   }
   function vdoMenu(v) {   // bản 147: menu giữ ngón tay của chủ
