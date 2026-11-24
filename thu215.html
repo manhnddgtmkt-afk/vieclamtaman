@@ -13,7 +13,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
 <script src="config.js"></script>
-<script>window.PB = { so: 214, luc: "25/11 06:12" };</script>
+<script>window.PB = { so: 214, luc: "25/11 06:14" };</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap">
 <style>
@@ -2624,7 +2624,8 @@ b.yT0{display:block;margin-bottom:2px}
     if (ut && o.ut) {   // b215: mỗi khoản 1 dòng 2 cột như sổ thu chi
       ut.className = o.ut.length ? 'grp soC' : 'card';
       ut.innerHTML = o.ut.length ? o.ut.slice().reverse().map(function (z) {   // b199: mới nhất lên đầu
-        return '<div class="it"><div style="min-width:0"><div class="nm">' + esc(z.loai) + '</div><div class="sub">' + esc([String(z.ngay || '').replace(/\/\d{4}$/, ''), z.nguoi, z.ghi].filter(String).join(' · ')) + '</div></div><div class="amt num">' + vnd(z.so) + '</div></div>';
+        var ph = [z.nguoi ? esc(z.nguoi) : '', z.ghi ? utGhiH(z.ghi) : ''].filter(String).join(' · ');   // ngày nằm dưới số tiền, dòng phụ bên trái: người trả · ghi chú
+        return '<div class="it"><div style="min-width:0"><div class="nm">' + esc(z.loai) + '</div>' + (ph ? '<div class="sub">' + ph + '</div>' : '') + '</div><div class="amt num">' + vnd(z.so) + '<small>' + esc(String(z.ngay || '').replace(/\/\d{4}$/, '')) + '</small></div></div>';
       }).join('') : '<div class="meta">Chưa có khoản nào.</div>';
     }
   }
@@ -8350,7 +8351,7 @@ b.yT0{display:block;margin-bottom:2px}
         var tong = ['Ứng', 'Trả lương'].filter(function (k) { return g.t[k]; }).map(function (k) { return k + ' ' + vnd(g.t[k]); }).join(' · ');
         return '<div class="soNg"><div class="soNgH"><b>' + esc(String(g.ngay).replace(/\/\d{4}$/, '')) + '</b><span class="num">' + esc(tong) + '</span></div><div class="grp soC">' + g.ds.map(function (x) {
           var moi = xem && xem.id === o.id && x.dong > xem.dong;
-          return '<div class="it utIt" data-d="' + x.dong + '"><div style="min-width:0"><div class="nm">' + (moi ? '<i class="moiDot"></i>' : '') + esc(hoaDau(x.ten)) + '</div><div class="sub">' + (x.loi ? '<span class="c-do">' + esc(x.nt ? 'Chưa ghi người trả' : 'Có lỗi') + '</span> · ' : '') + esc([x.loai, String(x.ghi || '').replace(new RegExp('/' + new Date().getFullYear() + '\\b', 'g'), '')].filter(String).join(' · ')).replace(/(\d{1,2}\/\d{1,2}) – (\d{1,2}\/\d{1,2})/g, '<span class="nw">$1 – $2</span>') + '</div></div><div class="amt num">' + vnd(x.so) + '</div></div>';
+          return '<div class="it utIt" data-d="' + x.dong + '"><div style="min-width:0"><div class="nm">' + (moi ? '<i class="moiDot"></i>' : '') + esc(hoaDau(x.ten)) + '</div><div class="sub">' + (x.loi ? '<span class="c-do">' + esc(x.nt ? 'Chưa ghi người trả' : 'Có lỗi') + '</span> · ' : '') + [esc(x.loai), x.ghi ? utGhiH(x.ghi) : ''].filter(String).join(' · ') + '</div></div><div class="amt num">' + vnd(x.so) + '</div></div>';
         }).join('') + '</div></div>';
       }).join('') + '</div>' + (gioi < dsL.length ? '<button class="btn ghost" id="utThem" style="margin-top:12px">Xem thêm ' + (dsL.length - gioi) + ' dòng</button>' : '');
     } else h += '<div class="empty">' + (utQ ? 'Không có dòng nào của tên này.' : 'Chưa có khoản ứng / trả nào trong kỳ.') + '</div>';
@@ -8370,6 +8371,7 @@ b.yT0{display:block;margin-bottom:2px}
 
   // ---------- 06/11: dòng ứng / trả có lỗi (cột Lỗi của sổ UNG_TRA) – thiếu người trả thì sale phụ trách người đó phải chọn ----------
   var UTT = {};
+  function utGhiH(t) { return esc(String(t || '').replace(new RegExp('/' + new Date().getFullYear() + '\\b', 'g'), '')).replace(/(\d{1,2}\/\d{1,2}) – (\d{1,2}\/\d{1,2}(?:\/\d{4})?)/g, '<span class="nw">$1 – $2</span>'); }   // b215
   function utTien(x, hai) { var ng = x.ngay ? esc(x.ngay.replace(/\/\d{4}$/, '')) : ''; return esc(x.loai + ' ' + vnd(x.so)) + (ng ? (hai ? '<br>Ngày ' + ng : ' · ngày ' + ng) : ''); }   // trả HTML; hai = tách 2 dòng (thẻ có nút bên phải)
   function utLoiCau(x) {
     if (!x.nt) return x.loi.replace(/\.$/, '') + '.';
