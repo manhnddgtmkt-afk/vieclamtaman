@@ -13,7 +13,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
 <script src="config.js"></script>
-<script>window.PB = { so: 202, luc: "24/11 19:13" };</script>
+<script>window.PB = { so: 202, luc: "24/11 19:17" };</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap">
 <style>
@@ -1198,6 +1198,7 @@ textarea.inp{font-family:inherit}
 .yBox details>summary{list-style:none;cursor:pointer;font-size:12.5px;color:var(--blue);padding:4px 0}.yBox details>summary::-webkit-details-marker{display:none}
 .ySt{margin:8px 0 0;padding-left:20px;font-size:13.5px;line-height:1.45;color:var(--fg2);text-align:left}.ySt li+li{margin-top:4px}
 .yN{white-space:nowrap}
+.yChip{display:flex;flex-wrap:wrap;gap:4px 6px;margin-top:3px}.yChip>span{white-space:nowrap;background:var(--soft);border-radius:7px;padding:1px 7px;font-size:12px;color:var(--fg2)}
 b.yT{display:block;color:var(--fg);font-size:15px;font-weight:600;margin-bottom:4px}
 b.yT0{display:block;margin-bottom:2px}
 .note .yR{color:inherit;border-top-color:rgba(0,0,0,.07)}.note .yR>b{color:inherit}
@@ -1225,7 +1226,12 @@ b.yT0{display:block;margin-bottom:2px}
   function cham(t) { t = String(t || '').trim(); return /[.!?…:]$/.test(t) ? t : t + '.'; }
   function yDong(a) { return a.filter(Boolean).map(function (x) { return '<span class="yL">' + x + '</span>'; }).join(''); }   // mỗi phần tử (đã esc) 1 dòng
   function yCauH(h) { return yDong(String(h).replace(new RegExp('([.!?])\\s+(?=[' + Y_HOA + '])', 'g'), '$1\u0001').split('\u0001')); }   // tách câu theo dấu chấm
-  function yNoi(t) { var a = String(t || '').split(' · '); return a.map(function (x, i) { return '<span class="yN">' + esc(x) + (i < a.length - 1 ? ' ·' : '') + '</span>'; }).join(' '); }   // chỉ ngắt dòng ở dấu ·
+  function yNoi(t) {   // "A · B · C": mục ngắn -> thẻ nhỏ xếp hàng; câu dài -> mỗi ý 1 dòng
+    var a = String(t || '').split(' · ').filter(function (x) { return x.trim(); });
+    if (a.length < 2) return esc(t);
+    if (a.every(function (x) { return x.length <= 26; })) return '<span class="yChip">' + a.map(function (x) { return '<span>' + esc(x) + '</span>'; }).join('') + '</span>';
+    return yDong(a.map(function (x) { return esc(hoa1(x)); }));
+  }
   function yTen(t) {   // "Mua tool – phần tháng 1/12 (tổng 3.000.000)" -> tên + dòng phụ
     t = chuSale(soVN(t)).trim(); var m = /^(.{3,40}?)\s+[–-]\s+(.+)$/.exec(t) || /^([^:]{3,40}):\s+(.+)$/.exec(t);
     if (!m) return esc(t);
@@ -1237,6 +1243,7 @@ b.yT0{display:block;margin-bottom:2px}
     while ((m = /\s*\(([^()]+)\)\s*$/.exec(t))) { var q = m[1].trim(); t = t.slice(0, m.index).trim();
       if (/^mục \d+$/i.test(q)) continue;
       if (/^(file|sheet)\s/i.test(q)) nguon = 'Nguồn: ' + q.replace(/,\s*/g, ' · '); else ghi.unshift(cham(hoa1(q))); }
+    if ((m = /^Theo (file|sổ) ([^,·]{3,40}),\s*(.+)$/i.exec(t))) { nguon = nguon || 'Nguồn: ' + m[1].toLowerCase() + ' ' + m[2]; t = m[3]; }
     if ((m = /^([^:·]{4,70}):\s+(.+)$/.exec(t)) && /·/.test(m[2])) { dau = m[1]; t = m[2]; }
     var ps = t.split(' · '), hang = [], la = [];
     if (ps.length >= 2) ps.forEach(function (x) { var k = /^(.+)\s(−?\d[\d.]*(?:,\d+)?(?:\s?đ)?)$/.exec(x.trim()); if (k) hang.push([hoa1(k[1].replace(/:\s*$/, '')), k[2]]); else la.push(cham(hoa1(x))); });
@@ -1244,7 +1251,8 @@ b.yT0{display:block;margin-bottom:2px}
     if (hang.length >= 2 || (hang.length && dau)) {
       var rs = hang.map(function (r) { return '<div class="yR"><span>' + esc(r[0]) + '</span><b class="num">' + esc(r[1]) + '</b></div>'; }).join('');
       h = (dau ? '<div class="yH">' + esc(hoa1(dau)) + '</div>' : '') + (hang.length > 4 ? '<details><summary>Xem ' + hang.length + ' khoản ›</summary>' + rs + '</details>' : rs);
-    } else { la = []; h = yCauH(esc(cham(hoa1((dau ? dau + ': ' : '') + t)).replace(/\s*\(([^()]+)\),\s*/g, ', $1. '))); }
+    } else if (ps.length >= 2) { la = []; h = yDong(ps.map(function (x) { return esc(cham(hoa1(x))); })); }
+    else { la = []; h = yCauH(esc(cham(hoa1((dau ? dau + ': ' : '') + t)).replace(/\s*\(([^()]+)\),\s*(\S)/g, function (x, a, b) { return ', ' + a + '. ' + b.toUpperCase(); }))); }
     var g = la.concat(ghi).map(esc).concat(nguon ? [esc(nguon)] : []);
     return h + (g.length ? '<div class="yG">' + yDong(g) + '</div>' : '');
   }
@@ -2261,7 +2269,8 @@ b.yT0{display:block;margin-bottom:2px}
         '<span>Giờ hành chính</span><b class="num">' + esc(n.hc) + '</b><span>Tăng ca</span><b class="num">' + esc(n.tc) + '</b><span>Thành tiền</span><b class="num">' + vnd(n.tien) + '</b></div>'
         : '<div class="meta">Ngày này chưa có công.</div>') +
       (n.ghi ? '<div class="note warn">' + esc(n.ghi) + '</div>' : '') +
-      (gc ? '<div class="note warn" style="white-space:pre-line"><b>Ghi chú trên bảng công:</b>\n' + esc(gc) + '</div>' : '') +
+      (gc ? (function () { var ls = String(gc).split(/\n+/).filter(function (x) { return x.trim(); }), t0 = ls[0] && ls[0] === ls[0].toUpperCase() && /[A-ZĐ]/.test(ls[0]) ? ls.shift() : '';   // b203: dòng chữ in hoa -> tiêu đề thường, mỗi ý 1 dòng
+        return '<div class="note warn"><b class="yT0">' + esc(t0 ? hoa1(t0.toLowerCase()) : 'Ghi chú trên bảng công') + '</b>' + yDong(ls.map(esc)) + '</div>'; })() : '') +
       (sua ? '<div class="sec" style="margin-top:4px">Sửa giờ ngày này</div>' +
         (best ? '<div class="g2">' + oGio(0, 'Giờ vào') + oGio(1, 'Giờ ra') + '</div>'
           : '<div class="g2">' + oSo(0, 'Ca ngày · HC') + oSo(1, 'Ca ngày · TC') + '</div><div class="g2">' + oSo(2, 'Ca đêm · HC') + oSo(3, 'Ca đêm · TC') + '</div>') +
@@ -4071,7 +4080,7 @@ b.yT0{display:block;margin-bottom:2px}
     } else if (CCS.dang) {
       h += '<div class="card"><b>' + (CCS.dang.tai ? 'Đang tải ảnh từ CCCD TẠM ' + CCS.dang.i : 'Đang cắt và ghép ảnh ' + (CCS.dang.i + 1)) + '/' + CCS.dang.n + '…</b><div class="ccbar0"><i style="width:' + Math.round(100 * CCS.dang.i / CCS.dang.n) + '%"></i></div>' + ccNhacThuc() + '</div>';
     } else if (!CCS.ds.length) {
-      h += '<div class="card cch">' + ICON.cc + '<b>In CCCD người mới</b><ol class="ySt"><li>Chọn cùng lúc ảnh mặt trước và mặt sau của từng người trong album.</li><li>App tự cắt sát viền, nắn thẳng và ghép 2 mặt.</li><li>In mỗi người 1 tờ A4, ảnh tự lưu vào thư mục CCCD trên Drive.</li></ol><div class="meta" style="margin-top:6px">Không cần in thì bấm Lưu kho.</div>' +
+      h += '<div class="card cch">' + ICON.cc + '<b>In CCCD người mới</b><ol class="ySt"><li>Chọn cùng lúc ảnh 2 mặt từng người.</li><li>App tự cắt, nắn thẳng, ghép 2 mặt.</li><li>In mỗi người 1 tờ A4, lưu vào Drive.</li></ol><div class="meta" style="margin-top:6px">Không cần in thì bấm Lưu kho.</div>' +
         '<button class="btn" id="ccChon">Chọn ảnh trong album</button>' + (CCS.tamN ? (CCS.ghCo ? '<button class="btn ghost" id="ccMC"' + (CCS.chayMC && CCS.chayMC.dang ? ' disabled>Máy chủ đang xử lý ảnh chờ…' : '>Máy chủ xử lý ' + CCS.tamN + ' ảnh chờ') + '</button>' : '') +
           '<button class="btn ghost" id="ccTam">' + (CCS.ghCo ? 'Cắt ghép trên điện thoại' : 'Xử lý ảnh chờ trong CCCD TẠM (' + CCS.tamN + ')') + '</button>' : CCS.tamN === 0 ? '<button class="btn ghost" disabled>Không còn ảnh chờ trong CCCD TẠM</button>' : '') + '<button class="btn ghost" id="ccKho">Tìm ảnh trong kho</button></div>' + ccDuyetThe() + ccChayHtml() + ccKqHtml();
     } else {
