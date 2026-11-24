@@ -13,7 +13,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
 <script src="config.js"></script>
-<script>window.PB = { so: 207, luc: "24/11 20:00" };</script>
+<script>window.PB = { so: 207, luc: "24/11 20:01" };</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap">
 <style>
@@ -329,7 +329,8 @@ body .tbMeta{max-width:none;text-align:left;white-space:nowrap;overflow:hidden;t
 body .tbk-h b{min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}body .tbk-h .link{flex:none;white-space:nowrap}
 .cqR>span:first-child{min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.cqR>.tien{flex:none}
 .bmoi b,.bmoi h3,.bmoi .bmm,.bmoi li{text-wrap:balance}
-.bmoi{padding:16px!important}.bmoi>div{max-width:400px!important}.bmb .bmm{font-size:14.5px;line-height:1.45;color:var(--fg2)}.bmb .bmm .yL+.yL{margin-top:4px}.bmb .bmt{font-size:15.5px}
+.bmoi{padding:16px!important}.bmoi>div{max-width:400px!important}.bmb .bmm{font-size:14.5px;line-height:1.45;color:var(--fg2)}.bmb .bmm .yL+.yL{margin-top:4px}.bmb .bmt{font-size:15px;gap:8px}.bmb .bmn{width:28px;height:28px;border-radius:8px;font-size:15px}
+.bmb .bmm .yL{position:relative;padding-left:14px}.bmb .bmm .yL::before{content:'';position:absolute;left:2px;top:.62em;width:5px;height:5px;border-radius:50%;background:var(--muted)}.bmb .bmm .yL:only-child{padding-left:0}.bmb .bmm .yL:only-child::before{display:none}
 body .tch b{font-size:clamp(11.5px,3.4vw,13px)}.gcL span{overflow-wrap:anywhere}.utTong .meta{flex:none;white-space:nowrap}
 /* danh sách: gom trong 1 khối trắng, mỗi dòng tối đa 2 dòng chữ */
 .list{gap:16px}
@@ -6172,13 +6173,14 @@ b.yT0{display:block;margin-bottom:2px}
     }, function (er) { ccTd(''); toastLoi(er.message); });
   }
   var BAN_MOI = [
-    { so: 207, ds: [{ i: '🔍', v: 'chu', t: 'Khoản bất thường', m: 'Dưới số lợi nhuận tháng có thêm khung Khoản bất thường. Gồm lương, thưởng đã trả mà chưa có doanh thu và các khoản chi một lần. Dòng cuối là lợi nhuận nếu bỏ các khoản đó.' }] },
-    { so: 206, ds: [{ i: '📊', v: 'chu', t: 'Lợi nhuận cộng ra đúng', m: 'Bảng Doanh thu và các khoản trừ có thêm dòng Phí pháp nhân. Thưởng TREND chưa có doanh thu là một dòng riêng. Tổng các công ty khớp với dòng tổng.' },
-      { i: '🧭', v: 'chu', t: 'Tổng quan gọn hơn', m: 'Việc cần xử lý nằm trên cùng, mở mục nào cũng thấy. Mục Lợi nhuận chỉ còn số lợi nhuận.' },
-      { i: '🎬', v: 'chu', t: 'Tình hình quay video', m: 'Đầu phần Kịch bản có bảng của từng sale. Gồm số bài đã quay, đã đăng trong 7 ngày và số bài chưa quay.' },
+    { so: 207, ds: [{ i: '🔍', v: 'chu', t: 'Khoản bất thường', m: 'Nằm ngay dưới số lợi nhuận tháng. Gồm lương, thưởng đã trả nhưng chưa có doanh thu. Gồm cả khoản chi một lần như phong bì, quà, sim. Dòng cuối là lợi nhuận nếu bỏ các khoản đó.' },
+      { i: '📝', t: 'Có gì mới dễ đọc hơn', m: 'Mỗi ý một dòng, có dấu chấm đầu dòng. Tiêu đề ngắn, nằm gọn một dòng.' }] },
+    { so: 206, ds: [{ i: '📊', v: 'chu', t: 'Lợi nhuận cộng ra đúng', m: 'Bảng Doanh thu và các khoản trừ có thêm Phí pháp nhân. Thưởng TREND chưa có doanh thu là một dòng riêng. Tổng các công ty khớp với dòng tổng.' },
+      { i: '🧭', v: 'chu', t: 'Tổng quan gọn hơn', m: 'Việc cần xử lý nằm trên cùng. Mục Lợi nhuận chỉ còn số lợi nhuận.' },
+      { i: '🎬', v: 'chu', t: 'Tình hình quay video', m: 'Đầu phần Kịch bản có bảng của từng sale. Gồm số bài đã quay, đã đăng trong 7 ngày. Kèm số bài còn chưa quay.' },
       { i: '🧾', t: 'Sổ thu chi dễ đọc hơn', m: 'Mỗi khoản lấy nội dung làm tên. Loại khoản ghi ở dòng dưới.' },
-      { i: '👷', t: 'Thẻ người đi làm riêng', m: 'Ở tab Lao động, số người đi làm tách khỏi thẻ Còn phải trả. Số cũ được làm mờ và ghi rõ đã cũ mấy ngày.' }] },
-    { so: 204, ds: [{ i: '📐', t: 'Mỗi dòng một ý', m: 'Các khoản trong Thu chi, Tổng quan, Giả lập hiện thành từng hàng. Tên bên trái, số bên phải. Ghi chú và hướng dẫn mỗi ý một dòng.' }] },
+      { i: '👷', t: 'Thẻ người đi làm riêng', m: 'Số người đi làm tách khỏi thẻ Còn phải trả. Số cũ được làm mờ, ghi rõ cũ mấy ngày.' }] },
+    { so: 204, ds: [{ i: '📐', t: 'Mỗi dòng một ý', m: 'Các khoản hiện thành từng hàng, tên trái, số phải. Ghi chú, hướng dẫn mỗi ý một dòng.' }] },
     { so: 200, ds: [{ i: '🧮', v: 'chu', t: 'Giả lập tài chính gọn chữ hơn', m: 'Nhãn ngắn lại, không còn bị xuống 2 dòng: Đơn giá tối thiểu, Chiết khấu tối đa, Lao động tối thiểu / ngày, Tăng lương tối đa. Bảng lương công nhân: tên mức và ô nhập trên một hàng, giải thích nằm ngay dưới.' }] },
     { so: 199, ds: [{ i: '✖️', t: 'Hộp nào cũng có nút × để đóng', m: 'Mọi hộp nổi (Ghi khoản, Thông báo, Chọn công ty…) có nút × ở góc trên. Các nút nhỏ như ‹, Sửa ứng / trả dễ bấm trúng hơn.' },
       { i: '📅', t: 'Bảng công ghi rõ tháng', m: 'Ô ngày đầu kỳ và ngày 01 ghi kèm tháng, ví dụ 26/10 và 01/11. Ứng / trả lương trong kỳ xếp khoản mới nhất lên đầu.' },
