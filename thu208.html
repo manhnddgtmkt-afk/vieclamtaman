@@ -13,7 +13,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
 <script src="config.js"></script>
-<script>window.PB = { so: 208, luc: "24/11 20:10" };</script>
+<script>window.PB = { so: 208, luc: "24/11 20:12" };</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap">
 <style>
@@ -1199,6 +1199,7 @@ textarea.inp{font-family:inherit}
 .yBox{flex:0 0 100%;margin-top:4px;padding:2px 0 0 10px;border-left:2px solid var(--soft);font-size:12.5px;color:var(--muted);line-height:1.4}
 .q2nhom .num{white-space:nowrap;flex:none}.gcL .yT0{color:var(--fg)}
 .cg-rong .yChip{justify-content:center;margin-top:8px}
+p,li,h2,h3,.wpP{text-wrap:balance}   /* b208: chữ nhiều dòng chia đều, không để 1 chữ rơi lẻ xuống dòng cuối */
 /* b206 */
 #ldHead>.dlm{background:var(--card);border-radius:16px;margin-top:12px;padding:12px 16px}
 .dlm.cu>b{color:var(--muted)}.dlm .cuG{color:var(--warn)!important;font-weight:600}
@@ -6554,7 +6555,7 @@ b.yT0{display:block;margin-bottom:2px}
     if (tt === 'hoi') h = '<div class="wpI">🔔</div><h3>Bật thông báo</h3><p class="wpP">App cần bật thông báo để báo ngay cho bạn khi có video mới và các việc cần làm, kể cả lúc không mở app.</p>' +
       '<button class="btn" id="wpB"' + (WPS.dang || !wpPub() ? ' disabled' : '') + '>' + (WPS.dang ? 'Đang bật…' : wpPub() ? 'Bật thông báo' : 'Đang chuẩn bị…') + '</button>';
     else if (tt === 'chan') h = '<div class="wpI">🔕</div><h3>Thông báo đang bị chặn</h3><p class="wpP">Máy đang chặn thông báo của app. Bật lại theo các bước:</p>' +
-      '<ol class="wpO">' + (wpIOS() ? '<li>Mở <b>Cài đặt</b> của iPhone</li><li>Chọn <b>Thông báo</b></li><li>Chọn <b>Tâm An</b></li><li>Bật <b>Cho phép thông báo</b></li>' : '<li>Mở cài đặt của máy hoặc trình duyệt</li><li>Tìm mục <b>Thông báo</b> của trang Tâm An</li><li>Chọn <b>Cho phép</b></li>') + '</ol>' +
+      '<ol class="wpO">' + (wpIOS() ? '<li>Mở <b>Cài đặt</b> của iPhone</li><li>Chọn <b>Thông báo</b></li><li>Chọn <b>Tâm An</b></li><li>Bật <b>Cho phép thông báo</b></li>' : '<li>Mở cài đặt của trình duyệt</li><li>Tìm mục <b>Thông báo</b> của Tâm An</li><li>Chọn <b>Cho phép</b></li>') + '</ol>' +
       '<button class="btn" id="wpL">Tôi đã bật xong</button>';
     else h = '<div class="wpI">📲</div><h3>Thêm app vào Màn hình chính</h3><p class="wpP">iPhone chỉ báo được khi mở app từ biểu tượng trên Màn hình chính.</p>' +
       '<ol class="wpO"><li>Bấm nút <b>Chia sẻ</b> ở thanh dưới của Safari</li><li>Chọn <b>Thêm vào MH chính</b>, bấm <b>Thêm</b></li><li>Đóng Safari, mở app từ biểu tượng <b>Tâm An</b></li></ol>';
