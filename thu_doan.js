@@ -12,7 +12,7 @@ window.__chk=function(){var out=[],W=document.documentElement.clientWidth;if(doc
   if(['INPUT','SELECT','TEXTAREA'].includes(el.tagName)&&parseFloat(st.fontSize)<16&&!['checkbox','radio','file','range'].includes(el.type))out.push('Ô gõ <16px: '+tg(el));
   if(el.tagName==='INPUT'&&el.placeholder&&!el.value){var cv=window.__cv||(window.__cv=document.createElement('canvas').getContext('2d'));cv.font=st.fontWeight+' '+st.fontSize+' '+st.fontFamily;var cw=rc.width-parseFloat(st.paddingLeft)-parseFloat(st.paddingRight)-(el.type==='search'?18:0);if(cv.measureText(el.placeholder).width>cw+1)out.push('Gợi ý bị cắt: '+tg(el));}
   // chu nhay dong: nhan/tieu de ngan (<=48 ky tu, khong phai cau giai thich .cau) bi xuong 2 dong
-  if(el.closest('.cau,.note,.empty,.wpHop,.tai,svg,table,.bmoi,.yL,.yG,.yS,.yCl,.phW'))continue;
+  if(el.closest('.cau,.note,.empty,.wpHop,.tai,svg,table,.bmoi,.yL,.yG,.yS,.yCl,.phW,.it.so'))continue;
   if(st.display.indexOf('flex')>=0||st.display.indexOf('grid')>=0)continue;
   var inl=true;for(var c of el.children){var d=getComputedStyle(c).display;if(d!=='inline'&&d!=='inline-block'&&d!=='none'){inl=false;break}}if(!inl)continue;
   var t=(el.innerText||'').trim();if(!t||t.length>48||t.indexOf('\n')>=0)continue;
@@ -60,7 +60,7 @@ window.__doan=function(){var out=[],HOA=/[.!?:;] [A-ZĐÁÀẢÃẠÂẤẦẨ�
  function khoi(n){var d=getComputedStyle(n).display;return d!=='inline'&&d!=='contents'}
  for(var el of tatCa()){if(/^(SCRIPT|STYLE|INPUT|TEXTAREA|SELECT|OPTION|svg|BUTTON)$/i.test(el.tagName))continue;
   var st=getComputedStyle(el);if(st.display==='none'||st.visibility==='hidden'||!khoi(el))continue;
-  var dd=el.closest('details');if(dd&&!dd.open&&!el.closest('summary'))continue;
+  var dd=el.closest('details');if(dd&&!dd.open&&!el.closest('summary'))continue;if(el.closest('.it.so'))continue;
   var rc=el.getBoundingClientRect();if(!rc.width||!rc.height)continue;
   var segs=[[]],w=document.createTreeWalker(el,5,{acceptNode:function(n){if(n===el)return 3;if(n.nodeType===1){if(n.tagName==='BR')return 1;if(khoi(n))return 2;return 3}return 1}}),n;
   while((n=w.nextNode())){if(n.nodeType===1){segs.push([]);continue}if(n.nodeValue.trim())segs[segs.length-1].push(n)}

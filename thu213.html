@@ -13,7 +13,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
 <script src="config.js"></script>
-<script>window.PB = { so: 212, luc: "24/11 23:20" };</script>
+<script>window.PB = { so: 212, luc: "24/11 23:26" };</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap">
 <style>
@@ -648,7 +648,7 @@ textarea.inp{font-family:inherit}
 .nhaLg{display:flex;align-items:center;gap:5px;font-size:11.5px;color:var(--muted);margin:12px 0 4px}
 .nhaLg span{width:10px;height:10px;border-radius:2px;display:inline-block;flex:0 0 10px}.nhaLg{white-space:nowrap}.nhaLg em{font-style:normal;margin-left:auto;white-space:nowrap}.nhaLg span.e{margin-left:10px}
 .nhaC .d{background:#F2B544}.nhaC .e{background:#1F4FA3}
-.nhaR{display:grid;grid-template-columns:14px minmax(0,1fr) 30px 30px 28px 70px;align-items:center;gap:4px;width:100%;border:0;border-top:1px solid var(--line);background:none;color:var(--fg);padding:9px 2px;text-align:left;font:inherit;font-size:13px}
+.nhaR{display:grid;grid-template-columns:14px minmax(0,1fr) 30px 30px 28px 54px;align-items:center;gap:4px;width:100%;border:0;border-top:1px solid var(--line);background:none;color:var(--fg);padding:9px 2px;text-align:left;font:inherit;font-size:13px}
 .nhaR .k{font-size:11.5px;color:var(--muted);text-align:center}
 .nhaR .n{display:block;font-size:12px;font-weight:700;white-space:normal;overflow-wrap:break-word}
 .nhaR .n i{font-style:normal;color:var(--muted);margin-left:3px;font-weight:600}
@@ -1246,6 +1246,9 @@ b.yT0{display:block;margin-bottom:2px}
 .it.dcx>div:not(.amt):not(.ic){display:contents}.it.dcx>div:not(.amt):not(.ic)>*{grid-column:1/-1}.it.dcx.dcxi>div:not(.amt):not(.ic)>*{grid-column:2/-1}
 .it.dcx .nm{grid-row:1}.it.dcx>div>.sub{grid-column:1!important;grid-row:2}.it.dcx.dcxi>div>.sub{grid-column:2!important}.it.dcx>.amt{grid-column:-2;grid-row:2;align-self:start}
 .it.dcx.dcxi>:first-child{grid-column:1;grid-row:1/3;align-self:center}
+.dcx2 .nhaR .n{font-size:11px;letter-spacing:-.2px}
+.lnR.dcx>b{margin-left:0}
+.top .row:not(:has(.back)) h2{white-space:nowrap}
 .chonW{position:relative;display:block}.chonW>select{position:absolute;inset:0;width:100%;height:100%;opacity:0;margin:0}
 .chonT{display:flex!important;align-items:center;height:auto!important;min-height:52px;white-space:normal!important;overflow:visible!important;text-overflow:clip!important;line-height:1.3!important;padding-top:12px!important;padding-bottom:12px!important;overflow-wrap:break-word}.chonT.chonM{color:var(--muted)}.chonW:focus-within>.chonT{border-color:var(--blue)}
 </style>
@@ -1395,9 +1398,9 @@ b.yT0{display:block;margin-bottom:2px}
     if (goc.matches && goc.matches(PH_SEL)) phMot(goc);
     [].forEach.call(goc.querySelectorAll(PH_SEL), phMot);
   }
-  var HANG = [['.tqr', '>span', '>b'], ['.qRow', '>span', '>b'], ['.yR', '>span', '>b'], ['.tc3>div', '>span', '>b'], ['.lnR', '>span>b', '>b'], ['.tr1', '>.tn', '>b', 1],
+  var HANG = [['.tqr', '>span', '>b'], ['.qRow', '>span', '>b'], ['.yR', '>span', '>b'], ['.tc3>div', '>span', '>b'], ['.lnR', '>span>b', '>b', 0, 0, '>span'], ['.tr1', '>.tn', '>b', 1],
     ['.q2r', '>span', '>b'], ['.cqR', '>span:first-child', '>.tien'], ['.q2pr', '>span:first-child', '>.num'], ['.q2sr', '>span', '>b'], ['.it', '>div>.nm', '>.amt', 0, 1]];
-  var LUOI = [['.g3', '>div>span'], ['.nhaO', '>div>small']];
+  var LUOI = [['.g3', '>div>span'], ['.nhaO', '>div>small']], CO = [['.nhaR', '.n']];
   function soDong(el) {   // số dòng chữ của riêng nó (bỏ phần con là khối riêng như dòng phụ <small>)
     var tops = [], w = document.createTreeWalker(el, 4), n;
     while ((n = w.nextNode())) {
@@ -1413,7 +1416,7 @@ b.yT0{display:block;margin-bottom:2px}
     var l = r.querySelector(':scope' + t[1]), v = r.querySelector(':scope' + t[2]);
     if (!l || !l.getClientRects().length) return false;
     if (soDong(l) > 1) return true;
-    if (v && v.getClientRects().length) { var a = l.getBoundingClientRect(), b = v.getBoundingClientRect(); if (b.top >= a.bottom - 2) return true; }
+    if (v && v.getClientRects().length) { var a = (t[5] ? r.querySelector(':scope' + t[5]) : l).getBoundingClientRect(), b = v.getBoundingClientRect(); if (b.top >= a.bottom - 2) return true; }
     return false;
   }
   function chonBoc(s) {
@@ -1426,7 +1429,7 @@ b.yT0{display:block;margin-bottom:2px}
   function canDoi() {
     var gs = [document], h = document.getElementById('glHost'); if (h && h.shadowRoot) gs.push(h.shadowRoot);
     var dat = [];
-    var cu = []; gs.forEach(function (g) { [].forEach.call(g.querySelectorAll('.dcx,.dcx1'), function (e) { cu.push(e.className); e.classList.remove('dcx', 'dcx1', 'dcxi'); }); });
+    var cu = []; gs.forEach(function (g) { [].forEach.call(g.querySelectorAll('.dcx,.dcx1,.dcx2'), function (e) { cu.push(e.className); e.classList.remove('dcx', 'dcx1', 'dcxi', 'dcx2'); }); });
     gs.forEach(function (g) {
       HANG.forEach(function (t) {
         var nh = new Map();
@@ -1437,8 +1440,12 @@ b.yT0{display:block;margin-bottom:2px}
         [].forEach.call(g.querySelectorAll(t[0]), function (lu) { if (!lu.getClientRects().length) return; if ([].some.call(lu.querySelectorAll(':scope' + t[1]), function (x) { return soDong(x) > 1; })) dat.push([lu, 'dcx1']); });
       });
     });
+      CO.forEach(function (t) {   // cột tên trong bảng: 1 tên phải xuống dòng thì cả bảng thu chữ tên 1 cỡ (cùng cỡ, không tên nào nhảy dòng)
+        var nh = new Map(); [].forEach.call(g.querySelectorAll(t[0]), function (r) { if (!r.getClientRects().length) return; var p = r.parentElement; if (!nh.has(p)) nh.set(p, []); nh.get(p).push(r); });
+        nh.forEach(function (rs, p) { if (rs.some(function (r) { var n = r.querySelector(t[1]); return n && soDong(n.firstChild && n.firstChild.nodeType === 3 ? n : n) > 1; })) dat.push([p, 'dcx2']); });
+      });
     dat.forEach(function (x) { x[0].classList.add(x[1]); });
-    var moi = []; gs.forEach(function (g) { [].forEach.call(g.querySelectorAll('.dcx,.dcx1'), function (e) { moi.push(e.className); }); });
+    var moi = []; gs.forEach(function (g) { [].forEach.call(g.querySelectorAll('.dcx,.dcx1,.dcx2'), function (e) { moi.push(e.className); }); });
     if (moi.join('|') !== cu.join('|') && window.__duoiLai) window.__duoiLai();   // bố cục đổi -> đo lại dòng cuối
     gs.forEach(function (g) { [].forEach.call(g.querySelectorAll('select.inp.chon'), chonBoc); });
   }
