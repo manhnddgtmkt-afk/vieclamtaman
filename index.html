@@ -13,7 +13,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
 <script src="config.js"></script>
-<script>window.PB = { so: 201, luc: "24/11 18:18" };</script>
+<script>window.PB = { so: 202, luc: "24/11 18:20" };</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap">
 <style>
@@ -10533,7 +10533,7 @@ textarea.inp{font-family:inherit}
         var g = f.g2 ? esc(f.g2) : '';
         if (f.k === 'G') {
           var tG = R0.querySelector('#r_G .o-t');
-          if (S.p.vKieu === 'gio') { tG.firstChild.nodeValue = 'Trả vendor mỗi giờ'; var lh = r.gio > 0 ? (r.rev - r.luong - r.fee - r.cut) / r.gio : 0; g = 'Công ty tự trả lương công nhân, trả thêm vendor ' + fT(S.p.G) + ' đ/giờ · mỗi giờ còn <b>' + fS(lh - S.p.G) + ' đ</b> (chưa trừ thưởng NVKD)'; }
+          if (S.p.vKieu === 'gio') { tG.firstChild.nodeValue = 'Trả vendor mỗi giờ'; var lh = r.gio > 0 ? (r.rev - r.luong - r.fee - r.cut) / r.gio : 0; g = 'Công ty tự trả lương công nhân, trả thêm vendor ' + fT(S.p.G) + ' đ/giờ · mỗi giờ còn <b>' + fS(lh - S.p.G) + ' đ</b> (chưa trừ thưởng sale)'; }
           else { tG.firstChild.nodeValue = 'Giữ lại từ vendor'; g = fD(S.p.G / 1000, 1) + ' giá · chuyển vendor phần còn lại để trả lương · sau phí pháp nhân công ty còn <b>' + fS(S.p.G - S.p.P * S.p.fee / 100) + ' đ</b> mỗi giờ hệ số 1'; }
           if (!(S.p.gioV > 0)) g += ' · chưa có lao động vendor, giờ vendor lấy từ bảng công';
         }
@@ -10554,7 +10554,7 @@ textarea.inp{font-family:inherit}
       });
       n += mD; if (S.p.dL) n++; $g('r_dL').classList.toggle('doi', !!S.p.dL);
       $g('soDoi').textContent = n ? n + ' chỉ số khác ' + (laThuc() ? 'số liệu thực tế' : 'mặc định') : '';
-      $g('itTom').textContent = fD(S.p.D, 0) + ' ngày' + (cx.loai === 'BEST' ? '' : ' · tăng ca ' + fD(S.p.tc, 0) + '%') + ' · chủ nhật ' + fD(S.p.cnC || 0, 1) + ' công · ' + r.nS + ' NVKD · chi phí chung ' + fTr(S.p.CP) + (nIt ? ' · ' + nIt + ' đã sửa' : '');
+      $g('itTom').textContent = fD(S.p.D, 0) + ' ngày' + (cx.loai === 'BEST' ? '' : ' · tăng ca ' + fD(S.p.tc, 0) + '%') + ' · chủ nhật ' + fD(S.p.cnC || 0, 1) + ' công · ' + r.nS + ' sale · chi phí chung ' + fTr(S.p.CP) + (nIt ? ' · ' + nIt + ' đã sửa' : '');
       R0.querySelectorAll('#pick button').forEach(function (x) { x.classList.toggle('on', x.dataset.ck === S.p.cutKieu); });
       R0.querySelectorAll('#pickV button').forEach(function (x) { x.classList.toggle('on', x.dataset.vk === (S.p.vKieu || 'giu')); });
       $g('u_cut').textContent = S.p.cutKieu === 'pc' ? '%' : 'đ';
@@ -10564,7 +10564,7 @@ textarea.inp{font-family:inherit}
     function ve() {
       var r = tinh(S.p), r0 = tinh(base()), d = r.lai - r0.lai, cx = ctx(), c = cx.c;
       var nEl = $g('kqN'); nEl.textContent = fS(r.cty) + ' đ'; nEl.style.color = r.cty < 0 ? 'var(--bad)' : 'var(--fg)';
-      $g('kqGhi').innerHTML = esc('Lãi từng công ty đã trừ chi phí cố định ' + fT(r.coDinh) + ' đ (lương cơ bản ' + r.nS + ' NVKD ' + fT(r.nS * S.p.base) + ' + chi phí chung ' + fT(S.p.CP) + '), chia theo doanh thu: ' + [{ t: tenCt(), x: r }].concat(r.khac.map(function (k) { return { t: k.x.ten, x: k.r }; })).map(function (o) { return o.t + ' ' + fD(o.x.tyDT * 100, 0) + '%'; }).join(' · ') + '. Chạm › để xem chi tiết.') + '<button type="button" class="ib" data-gt="cty">i</button>';
+      $g('kqGhi').innerHTML = esc('Lãi từng công ty đã trừ chi phí cố định ' + fT(r.coDinh) + ' đ (lương cơ bản ' + r.nS + ' sale ' + fT(r.nS * S.p.base) + ' + chi phí chung ' + fT(S.p.CP) + '), chia theo doanh thu: ' + [{ t: tenCt(), x: r }].concat(r.khac.map(function (k) { return { t: k.x.ten, x: k.r }; })).map(function (o) { return o.t + ' ' + fD(o.x.tyDT * 100, 0) + '%'; }).join(' · ') + '. Chạm › để xem chi tiết.') + '<button type="button" class="ib" data-gt="cty">i</button>';
       $g('kqG').textContent = r.gio ? fS(r.mang / r.gio) + ' đ' : '–';
       $g('kqC').textContent = r.cong ? fS(r.mang / r.cong) + ' đ' : '–';
       $g('kqP').textContent = r.p.N > 0 ? fS(r.mang / r.p.N) + ' đ' : '–';
