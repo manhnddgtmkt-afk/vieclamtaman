@@ -10040,7 +10040,7 @@ b.yT0{display:block;margin-bottom:2px}
           if (b[3]) { var truoc = con; con -= b[2]; return '<div class="q2r"><span>− ' + esc(b[0]) + '</span><b class="num mo">' + vnd0(-b[2]) + '</b><div class="q2bar"><s style="width:' + Math.max(0, con / dt * 100).toFixed(2) + '%;background:var(--q2xam)"></s><s style="width:' + Math.max(0, (truoc - con) / dt * 100).toFixed(2) + '%;background:var(--q2do)"></s></div></div>'; }
           var amB = b[2] < 0, mau = i === 0 ? 'var(--fg)' : amB ? 'var(--bad)' : 'var(--good)';
           return '<div class="q2r moc"><span>' + esc(b[0]) + (b[1] ? '<i>' + esc(soVN(b[1])) + '</i>' : '') + '</span><b class="num" style="color:' + (i === 0 ? 'inherit' : mau) + '">' + vnd0(b[2]) + '</b><div class="q2bar"><s style="width:' + Math.max(0.8, Math.abs(b[2]) / dt * 100).toFixed(2) + '%;background:' + mau + '"></s></div></div>';
-        }).join('') + '<div class="meta" style="margin-top:6px">Xám = tiền còn lại · đỏ = phần bị trừ</div></div>';
+        }).join('') + '<div class="yLeg"><span><i style="background:var(--q2xam)"></i>Tiền còn lại</span><span><i style="background:var(--bad)"></i>Phần bị trừ</span><em>Đơn vị: đồng</em></div></div>';
       }
     }
     if (m1) {   // thẻ từng khách
