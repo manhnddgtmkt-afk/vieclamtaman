@@ -13,7 +13,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
 <script src="config.js"></script>
-<script>window.PB = { so: 212, luc: "24/11 23:26" };</script>
+<script>window.PB = { so: 212, luc: "24/11 23:28" };</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap">
 <style>
@@ -1439,11 +1439,11 @@ b.yT0{display:block;margin-bottom:2px}
       LUOI.forEach(function (t) {
         [].forEach.call(g.querySelectorAll(t[0]), function (lu) { if (!lu.getClientRects().length) return; if ([].some.call(lu.querySelectorAll(':scope' + t[1]), function (x) { return soDong(x) > 1; })) dat.push([lu, 'dcx1']); });
       });
-    });
       CO.forEach(function (t) {   // cột tên trong bảng: 1 tên phải xuống dòng thì cả bảng thu chữ tên 1 cỡ (cùng cỡ, không tên nào nhảy dòng)
         var nh = new Map(); [].forEach.call(g.querySelectorAll(t[0]), function (r) { if (!r.getClientRects().length) return; var p = r.parentElement; if (!nh.has(p)) nh.set(p, []); nh.get(p).push(r); });
-        nh.forEach(function (rs, p) { if (rs.some(function (r) { var n = r.querySelector(t[1]); return n && soDong(n.firstChild && n.firstChild.nodeType === 3 ? n : n) > 1; })) dat.push([p, 'dcx2']); });
+        nh.forEach(function (rs, p) { if (rs.some(function (r) { var n = r.querySelector(t[1]); return n && soDong(n) > 1; })) dat.push([p, 'dcx2']); });
       });
+    });
     dat.forEach(function (x) { x[0].classList.add(x[1]); });
     var moi = []; gs.forEach(function (g) { [].forEach.call(g.querySelectorAll('.dcx,.dcx1,.dcx2'), function (e) { moi.push(e.className); }); });
     if (moi.join('|') !== cu.join('|') && window.__duoiLai) window.__duoiLai();   // bố cục đổi -> đo lại dòng cuối
