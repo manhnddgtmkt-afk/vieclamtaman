@@ -13,7 +13,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
 <script src="config.js"></script>
-<script>window.PB = { so: 198, luc: "24/11 17:10" };</script>
+<script>window.PB = { so: 198, luc: "24/11 17:13" };</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap">
 <style>
@@ -1801,7 +1801,7 @@ textarea.inp{font-family:inherit}
     }
     if (!d || !d.moc) return '';
     var hn = d.moc === ymdNay();
-    return '<div class="dlm" id="dlm"><b class="num">' + soDiLam(d) + '</b><span>' + (hn ? 'người đi làm hôm nay' : 'người đi làm ngày ' + ngayDM(d.moc)) + '<small>theo vân tay mới nhất' + (hn ? '' : ' · hôm nay chưa có') + '</small></span></div>';
+    return '<div class="dlm" id="dlm"><b class="num">' + soDiLam(d) + '</b><span>' + (hn ? 'người đi làm hôm nay' : 'người đi làm ngày ' + ngayDM(d.moc)) + '<small>' + (hn ? 'Theo vân tay mới nhất' : 'Theo vân tay · hôm nay chưa có') + '</small></span></div>';
   }
   // b156 (13/11): thanh chọn công ty – gộp theo tên (một công ty nhiều hình thức: chính thức / thời vụ); > 4 công ty thì thành nút mở danh sách
   var CTY_NUT_TOI_DA = 4;
