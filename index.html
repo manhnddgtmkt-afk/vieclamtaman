@@ -13,7 +13,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
 <script src="config.js"></script>
-<script>window.PB = { so: 198, luc: "24/11 17:43" };</script>
+<script>window.PB = { so: 199, luc: "24/11 17:59" };</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap">
 <style>
@@ -307,7 +307,21 @@ body .tch small{font-size:clamp(12px,3.6vw,15px)}body .tch{padding-left:10px;pad
 .inp{font-size:16px;padding:12px 14px;letter-spacing:0}
 body .lg-card .inp{font-size:19px;padding:15px 16px;letter-spacing:.5px}
 body textarea.inp{font-size:16px}
-body:has(.fab) .ttpill{bottom:calc(var(--navH,66px) + 68px)}   /* b198: thanh chờ không đè thanh nút chính */
+body:has(.fab) .ttpill{bottom:calc(var(--navH,66px) + 68px)}
+/* b199: vùng chạm tối thiểu 44px cho nút nhỏ – mở rộng vùng bấm, không đổi bố cục */
+.back,.link,.btn.lk,.glVao,.seg button,.shX{position:relative}
+.back::after,.link::after,.btn.lk::after,.glVao::after,.shX::after{content:'';position:absolute;left:50%;top:50%;width:max(100%,44px);height:max(100%,44px);transform:translate(-50%,-50%)}
+.seg button::after{content:'';position:absolute;left:0;right:0;top:50%;height:max(100%,44px);transform:translateY(-50%)}
+/* b199: mọi hộp nổi có nút × ở góc trên */
+.sheet>div{position:relative}
+.shX{border:0;background:var(--soft);color:var(--muted);width:32px;height:32px;min-height:0;border-radius:16px;font-size:22px;font-weight:400;line-height:1;padding:0;flex:none;display:inline-flex;align-items:center;justify-content:center}
+.shXa{position:absolute;top:12px;right:12px;z-index:2}
+.sheet>div>h3:first-of-type{padding-right:40px}
+/* b199: bảng công ghi tháng ở ngày đầu kỳ và ngày 01 */
+.ld b.m{font-size:11.5px;letter-spacing:-.2px}
+/* b199: lọc kho CCCD gọn trong mục Lọc */
+.ckLoc{border-top:1px solid var(--soft);padding-top:4px}.ckLoc>summary{list-style:none;cursor:pointer;color:var(--blue);font-weight:600;font-size:15px;padding:10px 0;min-height:44px;display:flex;align-items:center;gap:6px}.ckLoc>summary::-webkit-details-marker{display:none}.ckLoc>summary::after{content:'▾';font-size:12px}.ckLoc[open]>summary::after{content:'▴'}.ckLoc>div{display:flex;flex-direction:column;gap:12px}
+.q2con .cau{min-width:0;flex:1}   /* b198: thanh chờ không đè thanh nút chính */
 /* b198: Thay đổi cần xem lại – tên người 1 dòng, người sửa + giờ xuống dòng dưới */
 body .tbPh{flex-direction:column;align-items:stretch;gap:2px}
 body .tbPh b{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -628,7 +642,7 @@ textarea.inp{font-family:inherit}
 .nhaO b{font-size:22px;font-weight:800;margin-right:4px}
 .nhaO .dv{font-size:11.5px;color:var(--muted)}
 .nhaO i{display:block;font-style:normal;font-size:12px;color:var(--muted);line-height:1.5;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.nhaC .up{color:var(--good);font-weight:700}.nhaC .dn{color:var(--bad);font-weight:700}.nhaC .z{color:var(--muted)}
+.nhaC .up{color:var(--good);font-weight:700}.nhaC .dn{color:var(--warn);font-weight:700}.nhaC .z{color:var(--muted)}
 .nhaLg{display:flex;align-items:center;gap:5px;font-size:11.5px;color:var(--muted);margin:12px 0 4px}
 .nhaLg span{width:10px;height:10px;border-radius:2px;display:inline-block;flex:0 0 10px}.nhaLg{white-space:nowrap}.nhaLg em{font-style:normal;margin-left:auto;white-space:nowrap}.nhaLg span.e{margin-left:10px}
 .nhaC .d{background:#F2B544}.nhaC .e{background:#1F4FA3}
@@ -1426,7 +1440,7 @@ textarea.inp{font-family:inherit}
       (laChu ? '<div class="sec" style="margin:8px 4px -6px">Quản trị</div><div class="set"><button id="tdNv"><span>Quản lý nhân viên</span><span class="ch" style="margin-left:auto">›</span></button>' +
         '<button id="tdVi"><span>Khoá đọc ảnh CCCD<small id="tdViTt">Đang kiểm tra…</small></span><span class="ch" style="margin-left:auto">›</span></button>' +
         '<div id="eVi" class="hidden" style="padding:0 16px 12px"><div class="meta" style="margin-bottom:8px">Dán khoá Cloud Vision (bắt đầu bằng AIza…). Khoá chỉ lưu trên máy chủ, không gửi xuống điện thoại của nhân viên.</div><div class="row"><input class="inp" id="tVi" placeholder="AIza…" autocomplete="off" autocapitalize="off" spellcheck="false" style="font-size:16px;padding:11px 14px"><button class="btn sm" id="tViOk">Lưu</button></div><button class="btn lk" id="tViXoa" style="padding-left:0">Bỏ khoá, quay về đọc bằng Drive</button></div>' +
-        '<button id="tdGh"><span>Khoá GitHub (xử lý CCCD trên máy chủ)<small id="tdGhTt">Đang kiểm tra…</small></span><span class="ch" style="margin-left:auto">›</span></button>' +
+        '<button id="tdGh"><span>Khoá xử lý CCCD trên máy chủ<small id="tdGhTt">Đang kiểm tra…</small></span><span class="ch" style="margin-left:auto">›</span></button>' +
         '<div id="eGh" class="hidden" style="padding:0 16px 12px"><div class="meta" style="margin-bottom:8px">Dán khoá GitHub (bắt đầu bằng github_pat_…), loại chỉ chọn kho taman-ma và quyền Actions: Read and write. Khoá chỉ lưu trên máy chủ, dùng cho nút Xử lý ngay trên máy chủ ở tab Giấy tờ.</div><div class="row"><input class="inp" id="tGh" placeholder="github_pat_…" autocomplete="off" autocapitalize="off" spellcheck="false" style="font-size:16px;padding:11px 14px"><button class="btn sm" id="tGhOk">Lưu</button></div><button class="btn lk" id="tGhXoa" style="padding-left:0">Bỏ khoá</button></div>' +
         '<button id="tdMa"><span>Cập nhật ứng dụng<small id="tdMaTt">Lấy bản mới nhất</small></span><span class="v" style="color:var(--blue)">⟳</span></button></div>' : '') +
       '<div class="msg" id="tdm"></div><button class="dx" id="tdx">Đăng xuất</button>');
@@ -1809,7 +1823,7 @@ textarea.inp{font-family:inherit}
       if (v.ra) gc.push('trừ ' + v.ra + ' người chuyển nhà'); if (v.vao) gc.push('cộng ' + v.vao + ' người chuyển về');
       return '<div class="dlm" id="dlm"><b class="num">' + v.n + '</b><span>' + (hnV ? 'người đi làm hôm nay' : 'người đi làm ngày ' + ddmm(serialDate(v.d))) +
         '<small>Ca ngày ' + Math.max(0, v.ngay) + ' · ca đêm ' + Math.max(0, v.dem) + '</small><small>' + esc(gc.join(', ')) + '</small>' +
-        (v.sang && v.sang.d > v.d ? '<small>Sáng ' + ddmm(serialDate(v.sang.d)) + ' đã có ' + v.sang.n + ' người chấm vào</small>' : '') + '</span></div>';
+        (v.sang && v.sang.d > v.d && v.sang.n > 0 ? '<small>Sáng ' + ddmm(serialDate(v.sang.d)) + ' đã có ' + v.sang.n + ' người chấm vào</small>' : '') + '</span></div>';
     }
     if (!d || !d.moc) return '';
     var hn = d.moc === ymdNay();
@@ -2085,7 +2099,7 @@ textarea.inp{font-family:inherit}
       (sdt ? '<a class="icb" href="tel:' + sdt + '" aria-label="Gọi điện">' + ICON.goi + '</a><a class="icb" href="https://zalo.me/' + sdt + '" target="_blank" aria-label="Nhắn Zalo">' + ICON.zalo + '</a>' : '') + '</div></div>' +
       '<div id="hsTim" class="hidden"><input class="search" id="hsQ" type="search" placeholder="Xem người khác: tên, mã NV hoặc SĐT…" autocomplete="off"><div id="hsKq" style="margin-top:8px;max-height:45vh;overflow-y:auto;-webkit-overflow-scrolling:touch;border-radius:20px"></div></div>' +
       '<h2 style="margin-top:4px;font-size:24px">' + esc(hoaDau(p.ten)) + '</h2><small>' + esc([p.ma, S.cty, p.sale ? tenSale(p.sale) : '', cu ? 'tháng ' + String(p.thang).replace(/^T/, '') : ''].filter(String).join(' · ')) + '</small>' +
-      (S.cn && S.cn.cty === S.cty ? S.cn.ds.filter(function (x) { return x.ma && x.ma === p.ma; }).map(function (x) { return '<div class="meta"' + (String(x.tt).charAt(0) === '✔' ? '' : ' style="color:var(--warn)"') + '>' + (x.loai === 'Vào' ? 'Vào Đại Thành' : 'Ra khỏi Đại Thành') + ' từ ' + esc(ngayCN(x.ngay)) + '</div>'; }).join('') : '') + '</div>' +
+      (S.cn && S.cn.cty === S.cty ? S.cn.ds.filter(function (x) { return x.ma && x.ma === p.ma; }).map(function (x) { return '<div class="meta"' + (String(x.tt).charAt(0) === '✔' ? '' : ' style="color:var(--warn)"') + '>' + (x.loai === 'Vào' ? 'Vào Tâm An' : 'Ra khỏi Tâm An') + ' từ ' + esc(ngayCN(x.ngay)) + '</div>'; }).join('') : '') + '</div>' +
       '<main>' + (cu ? heroCu(p, nay) : '<div class="card hero"><div class="meta">Còn phải trả</div><div class="row" style="align-items:baseline;flex-wrap:wrap;gap:10px"><span class="big num" style="color:' + (p.con < 0 ? 'var(--bad)' : p.con > 0 ? 'var(--cam)' : 'var(--good)') + '">' + vnd(p.con) + '</span>' +
       (p.con < 0 ? '<span class="pill bad">Trả dư</span>' : p.con > 0 ? '<span class="pill warn">' + (new Date().getDay() === 3 ? 'Hôm nay trả lương' : 'Trả vào thứ Tư') + '</span>' : '') + '</div>' +
       (Math.abs(p.kt || 0) >= 1 ? '<div class="meta">' + (p.kt > 0 ? 'Gồm lương tháng trước chưa nhận ' + vnd(p.kt) : 'Đã trừ khoản nhận trước tháng trước ' + vnd(-p.kt)) + '</div>' : '') +
@@ -2173,7 +2187,7 @@ textarea.inp{font-family:inherit}
         var n = (w.ngay = w.ngay || [])[i] || (w.ngay[i] = {}), sv = w.mon + i, ngoai = (T.d1 && sv < T.d1) || (T.d2 && sv > T.d2), co = !!n.co && !ngoai, g = soGio(n.hc) + soGio(n.tc), dem = /đ/i.test(kd(n.ca || '').replace('d', 'đ')) || /đêm/i.test(n.ca || '');
         if (co) { cong++; gio += g; }
         ngays.push({ s: sv, n: n, gc: gcM[sv] || '' });
-        html += '<button class="ld ' + (ngoai ? 'ngoai' : (co ? (dem ? 'dem' : 'ngay') : 'nghi')) + ((n.ghi || gcM[sv]) && !ngoai ? ' loi' : '') + (h.dongBo[sv] ? ' db' : '') + '" data-s="' + sv + '"' + (ngoai ? ' disabled' : '') + '><b>' + esc(String(n.ngay || ddmm(serialDate(sv))).slice(0, 2)) + '</b><small>' + (co ? gioVN(g) + 'h' : '–') + '</small></button>';
+        html += '<button class="ld ' + (ngoai ? 'ngoai' : (co ? (dem ? 'dem' : 'ngay') : 'nghi')) + ((n.ghi || gcM[sv]) && !ngoai ? ' loi' : '') + (h.dongBo[sv] ? ' db' : '') + '" data-s="' + sv + '"' + (ngoai ? ' disabled' : '') + '>' + (function () { var dm = String(n.ngay || ddmm(serialDate(sv))), d2 = dm.slice(0, 2); return (!ngoai && (d2 === '01' || sv === (T.d1 || T.ds[0].mon))) ? '<b class="m">' + esc(dm.slice(0, 5)) : '<b>' + esc(d2); })() + '</b><small>' + (co ? gioVN(g) + 'h' : '–') + '</small></button>';
       }
       html += '</div>';
     });
@@ -2327,7 +2341,7 @@ textarea.inp{font-family:inherit}
     vePhieu(slip, o.css, o.html);
     ganXuat(o);
     var ut = document.getElementById('ut');
-    if (ut && o.ut) ut.innerHTML = (o.ut.length ? '<div class="ul">' + o.ut.map(function (z) {
+    if (ut && o.ut) ut.innerHTML = (o.ut.length ? '<div class="ul">' + o.ut.slice().reverse().map(function (z) {   // b199: mới nhất lên đầu
       return '<div class="ur"><span class="d">' + esc(z.ngay) + '</span><span class="l ' + (/ứng/i.test(z.loai) ? 'u' : 't') + '">' + esc(z.loai) + '</span><b class="num">' + vnd(z.so) + '</b><span class="g">' + esc([z.nguoi, z.ghi].filter(String).join(' · ')) + '</span></div>';
     }).join('') + '</div>' : '<div class="meta">Chưa có khoản nào.</div>');
   }
@@ -2463,6 +2477,11 @@ textarea.inp{font-family:inherit}
     sh.innerHTML = '<div>' + html + '</div>';
     document.body.appendChild(sh);
     sh.onclick = function (e) { if (e.target === sh) sh.remove(); };
+    try {   // b199: hộp nào cũng có nút × ở góc trên (nút Đóng / Xong sẵn có ở hàng tiêu đề thì đổi thành ×)
+      var k0 = sh.firstChild, d0 = k0.firstElementChild, b0 = d0 && d0.classList.contains('row') ? [].filter.call(d0.children, function (x) { return x.tagName === 'BUTTON' && /^(Đóng|Xong)$/.test(x.textContent.trim()); })[0] : null;
+      if (b0) { b0.textContent = '×'; b0.className = 'shX'; b0.setAttribute('aria-label', 'Đóng'); }
+      else if (![].some.call(k0.querySelectorAll('button'), function (x) { return x.textContent.trim() === '×'; })) { k0.insertAdjacentHTML('afterbegin', '<button class="shX shXa" aria-label="Đóng">×</button>'); k0.querySelector('.shXa').onclick = function () { sh.remove(); }; }
+    } catch (e0) { }
     return sh;
   }
 
@@ -4000,7 +4019,7 @@ textarea.inp{font-family:inherit}
       var sv = CCS.soat;
       h += '<div class="card"><div class="row sp"><b>Đang soát ảnh trong CCCD TẠM…</b><span class="meta num" id="ccSoatTg">' + Math.round((Date.now() - sv.t0) / 1000) + ' giây</span></div>' +
         '<div class="ccbar0"><i style="width:' + (sv.n ? Math.round(100 * sv.doc / sv.n) : 3) + '%"></i></div>' +
-        '<div class="meta">' + (sv.n ? 'Đã đọc ' + sv.doc + '/' + sv.n + ' ảnh' : 'Máy chủ đang đọc số trên ảnh') + (sv.chuyen ? ' · ' + sv.chuyen + ' ảnh của người kho đã có → TRÙNG' : '') + '</div>' +
+        '<div class="meta">' + (sv.n ? 'Đã đọc ' + sv.doc + '/' + sv.n + ' ảnh' : 'Máy chủ đang đọc số trên ảnh') + (sv.chuyen ? ' · ' + sv.chuyen + ' ảnh trùng người đã có trong kho' : '') + '</div>' +
         '<div class="meta">Mỗi lô 16 ảnh mất khoảng 20–30 giây. Có thể chuyển sang tab khác, xong app tự báo.</div>' + ccNhacThuc() + '</div>';
     } else if (CCS.dang) {
       h += '<div class="card"><b>' + (CCS.dang.tai ? 'Đang tải ảnh từ CCCD TẠM ' + CCS.dang.i : 'Đang cắt và ghép ảnh ' + (CCS.dang.i + 1)) + '/' + CCS.dang.n + '…</b><div class="ccbar0"><i style="width:' + Math.round(100 * CCS.dang.i / CCS.dang.n) + '%"></i></div>' + ccNhacThuc() + '</div>';
@@ -4535,7 +4554,7 @@ textarea.inp{font-family:inherit}
     var o = CCS.chayMC || {}, h = '';
     if (o.dang) h += '<div class="card"><div class="row sp"><b>Máy chủ đang xử lý CCCD TẠM…</b><span class="meta">từ ' + esc(ngayGio(o.dang.luc)) + '</span></div><div class="meta">Do ' + esc(o.dang.ten || '') + ' bấm. Thường mất 5–10 phút. Có thể tắt app, xong sẽ có thông báo; ảnh đã lưu hiện ở mục chờ duyệt.</div></div>';
     if (o.kq) {
-      var k = o.kq, d = [['Đã lưu vào kho', k.dat + ' người'], ['Ảnh trùng kho → TRÙNG', k.trung + ' ảnh']];
+      var k = o.kq, d = [['Đã lưu vào kho', k.dat + ' người'], ['Ảnh trùng người đã có trong kho', k.trung + ' ảnh']];
       if (k.cho) d.push(['Để lại cần xem', k.cho + ' người']); if (k.le) d.push(['Ảnh lẻ / chưa đọc được', k.le + ' ảnh']);
       h += '<div class="card cckq"><div><b>Lượt máy chủ gần nhất</b><div class="meta">' + esc([ngayGio(k.luc), k.ai || ''].filter(String).join(' · ')) + '</div></div>' +
         d.map(function (r) { return '<div class="row sp cckqd"><span class="meta">' + esc(r[0]) + '</span><span class="num">' + esc(r[1]) + '</span></div>'; }).join('') +
@@ -4611,7 +4630,7 @@ textarea.inp{font-family:inherit}
     if (k.khong) return '<div class="card cckq"><b>Không thấy thư mục CCCD TẠM</b><div class="meta">Lần soát ' + esc(k.luc) + '</div></div>';
     var d = [];
     d.push(['Ảnh đã soát', k.soat]);
-    d.push(['Kho đã có (→ TRÙNG)', k.trungNg + ' người · ' + k.trung + ' ảnh']);
+    d.push(['Đã có trong kho', k.trungNg + ' người · ' + k.trung + ' ảnh']);
     if (k.khongSoat) d.push(['Máy chủ không đọc trước', 'điện thoại tự đọc']);
     d.push(['Tải về để ghép', k.lay + ' ảnh']); if (k.con > k.lay) d.push(['Còn chờ lượt sau', (k.con - k.lay) + ' ảnh']);
     if (k.luot) {
@@ -4623,7 +4642,7 @@ textarea.inp{font-family:inherit}
     d.push(['Không đọc được số', k.khongSo + ' ảnh']);
     return '<div class="card cckq"><div class="row sp"><b>Lần xử lý trên điện thoại gần nhất</b><span class="meta">' + esc(k.lucMs ? ngayGio(k.lucMs) : k.luc) + '</span></div>' +
       d.map(function (r) { return '<div class="row sp cckqd"><span class="meta">' + esc(r[0]) + '</span><span class="num">' + esc(String(r[1])) + '</span></div>'; }).join('') +
-      '<div class="meta">Ảnh gốc đã ghép vào kho → CCCD TẠM/ĐÃ XỬ LÝ. Ảnh của người kho đã có → ĐÃ XỬ LÝ/TRÙNG. Ảnh lẻ, ảnh không đọc được vẫn để trong CCCD TẠM. Không xoá ảnh nào.</div></div>';
+      '<div class="meta">Ảnh gốc đã ghép vào kho được chuyển sang thư mục CCCD TẠM/ĐÃ XỬ LÝ. Ảnh của người kho đã có được chuyển sang ĐÃ XỬ LÝ/TRÙNG. Ảnh lẻ, ảnh không đọc được vẫn để trong CCCD TẠM. Không xoá ảnh nào.</div></div>';
   }
   function ccTamTai(lay) {   // tải ảnh gốc từ Drive (4 ảnh 1 lần) rồi cắt ghép như ảnh chọn trong album
     var files = [], i = 0, loi = 0;
@@ -4986,10 +5005,11 @@ textarea.inp{font-family:inherit}
       '<div id="ckTong" style="font-size:15px;margin:2px 0 8px;color:#1F3864">' + ckTong() + '</div>' +
       '<input class="inp" id="ckTen" type="search" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Tên, năm sinh hoặc số CCCD" value="' + esc(k.q || '') + '" style="margin:0">' +
       '<div class="meta" id="ckTenG" style="margin-top:-6px">' + (n ? 'Danh bạ ' + n + ' người · không cần gõ dấu, gõ đầu chữ cũng được (vd: “hoa 1994”, “ng t huong”)' : 'Đang tải danh bạ…') + '</div>' +
+      '<details class="ckLoc"' + (k.gioi || k.tu || k.den || k.duoi || k.ds.length || k.dang ? ' open' : '') + '><summary>Lọc theo giới tính, năm sinh</summary><div>' +   // b199: bộ lọc gọn trong mục Lọc
       '<div class="seg" id="ckGioi">' + [['', 'Tất cả'], ['NAM', 'Nam'], ['NỮ', 'Nữ']].map(function (x) { return '<button data-gi="' + x[0] + '"' + (k.gioi === x[0] ? ' class="on"' : '') + '>' + x[1] + '</button>'; }).join('') + '</div>' +
       '<div class="ckn"><label>Năm sinh</label><input class="inp" id="ckTu" inputmode="numeric" maxlength="4" placeholder="Từ" value="' + esc(k.tu) + '"><span>–</span><input class="inp" id="ckDen" inputmode="numeric" maxlength="4" placeholder="Đến" value="' + esc(k.den) + '"></div>' +
       '<div class="ckn"><label>Số cuối CCCD</label><input class="inp" id="ckDuoi" inputmode="numeric" maxlength="12" placeholder="Không bắt buộc" value="' + esc(k.duoi) + '"></div>' +
-      '<button class="btn" id="ckTim"' + (k.dang ? ' disabled' : '') + '>' + (k.dang === 1 ? 'Đang tìm…' : 'Tìm theo năm sinh') + '</button></div>';
+      '<button class="btn" id="ckTim"' + (k.dang ? ' disabled' : '') + '>' + (k.dang === 1 ? 'Đang tìm…' : 'Tìm theo bộ lọc') + '</button></div></details></div>';
     h += '<div id="ckKq">' + ckKqHtml(k) + '</div>';
     h += '<div class="ccday">' + ccMay(0) + '<button class="btn ghost" id="ckLai">Quay lại</button><button class="btn ghost ccgui ccg2" id="ckGui" aria-label="Chia sẻ PDF">' + ICON_GUI + '<small>PDF</small></button><button class="btn ghost ccgui ccg2" id="ckAnh" aria-label="Lưu ảnh về máy">' + ICON_ANH + '<small>Ảnh</small></button><button class="btn" id="ckIn"></button></div><div class="ccdem"></div>';
     t.innerHTML = h;
@@ -5073,7 +5093,7 @@ textarea.inp{font-family:inherit}
   function ckBar() {
     var k = CCS.kho, b = document.getElementById('ckIn'); if (!k || !b) return;
     var n = Object.keys(k.chon).length;
-    b.disabled = !n; b.textContent = n ? 'In ' + n + ' tờ' : 'Chưa chọn ai';
+    b.disabled = !n; b.textContent = n ? 'In ' + n + ' tờ' : 'In CCCD';
     var g = document.getElementById('ckGui'); if (g) g.disabled = !n;
     var ga = document.getElementById('ckAnh'); if (ga) ga.disabled = !n;
     var tb = document.getElementById('ckThe'); if (tb) tb.textContent = n ? 'Làm thẻ (' + n + ')' : 'Làm thẻ';
@@ -5387,7 +5407,7 @@ textarea.inp{font-family:inherit}
   function ccVeThe(t) {
     var ds = theDs(), n = ds.filter(function (e) { return e.chon; }).length, h = ccChe();
     theMaTai(); theGanMa(ds);
-    if (!ds.length) h += '<div class="card cch">' + ICON.cc + '<b>Thẻ ra vào HOJEONG</b><div class="meta">Chọn ảnh CCCD ở mục In CCCD, rồi quay lại đây tích người cần làm thẻ. Người chưa có CCCD trong lượt thì bấm Thêm người.</div></div>';
+    if (!ds.length) h += '<div class="card cch">' + ICON.cc + '<b>Thẻ ra vào HOJEONG</b><div class="meta cau">Chọn người trong kho CCCD rồi bấm Làm thẻ. Người chưa có ảnh CCCD trong kho thì bấm Thêm người.</div><button class="btn" id="thKho" style="margin-top:12px">Chọn người trong kho CCCD</button></div>';
     else h += '<div class="row thk"><span class="meta">Khổ giấy</span><div class="seg" id="thKho">' + ['A4', 'A5'].map(function (g) { return '<button data-tk="' + g + '"' + (theKho() === g ? ' class="on"' : '') + '>' + g + (g === 'A4' ? ' · 8 thẻ/tờ' : ' · 4 thẻ/tờ') + '</button>'; }).join('') + '</div></div>' +
       '<div class="row thk"><span class="meta">Sáng ảnh</span><input type="range" id="thSang" min="0" max="100" step="5" value="' + theSangMuc() + '" style="flex:1"><span class="meta num" id="thSangV" style="min-width:64px;text-align:right">' + theSangChu() + '</span></div>' +
       '<div class="meta" style="padding:0 2px">Tích người cần làm thẻ, gõ mã thẻ. Mỗi thẻ 8,0 × 5,5 cm, cần in màu.' + (theKho() === 'A5' ? ' Đặt giấy A5 vào khay; hộp in hiện khổ 5 × 7 inch là đúng.' : '') + '</div>';
@@ -5408,7 +5428,7 @@ textarea.inp{font-family:inherit}
     theLsTai();
     h += '<div class="grp"><button class="it" id="thLs"><div style="min-width:0;flex:1"><div class="nm">Thẻ đã in trước đây' + (CCS.thLs ? ' · ' + CCS.thLs.length : '') + '</div><div class="sub">Tìm theo tên hoặc mã thẻ để in lại</div></div><span class="ch">›</span></button></div>';
     if (n) h += '<button class="btn ghost" id="thDsl">Lập danh sách đi làm cho ' + n + ' người</button>';
-    h += '<div class="ccday">' + ccMay(1) + '<button class="btn ghost" id="thThem">Thêm người</button><button class="btn ghost ccgui" id="thGui" aria-label="Chia sẻ PDF"' + (n ? '' : ' disabled') + '>' + ICON_GUI + '</button><button class="btn" id="thIn"' + (n ? '' : ' disabled') + '>' + (n ? 'In ' + n + ' thẻ' : 'Chưa chọn ai') + '</button></div><div class="ccdem"></div>';
+    h += '<div class="ccday">' + ccMay(1) + '<button class="btn ghost" id="thThem">Thêm người</button><button class="btn ghost ccgui" id="thGui" aria-label="Chia sẻ PDF"' + (n ? '' : ' disabled') + '>' + ICON_GUI + '</button><button class="btn" id="thIn"' + (n ? '' : ' disabled') + '>' + (n ? 'In ' + n + ' thẻ' : 'In thẻ') + '</button></div><div class="ccdem"></div>';
     t.innerHTML = h; ccDayDat(t); ccCheNoi(t);
     var sl = document.getElementById('thSang');
     if (sl) { sl.oninput = function () { luu('vlta_the_sang', sl.value); var v = document.getElementById('thSangV'); if (v) v.textContent = theSangChu(); }; sl.onchange = function () { ccVe(); }; }
@@ -5422,6 +5442,7 @@ textarea.inp{font-family:inherit}
     t.querySelectorAll('[data-tt]').forEach(function (i) { i.oninput = function () { var e = e_(i.getAttribute('data-tt')); e.ten = i.value.toUpperCase(); e.sua = 1; xemLai(e.k); var hd = t.querySelector('[data-tc2="' + e.k + '"] b'); if (hd) hd.textContent = e.ten || 'Người thêm tay'; }; i.onblur = function () { i.value = e_(i.getAttribute('data-tt')).ten; }; });
     t.querySelectorAll('[data-tm]').forEach(function (i) { i.oninput = function () { i.value = i.value.replace(/\D/g, '').slice(0, 10); var e = e_(i.getAttribute('data-tm')); e.ma = i.value; delete e.maGY; e.maTay = 1; xemLai(e.k); var g = t.querySelector('[data-tg2="' + e.k + '"]'); if (g) g.innerHTML = theMaGhiChu(e); }; });
     t.querySelectorAll('[data-tv]').forEach(function (im) { im.onclick = function () { ccXemTo(theVe(e_(im.getAttribute('data-tv')), 1004).toDataURL('image/jpeg', 0.9)); }; });
+    var thK = document.getElementById('thKho'); if (thK) thK.onclick = function () { ccKhoMo(); ccVe(); window.scrollTo(0, 0); };   // b199
     document.getElementById('thThem').onclick = function () { var k = 'm' + (++CCS.theThem); CCS.the[k] = { k: k, chon: true, ten: '', ma: '', bp: 'P', sua: 1 }; theChonAnh(CCS.the[k]); ccVe(); };
     document.getElementById('thGui').onclick = theGui;
     document.getElementById('thLs').onclick = function () { if (!CCS.thLs) { toast('Đang tải danh sách thẻ đã in…'); theLsTai(); return; } theLsMo(); };
@@ -5760,7 +5781,7 @@ textarea.inp{font-family:inherit}
     }).join('') + '</div>';
     h += '<input type="file" id="dlFile" accept="image/*" multiple hidden>';
     h += '<div class="ccday"><button class="btn ghost" id="dlThem">Thêm người</button>' + (SU ? '<button class="btn" id="dlXuat"' + (g ? '' : ' disabled') + '>Lưu danh sách · ' + chon.length + '</button>' :
-      '<button class="btn" id="dlXuat"' + (chon.length && g ? '' : ' disabled') + '>' + (chon.length ? 'Xuất danh sách · ' + chon.length : 'Chưa chọn ai') + '</button>') + '</div><div class="ccdem"></div>';
+      '<button class="btn" id="dlXuat"' + (chon.length && g ? '' : ' disabled') + '>' + (chon.length ? 'Xuất danh sách · ' + chon.length : 'Xuất danh sách') + '</button>') + '</div><div class="ccdem"></div>';
     t.innerHTML = h; ccDayDat(t); ccCheNoi(t);
     function e_(k) { return L.ng[k]; }
     t.querySelectorAll('[data-dc]').forEach(function (b) { b.onclick = function () { L.cty = b.getAttribute('data-dc'); luu('vlta_dsl_cty', L.cty); dslLvMd(); ccVe(); }; });
@@ -6076,6 +6097,10 @@ textarea.inp{font-family:inherit}
     }, function (er) { ccTd(''); toastLoi(er.message); });
   }
   var BAN_MOI = [
+    { so: 199, ds: [{ i: '✖️', t: 'Hộp nào cũng có nút × để đóng', m: 'Mọi hộp nổi (Ghi khoản, Thông báo, Chọn công ty…) có nút × ở góc trên. Các nút nhỏ như ‹, Sửa ứng / trả dễ bấm trúng hơn.' },
+      { i: '📅', t: 'Bảng công ghi rõ tháng', m: 'Ô ngày đầu kỳ và ngày 01 ghi kèm tháng, ví dụ 26/10 và 01/11. Ứng / trả lương trong kỳ xếp khoản mới nhất lên đầu.' },
+      { i: '🪪', t: 'Thẻ HOJEONG chọn người ngay từ kho', m: 'Giấy tờ → Thẻ HOJEONG → bấm Chọn người trong kho CCCD → chạm ảnh → Làm thẻ. Kho CCCD gom giới tính, năm sinh vào mục Lọc.' },
+      { i: '🔤', v: 'chu', t: 'Thống nhất tên Lương sale', m: 'Các chỗ ghi Lương kinh doanh, nhân viên kinh doanh đổi thành Lương sale, sale. Khoản chi trong sổ thu chi không còn tô đỏ; đỏ chỉ dùng cho lỗ, thiếu, quá hạn.' }] },
     { so: 198, ds: [{ i: '➕', t: 'Nút Thêm người, Ghi khoản không che chữ', m: 'Nút nằm thành một thanh cố định ngay trên thanh tab, không còn đè lên tên và số tiền.' },
       { i: '🔤', t: 'Chữ không còn nhảy dòng', m: 'Dòng chữ dưới tiêu đề trang, tên người, tên khoản và nhãn ngắn luôn nằm trên một dòng ở mọi cỡ điện thoại. Chữ trong các ô nhập ở mục Giấy tờ về cỡ vừa, không tràn ra ngoài ô.' }] },
     { so: 197, ds: [{ i: '💵', t: 'Số tiền viết một kiểu: 1.440.000 đ', m: 'Mọi số tiền trong app dùng dấu chấm và có chữ đ, giống phiếu lương. Giờ công dùng dấu phẩy, ví dụ 10,5 giờ.' },
@@ -6338,7 +6363,12 @@ textarea.inp{font-family:inherit}
     var ds = moiCuaToi(da, PB.so);
     luu('vlta_moi', String(PB.so));
     if (!ds.length || document.querySelector('.bmoi')) return;
-    hopMoi(ds, 'Có gì mới');
+    // b199: tự bật chỉ bản mới nhất, tối đa 3 mục; còn nữa thì có nút Xem tất cả
+    var gon = [{ so: ds[0].so, ds: ds[0].ds.filter(function (x) { return typeof x !== 'string'; }).slice(0, 3) }];
+    if (!gon[0].ds.length) gon = [ds[0]];
+    var du = ds.length > 1 || ds[0].ds.length > gon[0].ds.length;
+    var hm = hopMoi(gon, 'Có gì mới');
+    if (du && hm) { var bh = hm.querySelector('#bmHieu'); if (bh) bh.insertAdjacentHTML('beforebegin', '<button class="btn ghost" id="bmTat">Xem tất cả thay đổi</button>'); var bt = hm.querySelector('#bmTat'); if (bt) bt.onclick = function () { hm.remove(); hopMoi(ds, 'Có gì mới'); }; }
   }
   function hienBanMoi(so) {
     if (BM.mo) return;
@@ -6680,7 +6710,7 @@ textarea.inp{font-family:inherit}
   function kbvLuu() { luuSo('vlta_kbv2', { ds: KBV.ds, chu: KBV.chu, file: KBV.file, luc: KBV.luc, tranh: KBV.tranh }); }
   function kbvMoi() {   // chấm đỏ: bài chưa quay mà máy này chưa xem
     var xem = docSo('vlta_kbvXem') || [];
-    return (KBV.ds || []).filter(function (r) { return kbvChua(r) && xem.indexOf(r.k) < 0; }).length;
+    return (KBV.ds || []).filter(function (r) { return kbvChua(r) && xem.indexOf(r.k) < 0 && kbvTuoi(r.ngay) <= 7; }).length;   // b199: bài cũ quá 7 ngày không tính
   }
   function kbvDaXem() {
     var xem = docSo('vlta_kbvXem') || [], them = (KBV.ds || []).filter(kbvChua).map(function (r) { return r.k; }).filter(function (k) { return xem.indexOf(k) < 0; });
@@ -8552,7 +8582,7 @@ textarea.inp{font-family:inherit}
     var d = VTD[S.cty], best = S.cty === 'BEST', dl = S.data[S.cty] || {}, sua = d && !d.loi ? !!d.sua : !!dl.het;
     $app.innerHTML = '<div class="top"><div class="row sp"><button class="back" id="bk" aria-label="Quay lại">‹</button>' +
       '<button class="icb" id="vtTimB" aria-label="Tìm người">' + ICON_TIM + '</button></div>' +
-      '<h2 style="margin-top:4px">Kiểm tra ' + vtTen() + '</h2><small>' + esc(best ? 'File chấm công ' + S.cty + ' gửi' : S.cty + ' · chỉ người Đại Thành') + '</small>' +
+      '<h2 style="margin-top:4px">Kiểm tra ' + vtTen() + '</h2><small>' + esc(best ? 'File chấm công ' + S.cty + ' gửi' : S.cty + ' · chỉ người Tâm An') + '</small>' +
       '<input class="search' + (S.vtQ ? '' : ' hidden') + '" id="vtQ" type="search" placeholder="Tìm tên hoặc mã…" value="' + esc(S.vtQ || '') + '" autocomplete="off"></div>' +
       '<main id="vtM"></main>';
     document.getElementById('bk').onclick = function () { S.vtMo = 0; S.vtUp = null; veDs(); taiDs(false, true); };
@@ -8580,7 +8610,7 @@ textarea.inp{font-family:inherit}
     if (!d) { m.innerHTML = h + '<div class="sk" style="height:56px;margin-top:12px"></div><div class="sk" style="height:300px;margin-top:12px"></div>'; vtGanChon(); return; }
     if (d.loi) { m.innerHTML = h + '<div class="empty">' + esc(d.loi) + '</div>'; vtGanChon(); return; }
     var tabs = d.tab || [];
-    if (!tabs.length) { m.innerHTML = h + '<div class="empty">' + (sua ? 'File không có dòng nào của Đại Thành.' : 'File không có ai trong số người bạn tuyển.') + '</div>'; vtGanChon(); return; }
+    if (!tabs.length) { m.innerHTML = h + '<div class="empty">' + (sua ? 'File không có dòng nào của Tâm An.' : 'File không có ai trong số người bạn tuyển.') + '</div>'; vtGanChon(); return; }
     var G = vtGop(d), ngays = {}, timP = vtNguoi(d);
     G.ds.forEach(function (x) { if (x[4] !== 1) ngays[x[1]] = (ngays[x[1]] || 0) + 1; else if (!ngays[x[1]]) ngays[x[1]] = 0; });
     var dsN = Object.keys(ngays).map(Number).sort(function (a, b) { return b - a; }).slice(0, 31);
@@ -8608,7 +8638,7 @@ textarea.inp{font-family:inherit}
     h += '<div class="grp vtDs"><div class="vtTruc num">' + tr.nhan.map(function (t) { return '<span>' + t + '</span>'; }).join('') + '</div>' +
       (rows.length ? rows.map(function (o, i) {
         var x = o.x, cong1 = x[3] >= 0 && ((x[2] >= 0 && x[3] < x[2]) || (tr.dai && x[2] < 0 && x[3] < 720));
-        var sub = o.loi ? o.loi : x[4] === 1 ? 'đã chuyển nhà – bảng công không tính' : [x[0], x[4] === 2 ? 'chuyển về Đại Thành' : '', o.p && o.p.sale ? tenSale(o.p.sale) : '', o.chua ? (cv ? 'chỉ có giờ vào' : 'chưa có giờ ra lúc lấy file') : ''].filter(String).join(' · ');
+        var sub = o.loi ? o.loi : x[4] === 1 ? 'đã chuyển nhà – bảng công không tính' : [x[0], x[4] === 2 ? 'chuyển về Tâm An' : '', o.p && o.p.sale ? tenSale(o.p.sale) : '', o.chua ? (cv ? 'chỉ có giờ vào' : 'chưa có giờ ra lúc lấy file') : ''].filter(String).join(' · ');
         return '<button class="it vtR' + (o.loi ? ' loi' : '') + (x[4] === 1 ? ' cn' : '') + '" data-i="' + i + '"><span class="av">' + esc(o.p || (d.ten || {})[x[0]] ? o.ten.split(' ').slice(-2).map(function (w) { return w.charAt(0); }).join('') : '?') + '</span>' +
           '<span class="vtC"><span class="vtT"><span class="nm ell">' + esc(o.ten) + '</span><span class="vtH num">' + vtGio(x[2]) + ' – <span' + (x[3] < 0 && !o.chua ? ' class="thieu"' : '') + '>' + vtGio(x[3]) + '</span></span></span>' +
           vtThanh(x, tr, o.loi ? 'var(--warn)' : x[4] === 1 ? 'var(--edge)' : (vtDem(x) ? 'var(--vtDem)' : 'var(--blue)')) +
@@ -9338,7 +9368,7 @@ textarea.inp{font-family:inherit}
       var d = o.dau, r = o.dong, i, chi = [];
       function gt(ten) { var k = d.indexOf(ten); return k >= 0 ? r[k] : ''; }
       for (i = 1; i < d.length; i++) if (['Lương phải trả', 'Đã thanh toán', 'Chưa thanh toán', 'Tổng giờ', 'LĐ đi từ 3 công'].indexOf(d[i]) < 0) chi.push([d[i], r[i]]);
-      t.innerHTML = '<div class="card hero"><div class="meta">Lương kinh doanh tạm tính · ' + esc(o.ky) + '</div><div class="big num">' + esc(gt('Lương phải trả')) + '</div>' +
+      t.innerHTML = '<div class="card hero"><div class="meta">Lương sale tạm tính · ' + esc(o.ky) + '</div><div class="big num">' + esc(gt('Lương phải trả')) + '</div>' +
         '<div class="g3"><div><span>Tổng giờ quản lý</span><b class="num">' + esc(gt('Tổng giờ')) + '</b></div><div><span>LĐ đi từ 3 công</span><b class="num">' + esc(gt('LĐ đi từ 3 công')) + '</b></div><div><span>Chưa thanh toán</span><b class="num">' + esc(gt('Chưa thanh toán')) + '</b></div></div></div>' +
         '<div class="card"><b>Giờ theo công ty</b><div class="kv so" style="margin-top:8px">' + chi.map(function (x) { return '<span>' + esc(x[0]) + '</span><b class="num">' + esc(x[1] || '–') + '</b>'; }).join('') +
         '<span>Đã thanh toán</span><b class="num">' + esc(gt('Đã thanh toán')) + '</b></div></div>' +
@@ -9545,11 +9575,11 @@ textarea.inp{font-family:inherit}
       var ng = String(x.ngay || '').slice(0, 5), ten = ng === homNay ? 'Hôm nay' : ng === homQua ? 'Hôm qua' : (ng || 'Không ngày');
       if (ten !== nhom) { nhom = ten; out += '<div class="gh">' + esc(ten) + '</div>'; }
       var thu = /^thu/i.test(x.loai);
-      var tenK = String(x.khoan || '').replace(/^Chi phí\s+/i, ''); tenK = tenK.charAt(0).toUpperCase() + tenK.slice(1);
+      var tenK = String(x.khoan || '').replace(/^Chi phí\s+/i, '').replace(/\s*\(ghi rõ[^)]*\)/i, ''); tenK = tenK.charAt(0).toUpperCase() + tenK.slice(1);
       var nd = String(x.nd || ''), dt = x.dt && kd(nd).indexOf(kd(x.dt)) >= 0 ? '' : x.dt;
       out += '<div class="it so" data-r="' + (x.r || '') + '"><i class="ic ' + (thu ? 'vao' : 'ra') + '">' + ICON_TC[thu ? 'vao' : 'ra'] + '</i><div style="min-width:0;flex:1"><div class="nm">' + esc(tenK) + '</div><div class="sub">' + esc([x.nguoi, dt, nd].filter(String).join(' · ')) + '</div>' +
         (x.kt ? '<div class="sub" style="color:var(--bad)">' + esc(x.kt) + '</div>' : '') + '</div>' +
-        '<div class="amt num ' + (thu ? 'c-xanh' : 'c-do') + '">' + (thu ? '+' : '−') + esc(tienVN(x.so)) + '</div></div>';
+        '<div class="amt num' + (thu ? ' c-xanh' : '') + '">' + (thu ? '+' : '−') + esc(tienVN(x.so)) + '</div></div>';
     });
     l.innerHTML = out;
     l.querySelectorAll('.it.so[data-r]').forEach(function (e) {
@@ -9588,7 +9618,7 @@ textarea.inp{font-family:inherit}
     var loai = x ? x.loai : 'Ra', chon = x ? { ten: x.ten, ma: x.ma } : null;
     var ng = x && /^(\d{1,2})\/(\d{1,2})\/(\d{4})$/.exec(x.ngay) ? x.ngay.replace(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/, function (a, dd, mm, yy) { return yy + '-' + ('0' + mm).slice(-2) + '-' + ('0' + dd).slice(-2); }) : iso;
     var sh = moSheet('<h3>' + (x ? 'Sửa chuyển nhà' : 'Thêm chuyển nhà') + '</h3>' +
-      '<div class="seg" id="cnL"><button data-l="Ra"' + (loai === 'Ra' ? ' class="on"' : '') + '>Ra khỏi Đại Thành</button><button data-l="Vào"' + (loai === 'Vào' ? ' class="on"' : '') + '>Vào Đại Thành</button></div>' +
+      '<div class="seg" id="cnL"><button data-l="Ra"' + (loai === 'Ra' ? ' class="on"' : '') + '>Ra khỏi Tâm An</button><button data-l="Vào"' + (loai === 'Vào' ? ' class="on"' : '') + '>Vào Tâm An</button></div>' +
       '<div><label class="lb">Người</label><input class="inp" id="cnTim" placeholder="Gõ tên hoặc mã…" value="' + esc(chon ? hoaDau(chon.ten) : '') + '" autocomplete="off"></div><div class="goiY hidden" id="cnGy"></div>' +
       '<div id="cnMaO" class="hidden"><label class="lb">Mã HOJEONG báo</label><input class="inp" id="cnMa" inputmode="numeric" value="' + esc(x ? x.ma : '') + '"></div>' +
       '<div><label class="lb">Từ ngày</label><div class="ngayO"><span id="cnNgT"></span><svg class="lichIc" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg><input id="cnNg" type="date" value="' + ng + '" aria-label="Từ ngày"></div></div>' +
@@ -9848,7 +9878,7 @@ textarea.inp{font-family:inherit}
     t0 = String(t0).trim();
     return /^Thu tiền khách/i.test(t0) ? 'Các công ty đã trả' : /^Chi từ quỹ/i.test(t0) ? 'Chi theo sổ thu chi' : /^Lương công nhân đã/i.test(t0) ? 'Lương công nhân đã trả' :
       /^Thực nhận dự kiến/i.test(t0) ? 'Các công ty còn nợ' : /^Thanh toán vendor/i.test(t0) ? 'Trả vendor' : /^Chi quản lý/i.test(t0) ? 'Chi quản lý' : /^Lương công nhân chưa/i.test(t0) ? 'Lương công nhân chưa trả' :
-      /^Lương kinh doanh chưa/i.test(t0) ? 'Lương kinh doanh chưa trả' : t0.replace(/\s*\(.*?\)\s*/g, ' ').trim();
+      /^Lương kinh doanh chưa/i.test(t0) ? 'Lương sale chưa trả' : t0.replace(/\s*\(.*?\)\s*/g, ' ').trim();
   }
   function tqCo(v) { return v && v !== '-' && v !== '0'; }
   // 31/10: khối "LƯƠNG KINH DOANH TRẢ NGÀY 05/mm/yyyy[ – QUÁ HẠN]" của bảng tổng hợp
@@ -9890,7 +9920,7 @@ textarea.inp{font-family:inherit}
     if ((m = /^(\S+): kiểm tra (\d+) lao động (.+)$/i.exec(v))) return [m[1] + ' · ' + m[3].replace(/^[–-]\s*/, ''), m[2] + ' người', v];
     // 01/11 (anh chê chữ nhảy): "BEST: kiểm tra <tên> – <câu dài>" -> dòng 1 "BEST · Tên", dòng 2 câu (tự xuống dòng); không để câu dài ở cột số
     if ((m = /^(\S+): kiểm tra (.+?)\s+[–-]\s+(.+)$/i.exec(v))) return [m[1] + ' · ' + (/^UNG_TRA/.test(m[2]) ? m[2] : hoaDau(m[2])), '', v, m[3].replace(/^\S/, function (c) { return c.toUpperCase(); })];
-    if ((m = /lương kinh doanh tháng (\d+) còn thiếu:\s*(.+?)\s+([\d,.]+)$/i.exec(v))) return ['Lương KD T' + m[1] + ' còn thiếu · ' + m[2], m[3], v];
+    if ((m = /lương (?:kinh doanh|sale) tháng (\d+) còn thiếu:\s*(.+?)\s+([\d,.]+)$/i.exec(v))) return ['Lương sale T' + m[1] + ' còn thiếu · ' + m[2], m[3], v];
     if ((m = /^Chuẩn bị thu:\s*(.+)$/i.exec(v))) { var ds = m[1].split(/,\s*(?=[A-ZĐ])/); return ['Chuẩn bị thu sắp đến hạn', ds.length + ' khoản', ds.join('\n')]; }
     return [v, '', v];
   }
@@ -9905,7 +9935,7 @@ textarea.inp{font-family:inherit}
   function q2Viec(o) {
     if (!o.viec.length) return '';
     return '<div class="q2viec"><div class="q2viec-h">Việc cần xử lý · ' + o.viec.length + '</div>' + o.viec.map(function (v) {
-      var x = tqViec(String(v).replace(/^\d+\.\s*/, ''));
+      var x = tqViec(String(v).replace(/^\d+\.\s*/, '').replace(/\(khách đã trả\)/gi, '(công ty đã trả)').replace(/Lương kinh doanh/g, 'Lương sale'));
       var trai = x[3] ? '<span class="q2vt"><span class="ell">' + esc(soVN(x[0])) + '</span><small class="q2vs">' + esc(x[3]) + '</small></span>' : '<span class="ell">' + esc(soVN(x[0])) + '</span>';
       if (x[4]) return '<button class="q2vi q2vu" data-ut="' + esc(x[4]) + '">' + trai + (x[1] ? '<b class="num">' + esc(soVN(x[1])) + '</b>' : '') + '<i aria-hidden="true">›</i></button>';   // 06/11: chạm mở Ứng / trả
       if (!x[1] && !x[3] && x[2] === x[0]) return '<div class="q2vi q2vp">' + esc(soVN(x[0])) + '</div>';
@@ -9946,9 +9976,9 @@ textarea.inp{font-family:inherit}
         lk = /Lương kinh doanh\s+([\d,.]+)/i.exec(t[3] ? t[3][2] : ''), cc = /chi phí chung\s+([\d,.]+)/i.exec(t[3] ? t[3][2] : '');
       if (dt > 0) {
         var buoc = [['Doanh thu', 'chưa VAT', dt, 0], ['Trả lương công nhân', '', cn, 1], ['Vendor, phí 5%, chi quản lý', '', vd, 1], ['Lợi nhuận từ công ty', '', dt - cn - vd, 0]];
-        if (lk && cc) buoc.push(['Lương kinh doanh', '', q2So(lk[1]), 1], ['Chi phí chung', '', q2So(cc[1]), 1], ['Lợi nhuận tháng', '', q2So(t[0] ? t[0][1] : 0), 0]);
+        if (lk && cc) buoc.push(['Lương sale', '', q2So(lk[1]), 1], ['Chi phí chung', '', q2So(cc[1]), 1], ['Lợi nhuận tháng', '', q2So(t[0] ? t[0][1] : 0), 0]);
         var con = dt;
-        h += q2H('Doanh thu đi đâu', esc(q2Tr(dt))) + '<div class="card q2bac">' + buoc.map(function (b, i) {
+        h += q2H('Doanh thu và các khoản trừ', '') + '<div class="card q2bac">' + buoc.map(function (b, i) {
           if (b[3]) { var truoc = con; con -= b[2]; return '<div class="q2r"><span>− ' + esc(b[0]) + '</span><b class="num mo">' + vnd0(-b[2]) + '</b><div class="q2bar"><s style="width:' + Math.max(0, con / dt * 100).toFixed(2) + '%;background:var(--q2xam)"></s><s style="width:' + Math.max(0, (truoc - con) / dt * 100).toFixed(2) + '%;background:var(--q2do)"></s></div></div>'; }
           var amB = b[2] < 0, mau = i === 0 ? 'var(--fg)' : amB ? 'var(--bad)' : 'var(--good)';
           return '<div class="q2r moc"><span>' + esc(b[0]) + (b[1] ? '<i>' + esc(soVN(b[1])) + '</i>' : '') + '</span><b class="num" style="color:' + (i === 0 ? 'inherit' : mau) + '">' + vnd0(b[2]) + '</b><div class="q2bar"><s style="width:' + Math.max(0.8, Math.abs(b[2]) / dt * 100).toFixed(2) + '%;background:' + mau + '"></s></div></div>';
@@ -9974,13 +10004,13 @@ textarea.inp{font-family:inherit}
       });
       nhom.sort(function (a, b) { return b.v - a.v; });
       var tc = nhom.reduce(function (a, x) { return a + x.v; }, 0) || 1;
-      h += q2H('Chi phí chung', tongCP ? esc(soVN(tongCP[1])) : '') + '<div class="card"><div class="q2chong">' + nhom.map(function (x, i) { return '<s style="width:' + (x.v / tc * 100).toFixed(2) + '%;background:' + xam[Math.min(i, 4)] + '"></s>'; }).join('') + '</div>' +
+      h += q2H('Chi phí chung', '') + '<div class="card"><div class="q2chong">' + nhom.map(function (x, i) { return '<s style="width:' + (x.v / tc * 100).toFixed(2) + '%;background:' + xam[Math.min(i, 4)] + '"></s>'; }).join('') + '</div>' +
         nhom.map(function (x, i) {
           var gop = x.con.length === 1, c0 = gop ? x.con[0][0] : '', pt = Math.round(x.v / tc * 100) + '%';
           if (gop && c0.toLowerCase().indexOf(x.t.toLowerCase()) === 0) c0 = c0.slice(x.t.length).trim();
           var ten = gop ? x.con[0][0] : x.t;   // nhóm 1 khoản: hiện thẳng tên khoản (đã gồm tên nhóm)
           var dau = '<span class="q2n">' + q2Dot(xam[Math.min(i, 4)]) + '<b class="ell">' + esc(ten) + '</b></span><span class="num"><b>' + esc(soVN(x.so)) + '</b> <small class="meta">' + pt + '</small></span>';
-          if (x.con.length > 1) return '<details class="q2nhom" open><summary>' + dau + '</summary><div class="q2con">' + x.con.map(function (c) { return '<div><span class="ell">' + esc(soVN(c[0])) + '</span><span class="num">' + esc(soVN(c[1])) + '</span></div>'; }).join('') + '</div></details>';
+          if (x.con.length > 1) return '<details class="q2nhom" open><summary>' + dau + '</summary><div class="q2con">' + x.con.map(function (c) { return '<div><span class="cau">' + esc(soVN(c[0])) + '</span><span class="num">' + esc(soVN(c[1])) + '</span></div>'; }).join('') + '</div></details>';
           return '<div class="q2nhom"><div class="q2nd">' + dau + '</div></div>';
         }).join('') + '</div>';
     }
@@ -10367,8 +10397,8 @@ textarea.inp{font-family:inherit}
       { k: 'cnC', t: 'Công chủ nhật mỗi tháng', g2: '', u: 'công', st: 1, ki: 'd' },
       { k: 'ccC', t: 'Chuyên cần bình quân mỗi công', g2: '', u: 'đ', st: 500, ki: 't' },
       { k: 'gioV', t: 'Giờ công lao động vendor mỗi tháng', g2: 'Lấy theo bảng công', u: 'giờ', st: 50, ki: 'd' },
-      { k: 'S', t: 'Số nhân viên kinh doanh', g2: 'Thưởng tính gộp giờ mọi công ty của từng người', u: 'người', st: 1, ki: 'd' },
-      { k: 'base', t: 'Lương cơ bản mỗi nhân viên kinh doanh', u: 'đ', st: 500000, ki: 't' },
+      { k: 'S', t: 'Số sale', g2: 'Thưởng tính gộp giờ mọi công ty của từng người', u: 'người', st: 1, ki: 'd' },
+      { k: 'base', t: 'Lương cơ bản mỗi sale', u: 'đ', st: 500000, ki: 't' },
       { k: 'CP', t: 'Chi phí chung mỗi tháng', g2: '', u: 'đ', st: 1000000, ki: 't' },
       { k: 'C', t: '{KH} thanh toán sau kỳ', u: 'ngày', st: 15, ki: 'd' }];
     function IT() { return IT0.filter(function (f) { return !f.hj || ctx().loai !== 'BEST'; }); }
@@ -10397,7 +10427,7 @@ textarea.inp{font-family:inherit}
       o.cn8 = cn * (1 - d) * (1 - t); o.cn11 = cn * (1 - d) * t; o.cnd11 = cn * d;   // chủ nhật: ngày/đêm theo tỷ lệ người ngày thường
       return o;
     }
-    function tinh1(p, cx) {   // 1 công ty, chưa trừ thưởng nhân viên kinh doanh (tính gộp ở tinh)
+    function tinh1(p, cx) {   // 1 công ty, chưa trừ thưởng sale (tính gộp ở tinh)
       p = chuan(p, cx);
       var cm = congMuc(p, cx), cong = 0, q1 = 0, gio = 0, luong = 0, an = 0, ph = {}, congCN = 0;
       cx.MUC.forEach(function (m) { var c = cm[m.k] || 0; cong += c; q1 += c * m.hs; gio += c * m.gio; an += c * (m.an || 0); luong += c * ((p.L[m.k] || 0) + (p.dL || 0)); if (m.cn) congCN += c; });
@@ -10411,7 +10441,7 @@ textarea.inp{font-family:inherit}
       var tienLuong = luong + cc + luongV;
       return { p: p, cong: cong, congCN: congCN, gio: gio, q1: q1, rev: rev, luong: luong, cc: cc, fee: fee, cut: cut, cutPct: cutPct, mang0: mang0, laiV: laiV, luongV: luongV, revV: revV, ph: ph, tienLuong: tienLuong, von: tienLuong * (30 + p.C - 7) / 30 };
     }
-    function thuongTong(ds, nS) {   // thưởng nhân viên kinh doanh theo đúng cơ chế: giờ của từng người gộp mọi công ty (tỷ lệ theo bảng công thực tế)
+    function thuongTong(ds, nS) {   // thưởng sale theo đúng cơ chế: giờ của từng người gộp mọi công ty (tỷ lệ theo bảng công thực tế)
       var ten = {}; ds.forEach(function (d) { var sl = d.x.c && d.x.c.sale; if (sl) Object.keys(sl).forEach(function (k) { if (sl[k].gio > 0 && k !== '?') ten[k] = 1; }); });
       var dsT = Object.keys(ten), that = dsT.length === nS, gS = {}, nG = {};
       if (!that) { dsT = []; for (var i = 0; i < nS; i++) dsT.push('Nhân viên ' + (i + 1)); }
@@ -10554,7 +10584,7 @@ textarea.inp{font-family:inherit}
         '<div class="bt con"><span>Doanh thu trước VAT</span><b class="num">' + fT(tong) + '</b></div>' +
         '<div class="bt con"><span>− Lương công nhân, chuyên cần (gồm người của vendor)</span><b class="num">' + fT(luong) + '</b></div>' +
         '<div class="bt con"><span>− Phí pháp nhân, chiết khấu, trả vendor</span><b class="num">' + fT(-khac) + '</b></div>' +
-        '<div class="bt con"><span>− Thưởng nhân viên kinh doanh (theo giờ của công ty này)</span><b class="num">' + fT(x.thuong) + '</b></div>' +
+        '<div class="bt con"><span>− Thưởng sale (theo giờ của công ty này)</span><b class="num">' + fT(x.thuong) + '</b></div>' +
         '<div class="bt con"><span><b>= Trước chi phí cố định</b></span><b class="num">' + fS(x.mangV) + '</b></div>' +
         '<div class="bt con"><span>− Chi phí cố định phải gánh (' + fD(x.tyDT * 100, 0) + '% doanh thu)</span><b class="num">' + fT(x.gCD) + '</b></div>' +
         '<div class="bt con"><span><i>Nếu không có ' + ten + ', toàn công ty còn</i></span><b class="num ' + (x.boDi < 0 ? 'am' : '') + '">' + fS(x.boDi) + '</b></div></details>';
@@ -10568,7 +10598,7 @@ textarea.inp{font-family:inherit}
     }
     function veBac(r) {
       var ds = [['Doanh thu trước VAT', r.rev, 0, mauCt(S.mode)], ['Lương công nhân + chuyên cần', r.luong + r.cc, 1, 'var(--blue)'],
-        ['Phí pháp nhân ' + fD(S.p.fee, 1) + '%', r.fee, 1, 'var(--warn)'], [KH('Chiết khấu nhân sự {KH}'), r.cut, 1, 'var(--bad)'], ['Thưởng nhân viên kinh doanh', r.thuong, 1, 'var(--muted)']];
+        ['Phí pháp nhân ' + fD(S.p.fee, 1) + '%', r.fee, 1, 'var(--warn)'], [KH('Chiết khấu nhân sự {KH}'), r.cut, 1, 'var(--bad)'], ['Thưởng sale', r.thuong, 1, 'var(--muted)']];
       var h = '';
       ds.forEach(function (x) { if (x[2] && Math.abs(x[1]) < 0.5) return; var w = r.rev > 0 ? Math.min(100, Math.abs(x[1]) / r.rev * 100) : 0;
         h += '<div class="bt"><span class="' + (x[2] ? 'tru' : '') + '">' + (x[2] ? '− ' : '') + esc(x[0]) + '</span><b class="num">' + fT(x[1]) + '</b><div class="bar"><s style="width:' + w.toFixed(1) + '%;--q:' + x[3] + '"></s></div></div>'; });
@@ -10716,8 +10746,8 @@ textarea.inp{font-family:inherit}
     /* ===== GIẢI THÍCH (nút i) ===== */
     var GT = {
       chiso: ['Chỉ số chính', '<p>Những chỉ số thường thay đổi khi đàm phán với {KH} hoặc vendor. Mỗi ô có nút − / + hoặc gõ số trực tiếp; kết quả bên dưới tính lại ngay.</p><p>Ô nào khác số liệu thực tế sẽ chuyển màu xanh và ghi số thực tế bên dưới để so sánh. Bấm "Khôi phục số liệu thực tế" để trả về.</p>'],
-      P: ['Đơn giá {KH} trả mỗi giờ', '<p>Số tiền {KH} trả cho Đại Thành cho 1 giờ làm việc ở hệ số 1 (ca ngày, thứ 2–7), chưa gồm VAT.</p><p>Các ca khác nhân hệ số theo bảng kê: tăng ca ngày ×1,5; ca đêm ×1,3; tăng ca đêm ×1,8; chủ nhật ×2 và ×2,3.</p>', function () { return 'Đang thiết lập ' + fT(S.p.P) + ' đ.'; }],
-      cut: ['Chiết khấu nhân sự {KH}', '<p>Khoản Đại Thành trích lại cho bộ phận nhân sự của {KH} trên mỗi hóa đơn, tính trên tiền trước VAT.</p><p><b>Theo % hóa đơn:</b> ví dụ 2% của hóa đơn 100 triệu là 2 triệu.<br><b>Khoán đ/giờ:</b> một số tiền cố định cho mỗi giờ hệ số 1, giống cách làm với BEST (5.000 đ/giờ).</p><p>Với lao động của vendor, phần chiết khấu này được trừ vào giá trả vendor nên vendor chịu.</p>', function () { var r = tinh(S.p); return 'Đang thiết lập: mỗi tháng trích ' + fT(r.cut + r.revV * r.cutPct) + ' đ.'; }],
+      P: ['Đơn giá {KH} trả mỗi giờ', '<p>Số tiền {KH} trả cho Tâm An cho 1 giờ làm việc ở hệ số 1 (ca ngày, thứ 2–7), chưa gồm VAT.</p><p>Các ca khác nhân hệ số theo bảng kê: tăng ca ngày ×1,5; ca đêm ×1,3; tăng ca đêm ×1,8; chủ nhật ×2 và ×2,3.</p>', function () { return 'Đang thiết lập ' + fT(S.p.P) + ' đ.'; }],
+      cut: ['Chiết khấu nhân sự {KH}', '<p>Khoản Tâm An trích lại cho bộ phận nhân sự của {KH} trên mỗi hóa đơn, tính trên tiền trước VAT.</p><p><b>Theo % hóa đơn:</b> ví dụ 2% của hóa đơn 100 triệu là 2 triệu.<br><b>Khoán đ/giờ:</b> một số tiền cố định cho mỗi giờ hệ số 1, giống cách làm với BEST (5.000 đ/giờ).</p><p>Với lao động của vendor, phần chiết khấu này được trừ vào giá trả vendor nên vendor chịu.</p>', function () { var r = tinh(S.p); return 'Đang thiết lập: mỗi tháng trích ' + fT(r.cut + r.revV * r.cutPct) + ' đ.'; }],
       fee: ['Phí pháp nhân', '<p>Công ty ký hợp đồng và xuất hóa đơn qua pháp nhân của bên khác. Bên đó nộp VAT thay và giữ lại một tỷ lệ % trên tiền hàng trước VAT (hiện 5%) rồi chuyển phần còn lại cho công ty.</p><p>Giảm được 1% phí tương đương tăng lợi nhuận 1% doanh thu.</p>', function () { var r = tinh(S.p); return 'Đang thiết lập ' + fD(S.p.fee, 1) + '%: mỗi tháng mất ' + fT(r.fee + r.revV * S.p.fee / 100) + ' đ.'; }],
       N: ['Lao động công ty đi làm mỗi ngày', '<p>Số lao động do công ty tuyển và trả lương, bình quân mỗi ngày làm thường. Với {KH}, số này đã gồm cả những ngày sale được tăng cường thêm người (ví dụ 2 người cố định, ngày sale thêm 1–2 người thì bình quân khoảng 2,2–2,5).</p><p>Số công ngày thường mỗi tháng = số lao động × số ngày làm thường. Công chủ nhật tính riêng ở Thiết lập khác.</p>', function () { var r = tinh(S.p); return fD(r.p.N, 1) + ' người × ' + fD(S.p.D, 0) + ' ngày + ' + fD(S.p.cnC || 0, 1) + ' công chủ nhật = ' + fT(r.cong) + ' công, khoảng ' + fT(r.gio) + ' giờ mỗi tháng.'; }],
       Nn: ['Lao động ca ngày mỗi ngày', '<p>Số lao động của công ty (không gồm vendor) đi ca ngày, bình quân mỗi ngày làm thường. Mặc định lấy theo bảng công thực tế.</p><p>Muốn ướm thêm người, gõ thẳng số người ca ngày và ca đêm dự kiến. Ca đêm {KH} trả hệ số 1,3 (tăng ca đêm 1,8) nên mỗi người ca đêm thường lãi gấp 2–3 lần người ca ngày; xem dòng "Lao động ca ngày / ca đêm" ở mục Độ nhạy.</p>', function () { var r = tinh(S.p); return 'Ngày ' + fD(r.p.Nn, 1) + ' + đêm ' + fD(r.p.Nd, 1) + ' = ' + fD(r.p.N, 1) + ' người · ' + fT(r.cong) + ' công, khoảng ' + fT(r.gio) + ' giờ mỗi tháng (gồm chủ nhật).'; }],
@@ -10725,19 +10755,19 @@ textarea.inp{font-family:inherit}
       G: ['Lao động vendor', '<p>Vendor là đơn vị cung ứng lại lao động cho công ty. Có 2 hình thức:</p><p><b>Giữ lại từ đơn giá</b> (cách đang làm với Đức, Hoàng, Quyền): trên mỗi giờ hệ số 1 công ty giữ lại một khoản (ví dụ 3.500 đ, hay gọi là "3,5 giá"), phần còn lại chuyển cho vendor để vendor trả lương công nhân của họ. Công ty vẫn là bên ứng tiền lương hằng tuần. Phí pháp nhân công ty chịu; chiết khấu nhân sự {KH} trừ vào phần của vendor.</p><p><b>Trả vendor theo giờ công:</b> công ty trả lương thẳng cho công nhân của vendor theo bảng lương của mình, và trả thêm vendor một khoản cố định mỗi giờ công (ví dụ 1.500 đ).</p><p>Cả hai cách công ty đều phải ứng lương trước, nên lương công nhân vendor được tính vào Vốn cần ứng trước. Số giờ của lao động vendor lấy từ bảng công, không nhập tay.</p>'],
       luong: ['Bảng lương công nhân theo ca', '<p>Lương công ty trả công nhân cho 1 công, theo tổng số giờ làm trong ngày và ca ngày/đêm, đúng như bảng cơ chế lương đang áp dụng (sheet CO_CHE). BEST có 2 dòng: lương bình quân mỗi công ngày thường và chủ nhật. Các dòng Chủ nhật dùng bảng lương chủ nhật.</p><p>Cột <b>Doanh thu / công</b> là số {KH} trả cho công đó (đơn giá × giờ × hệ số). Dòng <b>còn</b> là doanh thu trừ lương, chưa trừ phí pháp nhân, chiết khấu, thưởng.</p><p>Sửa từng mức, hoặc dùng ô "Điều chỉnh đồng loạt" để cộng/trừ cùng một số vào mọi mức.</p>'],
       dL: ['Điều chỉnh đồng loạt mọi mức', '<p>Cộng thêm số này vào tất cả các mức lương ở trên. Gõ số âm để giảm (ví dụ −10.000 là mỗi công giảm 10.000 đ, giống đợt điều chỉnh từ 15/10).</p>'],
-      khac: ['Thiết lập khác', '<p>Các chỉ số ít khi thay đổi, mặc định lấy theo số liệu thực tế. Mở ra khi cần giả lập cơ cấu ca, số nhân viên kinh doanh, chi phí chung hoặc thời hạn {KH} thanh toán.</p>'],
+      khac: ['Thiết lập khác', '<p>Các chỉ số ít khi thay đổi, mặc định lấy theo số liệu thực tế. Mở ra khi cần giả lập cơ cấu ca, số sale, chi phí chung hoặc thời hạn {KH} thanh toán.</p>'],
       D: ['Ngày làm thường mỗi tháng', '<p>Số ngày thứ 2 – thứ 7 trong tháng có lao động đi làm. Dùng để quy đổi số liệu kỳ chưa đủ tháng thành cả tháng. Mặc định tính theo tỷ lệ ngày có công trong kỳ đang chạy. Chủ nhật tính riêng ở ô Công chủ nhật.</p>'],
       tc: ['Công có tăng ca', '<p>Tỷ lệ số công làm 10,5 tiếng (có 2,5 tiếng tăng ca) trên tổng số công. Tăng ca {KH} trả hệ số 1,5 (ngày) hoặc 1,8 (đêm).</p>', function () { return 'Thực tế: ' + fD(base().tc, 0) + '%.'; }],
       cnC: ['Công chủ nhật mỗi tháng', '<p>Số công làm ngày chủ nhật trong tháng của lao động công ty. Mặc định lấy theo bảng công thực tế quy ra tháng (không làm chủ nhật thì bằng 0).</p><p>Chủ nhật {KH} trả hệ số 2 (ca đêm 2,3 với HOJEONG) cho mọi giờ, lương công nhân theo bảng lương chủ nhật ở CO_CHE, nên mỗi công chủ nhật lãi gấp nhiều lần công ngày thường. HOJEONG: ca ngày/đêm của công chủ nhật chia theo tỷ lệ người ngày thường, có tăng ca thì tính 11 tiếng.</p>', function () { var r = tinh(S.p), c1 = clone(S.p); c1.cnC = (c1.cnC || 0) + 1; return fD(S.p.cnC || 0, 1) + ' công chủ nhật · mỗi công thêm ' + fDelta(tinh(c1).cty - r.cty) + ' đ lợi nhuận toàn công ty.'; }],
       ccC: ['Chuyên cần bình quân mỗi công', '<p>Thưởng chuyên cần (50.000 đ cho mỗi tuần đi đủ 6 công) quy ra bình quân mỗi công theo số liệu thực tế. Thêm người, thêm công thì tiền chuyên cần tăng theo.</p>', function () { var r = tinh(S.p); return fT(S.p.ccC || 0) + ' đ/công × ' + fT(r.cong) + ' công ≈ ' + fT(r.cc) + ' đ mỗi tháng.'; }],
       gioV: ['Giờ công lao động vendor mỗi tháng', '<p>Tổng số giờ do lao động của vendor làm trong tháng, lấy từ bảng công và quy ra tháng. Công ty không có vendor thì bằng 0. Gõ số để giả lập trường hợp có vendor.</p>'],
-      S: ['Số nhân viên kinh doanh', '<p>Số nhân viên tuyển dụng và quản lý lao động. Mỗi người hưởng lương cơ bản cố định và thưởng theo giờ công của lao động mình tuyển, <b>gộp giờ ở mọi công ty</b>: 1.000 đ/giờ cho 2.000 giờ đầu, 1.500 đ/giờ từ giờ 2.001, thưởng mốc 5.000 / 7.000 / 10.000 giờ (+1 / +2 / +3 triệu), phụ cấp 1 triệu khi có từ 50 người đi làm từ 3 công.</p><p>Giờ chia cho từng người theo tỷ lệ trong bảng công thực tế của từng công ty (công ty mới chia đều). Tổng thưởng chia lại cho các công ty theo tỷ lệ giờ để tính lãi từng công ty. Giờ của lao động vendor không tính thưởng. Số nhân viên khác số người đang có trong bảng công thì giờ chia đều.</p>', function () { var r = tinh(S.p); return r.th.ct.map(function (c) { return esc(c.ten) + ': ' + fT(c.gio) + ' giờ' + (c.nguoi ? ', khoảng ' + fT(c.nguoi) + ' người từ 3 công' : '') + ' → ' + fT(c.tien) + ' đ' + (c.pc ? ' (gồm phụ cấp)' : ''); }).join('<br>') + '<br>Tổng thưởng ' + fT(r.th.tong) + ' đ mỗi tháng.'; }],
-      base: ['Lương cơ bản mỗi nhân viên kinh doanh', '<p>Lương cố định hằng tháng, không phụ thuộc sản lượng. Đây là chi phí toàn công ty, không gắn với một công ty cụ thể.</p>'],
+      S: ['Số sale', '<p>Số nhân viên tuyển dụng và quản lý lao động. Mỗi người hưởng lương cơ bản cố định và thưởng theo giờ công của lao động mình tuyển, <b>gộp giờ ở mọi công ty</b>: 1.000 đ/giờ cho 2.000 giờ đầu, 1.500 đ/giờ từ giờ 2.001, thưởng mốc 5.000 / 7.000 / 10.000 giờ (+1 / +2 / +3 triệu), phụ cấp 1 triệu khi có từ 50 người đi làm từ 3 công.</p><p>Giờ chia cho từng người theo tỷ lệ trong bảng công thực tế của từng công ty (công ty mới chia đều). Tổng thưởng chia lại cho các công ty theo tỷ lệ giờ để tính lãi từng công ty. Giờ của lao động vendor không tính thưởng. Số nhân viên khác số người đang có trong bảng công thì giờ chia đều.</p>', function () { var r = tinh(S.p); return r.th.ct.map(function (c) { return esc(c.ten) + ': ' + fT(c.gio) + ' giờ' + (c.nguoi ? ', khoảng ' + fT(c.nguoi) + ' người từ 3 công' : '') + ' → ' + fT(c.tien) + ' đ' + (c.pc ? ' (gồm phụ cấp)' : ''); }).join('<br>') + '<br>Tổng thưởng ' + fT(r.th.tong) + ' đ mỗi tháng.'; }],
+      base: ['Lương cơ bản mỗi sale', '<p>Lương cố định hằng tháng, không phụ thuộc sản lượng. Đây là chi phí toàn công ty, không gắn với một công ty cụ thể.</p>'],
       CP: ['Chi phí chung mỗi tháng', '<p>Các khoản chi lặp lại hằng tháng, không gắn với công ty nào: xăng xe đưa đón lao động, tiếp khách, thưởng người giới thiệu, proxy Zalo… Lấy từ sổ thu chi.</p><p>Khoản trả trước cho nhiều tháng (Claude, tool Zalo 12 tháng, proxy 6 tháng) được chia đều cho các tháng sử dụng, theo cột "Chia cho số tháng" của sheet DANH_MUC.</p><p>Không gồm mua sắm ban đầu (máy quay, áo dép, găng tay, ổ khóa), đánh dấu ở cột "Trang bị ban đầu". Mua bổ sung khi thiếu, mất thì ghi khoản "Chi phí mua bổ sung áo, dép, găng tay, ổ khoá" và được tính vào chi phí chung. Tháng 9 có nhiều mua sắm ban đầu nên không tính.</p>', function () { return cpGhi + '.'; }],
       C: ['{KH} thanh toán sau kỳ', '<p>Số ngày từ khi kết thúc kỳ công đến khi {KH} thanh toán. Ảnh hưởng đến số tiền lương công ty phải ứng trước.</p>'],
-      loinhuan: ['Lợi nhuận toàn công ty', '<p>Số tiền còn lại mỗi tháng của cả công ty sau khi trừ mọi chi phí: lương công nhân, trả vendor, phí pháp nhân, chiết khấu, thưởng và lương cơ bản nhân viên kinh doanh, chi phí chung.</p><p>Bên dưới là <b>lãi của từng công ty</b>: đã trừ phần chi phí cố định chia theo tỷ lệ doanh thu, cộng lại đúng bằng số lớn.</p><p>Công ty đang giả lập dùng số thiết lập ở trên; các công ty khác dùng số liệu thực tế. Đây là công cụ so sánh phương án; số chính thức xem ở tab Lợi nhuận.</p>'],
-      moigio: ['Lợi nhuận từ lao động công ty', '<p>Phần lợi nhuận riêng của công ty đang xem, tính trên lao động do công ty tự trả lương (không gồm vendor), sau khi trừ lương, phí pháp nhân, chiết khấu và thưởng nhân viên kinh doanh, nhưng chưa trừ chi phí cố định toàn công ty.</p><p>Chia cho số giờ, số công, số lao động để biết mỗi giờ / mỗi công / mỗi người đem lại bao nhiêu.</p>'],
-      cty: ['Toàn công ty', '<p><b>Lãi của từng công ty</b> = doanh thu trừ mọi chi phí trực tiếp (lương công nhân, vendor, phí pháp nhân, chiết khấu, thưởng nhân viên kinh doanh theo giờ), rồi trừ tiếp phần chi phí cố định công ty đó phải gánh.</p><p><b>Chi phí cố định</b> (lương cơ bản nhân viên kinh doanh và chi phí chung) chia cho các công ty theo tỷ lệ doanh thu trước VAT. Cộng lãi các công ty đúng bằng lợi nhuận toàn công ty.</p><p>Dòng <b>"Nếu không có …"</b> cho biết bỏ hẳn công ty đó thì toàn công ty còn bao nhiêu: chi phí cố định vẫn phải trả nên công ty nhỏ có lãi riêng thấp vẫn có thể rất đáng giữ. Chạm › để xem chi tiết.</p>'],
+      loinhuan: ['Lợi nhuận toàn công ty', '<p>Số tiền còn lại mỗi tháng của cả công ty sau khi trừ mọi chi phí: lương công nhân, trả vendor, phí pháp nhân, chiết khấu, thưởng và lương cơ bản sale, chi phí chung.</p><p>Bên dưới là <b>lãi của từng công ty</b>: đã trừ phần chi phí cố định chia theo tỷ lệ doanh thu, cộng lại đúng bằng số lớn.</p><p>Công ty đang giả lập dùng số thiết lập ở trên; các công ty khác dùng số liệu thực tế. Đây là công cụ so sánh phương án; số chính thức xem ở tab Lợi nhuận.</p>'],
+      moigio: ['Lợi nhuận từ lao động công ty', '<p>Phần lợi nhuận riêng của công ty đang xem, tính trên lao động do công ty tự trả lương (không gồm vendor), sau khi trừ lương, phí pháp nhân, chiết khấu và thưởng sale, nhưng chưa trừ chi phí cố định toàn công ty.</p><p>Chia cho số giờ, số công, số lao động để biết mỗi giờ / mỗi công / mỗi người đem lại bao nhiêu.</p>'],
+      cty: ['Toàn công ty', '<p><b>Lãi của từng công ty</b> = doanh thu trừ mọi chi phí trực tiếp (lương công nhân, vendor, phí pháp nhân, chiết khấu, thưởng sale theo giờ), rồi trừ tiếp phần chi phí cố định công ty đó phải gánh.</p><p><b>Chi phí cố định</b> (lương cơ bản sale và chi phí chung) chia cho các công ty theo tỷ lệ doanh thu trước VAT. Cộng lãi các công ty đúng bằng lợi nhuận toàn công ty.</p><p>Dòng <b>"Nếu không có …"</b> cho biết bỏ hẳn công ty đó thì toàn công ty còn bao nhiêu: chi phí cố định vẫn phải trả nên công ty nhỏ có lãi riêng thấp vẫn có thể rất đáng giữ. Chạm › để xem chi tiết.</p>'],
       phanbo: ['Phân bổ doanh thu', '<p>Doanh thu của {KH} được chia thành những khoản nào. Thanh màu cho thấy tỷ trọng từng khoản so với doanh thu.</p>'],
       anhhuong: ['Độ nhạy của lợi nhuận', '<p>Bảng tra cứu: nếu một chỉ số thay đổi đúng một đơn vị nhỏ (1.000 đ đơn giá, 1 lao động, 1% phí…) và mọi thứ khác giữ nguyên, thì lợi nhuận toàn công ty mỗi tháng tăng hay giảm bao nhiêu.</p><p>Xếp từ ảnh hưởng mạnh đến yếu để biết nên ưu tiên đàm phán điểm nào. Muốn biết nhiều đơn vị thì nhân lên. Đây là bảng chỉ đọc; muốn đổi kịch bản thì sửa ở phần Thiết lập giả lập.</p>'],
       gioihan: ['Giới hạn để toàn công ty không lỗ', '<p>Với các chỉ số khác giữ như đang thiết lập, mỗi dòng cho biết một chỉ số có thể đi tới mức nào thì lợi nhuận toàn công ty về 0.</p>'],
