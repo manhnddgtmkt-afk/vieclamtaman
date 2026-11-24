@@ -13,7 +13,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
 <script src="config.js"></script>
-<script>window.PB = { so: 214, luc: "25/11 06:09" };</script>
+<script>window.PB = { so: 214, luc: "25/11 06:12" };</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap">
 <style>
@@ -1243,7 +1243,7 @@ b.yT0{display:block;margin-bottom:2px}
 .g3.dcx1,.nhaO.dcx1{grid-template-columns:minmax(0,1fr)!important}.g3.dcx1>div{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
 .it{white-space:normal}
 #lso{display:flex;flex-direction:column;gap:16px}.soNgH{display:flex;justify-content:space-between;align-items:baseline;gap:12px;padding:0 6px 7px;font-size:13px;color:var(--muted)}.soNgH b{font-size:14px;font-weight:700;color:var(--fg2)}.soNgH span{white-space:nowrap}
-.soC .it{display:grid;grid-template-columns:minmax(0,1fr) minmax(88px,auto);column-gap:12px;align-items:start;padding:12px 16px}.soC .it .nm{font-size:15px;font-weight:500;line-height:1.35}.soC .it .sub{font-size:13px;margin-top:3px}.soC .it .amt{margin:0;text-align:right;font-size:15px;font-weight:600;line-height:1.35;font-variant-numeric:tabular-nums;color:var(--fg)}.soC .it .amt.c-xanh{color:var(--good)}.soC .it.so.thu{background:var(--good-bg);box-shadow:inset 4px 0 0 var(--good)}.soThu{font-style:normal;color:var(--good);font-weight:600}.soNgH .q2dot{margin-right:7px}.cpR .yTn{display:block}.cpR .yPh{display:block;font-size:13px;font-weight:400;color:var(--muted);margin-top:3px}.soC .it:not(:has(>.amt)){grid-template-columns:minmax(0,1fr)}.cpDs{display:flex;flex-direction:column;gap:16px;margin-top:16px}.q2chong.cpBar{margin:2px 6px 0}.soC .nw{white-space:nowrap}.utDs{display:flex;flex-direction:column;gap:16px}
+.soC .it{display:grid;grid-template-columns:minmax(0,1fr) minmax(88px,auto);column-gap:12px;align-items:start;padding:12px 16px}.soC .it .nm{font-size:15px;font-weight:500;line-height:1.35}.soC .it .sub{font-size:13px;margin-top:3px}.soC .it .amt{margin:0;text-align:right;font-size:15px;font-weight:600;line-height:1.35;font-variant-numeric:tabular-nums;color:var(--fg)}.soC .it .amt.c-xanh{color:var(--good)}.soC .it.so.thu{background:var(--good-bg);box-shadow:inset 4px 0 0 var(--good)}.soThu{font-style:normal;color:var(--good);font-weight:600}.soNgH .q2dot{margin-right:7px}.cpR .yTn{display:block}.cpR .yPh{display:block;font-size:13px;font-weight:400;color:var(--muted);margin-top:3px}.soC .it:not(:has(>.amt)){grid-template-columns:minmax(0,1fr)}.cpDs{display:flex;flex-direction:column;gap:16px;margin-top:16px}.q2chong.cpBar{margin:2px 6px 0}.soC .it .amt small{display:block;margin-top:3px;font-size:13px;line-height:1.35;font-weight:400;color:var(--muted)}.lichT{border-top:0;padding:12px 6px 0}.cpDs+.meta{margin:8px 6px 0}.soNg>.q2lich{padding-top:4px;padding-bottom:4px}.soC .nw{white-space:nowrap}.utDs{display:flex;flex-direction:column;gap:16px}
 .it.dcx{display:grid!important;grid-template-columns:minmax(0,1fr) auto;column-gap:12px;row-gap:2px;align-items:start}.it.dcx.dcxi{grid-template-columns:auto minmax(0,1fr) auto}
 .it.dcx>div:not(.amt):not(.ic){display:contents}.it.dcx>div:not(.amt):not(.ic)>*{grid-column:1/-1}.it.dcx.dcxi>div:not(.amt):not(.ic)>*{grid-column:2/-1}
 .it.dcx .nm{grid-row:1}.it.dcx>div>.sub{grid-column:1!important;grid-row:2}.it.dcx.dcxi>div>.sub{grid-column:2!important}.it.dcx>.amt,.it.dcx>.pill{grid-column:-2;grid-row:2;align-self:start}
@@ -2621,9 +2621,12 @@ b.yT0{display:block;margin-bottom:2px}
     vePhieu(slip, o.css, o.html);
     ganXuat(o);
     var ut = document.getElementById('ut');
-    if (ut && o.ut) ut.innerHTML = (o.ut.length ? '<div class="ul">' + o.ut.slice().reverse().map(function (z) {   // b199: mới nhất lên đầu
-      return '<div class="ur"><span class="d">' + esc(z.ngay) + '</span><span class="l ' + (/ứng/i.test(z.loai) ? 'u' : 't') + '">' + esc(z.loai) + '</span><b class="num">' + vnd(z.so) + '</b><span class="g">' + esc([z.nguoi, z.ghi].filter(String).join(' · ')) + '</span></div>';
-    }).join('') + '</div>' : '<div class="meta">Chưa có khoản nào.</div>');
+    if (ut && o.ut) {   // b215: mỗi khoản 1 dòng 2 cột như sổ thu chi
+      ut.className = o.ut.length ? 'grp soC' : 'card';
+      ut.innerHTML = o.ut.length ? o.ut.slice().reverse().map(function (z) {   // b199: mới nhất lên đầu
+        return '<div class="it"><div style="min-width:0"><div class="nm">' + esc(z.loai) + '</div><div class="sub">' + esc([String(z.ngay || '').replace(/\/\d{4}$/, ''), z.nguoi, z.ghi].filter(String).join(' · ')) + '</div></div><div class="amt num">' + vnd(z.so) + '</div></div>';
+      }).join('') : '<div class="meta">Chưa có khoản nào.</div>';
+    }
   }
   // ---------- 28/10: BEST – thanh toán tăng cường (tuần chưa đủ số công tối thiểu nhưng trả theo ngày) ----------
   function veTCNote(o) {
@@ -10245,7 +10248,13 @@ b.yT0{display:block;margin-bottom:2px}
     rs.sort(function (a, b) { return (ngayHan(tqGt(m6, a, 'Hạn thanh toán')) || 0) - (ngayHan(tqGt(m6, b, 'Hạn thanh toán')) || 0); });
     var coHd = cHd && rs.some(function (r) { return tqCo(tqGt(m6, r, cHd)); });
     var ky = function (t) { t = String(t || '').trim(); var m = /^tháng\s*(\d{1,2})/i.exec(t); return m ? 'T' + m[1] : t; };
-    var h = q2H('Lịch thu tiền các công ty', tg ? esc(soVN(tqGt(m6, tg, coHd ? cHd : cTn))) : '') + '<div class="card q2lich">' + rs.map(function (r) {
+    var thg = [], theoT = {}, namNay = new Date().getFullYear();   // b215: mỗi tháng 1 khung riêng như sổ thu chi
+    rs.forEach(function (r) {
+      var d = ngayHan(tqGt(m6, r, 'Hạn thanh toán')), k = d ? d.getFullYear() * 100 + d.getMonth() : 0;
+      if (!theoT[k]) { theoT[k] = { t: d ? 'Tháng ' + (d.getMonth() + 1) + (d.getFullYear() !== namNay ? '/' + d.getFullYear() : '') : 'Chưa có hạn', ds: [], tong: 0 }; thg.push(theoT[k]); }
+      theoT[k].ds.push(r); theoT[k].tong += q2So(coHd && tqCo(tqGt(m6, r, cHd)) ? tqGt(m6, r, cHd) : tqGt(m6, r, cTn));
+    });
+    var h = q2H('Lịch thu tiền các công ty', tg ? esc(soVN(tqGt(m6, tg, coHd ? cHd : cTn))) : '') + '<div class="cpDs">' + thg.map(function (g) { return '<div class="soNg"><div class="soNgH"><b>' + esc(g.t) + '</b><span class="num">' + vnd0(g.tong) + '</span></div><div class="card q2lich">' + g.ds.map(function (r) {
       var d = ngayHan(tqGt(m6, r, 'Hạn thanh toán')), tt = tqGt(m6, r, 'Tình trạng'), ng = tqGt(m6, r, 'Số ngày đến hạn'), kh = tqGt(m6, r, 'Khách hàng');
       var mau = /quá hạn/i.test(tt) ? 'd' : /sắp/i.test(tt) ? 'v' : '';
       var han = tqCo(ng) || ng === '0' ? (q2So(ng) < 0 ? 'Quá ' + Math.abs(q2So(ng)) + ' ngày' : q2So(ng) === 0 ? 'Đến hạn hôm nay' : 'Còn ' + q2So(ng) + ' ngày') : (tt || '');
@@ -10254,9 +10263,9 @@ b.yT0{display:block;margin-bottom:2px}
       return '<div class="q2lr q2lr2"><div class="q2ngay"><b>' + (d ? ('0' + d.getDate()).slice(-2) : '?') + '</b><span>th ' + (d ? d.getMonth() + 1 : '') + '</span></div><div style="min-width:0">' +
         '<div class="q2l1"><div class="q2lk ell">' + q2Dot(mauCty(kh)) + esc(kh) + ' <span class="q2lky">' + esc(ky(tqGt(m6, r, 'Kỳ'))) + '</span>' + '</div><div class="num q2lv">' + esc(soVN(coHd && tqCo(hd) ? hd : tn)) + '</div></div>' +
         '<div class="q2l2"><span class="q2ls ' + mau + '">' + esc(han) + '</span>' + (coHd && tqCo(tn) ? '<span class="num">Thực nhận ' + esc(soVN(tn)) + '</span>' : '') + '</div></div></div>';
-    }).join('');
-    if (coHd && tg && tqCo(tqGt(m6, tg, cTn))) h += '<div class="q2lt"><span class="ell">Tổng thực nhận dự kiến</span><span class="num">' + esc(soVN(tqGt(m6, tg, cTn))) + '</span></div>';
-    return h + '<div class="meta" style="margin-top:6px">' + (coHd ? yDong(['Số lớn: giá trị hóa đơn gồm VAT, khớp bảng kê gửi công ty.', 'Thực nhận: số còn lại sau khi trừ VAT và phí pháp nhân 5%.']) : 'Thực nhận dự kiến, đã trừ VAT và phí 5%') + '</div></div>';
+    }).join('') + '</div></div>'; }).join('') + '</div>';
+    if (coHd && tg && tqCo(tqGt(m6, tg, cTn))) h += '<div class="q2lt lichT"><span class="ell">Tổng thực nhận dự kiến</span><span class="num">' + esc(soVN(tqGt(m6, tg, cTn))) + '</span></div>';
+    return h + '<div class="meta" style="margin:6px 6px 0">' + (coHd ? yDong(['Số lớn: giá trị hóa đơn gồm VAT, khớp bảng kê gửi công ty.', 'Thực nhận: số còn lại sau khi trừ VAT và phí pháp nhân 5%.']) : 'Thực nhận dự kiến, đã trừ VAT và phí 5%') + '</div>';
   }
   function tqGt(m, r, cot) { var i = m ? m.dau.indexOf(cot) : -1; return i >= 0 ? String(r[i] || '').trim() : ''; }
   function tenQuy(t0) {   // b198: tên ngắn các dòng tiền quỹ (dùng chung Thu chi và Tổng quan)
@@ -10540,14 +10549,11 @@ b.yT0{display:block;margin-bottom:2px}
       var hop = function (x) { return '<div class="q2vr"' + (chuV && !/^ng(ư|u)ời cung (ứ|u)ng khác/i.test(x.ten) ? ' data-vdp="' + ds.indexOf(x) + '"' : '') + '>'; };   // khoản gộp "Người cung ứng khác": không có vendor để gửi phiếu   // 04/11: chủ chạm 1 khoản -> xuất phiếu đối chiếu gửi vendor
       var hang = function (t1, so, t2, tag) { return '<div class="q2l1"><div class="q2lk q2vdt"><span class="ell">' + t1 + '</span></div><div class="num q2lv">' + so + '</div></div><div class="q2l2"><span class="ell">' + t2 + '</span>' + tag + '</div>'; };
       var nhan = function (x) { return tqCo(x.han) ? '<span class="q2tag ' + mauH(x) + '">' + esc(chuH(x)) + '</span>' : ''; };
-      if (ds.length) h += q2H('Phải trả vendor', vnd(tongV)) + '<div class="card q2lich">' + dsN.map(function (g) {
-        var x = g.som;
-        if (g.con.length === 1) return hop(x) + hang(q2Dot(mauCty(x.kh)) + esc(g.ten), esc(soVN(x.so)), esc(soVN([x.kh, x.thang].concat(x.them).join(' · '))), nhan(x)) + '</div>';   // tên công ty xuống dòng 2 để tên vendor không bị cắt
-        var mot = g.con.every(function (c) { return c.kh === x.kh; });
-        return '<details class="q2vd"><summary class="q2vr">' + hang((mot ? q2Dot(mauCty(x.kh)) : '') + esc(g.ten) + '</span><i class="q2vm">▾</i><span>', vnd(g.tong),
-          (mot ? esc(x.kh) + ' · ' : '') + g.con.length + ' khoản' + (tqCo(x.han) ? ' · <span class="q2vh ' + mauH(x) + '">gần nhất ' + esc(chuH(x)) + '</span>' : ''), '') + '</summary><div class="q2vc">' +
-          g.con.map(function (c) { return hop(c) + hang((mot ? '' : q2Dot(mauCty(c.kh)) + esc(c.kh) + ' · ') + esc(c.thang) + (c.tam ? ' · Tạm tính' : ''), esc(soVN(c.so)), esc(soVN(c.them.filter(function (t) { return t !== 'Tạm tính'; }).join(' · '))), nhan(c)) + '</div>'; }).join('') + '</div></details>';
-      }).join('') + '<div class="meta" style="margin-top:6px">' + yDong(['Trả vendor khi công ty đã trả tiền tháng đó.', chuV ? 'Chạm vào từng khoản để xuất phiếu đối chiếu gửi vendor.' : '']) + '</div></div>';
+      if (ds.length) h += q2H('Phải trả vendor', vnd(tongV)) + '<div class="cpDs">' + dsN.map(function (g) {   // b215: mỗi vendor 1 khung riêng như sổ thu chi
+        var mot = g.con.every(function (c) { return c.kh === g.som.kh; });
+        return '<div class="soNg"><div class="soNgH"><b>' + (mot ? q2Dot(mauCty(g.som.kh)) : '') + esc(g.ten) + '</b><span class="num">' + vnd0(g.tong) + '</span></div><div class="card q2lich">' +
+          g.con.map(function (c) { return hop(c) + hang((mot ? '' : q2Dot(mauCty(c.kh))) + esc(c.kh) + ' · ' + esc(c.thang) + (c.tam ? ' · Tạm tính' : ''), esc(soVN(c.so)), esc(soVN(c.them.filter(function (t) { return t !== 'Tạm tính'; }).join(' · '))), nhan(c)) + '</div>'; }).join('') + '</div></div>';
+      }).join('') + '</div><div class="meta" style="margin:8px 6px 0">' + yDong(['Trả vendor khi công ty đã trả tiền tháng đó.', chuV ? 'Chạm vào từng khoản để xuất phiếu đối chiếu gửi vendor.' : '']) + '</div>';
     }
     return h;
   }
