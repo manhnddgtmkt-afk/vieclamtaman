@@ -8920,7 +8920,7 @@ b.yT0{display:block;margin-bottom:2px}
     // 3. phỏng vấn hôm nay / ngày mai
     var pvHn = d.pv.filter(function (p) { return p.ngay === hn; }), mai = cqCong(hn, 1), pvMai = d.pv.filter(function (p) { return p.ngay > hn; }).sort(function (a, b) { return a.ngay < b.ngay ? -1 : a.ngay > b.ngay ? 1 : 0; });
     h += '<div class="row sp" style="margin:18px 4px 8px;align-items:center"><span class="sec dot xanh ell">Phỏng vấn hôm nay · ' + pvHn.length + '</span>' + (pvHn.length ? '<button class="link" data-gui="' + hn + '" style="padding:0;font-size:13px;flex:none">Gửi danh sách</button>' : '') + '</div>' +
-      (pvHn.length ? '<div class="grp">' + pvHn.map(function (p) { return cqDongPV(p); }).join('') + '</div>' : '<div class="empty" style="padding:14px 10px">Hôm nay chưa có lịch phỏng vấn. Bấm Thêm lịch phỏng vấn ở dưới để ghi.</div>');
+      (pvHn.length ? '<div class="grp">' + pvHn.map(function (p) { return cqDongPV(p); }).join('') + '</div>' : '<div class="empty" style="padding:14px 10px"><b class="yT">Hôm nay chưa có lịch phỏng vấn</b>Bấm Thêm lịch phỏng vấn ở dưới để ghi.</div>');
     if (pvMai.length) {
       var ngs = []; pvMai.forEach(function (p) { if (ngs.indexOf(p.ngay) < 0) ngs.push(p.ngay); });
       ngs.forEach(function (n) {
@@ -8949,7 +8949,7 @@ b.yT0{display:block;margin-bottom:2px}
     if (dot || lg) h += '<div class="card cqCheDo"><b>Chế độ báo ứng viên mới</b><div class="meta">Áp dụng cho người nhận việc từ hôm nay</div>' +
       (lg ? '<div class="row sp cqR"><span class="meta">Lương cơ bản Trend</span><span class="tien num">' + vnd0(lg.so) + ' đ/tháng</span></div>' : '') +
       (dot ? '<div class="row sp cqR"><span class="meta">Thưởng Trend (chia 3 tháng)</span><span class="tien num">' + vnd0(dot.trend) + ' đ</span></div><div class="row sp cqR"><span class="meta">Thưởng Tâm An</span><span class="tien num">' + vnd0(dot.ta) + ' đ</span></div>' +
-        '<div class="row sp cqTong cqR"><span>Tổng thưởng người mới</span><span class="tien num">' + vnd0((dot.trend || 0) + (dot.ta || 0)) + ' đ</span></div><div class="meta cau">' + esc(dot.ten) + ' (nhận việc từ ' + esc(cqDM(dot.tu)) + '). Tâm An trả: ' + esc(dot.cach) + '.</div>' : '') + '</div>';
+        '<div class="row sp cqTong cqR"><span>Tổng thưởng người mới</span><span class="tien num">' + vnd0((dot.trend || 0) + (dot.ta || 0)) + ' đ</span></div><div class="meta cau">' + yDong([esc(dot.ten) + ', nhận việc từ ' + esc(cqDM(dot.tu)) + '.', 'Tâm An trả: ' + esc(dot.cach) + '.']) + '</div>' : '') + '</div>';
     if (d.luc) { var t = new Date(d.luc); h += '<div class="meta" style="text-align:center;margin-top:10px">Số liệu lúc ' + ('0' + t.getHours()).slice(-2) + ':' + ('0' + t.getMinutes()).slice(-2) + ' · kéo xuống để lấy số mới</div>'; }
     hd.innerHTML = '<div id="choBox"></div>'; l.innerHTML = h; veCho();
     cqGan(l, d);
