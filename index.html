@@ -13,7 +13,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
 <script src="config.js"></script>
-<script>window.PB = { so: 209, luc: "24/11 20:42" };</script>
+<script>window.PB = { so: 211, luc: "24/11 21:33" };</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap">
 <style>
@@ -1045,6 +1045,11 @@ textarea.inp{font-family:inherit}
 .bca-quay{flex:none;width:18px;height:18px;border-radius:50%;border:2.5px solid var(--line);border-top-color:var(--blue);animation:bcaQ .8s linear infinite}
 @keyframes bcaQ{to{transform:rotate(360deg)}}
 .bca-sec{font-size:13px;font-weight:600;color:var(--muted);margin:4px 2px -4px}
+.bcx-the{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 14px}
+.bcx-dau{display:flex;gap:12px;align-items:center;padding-bottom:10px;margin-bottom:4px;border-bottom:1px solid var(--line)}.bcx-dau .vtIc{width:40px;height:40px;border-radius:20px;display:grid;place-items:center;flex:none;background:var(--good-bg);color:var(--good)}.bcx-dau .vtIc svg{width:22px;height:22px}
+.bcx-r{display:flex;justify-content:space-between;gap:12px;padding:5px 0;font-size:14px}.bcx-r>span:first-child{color:var(--muted);flex:none}.bcx-r>span:last-child{text-align:right;min-width:0}
+.bcx-lech{background:var(--warn-bg);border-radius:14px;padding:4px 14px}.bcx-l{display:flex;flex-direction:column;padding:8px 0;font-size:13px}.bcx-l+.bcx-l{border-top:1px solid var(--line)}.bcx-l b{font-size:14px}
+.bcx-c{display:flex;flex-direction:column;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:10px 14px;font-size:13px}.bcx-c b{font-size:14px}.bcx-c small{color:var(--muted);font-size:12.5px}
 .bca-tay{display:flex;gap:8px;align-items:stretch}.bca-tay .inp{-webkit-appearance:none;appearance:none;min-width:0;flex:1;width:auto}.bca-tay .btn{flex:none;width:auto;padding:0 20px}
 .bca-ngs{display:flex;gap:6px;overflow-x:auto;padding:2px 0;scrollbar-width:none}.bca-ngs::-webkit-scrollbar{display:none}
 .bca-ngs button{flex:none;border:1px solid var(--line);background:var(--card);color:var(--fg);border-radius:999px;padding:7px 13px;font-size:14px;font-weight:600;white-space:nowrap;min-height:38px}
@@ -1205,7 +1210,9 @@ body,p,li,h2,h3,.wpP{text-wrap-style:balance}.yCl{display:inline-block;max-width
 #ldHead>.dlm{background:var(--card);border-radius:16px;margin-top:12px;padding:12px 16px}
 .dlm.cu>b{color:var(--muted)}.dlm .cuG{color:var(--warn)!important;font-weight:600}
 body #ldNut{margin-top:16px;background:var(--card);border-radius:16px;overflow:hidden}body #ldNut:empty{display:none}
-body #ldNut .ckt.nghi{margin:0;border-radius:0;background:none;min-height:50px}body #ldNut .ckt.nghi+.ckt.nghi{border-top:1px solid var(--line)}
+body #ldNut .ckt.nghi{margin:0;border-radius:0;background:none;min-height:46px;font-size:14px;color:var(--muted)}
+.vtThe.blThe{background:var(--tint);border-color:transparent}.blThe .vtIc{background:var(--card)}.blThe .vtTx b{color:var(--blue)}.blThe .vtTx small{white-space:normal;line-height:1.35}
+.tch{padding-left:8px;padding-right:8px}.tch b{letter-spacing:-.2px}.blThe>i{color:var(--blue)}body #ldNut .ckt.nghi+.ckt.nghi{border-top:1px solid var(--line)}
 .kbvTom{padding:12px 16px;margin-bottom:12px}.kbvTg{display:grid;grid-template-columns:minmax(0,1fr) repeat(3,62px);gap:6px 8px;align-items:baseline;margin-top:6px}
 .kbvTg small{font-size:11.5px;color:var(--muted);text-align:right;white-space:nowrap}.kbvTg b{font-size:14.5px;font-weight:600}.kbvTg b.num{text-align:right}.kbvTg b.c{color:var(--warn)}
 .tqMeta+.q2viec{margin-bottom:12px}
@@ -1943,7 +1950,7 @@ b.yT0{display:block;margin-bottom:2px}
     }
     if (!d || !d.moc) return '';
     var hn = d.moc === ymdNay();
-    return '<div class="dlm" id="dlm"><b class="num">' + soDiLam(d) + '</b><span>' + (hn ? 'người đi làm hôm nay' : 'người đi làm ngày ' + ngayDM(d.moc)) + '<small>' + (hn ? 'Theo vân tay mới nhất' : 'Theo vân tay · hôm nay chưa có') + '</small></span></div>';
+    return '<div class="dlm" id="dlm"><b class="num">' + soDiLam(d) + '</b><span>' + (hn ? 'người đi làm hôm nay' : 'người đi làm ngày ' + ngayDM(d.moc)) + '<small>' + (BCA_CTY.indexOf(cty || S.cty) >= 0 ? (hn ? 'Theo bảng công mới nhất' : 'Theo bảng công · hôm nay chưa có') : (hn ? 'Theo vân tay mới nhất' : 'Theo vân tay · hôm nay chưa có')) + '</small></span></div>';
   }
   // b156 (13/11): thanh chọn công ty – gộp theo tên (một công ty nhiều hình thức: chính thức / thời vụ); > 4 công ty thì thành nút mở danh sách
   var CTY_NUT_TOI_DA = 4;
@@ -2012,22 +2019,18 @@ b.yT0{display:block;margin-bottom:2px}
     var loaiCb = {}; cb.forEach(function (p) { var t = lyDo(p); loaiCb[t] = (loaiCb[t] || 0) + 1; });
     var tenLoc = function (f) { return f === 'am' ? 'Nhận trước' : f === 'moi' ? 'Người mới' : /^cb:/.test(f) ? f.slice(3) : 'Cần kiểm tra'; };
     var luc = '<button class="link" id="capNhat" style="padding:0;font-size:13px">Cập nhật ' + (S.cty === 'BEST' ? 'chấm công' : 'vân tay') + '</button>';
-    hd.innerHTML = vtTheHtml() + '<div id="tbBox"></div><div id="lkBox"></div><div id="choBox"></div><div class="card hero"><div class="meta">Còn phải trả</div><div class="row" style="align-items:baseline;gap:4px 10px;flex-wrap:wrap"><span class="big num ' + (tong > 0 ? 'c-cam' : 'c-xanh') + '">' + vnd(tong) + '</span>' + (tong > 0 ? '<span class="pill warn">Trả vào thứ Tư</span>' : '<span class="pill good">Đã trả đủ</span>') + '</div>' +
+    hd.innerHTML = theDauHtml(d) + '<div id="tbBox"></div><div id="lkBox"></div><div id="choBox"></div><div class="card hero"><div class="meta">Còn phải trả</div><div class="row" style="align-items:baseline;gap:4px 10px;flex-wrap:wrap"><span class="big num ' + (tong > 0 ? 'c-cam' : 'c-xanh') + '">' + vnd(tong) + '</span>' + (tong > 0 ? '<span class="pill warn">Trả vào thứ Tư</span>' : '<span class="pill good">Đã trả đủ</span>') + '</div>' +
       '<div class="meta ell">' + esc(canTra.length + ' người' + (d.ky ? ' · kỳ ' + String(d.ky).replace(/\/\d{4}$/, '') : '')) + '</div>' +
       (d.het ? '' : '<div class="meta cau">Bạn thấy những người bạn tuyển ở công ty này.</div>') + '</div>' + diLamHtml(d) +   // b206: người đi làm là thẻ riêng, không chung thẻ tiền
-      '<div id="ktBox"></div>';
+      blTheHtml() + '<div id="ktBox"></div>';   // b210: Bảng lương công nhân nổi bật ngay dưới người đi làm (sale hay mở)
     // b197: việc phải làm (Cần kiểm tra, Còn phải trả) lên trên; các lối tắt và thống kê người đi làm các nhà xuống dưới danh sách
     var dz = document.getElementById('ldDuoi') || hd; if (dz !== hd) dz.innerHTML = ''; dz.insertAdjacentHTML('beforeend', '<div id="ldNut"></div><div id="nhaBox"></div>'); dz = document.getElementById('ldNut');
     ganVtThe(); veTB(); veLK(); taiLK();
     dz.insertAdjacentHTML('beforeend', '<button class="ckt nghi" id="moUT"><span class="ell" style="flex:1">Ứng / trả gần đây</span><i>›</i></button>');
     document.getElementById('moUT').onclick = moUTTuDs;
-    dz.insertAdjacentHTML('beforeend', '<button class="ckt nghi" id="moBL"><span class="ell" style="flex:1">Bảng lương công nhân</span><i>›</i></button>');   // b173
-    document.getElementById('moBL').onclick = function () { blMo(S.cty); };
+    document.getElementById('moBL').onclick = function () { blMo(S.cty); };   // b173; b210 thành thẻ nổi bật phía trên
     if (!BL.d[S.cty]) blTai(S.cty, 1).then(null, function () { });   // b185: máy chưa có bảng lương công ty này thì tải sẵn ngầm
-    if (BCA_CTY.indexOf(S.cty) >= 0 && d.het) {   // b179: công ty gửi bảng công dạng ảnh
-      dz.insertAdjacentHTML('beforeend', '<button class="ckt nghi" id="moBCA"><span class="ell" style="flex:1">Nhập giờ từ ảnh bảng công</span><i>›</i></button>');
-      document.getElementById('moBCA').onclick = function () { bcaMo(S.cty); };
-    }
+    var bcaB = document.getElementById('moBCA'); if (bcaB) bcaB.onclick = function () { bcaMo(S.cty); };   // b179; b210 thành thẻ trên cùng thay thẻ vân tay
     veCho();
     var cn = document.getElementById('capNhat'); if (cn) cn.onclick = moCapNhat;
     if (S.cty === 'HOJEONG') {
@@ -6213,6 +6216,9 @@ b.yT0{display:block;margin-bottom:2px}
     }, function (er) { ccTd(''); toastLoi(er.message); });
   }
   var BAN_MOI = [
+    { so: 211, ds: [{ i: '📊', t: 'Nạp file Excel bảng công cuối tháng', m: 'Cuối tháng MINGJIE gửi file Excel bảng công. Chọn file đó là máy tự bổ sung ô còn trống trên bảng công. Ô có giờ khác file được tô vàng, kèm ghi chú số của file.', c: [['Nạp file', 'Tab Lao động → MINGJIE → [[Nhập giờ bảng công]] → [[Chọn ảnh hoặc file Excel]] → chọn file']] }] },
+    { so: 210, ds: [{ i: '💰', t: 'Bảng lương công nhân lên đầu', m: 'Tab Lao động có thẻ Bảng lương công nhân nổi bật ngay dưới số người đi làm. Ứng / trả gần đây chuyển xuống cuối trang.' },
+      { i: '📋', t: 'MINGJIE: thẻ Nhập giờ bảng công', m: 'Nằm trên cùng tab Lao động, thay thẻ Kiểm tra vân tay vì MINGJIE không gửi file vân tay. Dòng dưới cho biết bảng công đã có giờ đến ngày nào.' }] },
     { so: 209, ds: [{ i: '🔗', t: 'Không còn tách đôi từ', m: 'Số luôn đi liền đơn vị, ví dụ 30 phút, 8,5 giờ. Từ như chủ nhật, thanh toán không bị tách ra 2 dòng. Câu dài xuống dòng ở dấu phẩy, dấu chấm phẩy.' }] },
     { so: 208, ds: [{ i: '↩️', t: 'Mỗi câu một dòng', m: 'Hết một câu thì câu sau bắt đầu ở dòng mới. Không còn vài chữ cuối câu bị rơi lẻ xuống dòng dưới.' }] },
     { so: 207, ds: [{ i: '🔍', v: 'chu', t: 'Khoản bất thường', m: 'Nằm ngay dưới số lợi nhuận tháng. Gồm lương, thưởng đã trả nhưng chưa có doanh thu. Gồm cả khoản chi một lần như phong bì, quà, sim. Dòng cuối là lợi nhuận nếu bỏ các khoản đó.' },
@@ -6256,13 +6262,13 @@ b.yT0{display:block;margin-bottom:2px}
         ['Thêm từng người', 'Chạm tên ở mục Người đã đi làm. Người đã thêm chuyển xuống danh sách bên dưới; bấm × để bỏ thì người đó trở lại mục gợi ý.']] },
       { i: '📋', t: 'MINGJIE: danh sách đi làm không chia Ngồi máy / Lắp ráp', m: 'MINGJIE tự phân việc khi người lao động đến công ty, nên danh sách gửi MINGJIE là một bảng chung. Vị trí làm việc từng ngày vẫn lấy theo ảnh bảng công MINGJIE gửi.' }] },
     { so: 181, ds: [{ i: '🔒', t: 'Ảnh bảng công: người mới phải chọn nguồn tuyển', m: 'Khi nhập giờ từ ảnh bảng công, người mới chưa chọn nguồn tuyển thì nút Ghi bị khoá và app báo rõ tên người, ngày làm. Không còn trường hợp ghi xong mà người mới bị bỏ sót. Google đọc sai tên người mới thì sửa được tên ngay trên app.',
-      c: [['Chọn nguồn tuyển', 'Tab Lao động → MINGJIE → [[Nhập giờ từ ảnh bảng công]] → người có viền đỏ → chọn nguồn tuyển → [[Ghi vào bảng công]]'],
+      c: [['Chọn nguồn tuyển', 'Tab Lao động → MINGJIE → [[Nhập giờ bảng công]] → người có viền đỏ → chọn nguồn tuyển → [[Ghi vào bảng công]]'],
         ['Sửa tên đọc sai', 'Người có nhãn Người mới → [[Sửa tên]] → gõ đúng họ tên → [[Lưu tên]]. Tên trùng người đã có trên bảng công thì app tự chuyển thành người đó.'],
         ['Dòng đọc nhầm', 'Dòng không phải người thật → [[Sửa giờ]] → xoá hết giờ → dòng chuyển sang Bỏ qua, không thêm vào bảng công.']] }] },
     { so: 180, ds: [{ i: '➕', t: 'Người mới trong ảnh bảng công tự vào bảng công', m: 'Ảnh bảng công có người chưa có trên bảng công thì máy tự thêm khi bấm Ghi: lấy số CCCD, ngày sinh từ danh sách đi làm hoặc danh sách lao động; ngày vào là ngày đầu tiên có giờ. Chỉ cần chọn nguồn tuyển nếu máy chưa biết.',
-      c: [['Thêm người mới', 'Tab Lao động → MINGJIE → [[Nhập giờ từ ảnh bảng công]] → chọn ảnh → người có nhãn Người mới: kiểm nguồn tuyển → [[Ghi vào bảng công]]']] }] },
+      c: [['Thêm người mới', 'Tab Lao động → MINGJIE → [[Nhập giờ bảng công]] → chọn ảnh → người có nhãn Người mới: kiểm nguồn tuyển → [[Ghi vào bảng công]]']] }] },
     { so: 179, ds: [{ i: '📸', t: 'Nhập giờ MINGJIE từ ảnh bảng công', m: 'Chọn ảnh bảng công MINGJIE gửi, máy đọc tên, số giờ và vị trí (ngồi máy, lắp ráp) từng ngày, đối chiếu với bảng công rồi ghi một lần. Người mới chưa có trên bảng công thì máy tự thêm (lấy CCCD từ danh sách đi làm nếu có). Tên đọc sai thì chọn lại đúng người. Không có ảnh vẫn chọn được vị trí theo ngày.',
-      c: [['Nhập từ ảnh', 'Tab Lao động → MINGJIE → [[Nhập giờ từ ảnh bảng công]] → [[Chọn ảnh bảng công]] → kiểm từng người → [[Ghi vào bảng công]]']] }] },
+      c: [['Nhập từ ảnh', 'Tab Lao động → MINGJIE → [[Nhập giờ bảng công]] → [[Chọn ảnh bảng công]] → kiểm từng người → [[Ghi vào bảng công]]']] }] },
     { so: 178, ds: [{ i: '✏️', t: 'Sửa danh sách đi làm đã xuất', m: 'Danh sách đi làm đã xuất giờ sửa được ngay trên điện thoại: bỏ người, thêm người, đổi loại việc, sửa họ tên, mã nhân viên, số điện thoại, ghi chú. Công ty, ngày và ca giữ nguyên. Lưu xong có Hoàn tác trong 10 giây.',
       c: [['Sửa danh sách', 'Tab Giấy tờ → [[Danh sách]] → chạm danh sách đã xuất → [[Sửa danh sách]] → bỏ chọn, thêm người hoặc giữ ngón lên tên để sửa → [[Lưu danh sách]]']] }] },
     { so: 177, ds: [{ i: '🖨️', t: 'Danh sách in có sẵn dòng trống', m: 'Trang in danh sách đi làm luôn có ít nhất 10 dòng, mỗi khối có thêm 3 dòng trống đánh sẵn số thứ tự để viết tay thêm người. MINGJIE in đủ 2 khối Lắp ráp và Ngồi máy, kể cả khối chưa có người. File Google Sheet gửi công ty giữ nguyên.' }] },
@@ -6330,7 +6336,7 @@ b.yT0{display:block;margin-bottom:2px}
     { so: 126, ds: [{ i: '🎬', t: 'Xem trước video to hơn', m: 'Chạm vào ảnh của video là video mở to kín màn hình. Đang phát thì các nút điều khiển tự ẩn sau vài giây, chạm vào video để hiện lại.', c: [['Đóng hoặc tải', 'Bấm [[Đóng]] ở góc trên để quay lại danh sách, hoặc bấm [[Tải về]] ở dưới để tải video gốc.']] }] },
     { so: 125, ds: [{ i: '🔔', t: 'Thông báo thay đổi bảng công dễ đọc hơn', m: 'Mỗi thay đổi trên bảng công giờ được viết thành một câu đủ ý: ai bị sửa, sửa thành gì, người sửa là ai và sửa lúc nào. Chữ dài tự xuống dòng, không bị cắt.',
       c: [['Xem chi tiết', 'Chạm vào dòng để mở hồ sơ người đó. Dòng vẫn còn đó, chỉ mất khi bấm [[Đã xem]].'],
-        ['Xem lại thay đổi đã xem', 'Bấm [[Xem lại … thay đổi đã xem trong 7 ngày]] ở cuối thẻ.'],
+        ['Xem lại thay đổi đã xem', 'Bấm [[Xem lại … thay đổi trong 7 ngày]] ở cuối thẻ.'],
         ['Bớt báo không cần thiết', 'Sale ghi người tuyển lần đầu thì không báo nữa. Chỉ báo khi người tuyển bị đổi từ sale này sang sale khác, vì việc đó làm thay đổi tiền thưởng.']], v: 'chu' }] },
     { so: 124, ds: [{ i: '🎬', t: 'Mục Video: xem trước và tải về ổn định hơn', m: 'Xem trước dùng trình phát của Google Drive nên phát được ngay, không phải chờ tải. Tải về đi qua máy chủ của công ty, không còn bị Google chặn khi nhiều người cùng tải.' }] },
     { so: 123, ds: [{ i: '⚡', t: 'Tải video nhanh hơn', m: 'Mục Video tải nhiều phần của video cùng lúc nên nhanh hơn trước. Mất sóng giữa chừng thì app tự tải tiếp phần còn thiếu, không phải tải lại từ đầu.' }] },
@@ -7870,7 +7876,7 @@ b.yT0{display:block;margin-bottom:2px}
   var BCA_CTY = ['MINGJIE'];   // công ty gửi bảng công dạng ảnh
   var BCA = { sh: null, cty: '', d: null, ngay: 0, mo: {}, kq: null, dang: '' };
   function bcaMo(cty) {
-    BCA.cty = cty; BCA.d = null; BCA.kq = null; BCA.dang = ''; BCA.mo = {};
+    BCA.cty = cty; BCA.d = null; BCA.kq = null; BCA.xl = null; BCA.dang = ''; BCA.mo = {};
     if (BCA.sh) BCA.sh.remove();
     BCA.sh = moSheet('<div id="bcaNd"></div>');
     BCA.sh.firstChild.classList.add('bca-k');
@@ -7906,9 +7912,14 @@ b.yT0{display:block;margin-bottom:2px}
   function bcaHoTen(t) { return String(t || '').replace(/\s+/g, ' ').trim().toUpperCase(); }
   function bcaVe() {
     var nd = document.getElementById('bcaNd'); if (!nd) return;
-    var h = '<div class="bl-hd"><b>' + esc(BCA.cty) + '</b><span class="meta">Nhập giờ từ ảnh bảng công</span></div>';
+    var h = '<div class="bl-hd"><b>' + esc(BCA.cty) + '</b><span class="meta">Nhập giờ bảng công</span></div>';
     if (BCA.dang) {
       nd.innerHTML = h + '<div class="bca-cho"><i class="bca-quay"></i><span class="cau">' + esc(BCA.dang) + '</span></div><div class="sk" style="height:64px"></div><div class="sk" style="height:64px"></div>';
+      return;
+    }
+    if (BCA.xl) {   // b211: kết quả nạp file Excel
+      nd.innerHTML = h + bcaXlHtml(BCA.xl) + '<button class="btn" id="bcaXong">Xong</button>';
+      document.getElementById('bcaXong').onclick = function () { BCA.sh.remove(); taiDs(true); };
       return;
     }
     if (BCA.kq) {   // đã ghi xong
@@ -7922,14 +7933,19 @@ b.yT0{display:block;margin-bottom:2px}
     }
     if (!BCA.d) {   // màn đầu: chọn ảnh hoặc chọn vị trí theo ngày
       var hn = new Date(), iso = hn.getFullYear() + '-' + ('0' + (hn.getMonth() + 1)).slice(-2) + '-' + ('0' + hn.getDate()).slice(-2);
-      nd.innerHTML = h + '<div class="meta cau">Chọn ảnh bảng công ' + esc(BCA.cty) + ' gửi (chụp màn hình, chọn được nhiều ảnh cùng lúc). Máy đọc tên, số giờ và vị trí từng ngày; bạn kiểm lại rồi bấm Ghi.</div>' +
-        '<button class="btn" id="bcaAnh">Chọn ảnh bảng công</button><input type="file" id="bcaF" accept="image/*" multiple hidden>' +
+      nd.innerHTML = h + '<div class="meta cau">Hằng ngày: chọn ảnh bảng công ' + esc(BCA.cty) + ' gửi, chọn được nhiều ảnh cùng lúc. Máy đọc tên, số giờ, vị trí; bạn kiểm lại rồi bấm Ghi.</div>' +
+        '<div class="meta cau">Cuối tháng: chọn file Excel ' + esc(BCA.cty) + ' gửi. Máy bổ sung ô còn trống, ô lệch được tô vàng trên bảng công.</div>' +
+        '<button class="btn" id="bcaAnh">Chọn ảnh hoặc file Excel</button><input type="file" id="bcaF" accept="image/*,.xlsx,.xls,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel" multiple hidden>' +
         '<div class="bca-sec">Không có ảnh</div><div class="meta cau">Chỉ chọn vị trí cho những người đã có giờ trên bảng công của một ngày.</div>' +
         '<div class="bca-tay"><input class="inp" type="date" id="bcaNg" value="' + iso + '" max="' + iso + '"><button class="btn ghost" id="bcaTay">Mở</button></div>' +
         '<button class="btn ghost" id="bcaDong">Đóng</button>';
       var f = document.getElementById('bcaF');
       document.getElementById('bcaAnh').onclick = function () { f.click(); };
-      f.onchange = function () { var ds = Array.prototype.slice.call(f.files || []).slice(0, 8); if (ds.length) bcaDocAnh(ds); };
+      f.onchange = function () {   // b211: 1 file Excel -> nạp file; ảnh -> đọc ảnh như cũ
+        var ds = Array.prototype.slice.call(f.files || []), xl = ds.filter(function (x) { return /\.xls[xm]?$/i.test(x.name || '') || /spreadsheet|excel/i.test(x.type || ''); });
+        if (xl.length) { if (ds.length > 1) { toast('Chọn 1 file Excel, hoặc chỉ chọn ảnh.'); f.value = ''; return; } bcaNapXl(xl[0]); return; }
+        ds = ds.slice(0, 8); if (ds.length) bcaDocAnh(ds);
+      };
       document.getElementById('bcaTay').onclick = function () {
         var m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(document.getElementById('bcaNg').value); if (!m) { toast('Chọn ngày.'); return; }
         bcaTai({ v: 'bcaDoc', cty: BCA.cty, s: Math.round(Date.UTC(+m[1], m[2] - 1, +m[3]) / 864e5) + 25569 }, 'Đang mở bảng công ngày ' + m[3] + '/' + m[2] + '…');
@@ -8075,6 +8091,41 @@ b.yT0{display:block;margin-bottom:2px}
       rd.readAsDataURL(f);
     });
   }
+  // b211 (24/11): nạp file Excel bảng công công ty gửi cuối tháng – như cập nhật vân tay HOJEONG: bổ sung ô trống, ô lệch tô vàng trên bảng công
+  function bcaNapXl(f) {
+    if (f.size > 8e6) { toastLoi('File quá lớn, chọn đúng file bảng công.'); return; }
+    BCA.dang = 'Đang đối chiếu file ' + f.name + '… (khoảng 10–20 giây)'; bcaVe();
+    var rd = new FileReader();
+    rd.onload = function () {
+      apiT({ v: 'bcaXl', cty: BCA.cty, ten: f.name, b64: String(rd.result || '').replace(/^data:[^,]*,/, ''), lang: 1 }).then(function (o) {
+        BCA.dang = '';
+        if (!o || o.loi) { bcaVe(); toastLoi((o && o.loi) || 'Chưa đọc được file.'); return; }
+        BCA.xl = o; bcaVe();
+      }, function (e) { BCA.dang = ''; bcaVe(); toastLoi(e.message); });
+    };
+    rd.onerror = function () { BCA.dang = ''; bcaVe(); toastLoi('Không mở được file trên máy.'); };
+    rd.readAsDataURL(f);
+  }
+  function bcaXlHtml(o) {
+    var c = esc(BCA.cty), ng = function (sv) { return ddmm(serialDate(sv)); }, so = function (x) { return String(Math.round((Number(x) || 0) * 100) / 100).replace('.', ','); };
+    var nL = (o.lech || []).length, nC = (o.chuaCo || []).length, ok = !nL && !nC && !(o.ghiLoi || []).length;
+    var dong = function (a, b, cls) { return '<div class="bcx-r"><span>' + a + '</span><span class="' + (cls || '') + '">' + b + '</span></div>'; };
+    var bo = [o.bo ? o.bo + ' ô giờ' : '', o.vt ? o.vt + ' vị trí' : ''].filter(Boolean).join(' · ');
+    var h = '<div class="bcx-the"><div class="bcx-dau"><span class="vtIc bcx-ic">' + ICON_BL + '</span><span class="vtTx"><b>' + (ok ? 'Khớp hết với file ' + c : 'Đã nạp file ' + c) + '</b>' +
+      '<small class="cau">' + esc(o.ten) + '</small><small>Đối chiếu ngày ' + ng(o.tu) + ' – ' + ng(o.den) + '</small></span></div>' +
+      dong('Khớp', o.khop + ' người', 'c-xanh') + dong('Đã bổ sung', bo || 'Không thiếu ô nào') + dong('Lệch, đã tô vàng', nL ? nL + ' chỗ' : 'Không có', nL ? 'c-cam' : '') +
+      (o.boVang ? dong('Đã bỏ màu vàng', o.boVang + ' ô nay đã khớp') : '') + dong('Tổng giờ', 'Bảng công ' + so(o.tBc) + ' · file ' + so(o.tF)) + '</div>';
+    if (nL) h += '<div class="bca-sec">Chỗ lệch trên bảng công</div><div class="bcx-lech">' + o.lech.map(function (x) {
+      var vt = x.loai === 'vt';
+      return '<div class="bcx-l"><b>' + esc(hoaDau(x.ten)) + ' · ' + ng(x.s) + '</b><span>Bảng công: ' + esc((vt ? 'vị trí ' : '') + x.bc) + '</span><span>File ' + c + ': ' + esc((vt ? 'vị trí ' : '') + x.file) + '</span></div>';
+    }).join('') + '</div><div class="meta cau">Ô lệch đã tô vàng trên bảng công, có ghi chú số của file. Sửa ô cho khớp, hoặc báo ' + c + ' sửa file rồi nạp lại.</div>';
+    if (nC) h += '<div class="bca-sec">Chưa có trên bảng công</div>' + o.chuaCo.map(function (x) {
+      return '<div class="bcx-c"><b>' + esc(x.ten) + '</b><span>' + esc(x.ngay + (x.vt ? ' · ' + x.vt : '')) + '</span><small class="cau">' + esc(x.ly ? x.ly + '.' : 'Người mới cần chọn nguồn tuyển. Nhập bằng ảnh để thêm.') + '</small></div>';
+    }).join('');
+    if ((o.ghiLoi || []).length) h += '<div class="note bad cau">' + o.ghiLoi.map(esc).join('<br>') + '</div>';
+    if ((o.canh || []).length) h += '<div class="note warn cau">' + o.canh.map(esc).join('<br>') + '</div>';
+    return h;
+  }
   function bcaDocAnh(fs) {
     BCA.dang = 'Đang chuẩn bị ' + fs.length + ' ảnh…'; bcaVe();
     Promise.all(fs.map(bcaNen)).then(function (ds) {
@@ -8113,7 +8164,7 @@ b.yT0{display:block;margin-bottom:2px}
     var nay = new Date(), t2 = new Date(nay.getFullYear(), nay.getMonth(), nay.getDate() - ((nay.getDay() + 6) % 7)), theoNg = {}, tong = 0;
     o.ds.forEach(function (x) { var d = ngayDate(x.ngay); if (!d || d < t2 || x.so <= 0) return; var k = x.loai === 'Ứng' ? 'Ứng' : 'Trả lương'; theoNg[k] = (theoNg[k] || 0) + x.so; tong += x.so; });
     var dauTuan = ddmm(new Date(Date.UTC(t2.getFullYear(), t2.getMonth(), t2.getDate())));
-    h += '<div class="sec" style="margin:18px 4px 8px">Tuần này (từ ' + dauTuan + ') đã chi</div><div class="card"><div class="row sp utTong" style="align-items:baseline;gap:8px"><span class="big num">' + vnd(tong) + '</span><span class="meta">ứng + trả lương</span></div>' +
+    h += '<div class="sec" style="margin:18px 4px 8px">Tuần này (từ ' + dauTuan + ') đã chi</div><div class="card"><div class="row sp utTong" style="align-items:baseline;gap:2px 8px;flex-wrap:wrap"><span class="big num">' + vnd(tong) + '</span><span class="meta" style="white-space:nowrap">ứng + trả lương</span></div>' +
       Object.keys(theoNg).sort(function (a, b) { return theoNg[b] - theoNg[a]; }).map(function (k) { return '<div class="tqr"><span>' + esc(k) + '</span><b class="num">' + vnd(theoNg[k]) + '</b></div>'; }).join('') + '</div>';
     var kx = 'vlta_utx_' + S.cty, xem = null; S.utMoc = S.utMoc || {};
     if (!(S.cty in S.utMoc)) { try { S.utMoc[S.cty] = JSON.parse(doc(kx) || 'null'); } catch (e) { S.utMoc[S.cty] = null; } }   // mốc lần xem trước (giữ suốt lần mở này)
@@ -8421,6 +8472,20 @@ b.yT0{display:block;margin-bottom:2px}
     var zl = t && t.zl ? '<small class="cu zlc">' + esc(vtZlCB(t.zl)) + '</small>' : (t && t.luc && t.nguon === 'zalo' ? '<small class="ell">Máy tự lấy từ nhóm Zalo</small>' : '');   // 24/10: nguồn file / file Zalo máy không nhận được
     return '<button class="vtThe" id="vtThe"><span class="vtIc">' + ICON_VT + '</span><span class="vtTx"><b>Kiểm tra ' + vtTen() + '</b><small class="ell1' + (cu ? ' cu' : '') + '">' + esc(sub) + '</small>' + zl + '</span><i aria-hidden="true">›</i></button>';
   }
+  // b210: thẻ trên cùng tab Lao động. Công ty gửi bảng công (ảnh / Excel) mà không có file vân tay -> thẻ Nhập giờ bảng công thay thẻ vân tay
+  function bcaCo(cty) { cty = cty || S.cty; return BCA_CTY.indexOf(cty) >= 0 && !(VTT[cty] && VTT[cty].luc); }
+  function theDauHtml(d) { return bcaCo() ? (d && d.het ? bcaTheHtml(d) : '') : vtTheHtml(); }
+  var ICON_BCA = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4.5" width="14" height="16.5" rx="2.5"/><path d="M9 4.5V3h6v1.5M8.5 10h7M8.5 13.5h7M8.5 17h4"/></svg>';
+  var ICON_BL = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="4.5" width="17" height="15" rx="2.5"/><path d="M3.5 9.5h17M3.5 14.5h17M9.5 9.5v10"/></svg>';
+  function bcaTheHtml(d) {
+    var sub = 'Chọn ảnh bảng công ' + S.cty + ' gửi', cu = false;
+    if (d && d.moc) {   // b210: 1 dòng ngắn (vừa 360 px phông rộng); quá 1 ngày chưa có giờ mới thì báo màu cam từ ngày nào chưa có
+      var t = kbvTuoi(d.moc), m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(d.moc), sau = m ? new Date(Date.UTC(+m[1], +m[2] - 1, +m[3] + 1)) : null;
+      cu = t >= 2; sub = cu && sau ? 'Chưa có giờ từ ' + ddmm(sau) : 'Có giờ đến ' + ngayDM(d.moc) + (t <= 0 ? ' (hôm nay)' : ' (hôm qua)');
+    }
+    return '<button class="vtThe" id="moBCA"><span class="vtIc">' + ICON_BCA + '</span><span class="vtTx"><b>Nhập giờ bảng công</b><small class="ell1' + (cu ? ' cu' : '') + '">' + esc(sub) + '</small></span><i aria-hidden="true">›</i></button>';
+  }
+  function blTheHtml() { return '<button class="vtThe blThe" id="moBL"><span class="vtIc">' + ICON_BL + '</span><span class="vtTx"><b>Bảng lương công nhân</b><small>Lương theo số giờ làm</small></span><i aria-hidden="true">›</i></button>'; }
   function vtZlCB(z) { return 'File Zalo lúc ' + gioPhut(z.luc) + ' chưa nhận: ' + z.l + '. Sale kiểm tra rồi chọn file đúng.'; }
   function ganVtThe() { var b = document.getElementById('vtThe'); if (b) b.onclick = moVT; }
   function taiVTTep(cty) {
@@ -8650,8 +8715,8 @@ b.yT0{display:block;margin-bottom:2px}
         '<div class="tbHd">Chạm vào tên hoặc từng thay đổi để mở hồ sơ. Bấm Đã xem khi đã kiểm tra xong.</div>' +
         tbHtml(hien, 0) +
         (ds.length > hien.length ? '<button class="tbThem" id="tbThem">Xem thêm ' + (ds.length - hien.length) + ' thay đổi</button>' : '') +
-        (cu.length ? '<button class="tbThem tbXl" id="tbXl">' + (S.tbXl ? 'Ẩn các thay đổi đã xem' : 'Xem lại ' + cu.length + ' thay đổi đã xem trong 7 ngày') + '</button>' : '') + '</div>';
-    } else if (!S.tbXl) h += '<button class="tbGon" id="tbXl"><span>Xem lại ' + cu.length + ' thay đổi đã xem trong 7 ngày</span><i aria-hidden="true">▾</i></button>';
+        (cu.length ? '<button class="tbThem tbXl" id="tbXl">' + (S.tbXl ? 'Ẩn các thay đổi đã xem' : 'Xem lại ' + cu.length + ' thay đổi trong 7 ngày') + '</button>' : '') + '</div>';
+    } else if (!S.tbXl) h += '<button class="tbGon" id="tbXl"><span>Xem lại ' + cu.length + ' thay đổi trong 7 ngày</span><i aria-hidden="true">▾</i></button>';
     if (S.tbXl && cu.length) h += '<div class="tbk tbkCu"><div class="tbk-h"><b>Đã xem trong 7 ngày · ' + cu.length + '</b><button class="link" id="tbXlDong">Thu gọn</button></div>' + tbHtml(cu, 1) + '</div>';
     box.innerHTML = h;
     var b1 = document.getElementById('tbHet'); if (b1) b1.onclick = function () { tbDaXem(ds.map(function (x) { return x.id; })); };
@@ -9837,7 +9902,7 @@ b.yT0{display:block;margin-bottom:2px}
     var toi = so.nguoiChi.filter(function (y) { return kd(y) === kd(S.toi.ten); })[0] || so.nguoiChi[1] || so.nguoiChi[0] || '';
     var iK = sua ? so.khoan.map(function (k) { return k.ten; }).indexOf(x.khoan) : -1;
     function nhom(loai) { return '<optgroup label="' + loai + '">' + so.khoan.map(function (k, i) { return k.loai === loai ? '<option value="' + i + '"' + (i === iK ? ' selected' : '') + '>' + esc(k.ten) + '</option>' : ''; }).join('') + '</optgroup>'; }
-    var sh = moSheet('<h3>' + (sua ? 'Sửa khoản' : 'Ghi khoản vào sổ thu chi') + '</h3>' +
+    var sh = moSheet('<h3>' + (sua ? 'Sửa khoản' : 'Ghi khoản thu chi') + '</h3>' +
       '<div><label class="lb">Khoản</label><select class="inp chon" id="sK"><option value="">Chọn khoản…</option>' + nhom('Thu') + nhom('Chi') + '</select></div>' +
       '<div class="meta" id="sGy"></div>' +
       '<div id="sSo"></div>' +
