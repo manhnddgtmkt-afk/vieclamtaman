@@ -13,7 +13,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
 <script src="config.js"></script>
-<script>window.PB = { so: 206, luc: "24/11 19:57" };</script>
+<script>window.PB = { so: 206, luc: "24/11 19:58" };</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap">
 <style>
@@ -1209,7 +1209,7 @@ body #ldNut .ckt.nghi{margin:0;border-radius:0;background:none;min-height:50px}b
 .lnBt{margin-top:12px;padding:8px 12px 4px;border-radius:12px;background:var(--soft)}
 .lnR{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:7px 0;border-top:1px solid var(--line)}.lnBt .yH+.lnR{border-top:0}
 .lnR>span{min-width:0;display:flex;flex-direction:column}.lnR>span b{font-size:14px;font-weight:500;color:var(--fg)}.lnR>span small{font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.lnR>b{white-space:nowrap;font-size:14px;font-weight:600;color:var(--fg2)}.lnR.kq>span b{font-weight:600}.lnR.kq>b{font-size:16px;font-weight:700}
+.lnR>b{white-space:nowrap;font-size:14px;font-weight:600;color:var(--fg2)}.lnR.kq>span b{font-weight:600}.lnR.kq>b{font-size:15px;font-weight:700}.lnR.kq>span b{white-space:nowrap}
 .yBox details>summary{list-style:none;cursor:pointer;font-size:12.5px;color:var(--blue);padding:4px 0}.yBox details>summary::-webkit-details-marker{display:none}
 .ySt{margin:8px 0 0;padding-left:20px;font-size:13.5px;line-height:1.45;color:var(--fg2);text-align:left}.ySt li+li{margin-top:4px}
 .yN{white-space:nowrap}
@@ -6171,7 +6171,7 @@ b.yT0{display:block;margin-bottom:2px}
     }, function (er) { ccTd(''); toastLoi(er.message); });
   }
   var BAN_MOI = [
-    { so: 207, ds: [{ i: '🔍', v: 'chu', t: 'Lợi nhuận tháng có phần Khoản bất thường', m: 'Dưới số lợi nhuận tháng có các khoản làm lệch số: lương, thưởng đã trả mà chưa có doanh thu, chi một lần như phong bì, quà, sim, hoàn công. Dòng cuối là lợi nhuận khi không tính các khoản đó.' }] },
+    { so: 207, ds: [{ i: '🔍', v: 'chu', t: 'Lợi nhuận tháng có phần Khoản bất thường', m: 'Dưới số lợi nhuận tháng có các khoản làm lệch số: lương, thưởng đã trả mà chưa có doanh thu, chi một lần như phong bì, quà, sim, hoàn công. Dòng cuối là lợi nhuận nếu bỏ các khoản đó.' }] },
     { so: 206, ds: [{ i: '📊', v: 'chu', t: 'Bảng Doanh thu và các khoản trừ cộng ra đúng', m: 'Thêm dòng Phí pháp nhân và dòng Thưởng TREND chưa có doanh thu. Mục Từng công ty có cả TREND, cộng lại bằng Lợi nhuận từ các công ty.' },
       { i: '🧭', v: 'chu', t: 'Tổng quan gọn theo từng mục', m: 'Việc cần xử lý nằm ngay trên thanh Lợi nhuận / Tiền & công nợ / Vendor & sale. Mục Lợi nhuận chỉ còn số lợi nhuận.' },
       { i: '🎬', v: 'chu', t: 'Content: tình hình quay của từng sale', m: 'Đầu phần Kịch bản có bảng Đã quay, Đã đăng trong 7 ngày và số bài còn chưa quay của từng sale.' },
@@ -10076,7 +10076,7 @@ b.yT0{display:block;margin-bottom:2px}
     var kt = so + tong;
     return '<div class="lnBt"><div class="yH">Khoản bất thường trong tháng</div>' + ds.map(function (x) {
       return '<div class="lnR"><span><b>' + esc(x.t) + '</b><small>' + esc(x.phu) + '</small></span><b class="num">' + vnd0(x.v) + '</b></div>';
-    }).join('') + '<div class="lnR kq"><span><b>Không tính các khoản trên</b></span><b class="num" style="color:var(--' + (kt < 0 ? 'bad' : 'good') + ')">' + (kt > 0 ? '+' : '') + vnd(kt) + '</b></div></div>';
+    }).join('') + '<div class="lnR kq"><span><b>Nếu bỏ các khoản trên</b></span><b class="num" style="color:var(--' + (kt < 0 ? 'bad' : 'good') + ')">' + (kt > 0 ? '+' : '') + vnd(kt) + '</b></div></div>';
   }
   function tqNhomLN(o) {
     var t = o.the, m1 = tqMuc(o, '1.'), m4 = tqMuc(o, '4.'), cp = tqMuc(o, 'CHI PHÍ CHUNG'), h = '';
