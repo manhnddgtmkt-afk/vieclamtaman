@@ -13,7 +13,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
 <script src="config.js"></script>
-<script>window.PB = { so: 213, luc: "24/11 23:51" };</script>
+<script>window.PB = { so: 213, luc: "24/11 23:54" };</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap">
 <style>
@@ -1242,7 +1242,8 @@ b.yT0{display:block;margin-bottom:2px}
 .tqr.dcx>b,.qRow.dcx>b,.yR.dcx>b,.tc3>div.dcx>b,.tr1.dcx>b{font-weight:600!important}
 .g3.dcx1,.nhaO.dcx1{grid-template-columns:minmax(0,1fr)!important}.g3.dcx1>div{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
 .it{white-space:normal}
-.it.so{align-items:flex-start;gap:10px}.it.so>.ic{align-self:center;flex:0 0 32px;width:32px;height:32px}.it.so .nm{font-size:15px;line-height:1.35}.it.so>.amt{margin-top:1px}
+#lso{display:flex;flex-direction:column;gap:16px}.soNgH{display:flex;justify-content:space-between;align-items:baseline;gap:12px;padding:0 6px 7px;font-size:13px;color:var(--muted)}.soNgH b{font-size:14px;font-weight:700;color:var(--fg2)}.soNgH span{white-space:nowrap}
+.soC .it.so{display:grid;grid-template-columns:minmax(0,1fr) minmax(104px,auto);column-gap:14px;align-items:start;padding:12px 16px}.soC .it.so .nm{font-size:15px;font-weight:500;line-height:1.35}.soC .it.so .sub{font-size:13px;margin-top:3px}.soC .it.so .amt{margin:0;text-align:right;font-size:15px;font-weight:600;line-height:1.35;font-variant-numeric:tabular-nums;color:var(--fg)}.soC .it.so .amt.c-xanh{color:var(--good)}
 .it.dcx{display:grid!important;grid-template-columns:minmax(0,1fr) auto;column-gap:12px;row-gap:2px;align-items:start}.it.dcx.dcxi{grid-template-columns:auto minmax(0,1fr) auto}
 .it.dcx>div:not(.amt):not(.ic){display:contents}.it.dcx>div:not(.amt):not(.ic)>*{grid-column:1/-1}.it.dcx.dcxi>div:not(.amt):not(.ic)>*{grid-column:2/-1}
 .it.dcx .nm{grid-row:1}.it.dcx>div>.sub{grid-column:1!important;grid-row:2}.it.dcx.dcxi>div>.sub{grid-column:2!important}.it.dcx>.amt,.it.dcx>.pill{grid-column:-2;grid-row:2;align-self:start}
@@ -9920,7 +9921,7 @@ b.yT0{display:block;margin-bottom:2px}
         '<div class="row sp" style="margin:6px 4px -6px"><span class="sec">Sổ thu chi' + (o.ky ? ' · ' + esc(tqThang(o.ky).replace(/\/\d{4}$/, '')) : '') + '</span><button class="icb" id="qTim" aria-label="Tìm khoản">' + ICON_TIM + '</button></div>' +
         '<input class="search hidden" id="qso" type="search" placeholder="Tìm khoản, nội dung, người…" style="margin:0">' +
         (function () { var tt = String(so.tongThu || '').replace(/^Tổng thu:\s*/, ''), tc = String(so.tongChi || '').replace(/^Tổng chi:\s*/, ''); return tqCo(tt) || tqCo(tc) ? '<div class="meta cau" style="margin:0 4px">Sổ đã ghi: thu <span class="num">+' + esc(tienVN(tt || '0')) + '</span> · chi <span class="num">−' + esc(tienVN(tc || '0')) + '</span></div>' : ''; })() +
-        '<div class="grp" id="lso"></div>' +
+        '<div id="lso"></div>' +
         '<button class="fab" id="gso">' + ICON.cong + 'Ghi khoản</button>';
       var qm = document.getElementById('qMoi'); if (qm) qm.onclick = function (e) { e.preventDefault(); this.textContent = 'đang tải…'; taiQuy(true); };
       document.getElementById('qTim').onclick = function () { var q = document.getElementById('qso'); q.classList.toggle('hidden'); if (!q.classList.contains('hidden')) q.focus(); else { q.value = ''; veSo(''); } };
@@ -9934,18 +9935,27 @@ b.yT0{display:block;margin-bottom:2px}
     var k = kd(q).trim(), ds = QUY.so.dong.filter(function (x) { return !k || kd([x.khoan, x.nd, x.nguoi, x.dt, x.ngay].join(' ')).indexOf(k) >= 0; }).slice(0, 80);
     if (!ds.length) { l.innerHTML = '<div class="empty">Không có khoản nào khớp.</div>'; return; }
     var hn = new Date(), p2 = function (n) { return ('0' + n).slice(-2); }, homNay = p2(hn.getDate()) + '/' + p2(hn.getMonth() + 1), hq = new Date(hn.getTime() - 864e5), homQua = p2(hq.getDate()) + '/' + p2(hq.getMonth() + 1);
-    var nhom = '', out = '', hay = {}; QUY.so.dong.forEach(function (x) { hay[x.nguoi] = (hay[x.nguoi] || 0) + 1; });
+    var hay = {}; QUY.so.dong.forEach(function (x) { hay[x.nguoi] = (hay[x.nguoi] || 0) + 1; });
     var nguoiChinh = Object.keys(hay).sort(function (a, b) { return hay[b] - hay[a]; })[0];   // b206: người ghi phần lớn các khoản (thủ quỹ) không lặp ở mọi dòng
-    ds.forEach(function (x) {   // gom theo ngày: đầu nhóm "Hôm nay / Hôm qua / dd/mm", dòng không lặp ngày
+    // b214: mỗi ngày 1 thẻ riêng – đầu thẻ ghi ngày + tổng chi / thu trong ngày; dòng không còn biểu tượng, số tiền nằm cột phải cố định
+    var ngs = [], theo = {};
+    ds.forEach(function (x) {
       var ng = String(x.ngay || '').slice(0, 5), ten = ng === homNay ? 'Hôm nay' : ng === homQua ? 'Hôm qua' : (ng || 'Không ngày');
-      if (ten !== nhom) { nhom = ten; out += '<div class="gh">' + esc(ten) + '</div>'; }
-      var thu = /^thu/i.test(x.loai);
-      var tenK = String(x.khoan || '').replace(/^Chi phí\s+/i, '').replace(/\s*\(ghi rõ[^)]*\)/i, ''); tenK = tenK.charAt(0).toUpperCase() + tenK.slice(1);
-      var nd = String(x.nd || ''), dt = x.dt && kd(nd).indexOf(kd(x.dt)) >= 0 ? '' : x.dt;
-      out += '<div class="it so" data-r="' + (x.r || '') + '"><i class="ic ' + (thu ? 'vao' : 'ra') + '">' + ICON_TC[thu ? 'vao' : 'ra'] + '</i><div style="min-width:0;flex:1"><div class="nm">' + esc(nd.trim() ? hoa1(nd.trim().replace(/^Chi phí\s+/i, '')) : tenK) + '</div><div class="sub">' + esc([nd.trim() ? tenK : '', dt, x.nguoi !== nguoiChinh ? x.nguoi : ''].filter(String).join(' · ')) + '</div>' +   // b206: tiêu đề là nội dung khoản
-        (x.kt ? '<div class="sub" style="color:var(--bad)">' + esc(x.kt) + '</div>' : '') + '</div>' +
-        '<div class="amt num' + (thu ? ' c-xanh' : '') + '">' + (thu ? '+' : '−') + esc(tienVN(x.so)) + '</div></div>';
+      if (!theo[ten]) { theo[ten] = { ten: ten, ds: [], thu: 0, chi: 0 }; ngs.push(theo[ten]); }
+      var g = theo[ten], thu = /^thu/i.test(x.loai), so = Number(String(x.so || '').replace(/[^\d]/g, '')) || 0;
+      g.ds.push(x); if (thu) g.thu += so; else g.chi += so;
     });
+    var out = ngs.map(function (g) {
+      var tong = [g.chi ? 'Chi ' + tienVN(g.chi) : '', g.thu ? 'Thu ' + tienVN(g.thu) : ''].filter(String).join(' · ');
+      return '<div class="soNg"><div class="soNgH"><b>' + esc(g.ten) + '</b><span class="num">' + esc(tong) + '</span></div><div class="grp soC">' + g.ds.map(function (x) {
+        var thu = /^thu/i.test(x.loai);
+        var tenK = String(x.khoan || '').replace(/^Chi phí\s+/i, '').replace(/\s*\(ghi rõ[^)]*\)/i, ''); tenK = tenK.charAt(0).toUpperCase() + tenK.slice(1);
+        var nd = String(x.nd || ''), dt = x.dt && kd(nd).indexOf(kd(x.dt)) >= 0 ? '' : x.dt;
+        return '<div class="it so" data-r="' + (x.r || '') + '"><div class="soT"><div class="nm">' + esc(nd.trim() ? hoa1(nd.trim().replace(/^Chi phí\s+/i, '')) : tenK) + '</div><div class="sub">' + esc([nd.trim() ? tenK : '', dt, x.nguoi !== nguoiChinh ? x.nguoi : ''].filter(String).join(' · ')) + '</div>' +   // b206: tiêu đề là nội dung khoản
+          (x.kt ? '<div class="sub" style="color:var(--bad)">' + esc(x.kt) + '</div>' : '') + '</div>' +
+          '<div class="amt num' + (thu ? ' c-xanh' : '') + '">' + (thu ? '+' : '−') + esc(tienVN(x.so)) + '</div></div>';
+      }).join('') + '</div></div>';
+    }).join('');
     l.innerHTML = out;
     l.querySelectorAll('.it.so[data-r]').forEach(function (e) {
       var r = Number(e.getAttribute('data-r')); if (!r) return;
