@@ -13,7 +13,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
 <script src="config.js"></script>
-<script>window.PB = { so: 200, luc: "24/11 18:12" };</script>
+<script>window.PB = { so: 200, luc: "24/11 18:14" };</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap">
 <style>
@@ -6097,7 +6097,7 @@ textarea.inp{font-family:inherit}
     }, function (er) { ccTd(''); toastLoi(er.message); });
   }
   var BAN_MOI = [
-    { so: 200, ds: [{ i: '🧮', v: 'chu', t: 'Giả lập tài chính gọn chữ hơn', m: 'Nhãn ngắn lại, không còn bị xuống 2 dòng: Đơn giá tối thiểu, Chiết khấu tối đa, Lao động tối thiểu / ngày, Tăng lương tối đa / công. Bảng lương công nhân: tên mức và ô nhập trên một hàng, giải thích nằm ngay dưới.' }] },
+    { so: 200, ds: [{ i: '🧮', v: 'chu', t: 'Giả lập tài chính gọn chữ hơn', m: 'Nhãn ngắn lại, không còn bị xuống 2 dòng: Đơn giá tối thiểu, Chiết khấu tối đa, Lao động tối thiểu / ngày, Tăng lương tối đa. Bảng lương công nhân: tên mức và ô nhập trên một hàng, giải thích nằm ngay dưới.' }] },
     { so: 199, ds: [{ i: '✖️', t: 'Hộp nào cũng có nút × để đóng', m: 'Mọi hộp nổi (Ghi khoản, Thông báo, Chọn công ty…) có nút × ở góc trên. Các nút nhỏ như ‹, Sửa ứng / trả dễ bấm trúng hơn.' },
       { i: '📅', t: 'Bảng công ghi rõ tháng', m: 'Ô ngày đầu kỳ và ngày 01 ghi kèm tháng, ví dụ 26/10 và 01/11. Ứng / trả lương trong kỳ xếp khoản mới nhất lên đầu.' },
       { i: '🪪', t: 'Thẻ HOJEONG chọn người ngay từ kho', m: 'Giấy tờ → Thẻ HOJEONG → bấm Chọn người trong kho CCCD → chạm ảnh → Làm thẻ. Kho CCCD gom giới tính, năm sinh vào mục Lọc.' },
@@ -10385,7 +10385,7 @@ textarea.inp{font-family:inherit}
     function base() { return ctx().base; }
     var HAY0 = [
       { k: 'P', t: 'Đơn giá {KH} trả mỗi giờ', g2: 'Hệ số 1 · ca đêm, tăng ca, chủ nhật nhân hệ số theo bảng kê', u: 'đ', st: 500, ki: 't' },
-      { k: 'cut', t: 'Chiết khấu nhân sự {KH}', pick: 1, u: '%', st: 0.5, ki: 'p' },
+      { k: 'cut', t: 'Chiết khấu {KH}', pick: 1, u: '%', st: 0.5, ki: 'p' },
       { k: 'fee', t: 'Phí pháp nhân', g2: '% hóa đơn trước VAT, công ty chịu', u: '%', st: 0.5, ki: 'p' },
       { k: 'Nn', t: 'Lao động ca ngày mỗi ngày', g2: 'Người của công ty, không gồm vendor', u: 'người', st: 1, ki: 'd', hj: 1 },
       { k: 'Nd', t: 'Lao động ca đêm mỗi ngày', g2: '', u: 'người', st: 1, ki: 'd', hj: 1 },
@@ -10604,7 +10604,7 @@ textarea.inp{font-family:inherit}
       ds.forEach(function (x) { if (x[2] && Math.abs(x[1]) < 0.5) return; var w = r.rev > 0 ? Math.min(100, Math.abs(x[1]) / r.rev * 100) : 0;
         h += '<div class="bt"><span class="' + (x[2] ? 'tru' : '') + '">' + (x[2] ? '− ' : '') + esc(x[0]) + '</span><b class="num">' + fT(x[1]) + '</b><div class="bar"><s style="width:' + w.toFixed(1) + '%;--q:' + x[3] + '"></s></div></div>'; });
       if (S.p.gioV > 0) {
-        h += '<div class="bt tong"><span>Lợi nhuận lao động công ty</span><b class="num ' + (r.mang < 0 ? 'am' : 'duong') + '">' + fS(r.mang) + '</b></div>';
+        h += '<div class="bt tong"><span>Lãi lao động công ty</span><b class="num ' + (r.mang < 0 ? 'am' : 'duong') + '">' + fS(r.mang) + '</b></div>';
         h += S.p.vKieu === 'gio' ? '<div class="bt"><span class="tru">+ Lao động vendor (' + fT(S.p.gioV) + ' giờ): doanh thu ' + fT(r.revV) + ' − lương công nhân ' + fT(r.luongV) + ' − phí, chiết khấu − trả vendor ' + fT(S.p.G) + ' đ/giờ</span><b class="num">' + fS(r.laiV) + '</b></div>'
           : '<div class="bt"><span class="tru">+ Lao động vendor: giữ lại ' + fT(S.p.G) + ' − phí pháp nhân ' + fT(S.p.P * S.p.fee / 100) + ' = ' + fS(S.p.G - S.p.P * S.p.fee / 100) + ' đ/giờ × ' + fT((S.p.gioV || 0) * ctx().kV) + ' giờ hệ số 1</span><b class="num">' + fS(r.laiV) + '</b></div>';
       }
@@ -10620,8 +10620,8 @@ textarea.inp{font-family:inherit}
       { t: 'Lao động công ty đi làm', dv: '+1 người mỗi ngày', fn: function (p) { p.N += 1; }, co: function () { return ctx().loai === 'BEST'; } },
       { t: 'Công chủ nhật', dv: '+1 công mỗi tháng', fn: function (p) { p.cnC = (p.cnC || 0) + 1; } },
       { t: 'Phí pháp nhân', dv: '−1% hóa đơn', fn: function (p) { p.fee = Math.max(0, p.fee - 1); }, co: function () { return S.p.fee > 0; } },
-      { t: 'Chiết khấu nhân sự {KH}', dv: '−1% hóa đơn', fn: function (p) { p.cut = Math.max(0, p.cut - 1); }, co: function () { return S.p.cutKieu === 'pc' && S.p.cut > 0; } },
-      { t: 'Chiết khấu nhân sự {KH}', dv: '−100 đ/giờ', fn: function (p) { p.cut = Math.max(0, p.cut - 100); }, co: function () { return S.p.cutKieu === 'gio' && S.p.cut > 0; } },
+      { t: 'Chiết khấu {KH}', dv: '−1% hóa đơn', fn: function (p) { p.cut = Math.max(0, p.cut - 1); }, co: function () { return S.p.cutKieu === 'pc' && S.p.cut > 0; } },
+      { t: 'Chiết khấu {KH}', dv: '−100 đ/giờ', fn: function (p) { p.cut = Math.max(0, p.cut - 100); }, co: function () { return S.p.cutKieu === 'gio' && S.p.cut > 0; } },
       { t: 'Lương công nhân', dv: '−1.000 đ/công, mọi mức', fn: function (p) { p.dL = (p.dL || 0) - 1000; } },
       { t: 'Giữ lại từ vendor', dv: '+100 đ/giờ', fn: function (p) { p.G += 100; }, co: function () { return S.p.gioV > 0 && S.p.vKieu !== 'gio'; } },
       { t: 'Trả vendor', dv: '−100 đ/giờ', fn: function (p) { p.G = Math.max(0, p.G - 100); }, co: function () { return S.p.gioV > 0 && S.p.vKieu === 'gio'; } }];
@@ -10644,7 +10644,7 @@ textarea.inp{font-family:inherit}
       var gN = giai(function (p, x) { datN(p, x); }, 0.1, 400);
       h += '<div class="gh"><span>Lao động tối thiểu / ngày</span><b class="num">' + (gN ? fD(Math.ceil(gN), 0) + ' người' : 'Không đạt') + '</b><small class="cau">' + (gN ? 'Đang thiết lập ' + fD(r.p.N, 1) + ' người' + (ctx().loai === 'BEST' ? '' : ', giữ tỷ lệ ngày/đêm') : 'Mỗi công đang lỗ, thêm lao động không bù được') + '</small></div>';
       var gL = giai(function (p, x) { p.dL = (S.p.dL || 0) + x; }, -200000, 200000);
-      h += '<div class="gh"><span>Tăng lương tối đa / công</span><b class="num">' + (gL !== null ? (gL < 0 ? 'Phải giảm ' : '') + fT(Math.abs(Math.floor(gL / 1000) * 1000)) + ' đ/công' : '–') + '</b><small class="cau">Áp cho mọi mức, so với bảng lương đang thiết lập</small></div>';
+      h += '<div class="gh"><span>Tăng lương tối đa</span><b class="num">' + (gL !== null ? (gL < 0 ? 'Phải giảm ' : '') + fT(Math.abs(Math.floor(gL / 1000) * 1000)) + ' đ/công' : '–') + '</b><small class="cau">Áp cho mọi mức, so với bảng lương đang thiết lập</small></div>';
       $g('gioiHan').innerHTML = h;
     }
     function veSoCat() {
