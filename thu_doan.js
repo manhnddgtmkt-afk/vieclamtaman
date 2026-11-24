@@ -26,7 +26,7 @@ window.__chk=function(){var out=[],W=document.documentElement.clientWidth;if(doc
 // b212: dòng hụt – đoạn nhiều dòng mà một dòng (không phải dòng cuối) chỉ dùng < 60% bề ngang khung -> chữ dồn trái
 window.__hut=function(){var out=[],KH=/^(block|list-item|inline-block|table-cell|flow-root)$/;
  for(var el of tatCa()){var st=getComputedStyle(el);if(!KH.test(st.display)||st.whiteSpace==='nowrap'||st.visibility==='hidden')continue;
-  if(el.closest('svg,table,code,pre,.yN,.phW'))continue;
+  if(el.closest('svg,table,code,pre,.yN,.phW,.it.so,.bmoi'))continue;
   var con=el.querySelectorAll('*'),bk=false;for(var c of con){var d=getComputedStyle(c).display;if(c.tagName==='BR'||/^(block|flex|grid|list-item|table)/.test(d)){bk=true;break}}if(bk)continue;
   var t=(el.innerText||'').trim();if(t.length<25)continue;var b=el.getBoundingClientRect();if(!b.width||!b.height)continue;
   var pl=parseFloat(st.paddingLeft)||0,pr=parseFloat(st.paddingRight)||0,x0=b.left+pl+(parseFloat(st.borderLeftWidth)||0),Wd=b.width-pl-pr-(parseFloat(st.borderLeftWidth)||0)-(parseFloat(st.borderRightWidth)||0);if(Wd<150)continue;
@@ -60,7 +60,7 @@ window.__doan=function(){var out=[],HOA=/[.!?:;] [A-ZĐÁÀẢÃẠÂẤẦẨ�
  function khoi(n){var d=getComputedStyle(n).display;return d!=='inline'&&d!=='contents'}
  for(var el of tatCa()){if(/^(SCRIPT|STYLE|INPUT|TEXTAREA|SELECT|OPTION|svg|BUTTON)$/i.test(el.tagName))continue;
   var st=getComputedStyle(el);if(st.display==='none'||st.visibility==='hidden'||!khoi(el))continue;
-  var dd=el.closest('details');if(dd&&!dd.open&&!el.closest('summary'))continue;if(el.closest('.it.so'))continue;
+  var dd=el.closest('details');if(dd&&!dd.open&&!el.closest('summary'))continue;if(el.closest('.it.so,.bmoi'))continue;
   var rc=el.getBoundingClientRect();if(!rc.width||!rc.height)continue;
   var segs=[[]],w=document.createTreeWalker(el,5,{acceptNode:function(n){if(n===el)return 3;if(n.nodeType===1){if(n.tagName==='BR')return 1;if(khoi(n))return 2;return 3}return 1}}),n;
   while((n=w.nextNode())){if(n.nodeType===1){segs.push([]);continue}if(n.nodeValue.trim())segs[segs.length-1].push(n)}
@@ -84,7 +84,7 @@ var __goc=window.__chk;window.__chk=function(){return __goc().concat(__doan(),__
 // b213: dấu · đầu/cuối dòng, khối hàng lệch kiểu (hàng số cùng dòng lẫn hàng số xuống dưới), lưới ô lệch số dòng
 window.__b213=function(){var out=[],gs=[document],hh=document.getElementById('glHost');if(hh&&hh.shadowRoot)gs.push(hh.shadowRoot);
  function y(r){return r.top+r.height/2}
- for(var g of gs){var w=document.createTreeWalker(g,4),n;while((n=w.nextNode())){var v=n.nodeValue,p=n.parentElement;if(!p||v.indexOf('·')<0||p.closest('script,style,#phieu'))continue;var rc=p.getBoundingClientRect();if(!rc.width||!rc.height)continue;var dd=p.closest('details');if(dd&&!dd.open&&!p.closest('summary'))continue;
+ for(var g of gs){var w=document.createTreeWalker(g,4),n;while((n=w.nextNode())){var v=n.nodeValue,p=n.parentElement;if(!p||v.indexOf('·')<0||p.closest('script,style,#phieu,.bmoi'))continue;var rc=p.getBoundingClientRect();if(!rc.width||!rc.height)continue;var dd=p.closest('details');if(dd&&!dd.open&&!p.closest('summary'))continue;
   for(var i=0;i<v.length;i++){if(v[i]!=='·')continue;var r=document.createRange();r.setStart(n,i);r.setEnd(n,i+1);var a=r.getClientRects()[0];if(!a)continue;var j=i-1;while(j>=0&&/\s/.test(v[j]))j--;var k=i+1;while(k<v.length&&/\s/.test(v[k]))k++;
    if(j>=0){var r1=document.createRange();r1.setStart(n,j);r1.setEnd(n,j+1);var b=r1.getClientRects()[0];if(b&&y(a)-y(b)>a.height/2)out.push('Dấu · đầu dòng | '+v.trim().slice(0,60))}
    if(k<v.length){var r2=document.createRange();r2.setStart(n,k);r2.setEnd(n,k+1);var c=r2.getClientRects()[0];if(c&&y(c)-y(a)>a.height/2)out.push('Dấu · cuối dòng | '+v.trim().slice(0,60))}}}
