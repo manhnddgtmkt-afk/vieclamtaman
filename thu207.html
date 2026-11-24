@@ -13,7 +13,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
 <script src="config.js"></script>
-<script>window.PB = { so: 206, luc: "24/11 19:58" };</script>
+<script>window.PB = { so: 207, luc: "24/11 20:00" };</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap">
 <style>
@@ -329,6 +329,7 @@ body .tbMeta{max-width:none;text-align:left;white-space:nowrap;overflow:hidden;t
 body .tbk-h b{min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}body .tbk-h .link{flex:none;white-space:nowrap}
 .cqR>span:first-child{min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.cqR>.tien{flex:none}
 .bmoi b,.bmoi h3,.bmoi .bmm,.bmoi li{text-wrap:balance}
+.bmoi{padding:16px!important}.bmoi>div{max-width:400px!important}.bmb .bmm{font-size:14.5px;line-height:1.45;color:var(--fg2)}.bmb .bmm .yL+.yL{margin-top:4px}.bmb .bmt{font-size:15.5px}
 body .tch b{font-size:clamp(11.5px,3.4vw,13px)}.gcL span{overflow-wrap:anywhere}.utTong .meta{flex:none;white-space:nowrap}
 /* danh sách: gom trong 1 khối trắng, mỗi dòng tối đa 2 dòng chữ */
 .list{gap:16px}
@@ -6171,12 +6172,13 @@ b.yT0{display:block;margin-bottom:2px}
     }, function (er) { ccTd(''); toastLoi(er.message); });
   }
   var BAN_MOI = [
-    { so: 207, ds: [{ i: '🔍', v: 'chu', t: 'Lợi nhuận tháng có phần Khoản bất thường', m: 'Dưới số lợi nhuận tháng có các khoản làm lệch số: lương, thưởng đã trả mà chưa có doanh thu, chi một lần như phong bì, quà, sim, hoàn công. Dòng cuối là lợi nhuận nếu bỏ các khoản đó.' }] },
-    { so: 206, ds: [{ i: '📊', v: 'chu', t: 'Bảng Doanh thu và các khoản trừ cộng ra đúng', m: 'Thêm dòng Phí pháp nhân và dòng Thưởng TREND chưa có doanh thu. Mục Từng công ty có cả TREND, cộng lại bằng Lợi nhuận từ các công ty.' },
-      { i: '🧭', v: 'chu', t: 'Tổng quan gọn theo từng mục', m: 'Việc cần xử lý nằm ngay trên thanh Lợi nhuận / Tiền & công nợ / Vendor & sale. Mục Lợi nhuận chỉ còn số lợi nhuận.' },
-      { i: '🎬', v: 'chu', t: 'Content: tình hình quay của từng sale', m: 'Đầu phần Kịch bản có bảng Đã quay, Đã đăng trong 7 ngày và số bài còn chưa quay của từng sale.' },
-      { i: '🧾', t: 'Sổ thu chi dễ đọc hơn', m: 'Mỗi khoản lấy nội dung làm tên, loại khoản ghi ở dòng dưới. Số người đi làm ở tab Lao động thành thẻ riêng, số cũ được ghi rõ.' }] },
-    { so: 204, ds: [{ i: '📐', t: 'Chữ trình bày từng ý một dòng', m: 'Các khoản trong Thu chi, Tổng quan và Giả lập hiện thành từng hàng, tên bên trái, số bên phải. Ghi chú, hướng dẫn mỗi ý một dòng, không còn chữ bị ngắt giữa chừng.' }] },
+    { so: 207, ds: [{ i: '🔍', v: 'chu', t: 'Khoản bất thường', m: 'Dưới số lợi nhuận tháng có thêm khung Khoản bất thường. Gồm lương, thưởng đã trả mà chưa có doanh thu và các khoản chi một lần. Dòng cuối là lợi nhuận nếu bỏ các khoản đó.' }] },
+    { so: 206, ds: [{ i: '📊', v: 'chu', t: 'Lợi nhuận cộng ra đúng', m: 'Bảng Doanh thu và các khoản trừ có thêm dòng Phí pháp nhân. Thưởng TREND chưa có doanh thu là một dòng riêng. Tổng các công ty khớp với dòng tổng.' },
+      { i: '🧭', v: 'chu', t: 'Tổng quan gọn hơn', m: 'Việc cần xử lý nằm trên cùng, mở mục nào cũng thấy. Mục Lợi nhuận chỉ còn số lợi nhuận.' },
+      { i: '🎬', v: 'chu', t: 'Tình hình quay video', m: 'Đầu phần Kịch bản có bảng của từng sale. Gồm số bài đã quay, đã đăng trong 7 ngày và số bài chưa quay.' },
+      { i: '🧾', t: 'Sổ thu chi dễ đọc hơn', m: 'Mỗi khoản lấy nội dung làm tên. Loại khoản ghi ở dòng dưới.' },
+      { i: '👷', t: 'Thẻ người đi làm riêng', m: 'Ở tab Lao động, số người đi làm tách khỏi thẻ Còn phải trả. Số cũ được làm mờ và ghi rõ đã cũ mấy ngày.' }] },
+    { so: 204, ds: [{ i: '📐', t: 'Mỗi dòng một ý', m: 'Các khoản trong Thu chi, Tổng quan, Giả lập hiện thành từng hàng. Tên bên trái, số bên phải. Ghi chú và hướng dẫn mỗi ý một dòng.' }] },
     { so: 200, ds: [{ i: '🧮', v: 'chu', t: 'Giả lập tài chính gọn chữ hơn', m: 'Nhãn ngắn lại, không còn bị xuống 2 dòng: Đơn giá tối thiểu, Chiết khấu tối đa, Lao động tối thiểu / ngày, Tăng lương tối đa. Bảng lương công nhân: tên mức và ô nhập trên một hàng, giải thích nằm ngay dưới.' }] },
     { so: 199, ds: [{ i: '✖️', t: 'Hộp nào cũng có nút × để đóng', m: 'Mọi hộp nổi (Ghi khoản, Thông báo, Chọn công ty…) có nút × ở góc trên. Các nút nhỏ như ‹, Sửa ứng / trả dễ bấm trúng hơn.' },
       { i: '📅', t: 'Bảng công ghi rõ tháng', m: 'Ô ngày đầu kỳ và ngày 01 ghi kèm tháng, ví dụ 26/10 và 01/11. Ứng / trả lương trong kỳ xếp khoản mới nhất lên đầu.' },
@@ -6419,7 +6421,7 @@ b.yT0{display:block;margin-bottom:2px}
   function bmMuc(x) {
     if (typeof x === 'string') return '<ul class="bmds"><li>' + esc(x) + '</li></ul>';
     return '<div class="bmb">' + (x.i ? '<div class="bmt"><span class="bmn">' + esc(x.i) + '</span><b>' + esc(x.t) + '</b></div>' : '<div class="bmt"><b>' + esc(x.t) + '</b></div>') +
-      (x.m ? '<div class="bmm">' + bmChu(x.m) + '</div>' : '') +
+      (x.m ? '<div class="bmm">' + yCauH(bmChu(x.m)) + '</div>' : '') +   // b207: mỗi câu 1 dòng, không viết thành đoạn
       (x.c || []).map(function (c) { return '<div class="bmct">' + esc(c[0]) + '</div><div class="bmm">' + bmChu(c[1]) + '</div>'; }).join('') + '</div>';
   }
   function hopMoi(ds, tieu) {   // ghi đủ mọi điểm mới; dài thì cuộn bên trong hộp
