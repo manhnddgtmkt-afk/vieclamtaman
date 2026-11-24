@@ -13,7 +13,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
 <script src="config.js"></script>
-<script>window.PB = { so: 214, luc: "25/11 06:07" };</script>
+<script>window.PB = { so: 214, luc: "25/11 06:09" };</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap">
 <style>
@@ -1243,7 +1243,7 @@ b.yT0{display:block;margin-bottom:2px}
 .g3.dcx1,.nhaO.dcx1{grid-template-columns:minmax(0,1fr)!important}.g3.dcx1>div{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
 .it{white-space:normal}
 #lso{display:flex;flex-direction:column;gap:16px}.soNgH{display:flex;justify-content:space-between;align-items:baseline;gap:12px;padding:0 6px 7px;font-size:13px;color:var(--muted)}.soNgH b{font-size:14px;font-weight:700;color:var(--fg2)}.soNgH span{white-space:nowrap}
-.soC .it{display:grid;grid-template-columns:minmax(0,1fr) minmax(88px,auto);column-gap:12px;align-items:start;padding:12px 16px}.soC .it .nm{font-size:15px;font-weight:500;line-height:1.35}.soC .it .sub{font-size:13px;margin-top:3px}.soC .it .amt{margin:0;text-align:right;font-size:15px;font-weight:600;line-height:1.35;font-variant-numeric:tabular-nums;color:var(--fg)}.soC .it .amt.c-xanh{color:var(--good)}.soC .it.so.thu{background:var(--good-bg);box-shadow:inset 4px 0 0 var(--good)}.soThu{font-style:normal;color:var(--good);font-weight:600}.soNgH .q2dot{margin-right:7px}.cpR .yTn{display:block}.cpR .yPh{display:block;font-size:13px;font-weight:400;color:var(--muted);margin-top:3px}.soC .it:not(:has(>.amt)){grid-template-columns:minmax(0,1fr)}.cpDs{display:flex;flex-direction:column;gap:16px;margin-top:16px}.q2chong.cpBar{margin:2px 6px 0}.phW.phX .phC{display:block}.utDs{display:flex;flex-direction:column;gap:16px}
+.soC .it{display:grid;grid-template-columns:minmax(0,1fr) minmax(88px,auto);column-gap:12px;align-items:start;padding:12px 16px}.soC .it .nm{font-size:15px;font-weight:500;line-height:1.35}.soC .it .sub{font-size:13px;margin-top:3px}.soC .it .amt{margin:0;text-align:right;font-size:15px;font-weight:600;line-height:1.35;font-variant-numeric:tabular-nums;color:var(--fg)}.soC .it .amt.c-xanh{color:var(--good)}.soC .it.so.thu{background:var(--good-bg);box-shadow:inset 4px 0 0 var(--good)}.soThu{font-style:normal;color:var(--good);font-weight:600}.soNgH .q2dot{margin-right:7px}.cpR .yTn{display:block}.cpR .yPh{display:block;font-size:13px;font-weight:400;color:var(--muted);margin-top:3px}.soC .it:not(:has(>.amt)){grid-template-columns:minmax(0,1fr)}.cpDs{display:flex;flex-direction:column;gap:16px;margin-top:16px}.q2chong.cpBar{margin:2px 6px 0}.soC .nw{white-space:nowrap}.utDs{display:flex;flex-direction:column;gap:16px}
 .it.dcx{display:grid!important;grid-template-columns:minmax(0,1fr) auto;column-gap:12px;row-gap:2px;align-items:start}.it.dcx.dcxi{grid-template-columns:auto minmax(0,1fr) auto}
 .it.dcx>div:not(.amt):not(.ic){display:contents}.it.dcx>div:not(.amt):not(.ic)>*{grid-column:1/-1}.it.dcx.dcxi>div:not(.amt):not(.ic)>*{grid-column:2/-1}
 .it.dcx .nm{grid-row:1}.it.dcx>div>.sub{grid-column:1!important;grid-row:2}.it.dcx.dcxi>div>.sub{grid-column:2!important}.it.dcx>.amt,.it.dcx>.pill{grid-column:-2;grid-row:2;align-self:start}
@@ -1434,7 +1434,7 @@ b.yT0{display:block;margin-bottom:2px}
   function canDoi() {
     var gs = [document], h = document.getElementById('glHost'); if (h && h.shadowRoot) gs.push(h.shadowRoot);
     var dat = [];
-    var cu = []; gs.forEach(function (g) { [].forEach.call(g.querySelectorAll('.dcx,.dcx1,.dcx2,.phX'), function (e) { cu.push(e.className); e.classList.remove('dcx', 'dcx1', 'dcxi', 'dcx2', 'phX'); }); });
+    var cu = []; gs.forEach(function (g) { [].forEach.call(g.querySelectorAll('.dcx,.dcx1,.dcx2'), function (e) { cu.push(e.className); e.classList.remove('dcx', 'dcx1', 'dcxi', 'dcx2'); }); });
     gs.forEach(function (g) {
       HANG.forEach(function (t) {
         var nh = new Map();
@@ -1444,17 +1444,13 @@ b.yT0{display:block;margin-bottom:2px}
       LUOI.forEach(function (t) {
         [].forEach.call(g.querySelectorAll(t[0]), function (lu) { if (!lu.getClientRects().length) return; if ([].some.call(lu.querySelectorAll(':scope' + t[1]), function (x) { return soDong(x) > 1; })) dat.push([lu, 'dcx1']); });
       });
-      [].forEach.call(g.querySelectorAll('.soC'), function (k) {   // b215: 1 dòng phụ trong khung phải tách thành nhiều dòng thì cả khung tách giống nhau (mỗi ý 1 dòng)
-        var ws = [].filter.call(k.querySelectorAll('.phW'), function (w) { return w.getClientRects().length && w.firstChild && w.firstChild.children.length > 1; });
-        if (ws.some(function (w) { return w.getBoundingClientRect().height > parseFloat(getComputedStyle(w).fontSize) * 1.9; })) ws.forEach(function (w) { dat.push([w, 'phX']); });
-      });
       CO.forEach(function (t) {   // cột tên trong bảng: 1 tên phải xuống dòng thì cả bảng thu chữ tên 1 cỡ (cùng cỡ, không tên nào nhảy dòng)
         var nh = new Map(); [].forEach.call(g.querySelectorAll(t[0]), function (r) { if (!r.getClientRects().length) return; var p = r.parentElement; if (!nh.has(p)) nh.set(p, []); nh.get(p).push(r); });
         nh.forEach(function (rs, p) { if (rs.some(function (r) { var n = t[1] ? r.querySelector(t[1]) : r; return n && soDong(n) > 1; })) dat.push([p, 'dcx2']); });
       });
     });
     dat.forEach(function (x) { x[0].classList.add(x[1]); });
-    var moi = []; gs.forEach(function (g) { [].forEach.call(g.querySelectorAll('.dcx,.dcx1,.dcx2,.phX'), function (e) { moi.push(e.className); }); });
+    var moi = []; gs.forEach(function (g) { [].forEach.call(g.querySelectorAll('.dcx,.dcx1,.dcx2'), function (e) { moi.push(e.className); }); });
     if (moi.join('|') !== cu.join('|') && window.__duoiLai) window.__duoiLai();   // bố cục đổi -> đo lại dòng cuối
     gs.forEach(function (g) { [].forEach.call(g.querySelectorAll('select.inp.chon'), chonBoc); });
     [].forEach.call(document.querySelectorAll('.top .row:not(:has(.back)) h2'), function (h) {
@@ -8351,7 +8347,7 @@ b.yT0{display:block;margin-bottom:2px}
         var tong = ['Ứng', 'Trả lương'].filter(function (k) { return g.t[k]; }).map(function (k) { return k + ' ' + vnd(g.t[k]); }).join(' · ');
         return '<div class="soNg"><div class="soNgH"><b>' + esc(String(g.ngay).replace(/\/\d{4}$/, '')) + '</b><span class="num">' + esc(tong) + '</span></div><div class="grp soC">' + g.ds.map(function (x) {
           var moi = xem && xem.id === o.id && x.dong > xem.dong;
-          return '<div class="it utIt" data-d="' + x.dong + '"><div style="min-width:0"><div class="nm">' + (moi ? '<i class="moiDot"></i>' : '') + esc(hoaDau(x.ten)) + '</div><div class="sub">' + (x.loi ? '<span class="c-do">' + esc(x.nt ? 'Chưa ghi người trả' : 'Có lỗi') + '</span> · ' : '') + esc([x.loai, String(x.ghi || '').replace(new RegExp('/' + new Date().getFullYear() + '\\b', 'g'), '')].filter(String).join(' · ')) + '</div></div><div class="amt num">' + vnd(x.so) + '</div></div>';
+          return '<div class="it utIt" data-d="' + x.dong + '"><div style="min-width:0"><div class="nm">' + (moi ? '<i class="moiDot"></i>' : '') + esc(hoaDau(x.ten)) + '</div><div class="sub">' + (x.loi ? '<span class="c-do">' + esc(x.nt ? 'Chưa ghi người trả' : 'Có lỗi') + '</span> · ' : '') + esc([x.loai, String(x.ghi || '').replace(new RegExp('/' + new Date().getFullYear() + '\\b', 'g'), '')].filter(String).join(' · ')).replace(/(\d{1,2}\/\d{1,2}) – (\d{1,2}\/\d{1,2})/g, '<span class="nw">$1 – $2</span>') + '</div></div><div class="amt num">' + vnd(x.so) + '</div></div>';
         }).join('') + '</div></div>';
       }).join('') + '</div>' + (gioi < dsL.length ? '<button class="btn ghost" id="utThem" style="margin-top:12px">Xem thêm ' + (dsL.length - gioi) + ' dòng</button>' : '');
     } else h += '<div class="empty">' + (utQ ? 'Không có dòng nào của tên này.' : 'Chưa có khoản ứng / trả nào trong kỳ.') + '</div>';
@@ -10429,7 +10425,11 @@ b.yT0{display:block;margin-bottom:2px}
         '<div class="cpDs">' + nhom.map(function (x, i) {   // b215: mỗi nhóm 1 khung riêng như sổ thu chi
           var pt = Math.round(x.v / tc * 100) + '%';
           return '<div class="soNg"><div class="soNgH"><b>' + q2Dot(xam[Math.min(i, 4)]) + esc(x.t) + '</b><span class="num">' + esc(soVN(x.so)) + ' · ' + pt + '</span></div><div class="grp soC">' +
-            x.con.map(function (c) { return '<div class="it cpR"><div style="min-width:0"><div class="nm">' + yTen(c[0]) + '</div></div><div class="amt num">' + esc(soVN(c[1])) + '</div></div>'; }).join('') + '</div></div>';
+            x.con.map(function (c) {
+              var t = chuSale(soVN(c[0])).trim(), m = /^(.{3,40}?)\s+[–-]\s+(.+)$/.exec(t), k = m && /^(.*?)\s*\(([^()]+)\)\s*$/.exec(m[2]);
+              if (!k) return '<div class="it cpR"><div style="min-width:0"><div class="nm">' + yTen(c[0]) + '</div></div><div class="amt num">' + esc(soVN(c[1])) + '</div></div>';
+              return '<div class="it cpR"><div style="min-width:0"><div class="nm">' + esc(m[1]) + '</div><div class="sub">' + esc(hoa1(k[2])) + '</div></div><div class="amt num">' + esc(soVN(c[1])) + '<small>' + esc(hoa1(k[1])) + '</small></div></div>';
+            }).join('') + '</div></div>';
         }).join('') + '</div>';
     }
     return h;
