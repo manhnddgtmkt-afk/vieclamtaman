@@ -13,7 +13,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
 <script src="config.js"></script>
-<script>window.PB = { so: 213, luc: "24/11 23:59" };</script>
+<script>window.PB = { so: 214, luc: "25/11 06:02" };</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap">
 <style>
@@ -1243,7 +1243,7 @@ b.yT0{display:block;margin-bottom:2px}
 .g3.dcx1,.nhaO.dcx1{grid-template-columns:minmax(0,1fr)!important}.g3.dcx1>div{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
 .it{white-space:normal}
 #lso{display:flex;flex-direction:column;gap:16px}.soNgH{display:flex;justify-content:space-between;align-items:baseline;gap:12px;padding:0 6px 7px;font-size:13px;color:var(--muted)}.soNgH b{font-size:14px;font-weight:700;color:var(--fg2)}.soNgH span{white-space:nowrap}
-.soC .it.so{display:grid;grid-template-columns:minmax(0,1fr) minmax(88px,auto);column-gap:12px;align-items:start;padding:12px 16px}.soC .it.so .nm{font-size:15px;font-weight:500;line-height:1.35}.soC .it.so .sub{font-size:13px;margin-top:3px}.soC .it.so .amt{margin:0;text-align:right;font-size:15px;font-weight:600;line-height:1.35;font-variant-numeric:tabular-nums;color:var(--fg)}.soC .it.so .amt.c-xanh{color:var(--good)}.soC .it.so.thu{background:var(--good-bg);box-shadow:inset 4px 0 0 var(--good)}.soThu{font-style:normal;color:var(--good);font-weight:600}
+.soC .it{display:grid;grid-template-columns:minmax(0,1fr) minmax(88px,auto);column-gap:12px;align-items:start;padding:12px 16px}.soC .it .nm{font-size:15px;font-weight:500;line-height:1.35}.soC .it .sub{font-size:13px;margin-top:3px}.soC .it .amt{margin:0;text-align:right;font-size:15px;font-weight:600;line-height:1.35;font-variant-numeric:tabular-nums;color:var(--fg)}.soC .it .amt.c-xanh{color:var(--good)}.soC .it.so.thu{background:var(--good-bg);box-shadow:inset 4px 0 0 var(--good)}.soThu{font-style:normal;color:var(--good);font-weight:600}.soNgH .q2dot{margin-right:7px}.cpR .yTn{display:block}.cpR .yPh{display:block;font-size:13px;font-weight:400;color:var(--muted);margin-top:3px}.cpDs{display:flex;flex-direction:column;gap:16px;margin-top:14px}.utDs{display:flex;flex-direction:column;gap:16px}
 .it.dcx{display:grid!important;grid-template-columns:minmax(0,1fr) auto;column-gap:12px;row-gap:2px;align-items:start}.it.dcx.dcxi{grid-template-columns:auto minmax(0,1fr) auto}
 .it.dcx>div:not(.amt):not(.ic){display:contents}.it.dcx>div:not(.amt):not(.ic)>*{grid-column:1/-1}.it.dcx.dcxi>div:not(.amt):not(.ic)>*{grid-column:2/-1}
 .it.dcx .nm{grid-row:1}.it.dcx>div>.sub{grid-column:1!important;grid-row:2}.it.dcx.dcxi>div>.sub{grid-column:2!important}.it.dcx>.amt,.it.dcx>.pill{grid-column:-2;grid-row:2;align-self:start}
@@ -6377,6 +6377,7 @@ b.yT0{display:block;margin-bottom:2px}
     }, function (er) { ccTd(''); toastLoi(er.message); });
   }
   var BAN_MOI = [
+    { so: 214, ds: ['Sổ thu chi chia khung theo từng ngày, khoản thu có nền xanh để dễ phân biệt với khoản chi.'] },
     { so: 213, ds: ['Chữ dài không còn bị cắt mất, mà xuống dòng gọn và cân đối.'] },
     { so: 212, ds: [['Chữ trong app chạy hết dòng như iPhone, không còn dồn sang trái.', 'chu']] },
     { so: 211, ds: ['Chức năng tải ảnh bảng công MINGJIE nay nhận cả file Excel và được đổi tên thành "Nhập giờ bảng công".'] },
@@ -8336,11 +8337,20 @@ b.yT0{display:block;margin-bottom:2px}
     h += '<div class="row sp" style="margin:18px 4px 8px"><span class="sec">Gần đây</span><button class="link" id="utLm" style="padding:0;font-size:13px">Làm mới</button></div>';
     h += '<input class="search" id="utQ" type="search" placeholder="Lọc theo tên…" autocomplete="off" value="' + esc(S.utQ || '') + '" style="margin-bottom:8px">';
     h += '<div class="meta" style="margin:0 4px 8px">Giữ ngón tay lên một dòng để sửa hoặc xoá.</div>';
-    h += dsL.length ? '<div class="grp">' + dsL.slice(0, gioi).map(function (x) {
-      var moi = xem && xem.id === o.id && x.dong > xem.dong, g = '';
-      if (x.ngay !== ngTruoc) { ngTruoc = x.ngay; g = '<div class="gh">' + esc(x.ngay.replace(/\/\d{4}$/, '')) + '</div>'; }
-      return g + '<div class="it utIt" data-d="' + x.dong + '"><div style="min-width:0;flex:1"><div class="nm ell">' + (moi ? '<i class="moiDot"></i>' : '') + esc(hoaDau(x.ten)) + '</div><div class="sub ell">' + (x.loi ? '<span class="c-do">' + esc(x.nt ? 'Chưa ghi người trả' : 'Có lỗi') + '</span> · ' : '') + esc([x.loai, x.ghi].filter(String).join(' · ')) + '</div></div><div class="amt num">' + vnd(x.so) + '</div></div>';
-    }).join('') + (gioi < dsL.length ? '<button class="it xt" id="utThem"><span class="link" style="padding:0">Xem thêm ' + (dsL.length - gioi) + ' dòng</span></button>' : '') + '</div>' : '<div class="empty">' + (utQ ? 'Không có dòng nào của tên này.' : 'Chưa có khoản ứng / trả nào trong kỳ.') + '</div>';
+    if (dsL.length) {   // b215: mỗi ngày 1 khung riêng như sổ thu chi – đầu khung: ngày + tổng ứng / trả lương trong ngày
+      var ngU = [], theoU = {};
+      dsL.slice(0, gioi).forEach(function (x) {
+        if (!theoU[x.ngay]) { theoU[x.ngay] = { ngay: x.ngay, ds: [], t: {} }; ngU.push(theoU[x.ngay]); }
+        var g = theoU[x.ngay]; g.ds.push(x); if (x.so > 0) { var k = x.loai === 'Ứng' ? 'Ứng' : 'Trả lương'; g.t[k] = (g.t[k] || 0) + x.so; }
+      });
+      h += '<div class="utDs">' + ngU.map(function (g) {
+        var tong = ['Ứng', 'Trả lương'].filter(function (k) { return g.t[k]; }).map(function (k) { return k + ' ' + vnd(g.t[k]); }).join(' · ');
+        return '<div class="soNg"><div class="soNgH"><b>' + esc(String(g.ngay).replace(/\/\d{4}$/, '')) + '</b><span class="num">' + esc(tong) + '</span></div><div class="grp soC">' + g.ds.map(function (x) {
+          var moi = xem && xem.id === o.id && x.dong > xem.dong;
+          return '<div class="it utIt" data-d="' + x.dong + '"><div style="min-width:0"><div class="nm">' + (moi ? '<i class="moiDot"></i>' : '') + esc(hoaDau(x.ten)) + '</div><div class="sub">' + (x.loi ? '<span class="c-do">' + esc(x.nt ? 'Chưa ghi người trả' : 'Có lỗi') + '</span> · ' : '') + esc([x.loai, x.ghi].filter(String).join(' · ')) + '</div></div><div class="amt num">' + vnd(x.so) + '</div></div>';
+        }).join('') + '</div></div>';
+      }).join('') + '</div>' + (gioi < dsL.length ? '<button class="btn ghost" id="utThem" style="margin-top:12px">Xem thêm ' + (dsL.length - gioi) + ' dòng</button>' : '');
+    } else h += '<div class="empty">' + (utQ ? 'Không có dòng nào của tên này.' : 'Chưa có khoản ứng / trả nào trong kỳ.') + '</div>';
     m.innerHTML = h;
     ganUtNt(m, dsLoi, S.cty);
     var bc = document.getElementById('utCho'); if (bc) ganChoDong(bc, dsC);
@@ -10411,14 +10421,11 @@ b.yT0{display:block;margin-bottom:2px}
       });
       nhom.sort(function (a, b) { return b.v - a.v; });
       var tc = nhom.reduce(function (a, x) { return a + x.v; }, 0) || 1;
-      h += q2H('Chi phí chung', '') + '<div class="card"><div class="q2chong">' + nhom.map(function (x, i) { return '<s style="width:' + (x.v / tc * 100).toFixed(2) + '%;background:' + xam[Math.min(i, 4)] + '"></s>'; }).join('') + '</div>' +
-        nhom.map(function (x, i) {
-          var gop = x.con.length === 1, c0 = gop ? x.con[0][0] : '', pt = Math.round(x.v / tc * 100) + '%';
-          if (gop && c0.toLowerCase().indexOf(x.t.toLowerCase()) === 0) c0 = c0.slice(x.t.length).trim();
-          var ten = gop ? x.con[0][0] : x.t;   // nhóm 1 khoản: hiện thẳng tên khoản (đã gồm tên nhóm)
-          var dau = '<span class="q2n">' + q2Dot(xam[Math.min(i, 4)]) + '<b class="ell">' + esc(ten) + '</b></span><span class="num"><b>' + esc(soVN(x.so)) + '</b> <small class="meta">' + pt + '</small></span>';
-          if (x.con.length > 1) return '<details class="q2nhom" open><summary>' + dau + '</summary><div class="q2con">' + x.con.map(function (c) { return '<div><span class="cau">' + yTen(c[0]) + '</span><span class="num">' + esc(soVN(c[1])) + '</span></div>'; }).join('') + '</div></details>';
-          return '<div class="q2nhom"><div class="q2nd">' + dau + '</div></div>';
+      h += q2H('Chi phí chung', '') + '<div class="card"><div class="q2chong" style="margin:0">' + nhom.map(function (x, i) { return '<s style="width:' + (x.v / tc * 100).toFixed(2) + '%;background:' + xam[Math.min(i, 4)] + '"></s>'; }).join('') + '</div></div>' +
+        '<div class="cpDs">' + nhom.map(function (x, i) {   // b215: mỗi nhóm 1 khung riêng như sổ thu chi
+          var pt = Math.round(x.v / tc * 100) + '%';
+          return '<div class="soNg"><div class="soNgH"><b>' + q2Dot(xam[Math.min(i, 4)]) + esc(x.t) + '</b><span class="num">' + esc(soVN(x.so)) + ' · ' + pt + '</span></div><div class="grp soC">' +
+            x.con.map(function (c) { return '<div class="it cpR"><div style="min-width:0"><div class="nm">' + yTen(c[0]) + '</div></div><div class="amt num">' + esc(soVN(c[1])) + '</div></div>'; }).join('') + '</div></div>';
         }).join('') + '</div>';
     }
     return h;
