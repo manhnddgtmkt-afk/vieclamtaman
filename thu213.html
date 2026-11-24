@@ -13,7 +13,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
 <script src="config.js"></script>
-<script>window.PB = { so: 212, luc: "24/11 23:35" };</script>
+<script>window.PB = { so: 212, luc: "24/11 23:41" };</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap">
 <style>
@@ -1244,9 +1244,10 @@ b.yT0{display:block;margin-bottom:2px}
 .it{white-space:normal}
 .it.dcx{display:grid!important;grid-template-columns:minmax(0,1fr) auto;column-gap:12px;row-gap:2px;align-items:start}.it.dcx.dcxi{grid-template-columns:auto minmax(0,1fr) auto}
 .it.dcx>div:not(.amt):not(.ic){display:contents}.it.dcx>div:not(.amt):not(.ic)>*{grid-column:1/-1}.it.dcx.dcxi>div:not(.amt):not(.ic)>*{grid-column:2/-1}
-.it.dcx .nm{grid-row:1}.it.dcx>div>.sub{grid-column:1!important;grid-row:2}.it.dcx.dcxi>div>.sub{grid-column:2!important}.it.dcx>.amt{grid-column:-2;grid-row:2;align-self:start}
+.it.dcx .nm{grid-row:1}.it.dcx>div>.sub{grid-column:1!important;grid-row:2}.it.dcx.dcxi>div>.sub{grid-column:2!important}.it.dcx>.amt,.it.dcx>.pill{grid-column:-2;grid-row:2;align-self:start}
+.ktr.dcx{display:grid!important;grid-template-columns:auto minmax(0,1fr) auto;column-gap:10px;row-gap:2px;align-items:start}.ktr.dcx>.ktr-a{grid-column:1;grid-row:1/3;align-self:center}.ktr.dcx>.ktr-t{display:contents}.ktr.dcx>.ktr-t>b{grid-column:2/-1;grid-row:1}.ktr.dcx>.ktr-t>span{grid-column:2;grid-row:2}.ktr.dcx>.ktr-s{grid-column:3;grid-row:2;text-align:right}
 .it.dcx.dcxi>:first-child{grid-column:1;grid-row:1/3;align-self:center}
-.dcx2 .nhaR .n{font-size:11px;letter-spacing:-.2px}.dcx2>.bl-g small{font-size:10.5px}#xuat.dcx2>.btn,.ccday.dcx2>.btn,#tqSeg.dcx2>button,.ogN.dcx2>.btn,.seg.dcx2>button{font-size:13px!important;letter-spacing:-.2px}.nhaR .c{white-space:nowrap}
+.dcx2 .nhaR .n{font-size:11px;letter-spacing:-.2px}.dcx2>.bl-g small{font-size:10.5px}#xuat.dcx2>.btn,.ccday.dcx2>.btn,#tqSeg.dcx2>button,.ogN.dcx2>.btn,.seg.dcx2>button{font-size:13px!important;letter-spacing:-.2px}.nhaR .c{white-space:nowrap}.nhaHd .c{white-space:normal;line-height:1.2}
 .lnR.dcx>b{margin-left:0}
 .top .row:not(:has(.back)) h2{white-space:nowrap}
 .chonW{position:relative;display:block}.chonW>select{position:absolute;inset:0;width:100%;height:100%;opacity:0;margin:0}
@@ -1400,8 +1401,8 @@ b.yT0{display:block;margin-bottom:2px}
     if (goc.matches && goc.matches(PH_SEL)) phMot(goc);
     [].forEach.call(goc.querySelectorAll(PH_SEL), phMot);
   }
-  var HANG = [['.tqr', '>span', '>b'], ['.qRow', '>span', '>b'], ['.yR', '>span', '>b'], ['.tc3>div', '>span', '>b'], ['.lnR', '>span>b', '>b', 0, 0, '>span'], ['.tr1', '>.tn', '>b', 1],
-    ['.q2r', '>span', '>b'], ['.cqR', '>span:first-child', '>.tien'], ['.q2pr', '>span:first-child', '>.num'], ['.q2sr', '>span', '>b'], ['.it', '>div>.nm', '>.amt', 0, 1], ['.q2nd', '>.q2n>b', '>.num', 1, 0, '>.q2n']];
+  var HANG = [['.tqr', '>span', '>b'], ['.qRow', '>span', '>b'], ['.yR', '>span', '>b'], ['.tc3>div', '>span', '>b'], ['.lnR', '>span>b|>span>small', '>b', 0, 0, '>span'], ['.tr1', '>.tn', '>b', 1],
+    ['.q2r', '>span', '>b'], ['.cqR', '>span:first-child', '>.tien'], ['.q2pr', '>span:first-child', '>.num'], ['.q2sr', '>span', '>b'], ['.it', '>div>.nm', '>.amt,:scope>.pill', 0, 1], ['.ktr', '>.ktr-t>b', '>.ktr-s'], ['.q2nd', '>.q2n>b', '>.num', 1, 0, '>.q2n']];
   var LUOI = [['.g3', '>div>span'], ['.nhaO', '>div>small']], CO = [['.nhaR', '.n'], ['.lv', '.lv-t'], ['.bl-g', 'small'], ['#xuat>.btn'], ['.ccday>.btn'], ['#tqSeg>button'], ['.ogN>.btn'], ['.dsd1 .seg>button']];
   function soDong(el) {   // số dòng chữ của riêng nó (bỏ phần con là khối riêng như dòng phụ <small>)
     var tops = [], w = document.createTreeWalker(el, 4), n;
@@ -1415,9 +1416,9 @@ b.yT0{display:block;margin-bottom:2px}
     return tops.length;
   }
   function canXep(r, t) {
-    var l = r.querySelector(':scope' + t[1]), v = r.querySelector(':scope' + t[2]);
-    if (!l || !l.getClientRects().length) return false;
-    if (soDong(l) > 1) return true;
+    var ls = t[1].split('|').map(function (x) { return r.querySelector(':scope' + x); }).filter(function (x) { return x && x.getClientRects().length; }), l = ls[0], v = r.querySelector(':scope' + t[2]);
+    if (!l) return false;
+    if (ls.some(function (x) { return soDong(x) > 1; })) return true;
     if (v && v.getClientRects().length) { var a = (t[5] ? r.querySelector(':scope' + t[5]) : l).getBoundingClientRect(), b = v.getBoundingClientRect(); if (b.top >= a.bottom - 2) return true; }
     return false;
   }
