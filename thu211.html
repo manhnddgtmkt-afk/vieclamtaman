@@ -13,7 +13,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
 <script src="config.js"></script>
-<script>window.PB = { so: 209, luc: "24/11 21:22" };</script>
+<script>window.PB = { so: 209, luc: "24/11 21:27" };</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap">
 <style>
@@ -1211,7 +1211,8 @@ body,p,li,h2,h3,.wpP{text-wrap-style:balance}.yCl{display:inline-block;max-width
 .dlm.cu>b{color:var(--muted)}.dlm .cuG{color:var(--warn)!important;font-weight:600}
 body #ldNut{margin-top:16px;background:var(--card);border-radius:16px;overflow:hidden}body #ldNut:empty{display:none}
 body #ldNut .ckt.nghi{margin:0;border-radius:0;background:none;min-height:46px;font-size:14px;color:var(--muted)}
-.vtThe.blThe{background:var(--tint);border-color:transparent}.blThe .vtIc{background:var(--card)}.blThe .vtTx b{color:var(--blue)}.blThe .vtTx small{white-space:normal;line-height:1.35}.blThe>i{color:var(--blue)}body #ldNut .ckt.nghi+.ckt.nghi{border-top:1px solid var(--line)}
+.vtThe.blThe{background:var(--tint);border-color:transparent}.blThe .vtIc{background:var(--card)}.blThe .vtTx b{color:var(--blue)}.blThe .vtTx small{white-space:normal;line-height:1.35}
+.tch{padding-left:8px;padding-right:8px}.tch b{letter-spacing:-.2px}.blThe>i{color:var(--blue)}body #ldNut .ckt.nghi+.ckt.nghi{border-top:1px solid var(--line)}
 .kbvTom{padding:12px 16px;margin-bottom:12px}.kbvTg{display:grid;grid-template-columns:minmax(0,1fr) repeat(3,62px);gap:6px 8px;align-items:baseline;margin-top:6px}
 .kbvTg small{font-size:11.5px;color:var(--muted);text-align:right;white-space:nowrap}.kbvTg b{font-size:14.5px;font-weight:600}.kbvTg b.num{text-align:right}.kbvTg b.c{color:var(--warn)}
 .tqMeta+.q2viec{margin-bottom:12px}
@@ -8163,7 +8164,7 @@ b.yT0{display:block;margin-bottom:2px}
     var nay = new Date(), t2 = new Date(nay.getFullYear(), nay.getMonth(), nay.getDate() - ((nay.getDay() + 6) % 7)), theoNg = {}, tong = 0;
     o.ds.forEach(function (x) { var d = ngayDate(x.ngay); if (!d || d < t2 || x.so <= 0) return; var k = x.loai === 'Ứng' ? 'Ứng' : 'Trả lương'; theoNg[k] = (theoNg[k] || 0) + x.so; tong += x.so; });
     var dauTuan = ddmm(new Date(Date.UTC(t2.getFullYear(), t2.getMonth(), t2.getDate())));
-    h += '<div class="sec" style="margin:18px 4px 8px">Tuần này (từ ' + dauTuan + ') đã chi</div><div class="card"><div class="row sp utTong" style="align-items:baseline;gap:8px"><span class="big num">' + vnd(tong) + '</span><span class="meta">ứng + trả lương</span></div>' +
+    h += '<div class="sec" style="margin:18px 4px 8px">Tuần này (từ ' + dauTuan + ') đã chi</div><div class="card"><div class="row sp utTong" style="align-items:baseline;gap:2px 8px;flex-wrap:wrap"><span class="big num">' + vnd(tong) + '</span><span class="meta" style="white-space:nowrap">ứng + trả lương</span></div>' +
       Object.keys(theoNg).sort(function (a, b) { return theoNg[b] - theoNg[a]; }).map(function (k) { return '<div class="tqr"><span>' + esc(k) + '</span><b class="num">' + vnd(theoNg[k]) + '</b></div>'; }).join('') + '</div>';
     var kx = 'vlta_utx_' + S.cty, xem = null; S.utMoc = S.utMoc || {};
     if (!(S.cty in S.utMoc)) { try { S.utMoc[S.cty] = JSON.parse(doc(kx) || 'null'); } catch (e) { S.utMoc[S.cty] = null; } }   // mốc lần xem trước (giữ suốt lần mở này)
@@ -9901,7 +9902,7 @@ b.yT0{display:block;margin-bottom:2px}
     var toi = so.nguoiChi.filter(function (y) { return kd(y) === kd(S.toi.ten); })[0] || so.nguoiChi[1] || so.nguoiChi[0] || '';
     var iK = sua ? so.khoan.map(function (k) { return k.ten; }).indexOf(x.khoan) : -1;
     function nhom(loai) { return '<optgroup label="' + loai + '">' + so.khoan.map(function (k, i) { return k.loai === loai ? '<option value="' + i + '"' + (i === iK ? ' selected' : '') + '>' + esc(k.ten) + '</option>' : ''; }).join('') + '</optgroup>'; }
-    var sh = moSheet('<h3>' + (sua ? 'Sửa khoản' : 'Ghi khoản vào sổ thu chi') + '</h3>' +
+    var sh = moSheet('<h3>' + (sua ? 'Sửa khoản' : 'Ghi khoản thu chi') + '</h3>' +
       '<div><label class="lb">Khoản</label><select class="inp chon" id="sK"><option value="">Chọn khoản…</option>' + nhom('Thu') + nhom('Chi') + '</select></div>' +
       '<div class="meta" id="sGy"></div>' +
       '<div id="sSo"></div>' +
