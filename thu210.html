@@ -13,7 +13,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
 <script src="config.js"></script>
-<script>window.PB = { so: 209, luc: "24/11 21:06" };</script>
+<script>window.PB = { so: 209, luc: "24/11 21:13" };</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap">
 <style>
@@ -8427,10 +8427,13 @@ b.yT0{display:block;margin-bottom:2px}
   var ICON_BL = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="4.5" width="17" height="15" rx="2.5"/><path d="M3.5 9.5h17M3.5 14.5h17M9.5 9.5v10"/></svg>';
   function bcaTheHtml(d) {
     var sub = 'Chọn ảnh bảng công ' + S.cty + ' gửi', cu = false;
-    if (d && d.moc) { var t = kbvTuoi(d.moc); sub = 'Đã có giờ đến ' + ngayDM(d.moc) + (t <= 0 ? ' (hôm nay)' : t === 1 ? ' (hôm qua)' : ' · ' + t + ' ngày trước'); cu = t >= 2; }
+    if (d && d.moc) {   // b210: 1 dòng ngắn (vừa 360 px phông rộng); quá 1 ngày chưa có giờ mới thì báo màu cam từ ngày nào chưa có
+      var t = kbvTuoi(d.moc), m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(d.moc), sau = m ? new Date(Date.UTC(+m[1], +m[2] - 1, +m[3] + 1)) : null;
+      cu = t >= 2; sub = cu && sau ? 'Chưa có giờ từ ' + ddmm(sau) : 'Có giờ đến ' + ngayDM(d.moc) + (t <= 0 ? ' (hôm nay)' : ' (hôm qua)');
+    }
     return '<button class="vtThe" id="moBCA"><span class="vtIc">' + ICON_BCA + '</span><span class="vtTx"><b>Nhập giờ bảng công</b><small class="ell1' + (cu ? ' cu' : '') + '">' + esc(sub) + '</small></span><i aria-hidden="true">›</i></button>';
   }
-  function blTheHtml() { return '<button class="vtThe blThe" id="moBL"><span class="vtIc">' + ICON_BL + '</span><span class="vtTx"><b>Bảng lương công nhân</b><small>Lương 1 ngày theo giờ làm, ca ngày, ca đêm</small></span><i aria-hidden="true">›</i></button>'; }
+  function blTheHtml() { return '<button class="vtThe blThe" id="moBL"><span class="vtIc">' + ICON_BL + '</span><span class="vtTx"><b>Bảng lương công nhân</b><small>Lương theo số giờ làm</small></span><i aria-hidden="true">›</i></button>'; }
   function vtZlCB(z) { return 'File Zalo lúc ' + gioPhut(z.luc) + ' chưa nhận: ' + z.l + '. Sale kiểm tra rồi chọn file đúng.'; }
   function ganVtThe() { var b = document.getElementById('vtThe'); if (b) b.onclick = moVT; }
   function taiVTTep(cty) {
