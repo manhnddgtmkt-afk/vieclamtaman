@@ -12,7 +12,7 @@ window.__chk=function(){var out=[],W=document.documentElement.clientWidth;if(doc
   if(['INPUT','SELECT','TEXTAREA'].includes(el.tagName)&&parseFloat(st.fontSize)<16&&!['checkbox','radio','file','range'].includes(el.type))out.push('Ô gõ <16px: '+tg(el));
   if(el.tagName==='INPUT'&&el.placeholder&&!el.value){var cv=window.__cv||(window.__cv=document.createElement('canvas').getContext('2d'));cv.font=st.fontWeight+' '+st.fontSize+' '+st.fontFamily;var cw=rc.width-parseFloat(st.paddingLeft)-parseFloat(st.paddingRight)-(el.type==='search'?18:0);if(cv.measureText(el.placeholder).width>cw+1)out.push('Gợi ý bị cắt: '+tg(el));}
   // chu nhay dong: nhan/tieu de ngan (<=48 ky tu, khong phai cau giai thich .cau) bi xuong 2 dong
-  if(el.closest('.cau,.note,.empty,.wpHop,.tai,svg,table,.bmoi,.yL,.yG,.yS,.yCl'))continue;
+  if(el.closest('.cau,.note,.empty,.wpHop,.tai,svg,table,.bmoi,.yL,.yG,.yS,.yCl,.phW'))continue;
   if(st.display.indexOf('flex')>=0||st.display.indexOf('grid')>=0)continue;
   var inl=true;for(var c of el.children){var d=getComputedStyle(c).display;if(d!=='inline'&&d!=='inline-block'&&d!=='none'){inl=false;break}}if(!inl)continue;
   var t=(el.innerText||'').trim();if(!t||t.length>48||t.indexOf('\n')>=0)continue;
@@ -26,7 +26,7 @@ window.__chk=function(){var out=[],W=document.documentElement.clientWidth;if(doc
 // b212: dòng hụt – đoạn nhiều dòng mà một dòng (không phải dòng cuối) chỉ dùng < 60% bề ngang khung -> chữ dồn trái
 window.__hut=function(){var out=[],KH=/^(block|list-item|inline-block|table-cell|flow-root)$/;
  for(var el of tatCa()){var st=getComputedStyle(el);if(!KH.test(st.display)||st.whiteSpace==='nowrap'||st.visibility==='hidden')continue;
-  if(el.closest('svg,table,code,pre,.yN'))continue;
+  if(el.closest('svg,table,code,pre,.yN,.phW'))continue;
   var con=el.querySelectorAll('*'),bk=false;for(var c of con){var d=getComputedStyle(c).display;if(c.tagName==='BR'||/^(block|flex|grid|list-item|table)/.test(d)){bk=true;break}}if(bk)continue;
   var t=(el.innerText||'').trim();if(t.length<25)continue;var b=el.getBoundingClientRect();if(!b.width||!b.height)continue;
   var pl=parseFloat(st.paddingLeft)||0,pr=parseFloat(st.paddingRight)||0,x0=b.left+pl+(parseFloat(st.borderLeftWidth)||0),Wd=b.width-pl-pr-(parseFloat(st.borderLeftWidth)||0)-(parseFloat(st.borderRightWidth)||0);if(Wd<150)continue;
@@ -91,7 +91,7 @@ window.__b213=function(){var out=[],gs=[document],hh=document.getElementById('gl
   var HANG=[['.tqr','>span','>b'],['.qRow','>span','>b'],['.yR','>span','>b'],['.tc3>div','>span','>b'],['.lnR','>span>b','>b'],['.tr1','>.tn','>b',1],['.q2r','>span','>b'],['.cqR','>span:first-child','>.tien'],['.q2pr','>span:first-child','>.num'],['.q2sr','>span','>b']];
   for(var t of HANG){var nh=new Map();for(var r of g.querySelectorAll(t[0])){if(!r.getClientRects().length)continue;var dd2=r.closest('details');if(dd2&&!dd2.open)continue;var pp=t[3]?r.parentElement.parentElement:r.parentElement;if(!nh.has(pp))nh.set(pp,[]);nh.get(pp).push(r)}
    nh.forEach(function(rs){var duoi=0,canh=0;for(var r of rs){var l=r.querySelector(':scope'+t[1]),v2=r.querySelector(':scope'+t[2]);if(!l||!v2||!v2.getClientRects().length)continue;var a=l.getBoundingClientRect(),b=v2.getBoundingClientRect();if(b.top>=a.bottom-2)duoi++;else canh++}if(duoi&&canh)out.push('Khối lệch kiểu '+t[0]+' | '+(rs[0].innerText||'').trim().replace(/\n/g,' / ').slice(0,50))})}
-  for(var lu of g.querySelectorAll('.g3,.nhaO')){if(!lu.getClientRects().length)continue;var ds=[...lu.querySelectorAll(':scope>div>span,:scope>div>small')].filter(x=>x.parentElement.parentElement===lu).map(x=>{var rr=document.createRange();rr.selectNodeContents(x);var tt=[];for(var q of rr.getClientRects()){if(q.width<1)continue;var yy=Math.round(y(q));if(!tt.some(z=>Math.abs(z-yy)<q.height/2))tt.push(yy)}return tt.length});if(ds.length&&Math.min(...ds)!==Math.max(...ds))out.push('Lưới lệch dòng | '+(lu.innerText||'').trim().replace(/\n/g,' / ').slice(0,50))}}
+  for(var lu of g.querySelectorAll('.g3,.nhaO')){if(!lu.getClientRects().length)continue;var ds=[...lu.querySelectorAll(lu.classList.contains('nhaO')?':scope>div>small':':scope>div>span')].filter(x=>x.parentElement.parentElement===lu).map(x=>{var rr=document.createRange();rr.selectNodeContents(x);var tt=[];for(var q of rr.getClientRects()){if(q.width<1)continue;var yy=Math.round(y(q));if(!tt.some(z=>Math.abs(z-yy)<q.height/2))tt.push(yy)}return tt.length});if(ds.length&&Math.min(...ds)!==Math.max(...ds))out.push('Lưới lệch dòng | '+(lu.innerText||'').trim().replace(/\n/g,' / ').slice(0,50))}}
  return out};
 var __goc2=window.__chk;window.__chk=function(){return __goc2().concat(__b213())};
 
