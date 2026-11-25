@@ -13,7 +13,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
 <script src="config.js"></script>
-<script>window.PB = { so: 229, luc: "25/11 23:20" };</script>
+<script>window.PB = { so: 230, luc: "25/11 23:26" };</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap">
 <style>
@@ -2967,7 +2967,7 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
     function oGio(k, nhan) { var x = raw.v[k]; return '<div><label class="lb">' + nhan + '</label><input class="inp" id="og' + k + '" type="time" value="' + esc(/^\d{1,2}:\d{2}$/.test(x) ? ('0' + x).slice(-5) : '') + '"></div>'; }
     var sh = moSheet('<div><h3 class="ell">' + esc(hoaDau(h.p.ten)) + '</h3><div class="meta">' + thu + ' ' + esc(ddmm(serialDate(sv), true)) + '</div></div>' +
       (n.co ? '<div class="kv so"><span>Ca</span><b>' + esc(n.ca || '') + '</b><span>Vào</span><b class="num">' + esc(n.vao || '–') + '</b><span>Ra</span><b class="num">' + esc(n.ra || '–') + '</b>' +
-        '<span>Giờ hành chính</span><b class="num">' + esc(n.hc) + '</b><span>Tăng ca</span><b class="num">' + esc(n.tc) + '</b><span>Thành tiền</span><b class="num">' + vnd(n.tien) + '</b></div>'
+        '<span>Giờ hành chính</span><b class="num">' + esc(n.hc) + '</b><span>Tăng ca</span><b class="num">' + esc(n.tc) + '</b><span>Thành tiền</span><b class="num">' + (n.tienCho ? 'Đang tính lại' : vnd(n.tien)) + '</b></div>'
         : '<div class="meta">Ngày này chưa có công.</div>') +
       (n.ghi ? '<div class="note warn">' + esc(n.ghi) + '</div>' : '') +
       (gc ? '<div class="note warn">' + ((function () { var l0 = String(gc).split(/\n/)[0]; return l0 === l0.toUpperCase() && /[A-ZĐ]/.test(l0); })() ? '' : '<b class="yT0">Ghi chú trên bảng công</b>') + yGhiChu(gc) + '</div>' : '') +   // b203
@@ -2998,13 +2998,18 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
       var chuan = function (x) { x = String(x === undefined || x === null ? '' : x).trim(); return best ? x : (x === '' || Number(x.replace(',', '.')) === 0 ? '' : String(Number(x.replace(',', '.')))); };
       var doiGio = sua && moi.some(function (x, k) { return chuan(x) !== chuan(cu[k]); });
       if (best && sua && (kieu === 'le' || kieu === 'boLe') && !doiGio) {   // 02/11: BEST trả / bỏ trả công lẻ – giờ vào/ra giữ nguyên, máy chủ ghi ô HC + sổ CONG_LE
+        // b228: hiện ngay trên app, máy chủ ghi ngầm; lỗi thì trả lại như cũ
+        var gioLe = kieu === 'le' && raw.le ? raw.le[0] : '', cuN1 = JSON.parse(JSON.stringify(n)), cuR1 = JSON.parse(JSON.stringify(raw));
+        if (kieu === 'le') { raw.xn = true; raw.hcXn = le; } else { raw.xn = false; if (!le) raw.le = [Number(raw.hcXn) || 0, 0]; }
+        n.tienCho = 1; if (!T.raw) T.raw = {}; T.raw[sv] = raw;
         sh.remove(); h.dongBo[sv] = 1; veLich(h, T);
+        toast(kieu === 'le' ? 'Đã trả công lẻ ' + ddmm(serialDate(sv)) + '.' : 'Đã bỏ trả công lẻ ' + ddmm(serialDate(sv)) + '.');
+        var traLai1 = function (t) { delete h.dongBo[sv]; for (var k in n) delete n[k]; for (var k2 in cuN1) n[k2] = cuN1[k2]; T.raw[sv] = cuR1; veLich(h, T); toastLoi('Chưa lưu được ' + ddmm(serialDate(sv)) + ': ' + t); };
         if (nd) apiT({ v: 'baoSai', cty: S.cty, r: h.p.r, s: sv, nd: nd, loai: 'gc' }).then(function () { }, function () { });
-        apiT({ v: 'suaNgay', cty: S.cty, r: h.p.r, s: sv, cu: raw.v, moi: raw.v, kieu: kieu, gio: kieu === 'le' && raw.le ? raw.le[0] : '' }).then(function (o) {
-          delete h.dongBo[sv]; veLich(h, T);
-          if (o.loi) { toastLoi('Chưa lưu được ' + ddmm(serialDate(sv)) + ': ' + o.loi); return; }
-          toast(kieu === 'le' ? 'Đã trả công lẻ ' + ddmm(serialDate(sv)) : 'Đã bỏ trả công lẻ ' + ddmm(serialDate(sv))); lamMoiHs(h);
-        }, function (e) { delete h.dongBo[sv]; veLich(h, T); toastLoi('Chưa lưu được ' + ddmm(serialDate(sv)) + ': ' + e.message); });
+        apiT({ v: 'suaNgay', cty: S.cty, r: h.p.r, s: sv, cu: cuR1.v, moi: cuR1.v, kieu: kieu, gio: gioLe }).then(function (o) {
+          if (o.loi) { traLai1(o.loi); return; }
+          delete h.dongBo[sv]; veLich(h, T); lamMoiHs(h);
+        }, function (e) { traLai1(e.message); });
         return;
       }
       if (!doiGio && !nd) { if (sua) { sh.remove(); return; } m.textContent = 'Ghi rõ giờ đúng hoặc lý do.'; return; }
@@ -3016,7 +3021,7 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
       var cuN = JSON.parse(JSON.stringify(n)), cuR = JSON.parse(JSON.stringify(raw)), so = function (x) { return Number(String(x).replace(',', '.')) || 0; };
       if (best) { var p2 = function (t) { var q = /^(\d{1,2}):(\d{2})$/.exec(t); return q ? Number(q[1]) * 60 + Number(q[2]) : -1; }, a = p2(moi[0]), b = p2(moi[1]); n.vao = moi[0]; n.ra = moi[1]; n.co = a >= 0 && b >= 0; n.hc = n.co ? Math.round(((b - a + 1440) % 1440) / 30) / 2 : 0; n.tc = 0; }
       else { n.hc = so(moi[0]) + so(moi[2]); n.tc = so(moi[1]) + so(moi[3]); n.co = n.hc + n.tc > 0; n.ca = so(moi[2]) + so(moi[3]) > 0 ? 'Đêm' : n.co ? 'Ngày' : ''; }
-      raw.v = moi.map(function (x) { return best || x === '' ? x : so(x); }); raw.le = 0; if (!T.raw) T.raw = {}; T.raw[sv] = raw;
+      raw.v = moi.map(function (x) { return best || x === '' ? x : so(x); }); raw.le = 0; n.tienCho = 1; if (!T.raw) T.raw = {}; T.raw[sv] = raw;
       h.dongBo[sv] = 1; veLich(h, T);
       apiT({ v: 'suaNgay', cty: S.cty, r: h.p.r, s: sv, cu: cuR.v, moi: moi, kieu: kieu }).then(function (o) {
         delete h.dongBo[sv];
@@ -3026,9 +3031,16 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
     };
   }
   function lamMoiHs(h) {   // sau khi sheet đã ghi: tải lại lặng lẽ phiếu + danh sách (tiền do công thức trên sheet tính)
+    // b228: bấm liền nhiều ngày thì chỉ tải lại 1 lần, khi đã ngừng tay 2,5 giây và không còn ngày nào đang lưu
+    clearTimeout(h.henMoi); h.henMoi = setTimeout(function () { lamMoiHs1(h); }, 2500);
+  }
+  function lamMoiHs1(h) {
+    if (h.dongBo && Object.keys(h.dongBo).length) { lamMoiHs(h); return; }
     var key = hsK(h) + 'TUAN';
     apiT(hsQ(h, { v: 'phieuTuan' })).then(function (o) {
-      if (o.loi) return; PC[key] = o;
+      if (o.loi) return;
+      if (h.dongBo && Object.keys(h.dongBo).length) { lamMoiHs(h); return; }   // có ngày vừa sửa trong lúc tải -> giữ số đang hiện, tải lại sau
+      PC[key] = o;
       if (S.hs !== h) return;
       if (h.kieu === 'LICH') veLich(h, o); else { var box = document.getElementById('tuans'); if (box) veTuanChon(h, o); }
     }, function () { });
@@ -7378,6 +7390,7 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
     }, function (er) { ccTd(''); toastLoi(er.message); });
   }
   var BAN_MOI = [
+    { so: 230, ds: [{ i: '⚡', t: 'Bảng công đổi ngay', m: 'Bấm Trả công lẻ, Bỏ trả công lẻ hay sửa giờ thì ngày đó đổi ngay, không phải chờ tải.' }] },
     { so: 229, ds: [{ i: '📝', t: 'Đăng ký đi làm gọn hơn', m: 'Chọn ngày ở hàng trên cùng, chấm vàng là ngày có ca còn thiếu người. Người đã đăng ký gom theo từng sale. Thêm người là nút chính, mở ra có sẵn người vừa làm ca gần nhất để chạm thêm.', c: [['Thêm người', 'Đăng ký đi làm → chọn ngày và ca → [[Thêm người]] → chạm tên người đã đi làm'], ['Chuyển ca, bỏ người', 'Chạm tên người hoặc nút ⋮ cạnh tên → chọn việc cần làm'], ['Xuất danh sách', '[[Xuất danh sách]] → bỏ tích người không đến → [[Xuất danh sách]]']] }] },
     { so: 228, ds: ['TREND: người đưa đón đi cùng ứng viên được đánh dấu riêng, không tính vào số người phỏng vấn và vẫn có tên ở đầu danh sách gửi Trend.'] },
     { so: 227, ds: ['Có người đăng ký đi làm hoặc thêm lịch phỏng vấn thì các tài khoản khác nhận được thông báo, ghi rõ ai đăng ký, bao nhiêu người và tổng của ca.'] },
