@@ -1,6 +1,6 @@
 // Luôn hỏi máy chủ có bản mới chưa (bỏ qua bộ nhớ đệm 10 phút của GitHub Pages).
 // Giữ sẵn khung app để mở nhanh; luôn hỏi mạng trước (bản mới nhất), mất mạng mới dùng bản đã lưu. Số liệu không lưu ở đây.
-var KHO = 'vlta-v226', FILE = ['./', 'index.html', 'config.js', 'jsqr.js', 'manifest.json', 'icon-192.png', 'icon-512.png', 'apple-touch-icon.png'];
+var KHO = 'vlta-v227', FILE = ['./', 'index.html', 'config.js', 'jsqr.js', 'manifest.json', 'icon-192.png', 'icon-512.png', 'apple-touch-icon.png'];
 self.addEventListener('install', function (e) { e.waitUntil(caches.open(KHO).then(function (c) { return c.addAll(FILE); })); self.skipWaiting(); });
 self.addEventListener('activate', function (e) { e.waitUntil(caches.keys().then(function (ks) { return Promise.all(ks.filter(function (k) { return k !== KHO; }).map(function (k) { return caches.delete(k); })); })); self.clients.claim(); });
 self.addEventListener('fetch', function (e) {
@@ -18,8 +18,10 @@ self.addEventListener('push', function (e) {
 self.addEventListener('notificationclick', function (e) {
   e.notification.close();
   var u = new URL((e.notification.data && e.notification.data.u) || './', self.registration.scope).href;
+  var lay = function (k, mau) { return (new RegExp('[?&]' + k + '=(' + mau + ')').exec(u) || [])[1] || ''; };   // bản 227: app đang mở cũng mở đúng tab / công ty / tờ đăng ký ghi trong thông báo (trước đây luôn về Content)
+  var tin = { moTab: lay('tab', '[a-z]+') || 'vdo', p: lay('p', '[a-z]+'), cty: lay('cty', '[A-Za-z0-9_]+'), dk: lay('dk', '[0-9-]+\\.[ND]') };
   e.waitUntil(self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then(function (cs) {
-    for (var i = 0; i < cs.length; i++) if (cs[i].url.indexOf(self.registration.scope) === 0 && 'focus' in cs[i]) { cs[i].postMessage({ moTab: 'vdo', p: (/[?&]p=([a-z]+)/.exec(u) || [])[1] || '' }); return cs[i].focus(); }
+    for (var i = 0; i < cs.length; i++) if (cs[i].url.indexOf(self.registration.scope) === 0 && 'focus' in cs[i]) { cs[i].postMessage(tin); return cs[i].focus(); }
     return self.clients.openWindow(u);
   }));
 });
