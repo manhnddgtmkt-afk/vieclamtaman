@@ -2578,7 +2578,7 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
   }, { passive: false });
   function vuTha() {
     var v = VU; VU = null; if (!v || !v.bat) return;
-    var a = v.ls[0], b = v.ls[v.ls.length - 1], toc = b[0] > a[0] ? (b[1] - a[1]) / (b[0] - a[0]) : 0, lui = v.dx > v.W / 3 || (toc > 0.45 && v.dx > 24);
+    var a = v.ls[0], b = v.ls[v.ls.length - 1], toc = b[0] > a[0] && Date.now() - b[0] < 90 ? (b[1] - a[1]) / (b[0] - a[0]) : 0, lui = v.dx > v.W / 3 || (toc > 0.5 && v.dx > 30);   // dừng tay rồi mới thả: không tính là hất
     var den = lui ? v.W : 0, ms = Math.max(140, Math.round(Math.abs(den - v.dx) / v.W * 360)), ez = 'cubic-bezier(.2,.8,.2,1)', xong = null;
     v.ds.forEach(function (x) { var tu = x.style.transform; x.style.transform = ''; xong = manDong(x, tu, 'translate3d(' + den + 'px,0,0)', ms, ez); });
     if (v.duoi) {
