@@ -2707,7 +2707,7 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
   function moGt(loai) {   // mở Danh sách / Thẻ ra vào của công ty đang xem
     chuyenMan(1, function () {
       if (CCS.dang || CCS.soat) CCS.anLuot = true;   // lượt cắt ghép đang chạy ngầm: không chắn màn
-      CCS.kho = null; CCS.theMo = loai === 'the'; CCS.dslMo = loai === 'ds';
+      CCS.kho = null; CCS.theMo = loai === 'the'; CCS.dslMo = loai === 'ds'; dkTai();   // b226: Tạo thẻ ra vào cũng chuyển người sang Đăng ký đi làm
       if (loai === 'ds' && !CCS.dsl.sua && CCS.dsl.cty !== S.cty) { CCS.dsl.cty = S.cty; luu('vlta_dsl_cty', S.cty); dslLvMd(); }
       if (loai === 'ds') { if (CCS.dsl.dkCty !== S.cty) { CCS.dsl.dkChon = 0; CCS.dsl.dkCty = S.cty; CCS.dsl.kq = null; } DK.loi = ''; dkTai(1); }   // b226: mở tờ đăng ký ca gần nhất của công ty
       S.dtGt = loai; S.tab = 'cc'; veCCCD();
@@ -6484,7 +6484,7 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
           '<div class="row" style="justify-content:space-between"><button class="btn lk" data-ta="' + esc(e.k) + '" style="padding-left:0">Chọn ảnh khác</button>' + ((e.anh || e.anhThe) && e.p && e.p.t ? '<button class="btn lk" data-tg="' + esc(e.k) + '">Dùng ảnh trên CCCD</button>' : '') + '</div></div>' : '') + '</div>';
     }).join('');
     theLsTai();
-    h += caiDat + '<div class="grp v8nav">' + (n ? v8Hang('thDsl', 'ds', 'Lập danh sách đi làm', n + ' người') : '') +
+    h += caiDat + '<div class="grp v8nav">' + (n ? v8Hang('thDsl', 'ds', 'Đăng ký đi làm', n + ' người') : '') +
       '<button class="it v8h1" id="thLs"><span class="v7ti">' + V8_IC.the + '</span><div style="min-width:0;flex:1"><div class="row sp" style="gap:8px"><span class="nm">Thẻ đã in trước đây</span>' + (CCS.thLs ? '<span class="v8n">' + CCS.thLs.length + ' thẻ</span>' : '') + '</div><div class="sub">Tìm tên hoặc mã thẻ để in lại</div></div><i class="v7ch">›</i></button></div>';
     h += '<div class="ccday">' + ccMay(1) + '<button class="btn ghost" id="thThem">Thêm người</button><button class="btn ghost ccgui" id="thGui" aria-label="Chia sẻ PDF"' + (n ? '' : ' disabled') + '>' + ICON_GUI + '</button><button class="btn" id="thIn"' + (n ? '' : ' disabled') + '>' + (n ? 'In ' + n + ' thẻ' : 'In thẻ') + '</button></div><div class="ccdem"></div>';
     t.innerHTML = h; ccDayDat(t); ccCheNoi(t);
@@ -7325,7 +7325,22 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
     CCS.kho = null; CCS.dslTuKho = 0; CCS.dslMo = true; CCS.theMo = false; ccVe(); window.scrollTo(0, 0);
     toast('Đã thêm ' + ds.length + ' người vào danh sách.');
   }
-  function dslTuThe(ds) {   // từ màn Thẻ HOJEONG: mang theo mã thẻ
+  function dkHoiCa(n, xong) {   // b226: từ màn Tạo thẻ ra vào – chọn ca rồi mới đăng ký đi làm
+    var L = CCS.dsl, cty = 'HOJEONG', chon = dkCa0(cty);
+    var sh = moSheet('<div class="dkkSh"><h3>Đăng ký ' + n + ' người vào ca nào?</h3><div class="meta cau">' + yDong(['Công ty HOJEONG, mang theo mã thẻ đã in.', 'Người đã đăng ký nơi khác cùng ca sẽ không đăng ký được.']) + '</div>' +
+      '<div class="dkkCot" id="dkkCa3"></div><button class="btn" id="dkkOk"></button><button class="btn lk" id="dkkTh">Thôi</button></div>');
+    var ok = sh.querySelector('#dkkOk'), bx = sh.querySelector('#dkkCa3');
+    function ve() {
+      var sl = bx.scrollLeft; bx.innerHTML = dkCotHtml(cty, chon, { cty: '', ngay: '', ca: '' }); bx.scrollLeft = sl;
+      bx.querySelectorAll('[data-kca]').forEach(function (b) { b.onclick = function () { var a = b.getAttribute('data-kca').split('|'); chon = { ngay: a[0], ca: a[1] }; ve(); }; });
+      ok.textContent = 'Đăng ký vào ' + dkCau(chon.ngay, chon.ca);
+    }
+    sh.querySelector('#dkkTh').onclick = function () { sh.remove(); };
+    ok.onclick = function () { sh.remove(); L.ngay = chon.ngay; L.ca = chon.ca; L.dkChon = 1; L.dkCty = cty; L.kq = null; xong(); };
+    ve(); dkCuonToi(bx);
+  }
+  function dslTuThe(ds, daHoi) {   // từ màn Thẻ HOJEONG: mang theo mã thẻ
+    if (DK && DK.d && !daHoi) { var nSo = ds.filter(function (e) { return String(e.so || (e.p && e.p.so) || '').replace(/\D/g, ''); }).length; if (nSo) { dkHoiCa(nSo, function () { dslTuThe(ds, 1); }); return; } }   // b226
     var L = CCS.dsl, thieu = 0, n = 0;
     if (L.sua) { L.ng = (L.nhap && L.nhap.ng) || {}; L.cty = (L.nhap && L.nhap.cty) || L.cty; L.nhap = null; L.sua = null; }   // đang sửa danh sách cũ thì thôi sửa, lập danh sách mới
     Object.keys(L.ng).forEach(function (k) { if (k[0] === 's') delete L.ng[k]; else L.ng[k].chon = false; });   // danh sách mới cho lượt thẻ này
@@ -7338,7 +7353,7 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
     var dat = function () { if ((L.ctys || []).some(function (c) { return c.ma === 'HOJEONG'; })) L.cty = 'HOJEONG'; dslLvMd(); ccVe(); window.scrollTo(0, 0); };
     if (L.ctys) dat(); else { dslCtyTai(dat); ccVe(); }
     if (thieu) toastLoi(thieu + ' người chưa có số CCCD (người thêm tay bằng ảnh chân dung) nên không đưa vào danh sách.');
-    else toast('Đã đưa ' + n + ' người sang danh sách đi làm. Chọn ngày, ca rồi bấm Xuất.');
+    else toast(daHoi ? 'Đang đăng ký ' + n + ' người vào ' + dkCau(L.ngay, L.ca) + '.' : 'Đã đưa ' + n + ' người sang danh sách đi làm. Chọn ngày, ca rồi bấm Xuất.');
   }
   function dslXuat(che, boQua) {
     var L = CCS.dsl, g = dslCfg(), ds = dslDs().filter(function (e) { return e.chon; }), CQ = !!(g && g.cq);
