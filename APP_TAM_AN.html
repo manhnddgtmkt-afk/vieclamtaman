@@ -1317,7 +1317,7 @@ b.yT0{display:block;margin-bottom:2px}
 #xnhuBar button{flex:none;height:26px;padding:0 12px;border:0;border-radius:99px;background:rgba(255,255,255,.22);color:#fff;font:inherit;font-weight:600}
 html.xnMo .top{padding-top:calc(var(--xnh,34px) + 10px)}
 html.xnMo .vdoTabW{top:var(--xnh,34px)}
-html.xnMo .bnr,html.xnMo .ttpill,html.xnMo .cqDai{top:calc(var(--xnh,34px) + 8px)}
+html.xnMo .bnr,html.xnMo .cqDai{top:calc(var(--xnh,34px) + 8px)}
 html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
 
 /* b220: Giấy tờ, Content, Thu nhập theo bản vẽ đợt 2 */
@@ -1402,6 +1402,9 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
 
 /* b222: In CCCD – các khối còn lại */
 .v8gan .ccg{display:flex;align-items:center;gap:12px}.v8gan .ccg img,.v8gan .ccg .ccg0{flex:none}
+
+/* b223: ô bật thông báo đóng được */
+.wpK .wpSau{margin-top:10px}
 </style>
 </head>
 <body>
@@ -2137,7 +2140,7 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
     if (/[?&]tab=vdo/.test(location.search)) KBV.phan = /[?&]p=kb/.test(location.search) ? 'kb' : 'vdo';   // bản 145: thông báo kịch bản mở phần Kịch bản, thông báo video mở phần Video
     if (/[?&]tab=/.test(location.search)) try { history.replaceState(null, '', location.pathname); } catch (e) { }
     moTab(t);
-    if (XNHU) xnhuThanh(); else { setTimeout(xemMoi, 600); setTimeout(wpChan, 900); }   // bản 142: bắt bật thông báo; b219: đang xem như sale thì thôi
+    if (XNHU) xnhuThanh(); else { setTimeout(xemMoi, 600); setTimeout(wpTuDong, 900); }   // bản 142: bắt bật thông báo; b219: đang xem như sale thì thôi
     if (t !== 'ld') taiDs(false, !!S.data[S.cty]);
   }
   function luuDs() { try { luu('vlta_ds', JSON.stringify(S.data)); luu('vlta_toi', JSON.stringify(S.toi)); } catch (e) { } }
@@ -6632,6 +6635,7 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
     }, function (er) { ccTd(''); toastLoi(er.message); });
   }
   var BAN_MOI = [
+    { so: 223, ds: ['Mở app không còn ô bắt bật thông báo che màn hình. Muốn bật thì vào Tài khoản, chọn Thông báo.', ['Xem app như nhân viên: vòng "Đang tải…" không còn bị kéo dài che cả màn hình.', 'chu']] },
     { so: 222, ds: ['In CCCD: khối Lượt xử lý trên điện thoại và danh sách Đã lưu gần đây trình bày gọn như các mục khác, không còn hiện đường dẫn file.'] },
     { so: 221, ds: [['Tổng quan → Tiền & công nợ gọn hơn: Tiền vào, Tiền ra, Còn phải thu, Còn phải trả mỗi nhóm 1 dòng có tổng, chạm để xem từng khoản. Quỹ dự kiến ghi ngay dưới. Các công ty quá hạn chưa trả nằm ở đầu Lịch thu tiền.', 'chu']] },
     { so: 220, ds: ['Giấy tờ gọn hơn: mỗi màn chỉ 1 nút chính, các việc khác xếp thành danh sách có biểu tượng. Thẻ HOJEONG có nhãn Mã thẻ, Bộ phận. Danh sách đã xuất nhóm theo ngày nhận việc.', 'Content: Lỗi cần tránh hiện 3 lỗi đầu, bấm Xem thêm để xem hết. Thẻ video ghi tình trạng ngay dưới tên.', 'Thu nhập (từ kỳ 26/11): Lương kỳ trước ngay dưới thẻ chính, mục tiêu gần nhất tách riêng, các mốc thưởng gộp 1 bảng.'] },
@@ -6995,15 +6999,20 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
     if (wpIOS() && !navigator.standalone) return 'cai';
     return 'khong';
   }
-  function wpChan() {
+  function wpTuDong() {   // b223: bỏ ô BẮT BUỘC bật thông báo (bản 142) – chỉ giữ đăng ký ngầm khi máy đã cho phép; muốn bật thì vào Tài khoản › Thông báo
+    if (XNHU || !S.t || !S.toi || !wpTrangApp()) return;
+    var cu = document.querySelector('.wpHop'); if (cu && wpTrangThai() === 'bat') { cu.remove(); document.documentElement.classList.remove('wpKhoa'); }
+    if (wpTrangThai() === 'bat') { wpGiu(); setTimeout(xemMoi, 400); }
+  }
+  function wpChan() {   // chỉ mở khi bấm Tài khoản › Thông báo; luôn có nút Để sau, chạm nền cũng đóng
     if (XNHU) return;   // b219: đang xem như nhân viên – không hỏi bật thông báo
     var cu = document.querySelector('.wpHop');
-    function bo() { if (cu) cu.remove(); document.documentElement.classList.remove('wpKhoa'); }   // b197: gỡ ô chặn + mở lại cuộn trang
+    function bo() { if (cu) cu.remove(); cu = null; document.documentElement.classList.remove('wpKhoa'); }   // b197: gỡ ô + mở lại cuộn trang
     if (!S.t || !S.toi || !wpTrangApp()) { bo(); return; }
     var tt = wpTrangThai();
     if (tt === 'bat') { bo(); wpGiu(); setTimeout(xemMoi, 400); return; }
     if (tt === 'khong') { bo(); return; }
-    if (!wpPub()) apiT({ v: 'wpKhoa', im: 1 }).then(function (o) { if (o && o.pub) { luu('vlta_wpk', o.pub); wpChan(); } }, function () { });
+    if (!wpPub()) apiT({ v: 'wpKhoa', im: 1 }).then(function (o) { if (o && o.pub) { luu('vlta_wpk', o.pub); if (document.querySelector('.wpHop')) wpChan(); } }, function () { });
     var h;
     if (tt === 'hoi') h = '<div class="wpI">🔔</div><h3>Bật thông báo</h3><p class="wpP">Bật thông báo để app báo ngay cho bạn.<br>Gồm video mới và việc cần làm, kể cả lúc không mở app.</p>' +
       '<button class="btn" id="wpB"' + (WPS.dang || !wpPub() ? ' disabled' : '') + '>' + (WPS.dang ? 'Đang bật…' : wpPub() ? 'Bật thông báo' : 'Đang chuẩn bị…') + '</button>';
@@ -7014,7 +7023,9 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
       '<ol class="wpO"><li>Bấm nút <b>Chia sẻ</b> ở thanh dưới của Safari</li><li>Chọn <b>Thêm vào MH chính</b>, bấm <b>Thêm</b></li><li>Đóng Safari, mở app từ biểu tượng <b>Tâm An</b></li></ol>';
     if (!cu) { cu = document.createElement('div'); cu.className = 'wpHop'; document.body.appendChild(cu); }
     document.documentElement.classList.add('wpKhoa');   // b197: trang phía sau không cuộn được khi ô chặn đang hiện
-    cu.innerHTML = '<div class="wpK">' + h + '</div>';
+    cu.innerHTML = '<div class="wpK">' + h + '<button class="btn ghost wpSau" id="wpSau">Để sau</button></div>';
+    document.getElementById('wpSau').onclick = bo;
+    cu.onclick = function (e) { if (e.target === cu) bo(); };
     var b = document.getElementById('wpB'); if (b) b.onclick = wpBat;
     var l = document.getElementById('wpL'); if (l) l.onclick = function () { if (wpTrangThai() === 'chan') location.reload(); else wpChan(); };
   }
@@ -7054,7 +7065,7 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
     var cu = docSo('vlta_wp'); if (cu && cu.sdt === S.toi.sdt && cu.pub === wpPub() && Date.now() - cu.luc < 86400000) return;
     WPS.thu = 1; wpDangKy(0).then(function () { WPS.thu = 0; }, function () { WPS.thu = 0; });
   }
-  document.addEventListener('visibilitychange', function () { if (document.visibilityState === 'visible') setTimeout(wpChan, 300); });   // quay lại từ Cài đặt
+  document.addEventListener('visibilitychange', function () { if (document.visibilityState === 'visible') setTimeout(wpTuDong, 300); });   // quay lại từ Cài đặt
   try { navigator.serviceWorker.addEventListener('message', function (e) { if (e.data && e.data.moTab && S.t && cacTab().some(function (x) { return x[0] === e.data.moTab; })) { if (e.data.moTab === 'vdo') KBV.phan = e.data.p === 'kb' ? 'kb' : 'vdo'; moTab(e.data.moTab); } }); } catch (e) { }   // bấm thông báo khi app đang mở
   function vdoChuTen(v) { return v.ai ? (v.ro === 2 ? v.ai + ' (chưa có tài khoản)' : v.ai) : 'Chưa rõ sale'; }
   function vdoBadge() {   // bản 145: chấm đỏ nút Content = video mới + kịch bản mới (sale) / chưa chấm (chủ); số riêng trên 2 nút Kịch bản | Video đã dựng
