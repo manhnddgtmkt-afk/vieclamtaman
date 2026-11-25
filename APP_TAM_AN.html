@@ -1305,7 +1305,7 @@ b.yT0{display:block;margin-bottom:2px}
 .nhaHd .c{white-space:normal!important;line-height:1.2}
 .nhaR.ta{background:var(--soft)}.nhaR.ta .n,.nhaR.ta .k{color:var(--fg)}
 .nhaR .br{display:none}
-.v7tt{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}.v7tt>div{padding:12px 16px;min-width:0}.v7tt>div+div{border-left:1px solid var(--soft)}.v7tt b{display:block;font-size:clamp(14px,4vw,17px);font-weight:700;white-space:nowrap}
+.v7tt{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}.v7tt>div{padding:12px 16px;min-width:0}.v7tt>div+div{border-left:1px solid var(--soft)}.v7tt b{display:block;font-size:clamp(14px,4vw,17px);font-weight:700;white-space:nowrap}.v7tt>.v7ttG{grid-column:1/-1;border-left:0;border-top:1px solid var(--soft);display:flex;align-items:center;gap:8px}.v7tt>.v7ttG>div{flex:1;min-width:0}.v7ttG[role=button]{cursor:pointer}.soSeg{margin:6px 0 10px}.soDk{margin:0 0 10px;gap:10px}.soDk .inp.ky{margin:0}.soCt .it{cursor:pointer}.soCt .it .soCtC{color:var(--warn)}.soCtM{margin-left:6px;font-size:17px;vertical-align:-1px}.utSoLui{display:block;margin:2px 0 10px;padding:6px 4px;font-size:15px;text-align:left}.utSoLk{display:block;margin:10px 0 4px;padding:6px 4px;font-size:14px;text-align:left;white-space:normal}.qCt .q2h{margin:14px 6px 8px}.v8ti{padding:9px 0}.v8ti+.v8ti{border-top:1px solid var(--line)}.v8ti>.v8tl{padding:0;border:0}.v8ti>.v8tl span{font-weight:600}.v8tp{font-size:13px;color:var(--muted);margin-top:3px}.v8ts{display:flex;justify-content:space-between;align-items:baseline;gap:12px;font-size:13px;color:var(--muted);padding-top:4px}.v8ts .num{white-space:nowrap}.v8tx>summary{list-style:none;cursor:pointer;font-size:13px;font-weight:600;color:var(--blue);padding-top:4px}.v8tx>summary::-webkit-details-marker{display:none}.v8cx{display:inline-block;font-style:normal;font-size:15px;margin-left:5px;transform:rotate(90deg);transition:transform .2s}.v8tx[open] .v8cx{transform:rotate(-90deg)}
 .chok{background:var(--card);padding:12px 0 4px}.chok .grp{border-radius:0}
 @media (max-width:374px){.v7tt{grid-template-columns:1fr}.v7tt>div+div{border-left:0;border-top:1px solid var(--soft)}}
 #lso .soNgH{flex-wrap:wrap;row-gap:2px}#lso .soNgH>.num{margin-left:auto;text-align:right;white-space:normal}
@@ -1448,7 +1448,7 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
   var XNHU = null, XNHU_MEM = null;
   var XNHU_DOC = { toi: 1, quy: 1, ccChayTT: 1, ds: 1, phieu: 1, phieuTuan: 1, cho: 1, tb: 1, thuNhap: 1, kbDs: 1, vdoDs: 1, vdoKhuc: 1, bangLuong: 1,
     dslCty: 1, dslCu: 1, dslGan: 1, dslDoc: 1, cccdTamDs: 1, cccdDanhBa: 1, cccdTim: 1, cccdAnh: 1, theDs: 1, theMa: 1, theAnh: 1,
-    ctDs: 1, nhaTk: 1, ntDs: 1, cnDs: 1, utGan: 1, utThieu: 1, lkTT: 1, vtTep: 1, vtXem: 1, timCu: 1, visionTT: 1, ghTT: 1, wpKhoa: 1, dkDs: 1 };
+    ctDs: 1, nhaTk: 1, ntDs: 1, cnDs: 1, utGan: 1, utThieu: 1, lkTT: 1, vtTep: 1, vtXem: 1, timCu: 1, visionTT: 1, ghTT: 1, wpKhoa: 1, dkDs: 1, utSo: 1 };
   try {
     var xn0 = JSON.parse(sessionStorage.getItem('vlta_xn') || 'null'), tChu = localStorage.getItem('vlta_t') || '';
     if (xn0 && /^0\d{9}$/.test(xn0.sdt) && /^[0-9a-f]{64}$/.test(tChu)) {
@@ -7253,6 +7253,7 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
     }, function (er) { ccTd(''); toastLoi(er.message); });
   }
   var BAN_MOI = [
+    { so: 226, ds: [['Thu chi: chọn được tháng để xem sổ thu chi, có thêm Sổ ứng trả theo từng công ty, mục Cách tính số dư quỹ viết lại cho dễ hiểu.', 'chu,ketoan']] },
     { so: 225, ds: [{ i: '🏢', t: 'Tab Đối tác: chọn công ty để làm việc', m: 'Tab Lao động đổi tên thành Đối tác. Mở ra là các công ty, mỗi công ty một thẻ màu riêng, ghi số người đi làm và số việc cần làm.', c: [['Vào công ty', 'Đối tác → chạm thẻ công ty → việc cần làm nằm trên cùng → chạm [[‹ Đối tác]] hoặc vuốt từ mép trái để quay lại']] },
       { i: '📝', t: 'Đăng ký đi làm cho từng ca', m: 'Mỗi ca có một tờ đăng ký chung. Sale thêm người dần trong ngày, ai cũng thấy tên người của nhau và biết ca còn thiếu bao nhiêu người. Bắt buộc có số CCCD. Một người không đăng ký được 2 nơi cùng ca.', c: [['Đăng ký', 'Đối tác → chọn công ty → [[Đăng ký đi làm]] → chọn ca → [[Thêm người]]'], ['Vào ca', 'Tích người đã đến → [[Xuất danh sách]] → in hoặc gửi Zalo như trước. Xuất xong ca tự chốt.'], ['Chuyển, bỏ người', 'Giữ ngón tay lên tên → [[Chuyển sang ca hoặc công ty khác]] hoặc [[Bỏ khỏi tờ đăng ký]]']] },
       { i: '🔒', t: 'Đặt số người cần, chốt ca', m: 'Chủ và người phụ trách công ty đặt số người cần cho từng ca. Đủ người thì chốt ca: không ai thêm được nữa, app báo cho các tài khoản khác để dừng tuyển cho ca đó.', c: [['Cách làm', 'Đăng ký đi làm → chọn ca → [[Đặt số người cần]] hoặc [[Chốt ca]]']] },
@@ -10832,10 +10833,216 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
   function soTien(x) { return Number(String(x || '').replace(/[^\d-]/g, '')) || 0; }
   var QUY_LECH = null;
   function quyDong(o) { var m5 = o && o.muc5; return m5 ? m5.dong.filter(function (x) { return /^Số dư quỹ/i.test(x[0]); })[0] || null : null; }
+  // ---------- b226: sổ thu chi theo tháng · Cách tính số dư quỹ · Sổ ứng trả theo kỳ công ----------
+  var UTSO = null, UTSO_DANG = 0, UTSO_LUC = 0;   // sổ ứng trả (lệnh utSo), lưu ở vlta_utso
+  function soThangCua(s) {   // ngày của dòng sổ ('02/11/26', '02/11/2026') -> '2026-T11'; không đọc được -> ''
+    var m = /^(\d{1,2})\/(\d{1,2})\/(\d{2}|\d{4})$/.exec(String(s || '').trim()); if (!m) return '';
+    return (+m[3] < 100 ? 2000 + +m[3] : +m[3]) + '-T' + ('0' + +m[2]).slice(-2);
+  }
+  function soThangDong(x) { return x.tg && /^\d{4}-T\d{2}$/.test(x.tg) ? x.tg : soThangCua(x.ngay); }   // tháng ghi do sheet tính (tg); bản lưu cũ chưa có thì suy từ ngày. Không dùng x.thang: đó là cột Tính cho tháng
+  function soTongThang(so, ky) {   // tổng thu / chi của tháng ky theo ngày ghi. Số chính thức do máy chủ cộng (so.thangTong); dòng vừa ghi trên máy (x.tam) cộng tạm cho tới khi máy chủ trả số mới
+    var dong = (so && so.dong) || [], o = { thu: 0, chi: 0 };
+    function cong(x) { var t = Number(String(x.so || '').replace(/[^\d]/g, '')) || 0; if (/^thu/i.test(x.loai)) o.thu += t; else if (/^chi/i.test(x.loai)) o.chi += t; }
+    if (so && so.thangTong) {
+      var m = so.thangTong[ky]; if (m) { o.thu = Number(m.thu) || 0; o.chi = Number(m.chi) || 0; }
+      dong.forEach(function (x) { if (x.tam && soThangDong(x) === ky) cong(x); });
+      return o;
+    }
+    // máy chủ cũ / số lưu cũ (chỉ 200 dòng cuối): tháng có thể bị cắt ngang thì không hiện, tránh số thiếu
+    var cu = dong.length >= 200 ? soThangDong(dong[dong.length - 1]) : ''; if (cu && cu >= ky) return null;
+    dong.forEach(function (x) { if (soThangDong(x) !== ky || String(x.loiM || '') === '2' || /^LỖI:/.test(String(x.kt || ''))) return; cong(x); });
+    return o;
+  }
+  function soKyNay(o) { var hn = new Date(); return o && /^\d{4}-T\d{2}$/.test(o.ky || '') ? o.ky : hn.getFullYear() + '-T' + ('0' + (hn.getMonth() + 1)).slice(-2); }
+  function soKyDs(o) {   // các tháng chọn được: tháng có dòng trong sổ thu chi, kỳ có trong sổ ứng trả, tháng hiện tại – mới nhất trước
+    var ds = {}; ds[soKyNay(o)] = 1;
+    if (o && o.so) { if (o.so.thangTong) Object.keys(o.so.thangTong).forEach(function (k) { ds[k] = 1; }); else (o.so.dong || []).forEach(function (x) { var k = soThangDong(x); if (k) ds[k] = 1; }); }
+    if (UTSO && UTSO.ds) UTSO.ds.forEach(function (x) { if (x.ky) ds[x.ky] = 1; });
+    return Object.keys(ds).filter(function (k) { return /^\d{4}-T\d{2}$/.test(k); }).sort().reverse();
+  }
+  function soKyChon(o) { return S.soKy && soKyDs(o).indexOf(S.soKy) >= 0 ? S.soKy : soKyNay(o); }
+  function soLuongKy(o, ky) {   // lương công nhân đã trả của kỳ công ky – mục 5 bảng tổng hợp (cùng số với Cách tính số dư quỹ); không có -> null
+    var r = o && o.muc5 ? o.muc5.dong.filter(function (x) { return /^Lương công nhân đã/i.test(x[0]); })[0] : null, th = Number(ky.slice(-2)), so = null;
+    // diễn giải chỉ ghi "tháng 9: …" không kèm năm -> chỉ dùng cho cùng năm với kỳ bảng tổng hợp
+    if (r && ky.slice(0, 4) === soKyNay(o).slice(0, 4)) String(r[2] || '').split(' · ').forEach(function (p) { var m = /^tháng (\d+):?\s([\d.,]+)$/i.exec(p.trim()); if (m && Number(m[1]) === th) so = Number(m[2].replace(/[^\d]/g, '')) || 0; });
+    return so;
+  }
+  function soTomHtml(o, ky, ut) {   // thẻ số của tháng: Đã thu / Đã chi (theo ngày ghi sổ) + Lương công nhân đã trả (theo kỳ công)
+    var tg = soTongThang(o.so, ky), th = 'tháng ' + Number(ky.slice(-2)), lg = soLuongKy(o, ky), h = '';
+    if (tg) h += '<div><div class="meta">Đã thu ' + th + '</div><b class="num c-xanh">' + (tg.thu ? '+' : '') + esc(vnd(tg.thu)) + '</b></div><div><div class="meta">Đã chi ' + th + '</div><b class="num">' + (tg.chi ? '−' : '') + esc(vnd(tg.chi)) + '</b></div>';
+    if (lg !== null) h += '<div class="v7ttG"' + (ut ? '' : ' id="soLuong" role="button"') + '><div><div class="meta">Lương công nhân đã trả kỳ ' + th + '</div><b class="num">' + (lg ? '−' : '') + esc(vnd(lg)) + '</b></div>' + (ut ? '' : '<i class="v7ch">›</i>') + '</div>';
+    return h ? '<div class="grp v7tt">' + h + '</div>' : '';
+  }
+  function soDuoiHtml(o) {   // phần dưới tab Thu chi: chọn sổ, chọn tháng, thẻ số của tháng, danh sách
+    var ut = S.soLoai === 'ut', ky = soKyChon(o);
+    return '<div class="seg soSeg" id="soSeg"><button data-s="tc"' + (ut ? '' : ' class="on"') + '>Sổ thu chi</button><button data-s="ut"' + (ut ? ' class="on"' : '') + '>Sổ ứng trả</button></div>' +
+      '<div class="row sp soDk"><select class="inp ky" id="soKy" aria-label="Chọn tháng">' + soKyDs(o).map(function (k) { return '<option value="' + k + '"' + (k === ky ? ' selected' : '') + '>Tháng ' + Number(k.slice(-2)) + '/' + k.slice(0, 4) + '</option>'; }).join('') + '</select>' +
+      (ut ? '' : '<button class="icb" id="qTim" aria-label="Tìm khoản">' + ICON_TIM + '</button>') + '</div>' +
+      (ut ? '' : '<input class="search hidden" id="qso" type="search" placeholder="Tìm khoản, nội dung, người…" style="margin:0 0 10px">') +
+      soTomHtml(o, ky, ut) + '<div id="lso"></div>' +
+      (ut ? '' : '<button class="fab" id="gso">' + ICON.cong + 'Ghi khoản</button>');
+  }
+  function soGan() {
+    var sg = document.getElementById('soSeg'); if (sg) [].forEach.call(sg.querySelectorAll('button'), function (b) { b.onclick = function () { var s = b.getAttribute('data-s'); if ((S.soLoai || 'tc') === s) return; S.soLoai = s; S.utSoCty = null; if (QUY) hienQuy(QUY); }; });
+    var sk = document.getElementById('soKy'); if (sk) sk.onchange = function () { S.soKy = sk.value; S.utSoHet = 0; if (QUY) hienQuy(QUY); };
+    var sl = document.getElementById('soLuong'); if (sl) sl.onclick = function () { S.soLoai = 'ut'; S.utSoCty = null; if (QUY) hienQuy(QUY); };
+    var qt = document.getElementById('qTim'), q = document.getElementById('qso');
+    if (qt && q) { qt.onclick = function () { q.classList.toggle('hidden'); if (!q.classList.contains('hidden')) q.focus(); else { q.value = ''; veSo(''); } }; q.oninput = function () { veSo(q.value); }; }
+    var g = document.getElementById('gso'); if (g) g.onclick = function () { moGhiSo(); };
+    if (S.soLoai === 'ut') veSoUT(); else veSo('');
+  }
+  // ----- Cách tính số dư quỹ (Thu chi) = Tiền & công nợ (Tổng quan): cùng 1 hàm vẽ từ mục 5 bảng tổng hợp, giữ thứ tự khoản của bảng -----
+  //   mỗi dòng: [mẫu tên dòng bảng tổng hợp, tên hiện, câu giải thích, 'ky' = dòng con "tháng 9" là kỳ công]
+  var QUY_KHOAN = [
+    [/^Vốn góp/i, 'Vốn góp', ''],
+    [/^Thu tiền khách/i, 'Các công ty đã trả', 'Số thực nhận về quỹ, sau khi pháp nhân giữ VAT và phí.'],
+    [/^Pháp nhân chuyển thừa/i, 'Pháp nhân chuyển dư', 'Pháp nhân chuyển về nhiều hơn số phải chuyển.'],
+    [/^Thu khác/i, 'Thu khác', ''],
+    [/^Chi từ quỹ/i, 'Chi theo sổ thu chi', ''],
+    [/^Đã trả lại tiền ứng/i, 'Trả lại tiền cho người đã ứng', ''],
+    [/^Chi trả cổ tức/i, 'Chia cổ tức', ''],
+    [/^Lương công nhân đã/i, 'Lương công nhân đã trả', 'Chia theo kỳ công của từng công ty.', 'ky'],
+    [/^Thưởng TREND đã trả/i, 'Thưởng TREND đã trả', 'Tâm An trả thưởng cho người nhận việc ở TREND.'],
+    [/^Ứng thưởng TREND/i, 'Ứng thưởng TREND cho người của vendor', 'Sẽ trừ lại khi trả tiền vendor.'],
+    [/^Ứng cho công nhân cấp ven/i, 'Ứng lương cho công nhân cấp ven', 'Nhà thầu chuyển lương về thì thu lại.'],
+    [/^Nợ tiền ứng/i, 'Trả lại tiền cho người đã ứng', ''],
+    [/^Nhà thầu chuyển bù/i, 'Thu lại tiền ứng lương cấp ven', 'Nhà thầu chuyển lương về thì thu lại.'],
+    [/^Trừ tiền ứng thưởng TREND/i, 'Thu lại tiền ứng thưởng TREND', 'Trừ vào tiền trả vendor.'],
+    [/^Thực nhận dự kiến/i, 'Các công ty còn nợ', 'Số thực nhận, sau khi pháp nhân giữ VAT và phí.'],
+    [/^Thanh toán vendor/i, 'Trả vendor', '', 'ky'],
+    [/^Chi quản lý/i, 'Tiền cắt cho nhân sự công ty', ''],
+    [/^Lương công nhân chưa/i, 'Lương công nhân', ''],
+    [/^Lương kinh doanh chưa/i, 'Lương sale', '']
+  ];
+  function quyKhoan(r) {   // 1 dòng mục 5 -> {ten, so, cau, con: [[tên, số]]}; dòng lạ (bảng tổng hợp thêm sau này) giữ tên gốc
+    var t = String(r[0]).trim(), k = QUY_KHOAN.filter(function (x) { return x[0].test(t); })[0];
+    var o = { ten: k ? k[1] : hoa1(t.replace(/\s*\(.*?\)\s*/g, ' ').trim()), so: q2So(r[1]), cau: k ? k[2] : '', con: [] }, dg = String(r[2] || '');
+    dg.split(' · ').forEach(function (p) {   // dòng con dạng "tên số"
+      var m = /^(.+?):?\s([−-]?\d[\d.,]*)$/.exec(p.trim()); if (!m || /^gồm /i.test(p.trim())) return;
+      var n = hoa1(m[1]).replace(/^Lương kinh doanh/i, 'Lương sale').replace(/^Tháng (\d+) (.+)$/, '$2, tháng $1');
+      if (k && k[3] === 'ky') n = n.replace(/^Tháng/, 'Kỳ tháng');
+      o.con.push([n, q2So(m[2])]);
+    });
+    var cv = /gồm nhà thầu trả cấp ven ([\d.,]+)/i.exec(dg); if (cv) o.con.push(['Trong đó nhà thầu trả cấp ven', q2So(cv[1])]);
+    if (/^Lương công nhân chưa/i.test(t) && o.con.some(function (c) { return c[1] < 0; })) o.cau = 'Số âm là khoản nợ đã chuyển sang kỳ sau, trừ ra để không tính hai lần.';
+    return o;
+  }
+  function quyKhoiHtml(m5) {
+    var iQ = -1, iD = -1; m5.dong.forEach(function (r, i) { if (/^Số dư quỹ/i.test(r[0])) iQ = i; else if (/^Số dư dự kiến/i.test(r[0])) iD = i; });
+    if (iQ < 0) return '';
+    var lay = function (a, b) { return m5.dong.slice(a, b).filter(function (r) { return r[0] && tqCo(r[1]) && q2So(r[1]); }).map(quyKhoan); };
+    var truoc = lay(0, iQ), sau = lay(iQ + 1, iD < 0 ? m5.dong.length : iD);
+    var cong = function (a) { return a.reduce(function (t, x) { return t + Math.abs(x.so); }, 0); };
+    var vao = truoc.filter(function (x) { return x.so > 0; }), ra = truoc.filter(function (x) { return x.so < 0; }), thu = sau.filter(function (x) { return x.so > 0; }), tra = sau.filter(function (x) { return x.so < 0; });
+    function motKhoan(x) {
+      var con = x.con.map(function (c) { return '<div class="v8ts"><span>' + esc(c[0]) + '</span><span class="num">' + esc(vnd(c[1])) + '</span></div>'; }).join('');
+      if (x.con.length > 4) con = '<details class="v8tx"><summary>Xem ' + x.con.length + ' khoản<i class="v8cx">›</i></summary>' + con + '</details>';
+      return '<div class="v8ti"><div class="v8tl"><span>' + esc(x.ten) + '</span><b class="num">' + esc(vnd(Math.abs(x.so))) + '</b></div>' + (x.cau ? '<div class="v8tp">' + esc(x.cau) + '</div>' : '') + con + '</div>';
+    }
+    function nhom(ten, ds, mau, pct, xanh) {
+      return '<details class="v8tg"><summary><div class="v8tr"><b>' + ten + '</b><b class="num' + (xanh ? ' c-xanh' : '') + '">' + esc(vnd(cong(ds))) + '</b><i class="v7ch v8cv">›</i></div>' +
+        '<div class="v8tb"><s style="width:' + Math.max(1, Math.min(100, pct)).toFixed(1) + '%;background:' + mau + '"></s></div><div class="meta">' + ds.length + ' khoản</div></summary>' +
+        '<div class="v8tc">' + ds.map(motKhoan).join('') + '</div></details>';
+    }
+    var h = '', quy = q2So(m5.dong[iQ][1]), dk = iD >= 0 ? q2So(m5.dong[iD][1]) : quy + cong(thu) - cong(tra);
+    if (vao.length || ra.length) {
+      var mV = Math.max(cong(vao), cong(ra)) || 1;
+      h += q2H('Tiền quỹ đến hôm nay') + '<div class="card v8tq">' + (vao.length ? nhom('Tiền vào', vao, 'var(--good)', cong(vao) / mV * 100, 1) : '') + (ra.length ? nhom('Tiền ra', ra, 'var(--v8xam)', cong(ra) / mV * 100) : '') +
+        '<div class="meta v8tn">Tiền vào trừ tiền ra bằng số dư quỹ ở trên.</div></div>' +
+        (Math.abs(cong(vao) - cong(ra) - quy) > 2 ? '<div class="note bad">Tiền vào trừ tiền ra chưa khớp số dư quỹ – báo em kiểm tra</div>' : '');
+    }
+    var them = iD >= 0 ? m5.dong.slice(iD + 1).filter(function (r) { return r[0] && q2So(r[1]) < 0; }) : [];   // vd thưởng TREND sẽ phải trả thêm: bảng tổng hợp chưa trừ vào số dư dự kiến
+    if (thu.length || tra.length || iD >= 0) {
+      var mD = Math.max(cong(thu), cong(tra)) || 1;
+      h += q2H('Quỹ dự kiến khi thu, trả xong') + '<div class="card v8tq">' + (thu.length ? nhom('Còn phải thu', thu, 'var(--good)', cong(thu) / mD * 100, 1) : '') + (tra.length ? nhom('Còn phải trả', tra, 'var(--v8xam)', cong(tra) / mD * 100) : '') +
+        '<div class="v8dv"></div><div class="v8tr"><b>Quỹ dự kiến</b><b class="num v8big">' + esc(vnd(dk)) + '</b></div>' +
+        '<div class="meta cau v8tn">' + yDong(['Số dư quỹ cộng còn phải thu, trừ còn phải trả.', 'Chạm từng dòng để xem các khoản.']) + '</div>' +
+        them.map(function (r) { var t = String(r[0]).trim(), u = /Ước tối đa (\d+) người/i.exec(String(r[2] || '')); return '<div class="v8tr v8chu"><span>Chưa trừ ' + esc(t.charAt(0).toLowerCase() + t.slice(1)) + '</span><b class="num">' + esc(vnd(Math.abs(q2So(r[1])))) + '</b></div>' + (u ? '<div class="meta">Ước tối đa cho ' + u[1] + ' người đang làm.</div>' : ''); }).join('') + '</div>' +
+        (Math.abs(quy + cong(thu) - cong(tra) - dk) > 2 ? '<div class="note bad">Các khoản trên chưa khớp số dư dự kiến – báo em kiểm tra</div>' : '');
+    }
+    return h;
+  }
+  function quyMoDoc(t) { var d = t.querySelector('details.qCt'); return d ? { ct: d.open, g: [].map.call(d.querySelectorAll('details.v8tg'), function (x) { return x.open; }) } : null; }   // giữ nguyên chỗ đang xổ khi màn vẽ lại
+  function quyMoDat(t, m) { var d = t.querySelector('details.qCt'); if (!d || !m) return; d.open = m.ct; [].forEach.call(d.querySelectorAll('details.v8tg'), function (x, i) { if (m.g[i]) x.open = true; }); }
+  // ----- Sổ ứng trả theo kỳ công: từng công ty, lấy ở file nhập liệu (lệnh utSo – máy chủ tính đúng như cột Đã ứng / Đã trả lương của bảng công) -----
+  function taiUtSo() {
+    if (UTSO_DANG) return; UTSO_DANG = 1;
+    apiT({ v: 'utSo' }).then(function (o) {
+      UTSO_DANG = 0;
+      if (o && o.loi) { if (!UTSO || !(UTSO.ds || []).length) UTSO = { loi: o.loi, ds: [] }; }
+      else if (o && o.ds) { UTSO = o; luuSo('vlta_utso', o); }
+      if (S.tab === 'quy' && QUY && S.soLoai === 'ut') hienQuy(QUY);
+    }, function (e) { UTSO_DANG = 0; if (!UTSO) UTSO = { loi: e.message, ds: [] }; if (S.tab === 'quy' && QUY && S.soLoai === 'ut') veSoUT(); });
+  }
+  function utSoKyChu(x) { return String(x.d1 || '').slice(0, 5) + ' – ' + String(x.d2 || '').slice(0, 5); }
+  function utSoLoiChu(t) {   // câu ở cột Lỗi của sổ -> lời thường
+    t = String(t || '');
+    return /chưa có trong BCC/i.test(t) ? 'Tên chưa có trên bảng công' : /trùng tên/i.test(t) ? 'Bảng công có 2 người trùng tên' : /chưa tới/i.test(t) ? 'Ngày chưa tới, có thể ghi nhầm ngày' : /người trả/i.test(t) ? 'Chưa ghi người trả' : 'Cần sửa';
+  }
+  function utSoNgayChu(ng) {   // '25/11/2026' -> 'Hôm nay · 25/11' / 'Thứ Ba 24/11'
+    var hn = new Date(), p2 = function (n) { return ('0' + n).slice(-2); }, d = function (x) { return p2(x.getDate()) + '/' + p2(x.getMonth() + 1) + '/' + x.getFullYear(); }, n5 = String(ng).slice(0, 5);
+    return ng === d(hn) ? 'Hôm nay · ' + n5 : ng === d(new Date(hn.getTime() - 864e5)) ? 'Hôm qua · ' + n5 : v7Thu(ng) + n5;
+  }
+  function utSoCtyHtml(x) {   // sổ của 1 công ty trong kỳ
+    var t = x.ung + x.tra, lech = x.bcc ? (x.bcc.ung + x.bcc.tra) - t : 0;
+    var h = '<button class="link utSoLui" id="utSoLui">‹ Các công ty</button>' +
+      '<div class="soNg"><div class="soNgH"><b>' + esc(x.ten) + ' · kỳ ' + esc(utSoKyChu(x)) + '</b><span class="num">' + esc(vnd(t)) + '</span></div>' +
+      '<div class="grp v7tt"><div><div class="meta">Đã ứng</div><b class="num">' + esc(vnd(x.ung)) + '</b></div><div><div class="meta">Đã trả lương</div><b class="num">' + esc(vnd(x.tra)) + '</b></div></div></div>';
+    if (Math.abs(lech) >= 1) h += '<div class="note warn cau">' + yDong(['Bảng công đang tính ' + esc(vnd(x.bcc.ung + x.bcc.tra)) + ', lệch ' + esc(vnd(Math.abs(lech))) + ' so với sổ.', 'Thường do có dòng ghi tên chưa có trên bảng công.']) + '</div>';
+    if (!x.cu && (S.toi && S.toi.cty || []).some(function (y) { return y.ma === x.cty; })) h += '<button class="link utSoLk" id="utSoSua">Sửa hoặc xoá dòng ở màn Ứng / trả của ' + esc(x.ten) + ' ›</button>';
+    if (!x.ds.length) return h + '<div class="empty">Chưa có khoản ứng, trả lương nào trong kỳ.</div>';
+    var khoa = function (s) { var m = /^(\d{2})\/(\d{2})\/(\d{4})$/.exec(s || ''); return m ? m[3] + m[2] + m[1] : ''; };
+    var ds = x.ds.map(function (r, i) { return [r, i]; }).sort(function (a, b) { return khoa(b[0].ngay) < khoa(a[0].ngay) ? -1 : khoa(b[0].ngay) > khoa(a[0].ngay) ? 1 : a[1] - b[1]; }).map(function (a) { return a[0]; });
+    var gioi = S.utSoHet ? ds.length : 80, ng = [], theo = {};
+    ds.slice(0, gioi).forEach(function (r) {
+      if (!theo[r.ngay]) { theo[r.ngay] = { ngay: r.ngay, ds: [], u: 0, t: 0 }; ng.push(theo[r.ngay]); }
+      var g = theo[r.ngay]; g.ds.push(r); if (r.loai === 'Ứng') g.u += r.so; else g.t += r.so;
+    });
+    h += ng.map(function (g) {
+      var tong = [g.u ? 'Ứng ' + vnd(g.u) : '', g.t ? 'Trả lương ' + vnd(g.t) : ''].filter(String).join(' · ');
+      return '<div class="soNg"><div class="soNgH"><b>' + esc(utSoNgayChu(g.ngay)) + '</b><span class="num">' + esc(tong) + '</span></div><div class="grp soC">' + g.ds.map(function (r) {
+        return '<div class="it"><div style="min-width:0"><div class="nm">' + esc(hoaDau(r.ten)) + '</div><div class="sub">' + (r.loi ? '<span class="c-do">' + esc(utSoLoiChu(r.loi)) + '</span> · ' : '') + [esc(r.loai), r.ghi ? utGhiH(r.ghi) : '', r.nguoi ? esc(hoaDau(r.nguoi)) + ' trả' : ''].filter(String).join(' · ') + '</div></div><div class="amt num">' + esc(vnd(r.so)) + '</div></div>';
+      }).join('') + '</div></div>';
+    }).join('');
+    if (gioi < ds.length) h += '<button class="btn ghost" id="utSoThem" style="margin-top:12px">Xem thêm ' + (ds.length - gioi) + ' dòng</button>';
+    return h;
+  }
+  function veSoUT() {   // danh sách công ty của kỳ đang chọn, hoặc sổ của 1 công ty
+    var l = document.getElementById('lso'); if (!l || !QUY) return;
+    if (!UTSO) UTSO = docSo('vlta_utso');
+    if (!UTSO_LUC || Date.now() - UTSO_LUC > 60000) { UTSO_LUC = Date.now(); taiUtSo(); }
+    if (!UTSO) { l.innerHTML = '<div class="sk" style="height:76px"></div><div class="sk" style="height:76px;margin-top:10px"></div><div class="meta" style="margin:10px 6px">Đang tải sổ ứng trả…</div>'; return; }
+    if (UTSO.loi && !(UTSO.ds || []).length) { l.innerHTML = '<div class="empty">' + esc(UTSO.loi) + '</div>'; return; }
+    var ky = soKyChon(QUY), th = 'tháng ' + Number(ky.slice(-2)), ds = UTSO.ds.filter(function (x) { return x.ky === ky && !x.loiDoc; }), hong = UTSO.ds.filter(function (x) { return x.loiDoc; });
+    var ct = S.utSoCty ? ds.filter(function (x) { return x.cty === S.utSoCty; })[0] : null, h = '';
+    if (ct) {
+      l.innerHTML = utSoCtyHtml(ct);
+      document.getElementById('utSoLui').onclick = function () { S.utSoCty = null; S.utSoHet = 0; veSoUT(); };
+      var bs = document.getElementById('utSoSua'); if (bs) bs.onclick = function () { S.cty = ct.cty; luu('vlta_cty', ct.cty); S.dtMo = true; moTab('ld'); S.utQ = ''; S.utHet = 0; moUT(); };
+      var bt = document.getElementById('utSoThem'); if (bt) bt.onclick = function () { S.utSoHet = 1; veSoUT(); };
+      return;
+    }
+    S.utSoCty = null;
+    if (!ds.length) h = '<div class="empty cau"><b class="yT">Chưa có sổ ứng trả của kỳ ' + th + '</b>App giữ sổ của kỳ đang chạy và kỳ liền trước.</div>';
+    else {
+      var tong = 0;
+      h = '<div class="soNg"><div class="soNgH"><b>Các công ty · kỳ ' + th + '</b></div><div class="grp soC soCt">' + ds.map(function (x) {
+        var t = x.ung + x.tra, lech = x.bcc ? (x.bcc.ung + x.bcc.tra) - t : 0, nhan = ''; tong += t;
+        if (Math.abs(lech) >= 1) nhan = 'Lệch bảng công ' + vnd(Math.abs(lech)); else if (x.loi) nhan = x.loi + ' dòng cần sửa';   // nhãn tình trạng nằm dòng riêng, không tách giữa chữ và số
+        return '<div class="it" data-c="' + esc(x.cty) + '" role="button"><div style="min-width:0"><div class="nm">' + esc(x.ten) + '</div><div class="sub">Kỳ ' + esc(utSoKyChu(x)) + ' · ' + x.n + ' lượt</div>' + (nhan ? '<div class="sub soCtC">' + esc(nhan) + '</div>' : '') + '</div><div class="amt num">' + esc(vnd(t)) + '<i class="v7ch soCtM">›</i></div></div>';
+      }).join('') + '</div></div>';
+      var lg = soLuongKy(QUY, ky), gio = (/(\d{1,2}:\d{2})/.exec(QUY.capNhat || '') || [''])[0];
+      if (lg !== null && Math.abs(lg - tong) >= 1) h += '<div class="meta cau" style="margin:10px 6px 0">' + yDong(['Các công ty trên cộng lại ' + esc(vnd(tong)) + '.', 'Số ' + esc(vnd(lg)) + ' ở thẻ trên lấy từ bảng tổng hợp' + (gio ? ', cập nhật lúc ' + gio : '') + '.']) + '</div>';
+    }
+    hong.forEach(function (x) { h += '<div class="note warn" style="margin-top:10px">Chưa đọc được sổ của ' + esc(x.ten) + (x.cu ? ' kỳ trước' : '') + ': ' + esc(x.loiDoc) + '</div>'; });
+    l.innerHTML = h;
+    [].forEach.call(l.querySelectorAll('.soCt .it[data-c]'), function (e) { e.onclick = function () { S.utSoCty = e.getAttribute('data-c'); S.utSoHet = 0; veSoUT(); var sg = document.getElementById('soSeg'); if (sg) window.scrollTo(0, Math.max(0, sg.getBoundingClientRect().top + window.scrollY - 110)); }; });
+  }
   function hienQuy(o) {
     (function () {
       var t = document.getElementById('than'); if (!t || S.tab !== 'quy') return;
       if (o.loi) { t.innerHTML = '<div class="empty">' + esc(o.loi) + '</div>'; return; }
+      var moCu = quyMoDoc(t);   // b226
       QUY = o;
       var m5 = o.muc5, quy = null, khac = [];
       if (m5) m5.dong.forEach(function (x) { if (/^Số dư quỹ/i.test(x[0])) quy = x; else khac.push(x); });
@@ -10853,24 +11060,19 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
         (tqCo(so.noUng) ? '<div class="meta" style="margin-top:8px">Nợ người ứng ' + esc(tienVN(so.noUng)) + '</div>' : '') + '</div>' +
         // b197: bỏ 3 dòng Đã thu / Đã chi / Lương công nhân (cộng không ra số dư) -> bảng các khoản tạo nên số dư đặt ngay dưới thẻ
         // b215: mỗi khoản 1 khung riêng như sổ thu chi – đầu khung: tên khoản + số tiền, trong khung: các khoản con, ghi chú
-        (m5 && khac.length ? '<details class="qCt"><summary><span class="link" style="padding:0">Xem các khoản tạo nên số dư quỹ</span></summary><div class="cpDs">' + khac.map(function (x) { var ph = x[2] && x[2] !== '-' ? x[2] : ''; return '<div class="soNg qNg"><div class="soNgH"><b>' + esc(tenQuy(x[0])) + '</b><span class="num">' + esc(soVN(dauTru(x[1] || '–'))) + '</span></div>' + (ph ? '<div class="card qBd"><div class="yBox">' + yTach(ph) + '</div></div>' : '') + '</div>'; }).join('') + '</div></details>' : '') +
+        (m5 ? '<details class="qCt"><summary><span class="link" style="padding:0">Cách tính số dư quỹ</span></summary>' + quyKhoiHtml(m5) + '</details>' : '') +   // b226: Tiền vào / Tiền ra, Còn phải thu / Còn phải trả (cùng hàm với Tổng quan › Tiền & công nợ)
         (so.loi && !/Không có dòng lỗi/.test(so.loi) ? '<div class="note bad">' + esc(so.loi) + '</div>' : '') +
-        '<div class="row sp" style="margin:6px 4px -6px"><span class="sec">Sổ thu chi' + (o.ky ? ' · ' + esc(tqThang(o.ky).replace(/\/\d{4}$/, '')) : '') + '</span><button class="icb" id="qTim" aria-label="Tìm khoản">' + ICON_TIM + '</button></div>' +
-        '<input class="search hidden" id="qso" type="search" placeholder="Tìm khoản, nội dung, người…" style="margin:0">' +
-        (function () { var tt = String(so.tongThu || '').replace(/^Tổng thu:\s*/, ''), tc = String(so.tongChi || '').replace(/^Tổng chi:\s*/, ''); var thS = o.ky ? tqThang(o.ky).replace(/\/\d{4}$/, '') : 'tháng này'; return tqCo(tt) || tqCo(tc) ? '<div class="grp v7tt"><div><div class="meta">Đã thu ' + esc(thS) + '</div><b class="num c-xanh">+' + esc(tienVN(tt || '0')) + '</b></div><div><div class="meta">Đã chi ' + esc(thS) + '</div><b class="num">−' + esc(tienVN(tc || '0')) + '</b></div></div>' : ''; })() +   // b217: 2 ô thu / chi
-        '<div id="lso"></div>' +
-        '<button class="fab" id="gso">' + ICON.cong + 'Ghi khoản</button>';
+        soDuoiHtml(o);   // b226: chọn Sổ thu chi | Sổ ứng trả, chọn tháng, thẻ số của tháng, danh sách
+      quyMoDat(t, moCu);
       var qm = document.getElementById('qMoi'); if (qm) qm.onclick = function (e) { e.preventDefault(); this.textContent = 'đang tải…'; taiQuy(true); };
-      document.getElementById('qTim').onclick = function () { var q = document.getElementById('qso'); q.classList.toggle('hidden'); if (!q.classList.contains('hidden')) q.focus(); else { q.value = ''; veSo(''); } };
-      document.getElementById('gso').onclick = function () { moGhiSo(); };
-      var q = document.getElementById('qso'); q.oninput = function () { veSo(q.value); };
-      veSo('');
+      soGan();
     })();
   }
   function veSo(q) {
     var l = document.getElementById('lso'); if (!l || !QUY) return;
-    var k = kd(q).trim(), ds = QUY.so.dong.filter(function (x) { return !k || kd([x.khoan, x.nd, x.nguoi, x.dt, x.ngay].join(' ')).indexOf(k) >= 0; }).slice(0, 80);
-    if (!ds.length) { l.innerHTML = '<div class="empty">Không có khoản nào khớp.</div>'; return; }
+    var k = kd(q).trim(), kyS = soKyChon(QUY);   // b226
+    var ds = k ? QUY.so.dong.filter(function (x) { return kd([x.khoan, x.nd, x.nguoi, x.dt, x.ngay].join(' ')).indexOf(k) >= 0; }).slice(0, 80) : QUY.so.dong.filter(function (x) { return soThangDong(x) === kyS; });
+    if (!ds.length) { l.innerHTML = '<div class="empty">' + (k ? 'Không có khoản nào khớp.' : 'Chưa có khoản nào trong ' + esc(tqThang(kyS)) + '.') + '</div>'; return; }
     var hn = new Date(), p2 = function (n) { return ('0' + n).slice(-2); }, homNay = p2(hn.getDate()) + '/' + p2(hn.getMonth() + 1), hq = new Date(hn.getTime() - 864e5), homQua = p2(hq.getDate()) + '/' + p2(hq.getMonth() + 1);
     var hay = {}; QUY.so.dong.forEach(function (x) { hay[x.nguoi] = (hay[x.nguoi] || 0) + 1; });
     var nguoiChinh = Object.keys(hay).sort(function (a, b) { return hay[b] - hay[a]; })[0];   // b206: người ghi phần lớn các khoản (thủ quỹ) không lặp ở mọi dòng
@@ -11064,7 +11266,7 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
         if (sua) { xong(o, 'Đã sửa khoản (dòng ' + o.dong + ')'); return; }
         sh.remove(); toast('Đã ghi vào sổ (dòng ' + o.dong + ')' + (o.kiemTra ? ' · ' + o.kiemTra : ''));
         datQuyTam((/^thu/i.test(k.loai) ? 1 : -1) * tien);
-        if (QUY) { QUY.so.dong.unshift({ khoan: k.ten, so: vnd0(tien).replace(/\./g, ','), ngay: ngay.slice(0, 6) + ngay.slice(-2), nguoi: dong.nguoi, dt: dt, thang: dong.thang, nd: dong.nd, loai: k.loai }); hienQuy(QUY); }
+        if (QUY) { QUY.so.dong.unshift({ khoan: k.ten, so: vnd0(tien).replace(/\./g, ','), ngay: ngay.slice(0, 6) + ngay.slice(-2), nguoi: dong.nguoi, dt: dt, thang: dong.thang, nd: dong.nd, loai: k.loai, tam: 1 }); hienQuy(QUY); }
         taiQuy(false, true);
       }, function (e) { btn.disabled = false; btn.textContent = goc; m.textContent = e.message; });
     };
@@ -11433,33 +11635,7 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
     var quy = r5(/^Số dư quỹ/i), duKien = r5(/^Số dư dự kiến/i);
     h += '<div class="card q2hero"><div class="meta">Số dư quỹ hiện tại · thủ quỹ giữ</div><div class="big num">' + esc(quy ? tienVN(dauTru(quy[1])) : '–') + '</div><div class="meta cau">Đã trừ mọi khoản chi và lương công nhân đã trả</div></div>';
     if (m5 && quy) {
-      var i0 = m5.dong.indexOf(quy), i1 = duKien ? m5.dong.indexOf(duKien) : m5.dong.length;
-      // b221 (bản vẽ đợt 2): Tiền vào / Tiền ra đến hôm nay; Còn phải thu / Còn phải trả -> Quỹ dự kiến. Mỗi nhóm gập, chạm xổ từng khoản
-      var tenNgan = function (t) { var x = tenQuy(t); return x === 'Các công ty còn nợ' ? 'Các công ty còn nợ · thực nhận' : x; };
-      var dsK = function (a, b) { return m5.dong.slice(a, b).filter(function (r) { return r[0] && tqCo(r[1]) && q2So(r[1]); }).map(function (r) { return [tenNgan(r[0]), q2So(r[1])]; }); };
-      var truoc = dsK(0, i0), sau = dsK(i0 + 1, i1), duong = function (a) { return a.filter(function (x) { return x[1] > 0; }); }, am = function (a) { return a.filter(function (x) { return x[1] < 0; }); };
-      var cong = function (a) { return a.reduce(function (t, x) { return t + Math.abs(x[1]); }, 0); };
-      var nhomT = function (ten, ds, mau, pct, xanh) {
-        return '<details class="v8tg"><summary><div class="v8tr"><b>' + ten + '</b><b class="num' + (xanh ? ' c-xanh' : '') + '">' + vnd(cong(ds)) + '</b><i class="v7ch v8cv">›</i></div>' +
-          '<div class="v8tb"><s style="width:' + Math.max(1, Math.min(100, pct)).toFixed(1) + '%;background:' + mau + '"></s></div><div class="meta">' + ds.length + ' khoản</div></summary>' +
-          '<div class="v8tc">' + ds.map(function (x) { return '<div class="v8tl"><span>' + esc(x[0]) + '</span><b class="num">' + vnd(Math.abs(x[1])) + '</b></div>'; }).join('') + '</div></details>';
-      };
-      var vao = duong(truoc), ra = am(truoc), thu = duong(sau), tra = am(sau);
-      if (vao.length || ra.length) {
-        var mV = Math.max(cong(vao), cong(ra)) || 1;
-        h += q2H('Tiền quỹ đến hôm nay') + '<div class="card v8tq">' + (vao.length ? nhomT('Tiền vào', vao, 'var(--good)', cong(vao) / mV * 100, 1) : '') + (ra.length ? nhomT('Tiền ra', ra, 'var(--v8xam)', cong(ra) / mV * 100) : '') +
-          '<div class="meta v8tn">Tiền vào trừ tiền ra bằng số dư quỹ ở trên.</div></div>';
-      }
-      var tongPT = q2So(quy[1]) + cong(thu) - cong(tra), khop = !duKien || Math.abs(tongPT - q2So(duKien[1])) <= 2;
-      var sauDK = duKien ? m5.dong.slice(i1 + 1).filter(function (r) { return r[0] && q2So(r[1]) < 0; }) : [];   // vd thưởng TREND sẽ phải trả thêm: bảng tổng hợp chưa trừ vào số dư dự kiến
-      if (thu.length || tra.length || duKien) {
-        var mD = Math.max(cong(thu), cong(tra)) || 1;
-        h += q2H('Quỹ dự kiến khi thu, trả xong') + '<div class="card v8tq">' + (thu.length ? nhomT('Còn phải thu', thu, 'var(--good)', cong(thu) / mD * 100, 1) : '') + (tra.length ? nhomT('Còn phải trả', tra, 'var(--v8xam)', cong(tra) / mD * 100) : '') +
-          '<div class="v8dv"></div><div class="v8tr"><b>Quỹ dự kiến</b><b class="num v8big">' + vnd(duKien ? q2So(duKien[1]) : tongPT) + '</b></div>' +
-          '<div class="meta cau v8tn">' + yDong(['Số dư quỹ cộng phải thu, trừ phải trả.', 'Chạm từng dòng để xem các khoản.']) + '</div>' +
-          sauDK.map(function (r) { var t = String(r[0]).trim(); return '<div class="v8tr v8chu"><span>Chưa trừ ' + esc(t.charAt(0).toLowerCase() + t.slice(1)) + '</span><b class="num">' + vnd(Math.abs(q2So(r[1]))) + '</b></div>'; }).join('') + '</div>' +
-          (!khop ? '<div class="note bad">Các khoản trên chưa khớp số dư dự kiến – báo em kiểm tra</div>' : '');
-      }
+      h += quyKhoiHtml(m5);   // b226: cùng hàm với Thu chi › Cách tính số dư quỹ
     }
     var w = tqTuan(o), mx = Math.max.apply(null, w.tuan.map(function (x) { return Math.max(x.thu, x.chi); }).concat([1]));
     function dm(d) { return ('0' + d.getDate()).slice(-2) + '/' + ('0' + (d.getMonth() + 1)).slice(-2); }
