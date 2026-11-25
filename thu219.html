@@ -1639,7 +1639,7 @@ html.xnMo #ptr{top:calc(env(safe-area-inset-top,0px) + 42px)}
   }
   var API_DANG = 0;   // 07/11: số lệnh máy chủ đang chờ trả lời (vuốt làm mới biết lúc xong)
   function api(q) {
-    if (XNHU && q && q.v && !XNHU_DOC[q.v]) return Promise.resolve({ loi: 'Đang xem như ' + XNHU.ten + ' – chỉ xem, không ghi được.' });
+    if (XNHU && q && q.v && !XNHU_DOC[q.v]) { try { console.info('[xem như] chặn lệnh ' + q.v); } catch (e) { } return Promise.resolve({ loi: 'Đang xem như ' + XNHU.ten + ' – chỉ xem, không ghi được.' }); }
     var tt = (q.im || q.lang) ? null : ttBat(q);   // 21/10: q.im = tải ngầm; q.lang = việc lâu chạy nền (nút tự báo đang làm) -> không hiện thanh chờ
     API_DANG++;
     return (BEN_V[q.v] ? apiBen(q) : api0(q)).then(function (o) { API_DANG--; if (tt) ttTat(tt); return o; }, function (e) { API_DANG--; if (tt) ttTat(tt); throw e; });
@@ -6877,6 +6877,7 @@ html.xnMo #ptr{top:calc(env(safe-area-inset-top,0px) + 42px)}
     return 'khong';
   }
   function wpChan() {
+    if (XNHU) return;   // b219: đang xem như nhân viên – không hỏi bật thông báo
     var cu = document.querySelector('.wpHop');
     function bo() { if (cu) cu.remove(); document.documentElement.classList.remove('wpKhoa'); }   // b197: gỡ ô chặn + mở lại cuộn trang
     if (!S.t || !S.toi || !wpTrangApp()) { bo(); return; }
