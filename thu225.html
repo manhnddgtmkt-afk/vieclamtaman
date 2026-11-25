@@ -6733,7 +6733,7 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
     var nh = dslCuNhom(ds), con = nh.dau.length + nh.khac.length;
     if (!nh.all.length) return { h: h + '<div class="meta cau">Chưa có ai có giờ làm ở ' + esc(cty) + ' trong kỳ này và kỳ trước.</div></div>', n: 0 };
     if (!con) return { h: h + '<div class="meta cau">Đã thêm hết ' + nh.all.length + ' người đã đi làm vào danh sách.</div></div>', n: 0 };
-    h += '<div class="meta cau">Lấy từ bảng công kỳ này và kỳ trước. Chạm tên để thêm vào danh sách.</div>';
+    h += '<div class="meta cau">Lấy từ bảng công kỳ này và kỳ trước. Chạm tên để ' + (dkCo() ? 'đăng ký vào ca này.' : 'thêm vào danh sách.') + '</div>';
     if (con > 12) h += '<input class="inp" id="dcTim" type="search" placeholder="Tìm theo tên" autocomplete="off" value="' + esc(L.cuTim || '') + '">';
     if (nh.dau.length) {
       var them = nh.dau.filter(function (x) { return x.so; }).length;
@@ -6908,7 +6908,7 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
       return '<div class="dkkNg"><div class="dkkNgH"><b>' + nh[0] + '</b><small>' + nh[1] + '</small></div>' + ['Ngày', 'Đêm'].map(function (ca) {
         var tt = dkCaTT(cty, ng, ca), n = tt.ds.length, on = chon && chon.ngay === ng && chon.ca === ca;
         var tat = boQua && ((boQua.cty === cty && boQua.ngay === ng && boQua.ca === ca) || tt.chot);
-        var so = tt.chot ? 'Đã chốt · ' + n + ' người' : tt.can ? n + '/' + tt.can + ' người' : n ? n + ' người' : cq ? 'Phỏng vấn ' + dkGioPV(ca) : 'Chưa có ai';
+        var so = tt.chot ? 'Đã chốt · ' + n + ' người' : tt.can ? n + '/' + tt.can + ' người' : n ? n + ' người' : '&nbsp;';   // ca chưa có ai: để trống cho dễ nhìn ca đã có người
         return '<button class="dkkCa' + (on ? ' on' : '') + (tt.chot ? ' chot' : n ? ' co' : '') + '" data-kca="' + ng + '|' + ca + '"' + (tat ? ' disabled' : '') + '><span>Ca ' + ca.toLowerCase() + '</span><small>' + so + '</small></button>';
       }).join('') + '</div>';
     }).join('');
@@ -6935,21 +6935,19 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
     var dem = {}; tt.ds.forEach(function (x) { dem[x.sale] = (dem[x.sale] || 0) + 1; });
     var theoSale = Object.keys(dem).sort(function (a, b) { return dem[b] - dem[a]; }).map(function (k) { return esc(k) + ' ' + dem[k]; }).join(' · ');
     h += '<div class="card dsd1"><div class="row sp" style="gap:10px"><b class="dsdh">' + esc(dkTenCa(L.ngay, L.ca)) + '</b>' + pill + '</div>' +
-      '<div class="dkkSo"><span class="num">' + n + '</span>người đã đăng ký' + (tt.can ? ' · cần ' + tt.can : '') + '</div>' +
+      '<div class="dkkSo"><span class="num">' + n + '</span>người đã đăng ký' + (tt.can ? ', cần ' + tt.can + ' người' : '') + '</div>' +
       (theoSale ? '<div class="meta">' + theoSale + '</div>' : '') +
       (tt.chot ? '<div class="meta cau">' + yDong([tt.xuat ? 'Đã xuất danh sách lúc ' + esc(tt.xuat) + '.' : 'Ca này đã đủ người, không nhận đăng ký thêm.', tt.nguoiChot && !tt.xuat ? esc(tt.nguoiChot) + ' chốt lúc ' + esc(tt.lucChot) + '.' : '', tt.xuat ? '' : 'Chọn ca khác ở trên để đăng ký.']) + '</div>' : '') +
       (CQ ? '<div class="v8han">Phỏng vấn lúc ' + dkGioPV(L.ca) + '. Gửi danh sách cho nhân sự ' + esc(L.cty) + ' trước giờ phỏng vấn.</div>' : '') +
-      (ql ? '<div class="row dkkQl"><button class="btn ghost" id="dkkCan">' + (tt.can ? 'Cần ' + tt.can + ' người' : 'Đặt số người cần') + '</button><button class="btn ghost" id="dkkChot">' + (tt.chot ? 'Mở lại ca' : 'Chốt ca') + '</button></div>' : '') + '</div>';
+      (ql ? '<div class="row dkkQl"><button class="btn ghost" id="dkkCan">Số người cần</button><button class="btn ghost" id="dkkChot">' + (tt.chot ? 'Mở lại ca' : 'Chốt ca') + '</button></div>' : '') + '</div>';
     if (g && g.lv && !tt.chot) {
       var dlv = {}; chon.forEach(function (e) { dlv[e.lv] = (dlv[e.lv] || 0) + 1; });
       h += '<div class="card dsd1"><div class="meta">Loại việc cho người thêm tiếp theo:</div><div class="seg" id="dlLv">' + g.lv.map(function (v) { return '<button data-lv="' + esc(v) + '"' + (L.lv === v ? ' class="on"' : '') + '>' + esc(v) + ' · ' + (dlv[v] || 0) + '</button>'; }).join('') + '</div>' +
         '<div class="meta">Chạm nhãn loại việc ở từng người để đổi.</div></div>';
     }
-    // 3. gợi ý người đã đi làm (ca chưa chốt)
     var CU = !tt.chot && !CQ ? dslCuHtml(ds) : null;
-    if (CU) h += CU.h;
-    // 4. người trên tờ đăng ký
-    if (!ds.length) h += '<div class="card cch">' + ICON.cc + '<b>Chưa có ai đăng ký ca này</b><div class="meta">' + yDong(tt.chot ? ['Ca đã chốt.'] : [CU && CU.n ? 'Chạm tên ở mục Người đã đi làm phía trên để đăng ký.' : '', 'Hoặc bấm Thêm người, tìm trong kho CCCD hoặc chọn ảnh CCCD mới.', 'Bắt buộc có số CCCD.']) + '</div></div>';
+    // 3. người trên tờ đăng ký
+    if (!ds.length) h += '<div class="card cch">' + ICON.cc + '<b>Chưa có ai đăng ký ca này</b><div class="meta">' + yDong(tt.chot ? ['Ca đã chốt.'] : [CU && CU.n ? 'Chạm tên ở mục Người đã đi làm phía dưới để đăng ký.' : '', 'Hoặc bấm Thêm người, tìm trong kho CCCD hoặc chọn ảnh CCCD mới.', 'Bắt buộc có số CCCD.']) + '</div></div>';
     else {
       var het = ds.every(function (e) { return e.chon; });
       h += q2H('Người đã đăng ký') + '<div class="row sp dsdt"><span class="meta">' + ds.length + ' người · chọn ' + chon.length + ' người để xuất</span><button class="btn lk" id="dlHet">' + (het ? 'Bỏ chọn hết' : 'Chọn hết') + '</button></div>';
@@ -6973,6 +6971,8 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
       }).join('') + '</div>';
       h += '<div class="meta cau v7nt">' + yDong(['Chạm tên để chọn hoặc bỏ chọn khi xuất danh sách.', 'Giữ ngón tay lên tên để chuyển sang ca, công ty khác hoặc bỏ khỏi tờ đăng ký.', CQ ? 'Quê quán, thường trú ghi đúng như trên CCCD.' : '']) + '</div>';
     }
+    // 4. gợi ý người đã đi làm (ca chưa chốt)
+    if (CU) h += CU.h;
     h += dslGanHtml();
     h += '<input type="file" id="dlFile" accept="image/*" multiple hidden>';
     h += '<div class="ccday"><button class="btn ghost" id="dlThem"' + (tt.chot ? ' disabled' : '') + '>Thêm người</button><button class="btn" id="dlXuat"' + (chon.length && g ? '' : ' disabled') + '>' + (chon.length ? 'Xuất danh sách · ' + chon.length : 'Xuất danh sách') + '</button></div><div class="ccdem"></div>';
