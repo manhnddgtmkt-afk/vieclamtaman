@@ -1318,10 +1318,10 @@ b.yT0{display:block;margin-bottom:2px}
 #xnhuBar{position:fixed;left:0;right:0;top:0;z-index:99;display:flex;align-items:center;gap:10px;padding:calc(env(safe-area-inset-top,0px) + 4px) 12px 4px 16px;min-height:calc(env(safe-area-inset-top,0px) + 34px);background:#B45309;color:#fff;font-size:13px;line-height:18px}
 #xnhuBar span{flex:1;min-width:0}#xnhuBar b{font-weight:700}
 #xnhuBar button{flex:none;height:26px;padding:0 12px;border:0;border-radius:99px;background:rgba(255,255,255,.22);color:#fff;font:inherit;font-weight:600}
-html.xnMo .top{padding-top:calc(44px + env(safe-area-inset-top,0px))}
-html.xnMo .vdoTabW{top:calc(env(safe-area-inset-top,0px) + 34px)}
-html.xnMo .bnr,html.xnMo .ttpill,html.xnMo .cqDai{top:calc(42px + env(safe-area-inset-top,0px))}
-html.xnMo #ptr{top:calc(env(safe-area-inset-top,0px) + 42px)}
+html.xnMo .top{padding-top:calc(var(--xnh,34px) + 10px)}
+html.xnMo .vdoTabW{top:var(--xnh,34px)}
+html.xnMo .bnr,html.xnMo .ttpill,html.xnMo .cqDai{top:calc(var(--xnh,34px) + 8px)}
+html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
 </style>
 </head>
 <body>
@@ -1333,7 +1333,7 @@ html.xnMo #ptr{top:calc(env(safe-area-inset-top,0px) + 42px)}
   // b219: chủ xem app như sale (chỉ xem). Yêu cầu nằm ở sessionStorage (đóng app là hết); dữ liệu lúc xem chỉ để trong bộ nhớ tạm,
   //   không đọc / ghi localStorage của chủ. Phiên gửi máy chủ = "<phiên chủ>.xn.<SĐT sale>", máy chủ chỉ cho lệnh đọc (PB120).
   var XNHU = null, XNHU_MEM = null;
-  var XNHU_DOC = { toi: 1, quy: 1, ds: 1, phieu: 1, phieuTuan: 1, cho: 1, tb: 1, thuNhap: 1, kbDs: 1, vdoDs: 1, vdoKhuc: 1, bangLuong: 1,
+  var XNHU_DOC = { toi: 1, quy: 1, ccChayTT: 1, ds: 1, phieu: 1, phieuTuan: 1, cho: 1, tb: 1, thuNhap: 1, kbDs: 1, vdoDs: 1, vdoKhuc: 1, bangLuong: 1,
     dslCty: 1, dslCu: 1, dslGan: 1, dslDoc: 1, cccdTamDs: 1, cccdDanhBa: 1, cccdTim: 1, cccdAnh: 1, theDs: 1, theMa: 1, theAnh: 1,
     ctDs: 1, nhaTk: 1, ntDs: 1, cnDs: 1, utGan: 1, utThieu: 1, lkTT: 1, vtTep: 1, vtXem: 1, timCu: 1, visionTT: 1, ghTT: 1, wpKhoa: 1 };
   try {
@@ -1349,9 +1349,11 @@ html.xnMo #ptr{top:calc(env(safe-area-inset-top,0px) + 42px)}
   function xnhuThanh() {
     if (!XNHU || document.getElementById('xnhuBar')) return;
     var b = document.createElement('div'); b.id = 'xnhuBar';
-    b.innerHTML = '<span>Đang xem như <b>' + esc(XNHU.ten) + '</b> · chỉ xem</span><button type="button" id="xnhuRa">Thoát</button>';
+    b.innerHTML = '<span>Xem như <b>' + esc(XNHU.ten) + '</b> · chỉ xem</span><button type="button" id="xnhuRa">Thoát</button>';
     document.body.appendChild(b);
     document.getElementById('xnhuRa').onclick = xnhuThoat;
+    function cao() { document.documentElement.style.setProperty('--xnh', Math.ceil(b.getBoundingClientRect().height) + 'px'); }   // chữ xuống 2 dòng thì đầu trang lùi theo
+    cao(); window.addEventListener('resize', cao); setTimeout(cao, 600);
   }
   // 22/10: Safari iPhone in có lề đầu/chân trang (~17 mm) và phóng ~5%: lớp ios để căn CCCD giữa tờ
   if (/iPhone|iPad|iPod/.test(navigator.userAgent) || (/Macintosh/.test(navigator.userAgent) && navigator.maxTouchPoints > 1)) document.documentElement.classList.add('ios');
