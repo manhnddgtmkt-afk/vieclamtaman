@@ -13,7 +13,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
 <script src="config.js"></script>
-<script>window.PB = { so: 217, luc: "25/11 10:12" };</script>
+<script>window.PB = { so: 218, luc: "25/11 10:29" };</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap">
 <style>
@@ -2247,7 +2247,7 @@ b.yT0{display:block;margin-bottom:2px}
     function khop(p) { return !k || kd(p.ten).indexOf(k) >= 0 || String(p.ma).toLowerCase().indexOf(k) >= 0 || (kso.length >= 4 && String(p.sdt || '').replace(/\D/g, '').indexOf(kso) >= 0); }
     var canTra = d.ds.filter(function (p) { return p.con > 0; }).sort(function (a, b) { return b.con - a.con; }), tong = canTra.reduce(function (a, p) { return a + p.con; }, 0);
     // 21/10: lý do cần xem của từng người (số âm = nhận trước, đã có nhóm riêng nên bỏ câu "vượt lương")
-    var lyDo = function (p) { var t = String(p.cb || '').trim(); return /vượt lương/i.test(t) ? '' : t; };
+    var lyDo = function (p) { var t = String(p.cb || '').trim(); return /vượt (?:lương|số được nhận)/i.test(t) ? '' : t; };   // b218: câu 'đã ứng và đã trả vượt số được nhận …' lặp số tiền nhận trước bên phải -> chỉ ghi Nhận trước
     var cb = d.ds.filter(lyDo), am = d.ds.filter(function (p) { return p.con < 0; }), moi = d.ds.filter(function (p) { return p.moi; });
     var loaiCb = {}; cb.forEach(function (p) { var t = lyDo(p); loaiCb[t] = (loaiCb[t] || 0) + 1; });
     var tenLoc = function (f) { return f === 'am' ? 'Nhận trước' : f === 'moi' ? 'Người mới' : /^cb:/.test(f) ? f.slice(3) : 'Cần kiểm tra'; };
@@ -2297,7 +2297,7 @@ b.yT0{display:block;margin-bottom:2px}
       var nghi = !dangLam(d, p);
       var ld = lyDo(p);
       return '<button class="it" data-i="' + d.ds.indexOf(p) + '"><div style="min-width:0;flex:1"><div class="nm ell">' + esc(hoaDau(p.ten)) + (p.moi ? '<span class="tag moi">mới</span>' : '') + '</div>' +
-        '<div class="sub ell">' + (ld ? '<span style="color:var(--warn)">' + esc(ld) + '</span>' + ' · ' : '') + esc([p.ma, p.sale ? tenSale(p.sale) : '', p.ca && p.ca !== caChung ? 'ca ' + String(p.ca).toLowerCase() : '', nghi && p.vt ? 'làm lần cuối ' + ngayDM(p.vt) : ''].filter(String).join(' · ')) + '</div></div>' +
+        '<div class="sub ell">' + (ld ? '<span style="color:var(--warn)">' + esc(ld) + '</span>' + ' · ' : '') + esc([p.ma, p.sale && d.het ? tenSale(p.sale) : '', p.ca && p.ca !== caChung ? 'ca ' + String(p.ca).toLowerCase() : '', nghi && p.vt ? 'làm lần cuối ' + ngayDM(p.vt) : ''].filter(String).join(' · ')) + '</div></div>' +
         (p.con ? '<div class="amt num' + (p.con < 0 ? ' c-cam' : '') + '">' + vnd(p.con) + (p.con < 0 ? '<small>nhận trước</small>' : '') + '</div>' : '') + '</button>';
     }
     function nhom(ten, ds, gioi, id) {
@@ -6472,6 +6472,7 @@ b.yT0{display:block;margin-bottom:2px}
     }, function (er) { ccTd(''); toastLoi(er.message); });
   }
   var BAN_MOI = [
+    { so: 218, ds: ['Cần kiểm tra: người nhận trước chỉ ghi Nhận trước, không lặp lại số tiền.', 'Sale xem danh sách người mình tuyển không còn lặp tên sale ở từng dòng.'] },
     { so: 217, ds: [['Tổng quan vẽ lại: số lợi nhuận tháng có phần cách tính ngay dưới, khoản bất thường thành mục riêng.', 'chu'], ['Lãi từng công ty ghi kỳ công và biên của từng công ty, chạm biểu tượng (i) để xem biên là gì.', 'chu'], 'Lao động: vân tay, file gửi HOJEONG, phiếu ở công ty khác gom chung một khung.', 'Danh sách Còn phải trả nối liền số tổng; người đang đi làm đã trả đủ gập thành một dòng.', 'Hồ sơ: khoản ứng / trả ghi theo tuần lương, ô tuần ghi Chưa trả hoặc Đã trả.', ['Thu chi có hai ô Đã thu, Đã chi; mỗi ngày trong sổ ghi rõ thứ.', 'chu']] },
     { so: 216, ds: [['Chi phí chung ở Tổng quan gom theo nhóm, chạm vào nhóm để xem từng khoản.', 'chu'], 'Chuông gom các thông báo cùng loại của một công ty thành một dòng, chạm để xem từng người.', 'Hồ sơ chỉ hiện các khoản ứng / trả trong kỳ, khớp với số Đã ứng, Đã trả.'] },
     { so: 215, ds: ['Ứng / trả, chi phí chung, lịch thu tiền, phải trả vendor và tiền quỹ chia khung riêng giống sổ thu chi.'] }, { so: 214, ds: ['Sổ thu chi chia khung theo từng ngày, khoản thu có nền xanh để dễ phân biệt với khoản chi.'] },
