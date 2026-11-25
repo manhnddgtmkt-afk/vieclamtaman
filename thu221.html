@@ -1401,6 +1401,7 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
 .v8qv{margin-top:10px;padding-top:10px;border-top:1px solid var(--line);color:var(--bad)}.v8qv>span:first-child{font-size:14px;font-weight:600}
 .v8qua .nm,.v8qua .v8am b{color:var(--bad)}
 .v8mo{color:var(--muted)!important}
+.v8chu{margin-top:10px;color:var(--warn)}.v8chu>span:first-child{font-size:13.5px!important;font-weight:500!important}.v8chu>.num{font-size:14px!important}
 </style>
 </head>
 <body>
@@ -10812,7 +10813,7 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
         h += q2H('Quỹ dự kiến khi thu, trả xong') + '<div class="card v8tq">' + (thu.length ? nhomT('Còn phải thu', thu, 'var(--good)', cong(thu) / mD * 100, 1) : '') + (tra.length ? nhomT('Còn phải trả', tra, 'var(--v8xam)', cong(tra) / mD * 100) : '') +
           '<div class="v8dv"></div><div class="v8tr"><b>Quỹ dự kiến</b><b class="num v8big">' + vnd(duKien ? q2So(duKien[1]) : tongPT) + '</b></div>' +
           '<div class="meta cau v8tn">' + yDong(['Số dư quỹ cộng còn phải thu, trừ còn phải trả.', 'Chạm từng dòng để xem các khoản.']) + '</div>' +
-          (sauDK.length ? '<div class="meta cau v8cam v8tn">' + yDong(sauDK.map(function (r) { var t = String(r[0]).trim(); return 'Chưa trừ ' + esc(t.charAt(0).toLowerCase() + t.slice(1)) + ' ' + vnd(Math.abs(q2So(r[1]))) + '.'; })) + '</div>' : '') + '</div>' +
+          sauDK.map(function (r) { var t = String(r[0]).trim(); return '<div class="v8tr v8chu"><span>Chưa trừ ' + esc(t.charAt(0).toLowerCase() + t.slice(1)) + '</span><b class="num">' + vnd(Math.abs(q2So(r[1]))) + '</b></div>'; }).join('') + '</div>' +
           (!khop ? '<div class="note bad">Các khoản trên chưa khớp số dư dự kiến – báo em kiểm tra</div>' : '');
       }
     }
