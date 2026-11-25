@@ -2,10 +2,10 @@
 <html lang="vi">
 <head>
 <meta charset="utf-8">
-<title>Thử 224</title>
+<title>Thử 225</title>
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 <script src="config.js"></script>
-<script>window.PB = { so: 224, luc: "thử" };</script>
+<script>window.PB = { so: 225, luc: "thử" };</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap">
 <style>
@@ -1414,6 +1414,30 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
 .v8lui i{font-style:normal;font-size:26px;line-height:1;margin-top:-3px}
 .v8bar{margin-top:6px}
 .ccch span:first-child{flex:1}.ccch small{white-space:normal}   /* b224: dòng Chỉnh ảnh in không bị cắt chữ */
+/* b225 (25/11): tab Đối tác – thẻ màu từng công ty (bản vẽ đợt 3 lần 9A), chuyển màn trượt như iPhone */
+.dtSec{display:flex;justify-content:space-between;align-items:baseline;gap:12px}.dtSec small{font-size:13px;font-weight:500;color:var(--muted);text-transform:none;letter-spacing:0}
+.dtDs{display:flex;flex-direction:column;gap:12px}
+.dtc{position:relative;display:block;width:100%;text-align:left;border:0;border-radius:20px;padding:16px 64px 16px 18px;background:var(--d2);color:var(--fg);font:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:transform .2s cubic-bezier(.2,.8,.2,1),filter .2s}
+.dtc:active{transform:scale(.97);filter:brightness(.96);transition-duration:.08s}
+.dtc-t{display:block;font-size:22px;font-weight:800;line-height:28px;letter-spacing:.01em;color:var(--d1);overflow-wrap:anywhere}
+.dtc-l{display:flex;align-items:center;gap:8px;margin-top:6px;font-size:15px;font-weight:600;line-height:20px;color:var(--fg)}.dtc-l.cu{color:var(--muted)}
+.dtc-l svg{width:16px;height:16px;flex:none}
+.dtc-ch{display:inline-flex;align-items:center;gap:6px;height:28px;margin-top:12px;padding:0 10px;border-radius:99px;background:#fff;color:#B45309;font-size:13px;font-weight:700;white-space:nowrap}
+.dtc-ch svg{width:15px;height:15px;flex:none}
+.dtc-go{position:absolute;top:50%;right:16px;margin-top:-18px;width:36px;height:36px;border-radius:99px;background:var(--d1);color:#fff;display:grid;place-items:center}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .dtc{background:var(--d3)}:root:not([data-theme="light"]) .dtc-t{color:var(--d4)}:root:not([data-theme="light"]) .dtc-ch{background:#2C230F;color:#F6B94A}:root:not([data-theme="light"]) .dtc-go{background:var(--d4);color:#14161A}}
+:root[data-theme="dark"] .dtc{background:var(--d3)}:root[data-theme="dark"] .dtc-t{color:var(--d4)}:root[data-theme="dark"] .dtc-ch{background:#2C230F;color:#F6B94A}:root[data-theme="dark"] .dtc-go{background:var(--d4);color:#14161A}
+.nav .bd.dot{min-width:10px;width:10px;height:10px;padding:0;border-radius:99px;top:2px;left:calc(50% + 8px)}
+.dtLui{display:flex;margin-bottom:2px}
+.dtChuyen{background:var(--blue-bg,#E7EFFD)!important;margin-top:12px}.dtChuyen .cau{font-size:14px;line-height:20px;color:var(--fg)}
+.manLop{position:fixed;inset:0;z-index:2;background:var(--bg);overflow:hidden;pointer-events:none;will-change:transform}
+.manLop.tren{z-index:25;box-shadow:-12px 0 32px rgba(0,0,0,.16)}
+.manTrong{position:absolute;top:0}
+.manNoi{position:absolute!important;margin:0!important;z-index:1}
+.manMo{position:absolute;inset:0;background:#000;opacity:0;pointer-events:none;z-index:2}
+.manMoDuoi{position:fixed;inset:0;z-index:24;background:#000;opacity:0;pointer-events:none}
+.manTren{will-change:transform}.manTren:not(.top){position:relative;z-index:3;background:var(--bg);min-height:100vh}
+.app.manAnCD .fab,.app.manAnCD .ccday,.app.manAnCD .bmoi,.app.manAnCD .tn-phao,.app.manAnCD .ttpill{opacity:0!important}
 </style>
 </head>
 <body>
@@ -2103,9 +2127,9 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
   // ---------- khung chính: thanh dưới theo vai trò ----------
   function cacTab() {
     var v = (S.toi || {}).vai;
-    if (v === 'chu') return [['ld', 'Lao động', 'ld'], ['cc', 'Giấy tờ', 'gt'], ['vdo', 'Content', 'vdo'], ['quy', 'Thu chi', 'quy'], ['tq', 'Tổng quan', 'tq']];
-    if (v === 'ketoan') return [['ld', 'Lao động', 'ld'], ['cc', 'Giấy tờ', 'gt'], ['vdo', 'Content', 'vdo'], ['quy', 'Thu chi', 'quy'], ['tn', 'Thu nhập', 'tn']];
-    return [['ld', 'Lao động', 'ld'], ['cc', 'Giấy tờ', 'gt'], ['vdo', 'Content', 'vdo'], ['tn', 'Thu nhập', 'tn']];
+    if (v === 'chu') return [['ld', 'Đối tác', 'dt'], ['cc', 'CCCD', 'cc'], ['vdo', 'Content', 'vdo'], ['quy', 'Thu chi', 'quy'], ['tq', 'Tổng quan', 'tq']];
+    if (v === 'ketoan') return [['ld', 'Đối tác', 'dt'], ['cc', 'CCCD', 'cc'], ['vdo', 'Content', 'vdo'], ['quy', 'Thu chi', 'quy'], ['tn', 'Thu nhập', 'tn']];
+    return [['ld', 'Đối tác', 'dt'], ['cc', 'CCCD', 'cc'], ['vdo', 'Content', 'vdo'], ['tn', 'Thu nhập', 'tn']];
   }
   var SVG0 = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">';
   var ICON = {
@@ -2116,34 +2140,36 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
     vdo: SVG0 + '<rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="M10 9.2v5.6l4.8-2.8z"/></svg>',
     gt: SVG0 + '<path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h6"/></svg>',   // b186: tab Giấy tờ
     cc: SVG0 + '<rect x="3" y="5" width="18" height="14" rx="2.5"/><circle cx="8.5" cy="11" r="2"/><path d="M5.5 16c.6-1.5 1.7-2.2 3-2.2s2.4.7 3 2.2M14 10h4M14 13.5h4"/></svg>',
+    dt: SVG0 + '<path d="M4 21V5.5A1.5 1.5 0 0 1 5.5 4h8A1.5 1.5 0 0 1 15 5.5V21"/><path d="M15 9.5h3.5A1.5 1.5 0 0 1 20 11v10M3 21h18M8 8h3M8 12h3M8 16h3"/></svg>',   // b225: tab Đối tác
     goi: SVG0 + '<path d="M5 4h3.5l1.8 4.5-2.3 1.4a11 11 0 0 0 6.1 6.1l1.4-2.3L20 15.5V19a1.5 1.5 0 0 1-1.6 1.5A16 16 0 0 1 3.5 5.6 1.5 1.5 0 0 1 5 4z"/></svg>',
     zalo: SVG0 + '<path d="M4 5h16v11H9l-5 4z"/></svg>',
     tim: SVG0 + '<circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>',
     cong: '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>'
   };
   function khung(tieu, phu, nut, thanTrong) {
-    var tabs = cacTab();
+    var tabs = cacTab(); S.lui = null;   // b225: màn mới chưa có nút quay lại
     $app.innerHTML = '<div class="top"><div class="row sp"><div style="min-width:0"><h2>' + esc(tieu) + '</h2><small>' + esc(phu) + '</small></div>' +
       '<button class="icb chuong" id="chuong" aria-label="Thông báo">' + ICON_CHUONG + '<span class="chuong-s"></span></button>' +
       '<button class="meBtn" id="me">' + (S.toi.anh ? '<img src="' + esc(S.toi.anh) + '" alt="">' : esc(chu(S.toi.ten))) + '</button></div>' + (nut || '') + '</div>' +
       '<main id="than">' + (thanTrong || '') + '</main>' +
-      '<nav class="nav">' + tabs.map(function (t) { return '<button data-t="' + t[0] + '" class="' + (S.tab === t[0] ? 'on' : '') + '">' + ICON[t[2]] + t[1] + '</button>'; }).join('') + '</nav>';
+      '<nav class="nav">' + tabs.map(function (t) { return '<button data-t="' + t[0] + '" class="' + ((S.dtGt ? 'ld' : S.tab) === t[0] ? 'on' : '') + '">' + ICON[t[2]] + t[1] + '</button>'; }).join('') + '</nav>';
     document.getElementById('me').onclick = moTaiKhoan;
     document.getElementById('chuong').onclick = chuongMo;
     try { var nv0 = document.querySelector('.nav'); if (nv0 && nv0.offsetHeight) document.documentElement.style.setProperty('--navH', nv0.offsetHeight + 'px'); } catch (e0) { }   // b198: thanh nút chính đặt sát trên thanh tab
-    document.querySelectorAll('.nav button').forEach(function (b) { b.onclick = function () { var t = b.getAttribute('data-t'); if (t === 'vdo' && S.tab !== 'vdo') KBV.phan = 'kb'; moTab(t); }; });
+    document.querySelectorAll('.nav button').forEach(function (b) { b.onclick = function () { var t = b.getAttribute('data-t'); if (t === 'vdo' && S.tab !== 'vdo') KBV.phan = 'kb'; if (t === 'ld') S.dtMo = false; moTab(t); }; });   // b225: chạm tab Đối tác luôn về danh sách công ty
     capBadge(); vdoBadge();
   }
   function moTab(t) {
     setTimeout(function () { if (typeof guiTomTat === 'function') guiTomTat(); }, 0);
     S.tab = t; S.hs = null; S.utMo = 0; S.vtMo = 0; luu('vlta_tab', t); window.scrollTo(0, 0);
+    S.dtGt = null; MAN.length = 0; if (t === 'cc') { CCS.theMo = false; CCS.dslMo = false; }   // b225: Thẻ / Danh sách thuộc Đối tác, tab CCCD chỉ còn việc chung
     if (t === 'tn') veThuNhap(); else if (t === 'vdo') veVideo(); else if (t === 'quy') veQuy(); else if (t === 'tq') veTQ(); else if (t === 'cc') veCCCD(); else { veDs(); taiDs(false, !!S.data[S.cty]); }   // đã có danh sách trong máy: tải ngầm
   }
   function vaoApp() {
     var cs = S.toi.cty || [], cs2 = cs.concat(S.toi.ctt || []);
     if (!S.cty || !cs2.some(function (c) { return c.ma === S.cty; })) S.cty = doc('vlta_cty') || (cs.filter(function (c) { return c.het; })[0] || cs[0] || {}).ma;
     if (!cs2.some(function (c) { return c.ma === S.cty; })) S.cty = (cs.filter(function (c) { return c.het; })[0] || cs[0] || {}).ma;   // 12/11: công ty đã nhớ không còn trong quyền
-    var uCty = ((/[?&]cty=([A-Za-z0-9_]+)/.exec(location.search) || [])[1] || '').toUpperCase(); if (uCty && cs2.some(function (c) { return c.ma === uCty; })) { S.cty = uCty; luu('vlta_cty', uCty); }   // b153: mở từ thông báo nhắc nhận việc (?tab=ld&cty=TREND)
+    var uCty = ((/[?&]cty=([A-Za-z0-9_]+)/.exec(location.search) || [])[1] || '').toUpperCase(); if (uCty && cs2.some(function (c) { return c.ma === uCty; })) { S.cty = uCty; luu('vlta_cty', uCty); S.dtMo = true; }   // b153: mở từ thông báo nhắc nhận việc (?tab=ld&cty=TREND)
     setTimeout(function () { (S.toi.ctt || []).forEach(function (c) { cqTai(c.ma, 1); }); }, 2500);   // 12/11: tải sẵn danh sách chính thức
     var t = (/[?&]tab=([a-z]+)/.exec(location.search) || [])[1] || doc('vlta_tab'); if (!cacTab().some(function (x) { return x[0] === t; })) t = 'ld';   // bản 140: mở từ thông báo (?tab=vdo)
     if (/[?&]tab=vdo/.test(location.search)) KBV.phan = /[?&]p=kb/.test(location.search) ? 'kb' : 'vdo';   // bản 145: thông báo kịch bản mở phần Kịch bản, thông báo video mở phần Video
@@ -2185,6 +2211,7 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
       var choDoi = o.cho && !o.cho.loi && !giongJ(o.cho.ds, S.cho && S.cho.ds);
       if (o.cho && !o.cho.loi) { if (!im || choDoi) datCho(o.cho); else S.cho = o.cho; }
       if (S.tab === 'ld' && !S.hs && !S.utMo && !S.vtMo && (!im || doi)) veListe();
+      if (S.tab === 'ld' && !S.dtMo && !S.hs) veDTCap();   // b225
       if (S.tab === 'tq' && TQ && (S.tqNhom || 'ln') === 'ln' && (!im || doi)) hienTQ(TQ);   // 21/10: Tổng quan có dòng "Đang đi làm" theo danh sách vừa tải
       if (!S.daTaiTruoc) { S.daTaiTruoc = 1; setTimeout(taiTruoc, 800); }
       setTimeout(taiSanPhieu, 1500);
@@ -2347,7 +2374,7 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
     }).join('') + '</div>';
     return h;
   }
-  function ctyChuyen(ma) { if (!ma) return; S.cty = ma; S.loc = 'all'; luu('vlta_cty', S.cty); veDs(); if (!laCQ(S.cty) && !S.data[S.cty]) taiDs(true); }
+  function ctyChuyen(ma) { if (!ma) return; S.dtMo = true; S.cty = ma; S.loc = 'all'; luu('vlta_cty', S.cty); veDs(); if (!laCQ(S.cty) && !S.data[S.cty]) taiDs(true); }
   function ctyMoDs(cs) {
     var g = ctyNhom(cs).map(function (x) { var n = 0; x.ds.forEach(function (c) { n += choCuaCty(c.ma); }); return { x: x, n: n }; });
     g.sort(function (a, b) { return (b.n > 0) - (a.n > 0); });   // công ty có việc chờ lên đầu, còn lại giữ thứ tự
@@ -2361,14 +2388,229 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
     document.getElementById('ctyThoi').onclick = function () { sh.remove(); };
     var t = document.getElementById('ctyTim'); if (t) t.oninput = function () { var k = kd(t.value).trim(); sh.querySelectorAll('#ctyDs [data-k]').forEach(function (b) { b.style.display = !k || b.getAttribute('data-k').indexOf(k) >= 0 ? '' : 'none'; }); };
   }
+
+  // ---------- b225 (25/11): TAB ĐỐI TÁC – danh sách công ty thẻ màu (bản vẽ đợt 3 lần 9A), chọn từng công ty để làm việc ----------
+  var DT_MAU = { HOJEONG: ['#6D3FD6', '#F0EAFF', '#2B2148', '#C4B2FF'], MINGJIE: ['#0F766E', '#E1F4F1', '#15302D', '#7FD8CC'], CHUNQIU: ['#B8336A', '#FCE8F1', '#3A1A28', '#F5A3C7'],
+    BEST: ['#8A5A2B', '#F5ECE2', '#33261A', '#E0B88E'], TREND: ['#0E6A8C', '#E2F0F6', '#16303B', '#8DD0EC'] };
+  var DT_MAU_KHAC = [['#4F5BD5', '#E9EBFC', '#1E2246', '#B3BAF5'], ['#5E7A12', '#EEF3DF', '#252E10', '#BFD68A'], ['#9C4221', '#FAEBE3', '#3A1F14', '#F2B79E'], ['#4B5563', '#EEF0F3', '#23272E', '#C3C9D2']];
+  var DT_NG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.5"/><path d="M3 20c0-3.3 2.7-5.5 6-5.5s6 2.2 6 5.5"/><path d="M16 4.6a3.5 3.5 0 0 1 0 6.8M18 14.8c1.8.7 3 2.6 3 5.2"/></svg>';
+  var DT_CANH = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10.3 3.9 2.4 17.6A2 2 0 0 0 4.1 20.6h15.8a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/><path d="M12 9.5v4.2M12 17.2h.01"/></svg>';
+  var DT_MUI = '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg>';
+  function dtMau(c) {   // màu nhận diện công ty: dùng chung ở mọi chỗ (thẻ Đối tác, sau này Tổng quan)
+    var k = String(c.ma || '').toUpperCase(), t = kd(c.ten || '').toUpperCase(), x;
+    for (x in DT_MAU) if (k.indexOf(x) === 0 || t.indexOf(x) === 0) return DT_MAU[x];
+    var h = 0; for (var i = 0; i < k.length; i++) h = (h * 31 + k.charCodeAt(i)) % 997;
+    return DT_MAU_KHAC[h % DT_MAU_KHAC.length];
+  }
+  function ktLyDo(p) { var t = String(p.cb || '').trim(); return /vượt (?:lương|số được nhận)/i.test(t) ? '' : t; }   // giống lyDo trong veListe
+  function ktDsCua(d) {   // người cần kiểm tra của 1 công ty (giống khối Cần kiểm tra trong trang công ty)
+    if (!d || !d.ds) return [];
+    var out = [], da = {};
+    d.ds.filter(ktLyDo).concat(d.ds.filter(function (p) { return p.con < 0; }), d.ds.filter(function (p) { return p.moi; })).forEach(function (p) { var k = d.ds.indexOf(p); if (da[k]) return; da[k] = 1; out.push(p); });
+    return out;
+  }
+  function viecCty(c) {   // số loại việc cần làm của 1 công ty
+    var n = 0, ma = c.ma;
+    if (laCQ(ma)) { try { if (cqNhacDs().some(function (x) { return x.ma === ma; })) n++; } catch (e) { } }
+    else {
+      var d = S.data[ma];
+      if (d && d.ds) { if (ktDsCua(d).length) n++; if (new Date().getDay() === 3 && d.ds.some(function (p) { return p.con > 0; })) n++; }
+      try { if (tbDs().some(function (x) { return x.cty === ma; })) n++; } catch (e) { }
+    }
+    try { if (choCuaCty(ma)) n++; } catch (e) { }
+    return n;
+  }
+  function soCty(c) {   // số người hiện trên thẻ công ty
+    if (laCQ(c.ma)) { var q = CQ.d[c.ma]; return q ? { so: (q.dem || {}).dangLam || 0, nhan: 'người đang làm' } : null; }
+    var d = S.data[c.ma]; if (!d || !d.ds) return null;
+    var hn = d.moc === ymdNay();
+    return { so: soDiLam(d), nhan: !d.moc ? 'người đang làm' : hn ? 'người đi làm hôm nay' : 'người đi làm ngày ' + ngayDM(d.moc), cu: !!(d.moc && !hn) };
+  }
+  function dtThe(o) {
+    var c = o.c, m = dtMau(c), s = soCty(c);
+    return '<button class="dtc" data-c="' + esc(c.ma) + '" style="--d1:' + m[0] + ';--d2:' + m[1] + ';--d3:' + m[2] + ';--d4:' + m[3] + '">' +
+      '<b class="dtc-t">' + esc(c.ten) + '</b>' +
+      '<span class="dtc-l' + (s && s.cu ? ' cu' : '') + '">' + DT_NG + '<span>' + (s ? s.so + ' ' + s.nhan : 'Đang tải số người…') + '</span></span>' +
+      (o.v ? '<span class="dtc-ch">' + DT_CANH + o.v + ' việc cần làm</span>' : '') +
+      '<span class="dtc-go" aria-hidden="true">' + DT_MUI + '</span></button>';
+  }
+  function veDT() {
+    S.hs = null; S.dtGt = null; S.qDt = S.qDt || '';
+    khung('Đối tác', 'Chọn công ty để làm việc',
+      '<input class="search' + (S.qDt ? '' : ' hidden') + '" id="qDt" type="search" placeholder="Tìm tên, mã NV hoặc SĐT…" value="' + esc(S.qDt) + '" style="margin-top:10px">',
+      '<div id="dtDs" class="dtW"></div>');
+    document.getElementById('chuong').insertAdjacentHTML('beforebegin', '<button class="icb" id="timDt" aria-label="Tìm người" style="margin-left:auto;margin-right:8px">' + ICON_TIM + '</button>');
+    var q = document.getElementById('qDt');
+    document.getElementById('timDt').onclick = function () { q.classList.toggle('hidden'); if (!q.classList.contains('hidden')) q.focus(); else { q.value = S.qDt = ''; veDTCap(); } };
+    q.oninput = function () { S.qDt = q.value; veDTCap(); };
+    veDTCap();
+  }
+  function veDTCap() {
+    var box = document.getElementById('dtDs'); if (!box || S.tab !== 'ld' || S.dtMo) return;
+    var q = String(S.qDt || '').trim();
+    if (q) {
+      var kq = timKhop(q);
+      box.innerHTML = kq.length ? '<div class="sec v7sec">Kết quả · ' + kq.length + '</div><div class="grp">' + kq.map(dongTim).join('') + '</div>' : '<div class="empty" style="padding:18px 10px">Không có ai khớp "' + esc(q) + '".</div>';
+      ganTim(box); return;
+    }
+    var u = S.toi || {}, tv = u.cty || [], ct = u.ctt || [], sale = tv.some(function (c) { return !c.het; });
+    var nhom = sale ? [['Bạn phụ trách', 'Số của cả công ty', tv.filter(function (c) { return c.het; })], ['Công ty khác', 'Số người bạn tuyển', tv.filter(function (c) { return !c.het; })], ['Chính thức', '', ct]]
+      : [['Thời vụ', '', tv], ['Chính thức', '', ct]];
+    var h = '';
+    nhom.forEach(function (g) {
+      if (!g[2].length) return;
+      var ds = g[2].map(function (c, i) { return { c: c, i: i, v: viecCty(c) }; }).sort(function (a, b) { return ((b.v > 0) - (a.v > 0)) || (a.i - b.i); });   // công ty có việc cần làm lên đầu
+      h += '<div class="sec v7sec dtSec"><span>' + g[0] + '</span>' + (g[1] ? '<small>' + g[1] + '</small>' : '') + '</div><div class="dtDs">' + ds.map(dtThe).join('') + '</div>';
+    });
+    box.innerHTML = h || '<div class="empty">Tài khoản chưa được xem công ty nào.</div>';
+    box.querySelectorAll('.dtc').forEach(function (b) { b.onclick = function () { moCty(b.getAttribute('data-c')); }; });
+  }
+  function moCty(ma) { chuyenMan(1, function () { S.q = ''; ctyChuyen(ma); }); }
+  function veGt() {   // nhóm Giấy tờ đi làm trong trang công ty: Danh sách đi làm / nhận việc, Thẻ ra vào (HOJEONG)
+    var box = document.getElementById('gtBox'); if (!box || laCQ(S.cty)) return;
+    var L = CCS.dsl, c = S.cty;
+    if (!L.ctys) { if (L.ctyDang) setTimeout(veGt, 900); else dslCtyTai(veGt); }
+    var g = (L.ctys || []).filter(function (x) { return x.ma === c; })[0], h = '';
+    if (g) h += v8Hang('gtDs', 'ds', g.cq ? 'Danh sách nhận việc' : 'Danh sách đi làm theo ca', '');
+    if (c === 'HOJEONG') h += v8Hang('gtThe', 'the', 'Thẻ ra vào', '');
+    box.innerHTML = h ? '<div class="sec v7sec">Giấy tờ đi làm</div><div class="grp v8nav">' + h + '</div>' : '';
+    var b; if ((b = document.getElementById('gtDs'))) b.onclick = function () { moGt('ds'); };
+    if ((b = document.getElementById('gtThe'))) b.onclick = function () { moGt('the'); };
+  }
+  function moGt(loai) {   // mở Danh sách / Thẻ ra vào của công ty đang xem
+    chuyenMan(1, function () {
+      if (CCS.dang || CCS.soat) CCS.anLuot = true;   // lượt cắt ghép đang chạy ngầm: không chắn màn
+      CCS.kho = null; CCS.theMo = loai === 'the'; CCS.dslMo = loai === 'ds';
+      if (loai === 'ds' && !CCS.dsl.sua && CCS.dsl.cty !== S.cty) { CCS.dsl.cty = S.cty; luu('vlta_dsl_cty', S.cty); dslLvMd(); }
+      S.dtGt = loai; S.tab = 'cc'; veCCCD();
+    });
+  }
+  document.addEventListener('click', function (e) { var b = e.target && e.target.closest ? e.target.closest('#ccSangDt') : null; if (!b) return; S.dtMo = false; moTab('ld'); });
+
+  // ---------- b225: chuyển màn trượt như iPhone: đẩy vào từ phải, lùi ra bên phải, vuốt từ mép trái để lùi ----------
+  // Thanh tab (cố định) đứng yên; chỉ phần đầu trang + thân trang trượt (bài học b-: không dịch cả khung app)
+  var MAN = [], MAN_DANG = 0, MAN_CD = '.fab,.ccday,.bmoi,.tn-phao,.ttpill,.tt', MAN_EZ = 'cubic-bezier(.32,.72,0,1)';
+  function manGiam() { try { return window.matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) { return false; } }
+  function manTrang() { return [].filter.call($app.children, function (e) { return !e.classList.contains('nav') && !e.classList.contains('sheet') && e.id !== 'ptr'; }); }
+  function manChup() {   // chụp màn đang xem thành 1 lớp cố định, đúng chỗ đang cuộn
+    var y = window.pageYOffset || 0, ra = $app.getBoundingClientRect(), lop = document.createElement('div'), tr = document.createElement('div'), noi = [];
+    lop.className = 'manLop'; tr.className = 'manTrong'; tr.style.cssText = 'left:' + ra.left + 'px;width:' + ra.width + 'px;transform:translate3d(0,' + ra.top + 'px,0)';
+    manTrang().forEach(function (e) {
+      var k = e.cloneNode(true);
+      if (e.classList.contains('top')) { var r0 = e.getBoundingClientRect(), k2 = e.cloneNode(true); k2.classList.add('manNoi'); k2.style.cssText += ';top:' + r0.top + 'px;left:' + r0.left + 'px;width:' + r0.width + 'px'; noi.push(k2); k.style.visibility = 'hidden'; }
+      var gs = e.querySelectorAll(MAN_CD), ks = k.querySelectorAll(MAN_CD);
+      [].forEach.call(gs, function (g, i) {
+        var c = ks[i]; if (!c) return; c.remove();
+        var r = g.getBoundingClientRect(); if (!r.width || getComputedStyle(g).position !== 'fixed') return;
+        var c2 = g.cloneNode(true); c2.style.cssText += ';position:absolute;left:' + r.left + 'px;top:' + r.top + 'px;width:' + r.width + 'px;height:' + r.height + 'px;right:auto;bottom:auto;margin:0;transform:none'; noi.push(c2);
+      });
+      tr.appendChild(k);
+    });
+    lop.appendChild(tr); noi.forEach(function (n) { lop.appendChild(n); });
+    var mo = document.createElement('div'); mo.className = 'manMo'; lop.appendChild(mo);
+    [].forEach.call(lop.querySelectorAll('[id]'), function (n) { n.removeAttribute('id'); });   // bản chụp không được trùng id với màn thật
+    return { lop: lop, y: y };
+  }
+  function manDong(el, tu, den, ms, ez) { return el.animate([{ transform: tu }, { transform: den }], { duration: ms, easing: ez || MAN_EZ, fill: 'forwards' }); }
+  function manHuy(el) { try { (el.getAnimations ? el.getAnimations() : []).forEach(function (a) { a.cancel(); }); } catch (e) { } el.style.transform = ''; }
+  function manHienCD() { [].forEach.call($app.querySelectorAll(MAN_CD), function (g) { try { g.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 180, easing: 'ease-out' }); } catch (e) { } }); }
+  function chuyenMan(huong, fn) {   // huong 1: vào màn con, -1: lùi về màn trước
+    if (MAN_DANG || manGiam() || !Element.prototype.animate || !$app.querySelector('.top')) {
+      var tr0 = huong > 0 ? null : MAN.pop(); if (huong > 0) MAN.push(null);
+      fn(); window.scrollTo(0, tr0 ? tr0.y : 0); return;
+    }
+    var cu = manChup(), W = window.innerWidth, xong, moi, nen = null, tr = null;
+    if (huong > 0) {
+      fn(); window.scrollTo(0, 0);
+      moi = manTrang(); cu.lop.classList.add('duoi'); document.body.appendChild(cu.lop);
+      moi.forEach(function (e) { e.classList.add('manTren'); }); $app.classList.add('manAnCD'); MAN_DANG = 1;
+      moi.forEach(function (e) { xong = manDong(e, 'translate3d(' + W + 'px,0,0)', 'translate3d(0,0,0)', 440); });
+      manDong(cu.lop, 'translate3d(0,0,0)', 'translate3d(' + (-0.3 * W) + 'px,0,0)', 440);
+      cu.lop.lastChild.animate([{ opacity: 0 }, { opacity: 0.12 }], { duration: 440, easing: MAN_EZ, fill: 'forwards' });
+      xong.onfinish = function () {
+        moi.forEach(function (e) { manHuy(e); e.classList.remove('manTren'); }); $app.classList.remove('manAnCD'); manHienCD();
+        manHuy(cu.lop); try { cu.lop.lastChild.getAnimations().forEach(function (a) { a.cancel(); }); } catch (e) { }
+        cu.lop.remove(); cu.lop.classList.remove('duoi'); MAN.push(cu); MAN_DANG = 0;
+      };
+    } else {
+      tr = MAN.pop();
+      fn(); window.scrollTo(0, tr ? tr.y : 0);
+      moi = manTrang(); cu.lop.classList.add('tren'); document.body.appendChild(cu.lop);
+      nen = document.createElement('div'); nen.className = 'manMoDuoi'; document.body.appendChild(nen); MAN_DANG = 1;
+      moi.forEach(function (e) { manDong(e, 'translate3d(' + (-0.3 * W) + 'px,0,0)', 'translate3d(0,0,0)', 380); });
+      nen.animate([{ opacity: 0.12 }, { opacity: 0 }], { duration: 380, easing: MAN_EZ, fill: 'forwards' });
+      xong = manDong(cu.lop, 'translate3d(0,0,0)', 'translate3d(' + W + 'px,0,0)', 380);
+      xong.onfinish = function () { moi.forEach(manHuy); cu.lop.remove(); nen.remove(); MAN_DANG = 0; };
+    }
+  }
+  function dtNutLui(nhan, fn) {   // nút ‹ quay lại ở đầu màn con; cũng là việc khi vuốt từ mép trái
+    var top = $app.querySelector('.top'); if (!top) return;
+    top.insertAdjacentHTML('afterbegin', '<button class="v8lui dtLui" id="dtLui"><i>‹</i>' + esc(nhan) + '</button>');
+    S.lui = fn; S.luiNode = top;
+    document.getElementById('dtLui').onclick = luiMan;
+  }
+  function luiMan() { var f = S.lui; if (!f || !S.luiNode || !document.body.contains(S.luiNode) || MAN_DANG) return; chuyenMan(-1, f); }
+  // vuốt từ mép trái màn hình để lùi (theo ngón tay, thả quá 1/3 màn hoặc hất nhanh thì lùi)
+  var VU = null;
+  document.addEventListener('touchstart', function (e) {
+    if (VU || MAN_DANG || e.touches.length !== 1) return;
+    var t = e.touches[0]; if (t.clientX > 22) return;
+    if (!S.lui || !S.luiNode || !document.body.contains(S.luiNode) || document.querySelector('.sheet') || manGiam() || !Element.prototype.animate) return;
+    VU = { x0: t.clientX, y0: t.clientY, bat: 0, dx: 0, ls: [[Date.now(), t.clientX]] };
+  }, { passive: true });
+  document.addEventListener('touchmove', function (e) {
+    if (!VU) return;
+    var t = e.touches[0], dx = t.clientX - VU.x0, dy = t.clientY - VU.y0;
+    if (!VU.bat) {
+      if (Math.abs(dy) > 10 && Math.abs(dy) > Math.abs(dx)) { VU = null; return; }
+      if (dx < 8) return;
+      VU.bat = 1; VU.W = window.innerWidth; VU.ds = manTrang(); MAN_DANG = 1;
+      VU.ds.forEach(function (x) { x.classList.add('manTren'); }); $app.classList.add('manAnCD');
+      VU.duoi = MAN.length ? MAN[MAN.length - 1] : null;
+      if (VU.duoi) { VU.duoi.lop.classList.add('duoi'); document.body.appendChild(VU.duoi.lop); }
+    }
+    if (e.cancelable) e.preventDefault();
+    VU.dx = Math.max(0, dx); VU.ls.push([Date.now(), t.clientX]); if (VU.ls.length > 6) VU.ls.shift();
+    var p = Math.min(1, VU.dx / VU.W);
+    VU.ds.forEach(function (x) { x.style.transform = 'translate3d(' + VU.dx + 'px,0,0)'; });
+    if (VU.duoi) { VU.duoi.lop.style.transform = 'translate3d(' + (-0.3 * VU.W * (1 - p)) + 'px,0,0)'; VU.duoi.lop.lastChild.style.opacity = String(0.12 * (1 - p)); }
+  }, { passive: false });
+  function vuTha() {
+    var v = VU; VU = null; if (!v || !v.bat) return;
+    var a = v.ls[0], b = v.ls[v.ls.length - 1], toc = b[0] > a[0] ? (b[1] - a[1]) / (b[0] - a[0]) : 0, lui = v.dx > v.W / 3 || (toc > 0.45 && v.dx > 24);
+    var den = lui ? v.W : 0, ms = Math.max(140, Math.round(Math.abs(den - v.dx) / v.W * 360)), ez = 'cubic-bezier(.2,.8,.2,1)', xong = null;
+    v.ds.forEach(function (x) { var tu = x.style.transform; x.style.transform = ''; xong = manDong(x, tu, 'translate3d(' + den + 'px,0,0)', ms, ez); });
+    if (v.duoi) {
+      var tu2 = v.duoi.lop.style.transform; v.duoi.lop.style.transform = ''; manDong(v.duoi.lop, tu2, 'translate3d(' + (lui ? 0 : -0.3 * v.W) + 'px,0,0)', ms, ez);
+      var mo = v.duoi.lop.lastChild, o0 = mo.style.opacity; mo.style.opacity = ''; mo.animate([{ opacity: o0 }, { opacity: lui ? 0 : 0.12 }], { duration: ms, easing: ez, fill: 'forwards' });
+    }
+    xong.onfinish = function () {
+      var duoi = v.duoi;
+      if (duoi) { manHuy(duoi.lop); try { duoi.lop.lastChild.getAnimations().forEach(function (q) { q.cancel(); }); } catch (er) { } duoi.lop.lastChild.style.opacity = ''; }
+      if (lui) {
+        var f = S.lui; MAN.pop(); MAN_DANG = 0;
+        if (f) f();
+        window.scrollTo(0, duoi ? duoi.y : 0);
+        if (duoi) duoi.lop.remove();
+        $app.classList.remove('manAnCD'); manHienCD();
+      } else {
+        v.ds.forEach(function (x) { manHuy(x); x.classList.remove('manTren'); }); $app.classList.remove('manAnCD'); manHienCD();
+        if (duoi) { duoi.lop.remove(); duoi.lop.classList.remove('duoi'); }
+        MAN_DANG = 0;
+      }
+    };
+  }
+  document.addEventListener('touchend', vuTha); document.addEventListener('touchcancel', vuTha);
   function veDs() {
+    if (!S.dtMo) { veDT(); return; }   // b225: tab Đối tác mở danh sách công ty trước
     S.hs = null; S.loc = S.loc || 'all';
     var u = S.toi, cs = (u.cty || []).concat(u.ctt || []), cq = laCQ(S.cty);   // 12/11: thêm công ty cấp chính thức (Trend)
-    khung('Lao động', '',
-      ctyChonHtml(cs) +
+    var cT = cs.filter(function (c) { return c.ma === S.cty; })[0] || { ma: S.cty, ten: S.cty };
+    khung(cT.ten, ctyHinhThuc(cT),
       '<input class="search' + (S.q ? '' : ' hidden') + '" id="q" type="search" placeholder="Tìm tên, mã NV hoặc SĐT…" value="' + esc(S.q) + '" style="margin-top:10px">',
       '<div id="ldHead"></div><div class="list" id="list">' + '<div class="sk"></div>'.repeat(6) + '</div><div id="ldDuoi"></div>' +
       '<button class="fab" id="them">' + ICON.cong + (cq ? 'Thêm lịch phỏng vấn' : 'Thêm người') + '</button>');
+    dtNutLui('Đối tác', function () { S.dtMo = false; S.q = ''; veDs(); });   // b225
     document.getElementById('chuong').insertAdjacentHTML('beforebegin', '<button class="icb" id="timLd" aria-label="Tìm người" style="margin-left:auto;margin-right:8px">' + ICON_TIM + '</button>');
     document.getElementById('timLd').onclick = function () { var q = document.getElementById('q'); q.classList.toggle('hidden'); if (!q.classList.contains('hidden')) q.focus(); else { q.value = S.q = ''; if (laCQ(S.cty)) cqVe(); else veListe(); } doTop(); };
     document.querySelectorAll('#ctySeg button, #htSeg button').forEach(function (b) { b.onclick = function () { ctyChuyen(b.getAttribute('data-c')); }; });
@@ -2391,12 +2633,12 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
     var tenLoc = function (f) { return f === 'am' ? 'Nhận trước' : f === 'moi' ? 'Người mới' : /^cb:/.test(f) ? f.slice(3) : 'Cần kiểm tra'; };
     var luc = '<button class="link" id="capNhat" style="padding:0;font-size:13px">Cập nhật ' + (S.cty === 'BEST' ? 'chấm công' : 'vân tay') + '</button>';
     var noiDs = !k && canTra.length > 0;   // b217: số tổng và danh sách Còn phải trả chung một khung
-    hd.innerHTML = '<div class="v7viec" id="v7viec">' + theDauHtml(d) + '<div id="lkBox"></div><div id="choKhac"></div></div><div id="tbBox"></div><div id="choBox"></div><div id="ktBox"></div>' +
-      '<div class="card hero' + (noiDs ? ' v7tren' : '') + '"><div class="meta">Còn phải trả' + (d.ky ? ' · kỳ ' + esc(String(d.ky).replace(/\/\d{4}/g, '')) : '') + '</div><div class="row" style="align-items:baseline;gap:4px 10px;flex-wrap:wrap"><span class="big num' + (tong > 0 ? '' : ' c-xanh') + '">' + vnd(tong) + '</span>' + (tong > 0 ? '<span class="pill mo">Trả vào thứ Tư</span>' : '<span class="pill good">Đã trả đủ</span>') + '</div>' +
+    hd.innerHTML = '<div id="tbBox"></div><div id="choBox"></div><div id="ktBox"></div>' +   // b225: việc cần làm lên đầu; Bảng công xuống dưới Giấy tờ đi làm
+      '<div class="card hero' + (noiDs ? ' v7tren' : '') + '"><div class="meta">Còn phải trả' + (d.ky ? ' · kỳ ' + esc(String(d.ky).replace(/\/\d{4}/g, '')) : '') + '</div><div class="row" style="align-items:baseline;gap:4px 10px;flex-wrap:wrap"><span class="big num' + (tong > 0 ? '' : ' c-xanh') + '">' + vnd(tong) + '</span>' + (tong > 0 ? '' + (new Date().getDay() === 3 ? '<span class="pill warn">Hôm nay trả lương</span>' : '<span class="pill mo">Trả vào thứ Tư</span>') : '<span class="pill good">Đã trả đủ</span>') + '</div>' +
       (canTra.length ? '<div class="meta">' + canTra.length + ' người</div>' : '') +
       (d.het ? '' : '<div class="meta cau">Bạn thấy những người bạn tuyển ở công ty này.</div>') + '</div>';
     // b197: việc phải làm (Cần kiểm tra, Còn phải trả) lên trên; các lối tắt và thống kê người đi làm các nhà xuống dưới danh sách
-    var dz = document.getElementById('ldDuoi') || hd; if (dz !== hd) dz.innerHTML = ''; dz.insertAdjacentHTML('beforeend', '<div id="dlBox"></div><div id="nhaBox"></div><div class="grp v7nav" id="ldNut"></div>');   // b217: mục Người đi làm (thẻ ngày + bảng các nhà), rồi nhóm lối tắt
+    var dz = document.getElementById('ldDuoi') || hd; if (dz !== hd) dz.innerHTML = ''; dz.insertAdjacentHTML('beforeend', '<div id="gtBox"></div><div id="v7w"><div class="sec v7sec">Bảng công</div><div class="v7viec" id="v7viec">' + theDauHtml(d) + '<div id="lkBox"></div></div></div><div id="dlBox"></div><div id="nhaBox"></div><div class="grp v7nav" id="ldNut"></div>');   // b217: mục Người đi làm (thẻ ngày + bảng các nhà), rồi nhóm lối tắt
     var dlB = document.getElementById('dlBox'), dlH = diLamHtml(d); if (dlB) dlB.innerHTML = dlH ? '<div class="sec v7sec">Người đi làm</div>' + dlH : '';
     dz = document.getElementById('ldNut'); dz.insertAdjacentHTML('beforeend', blTheHtml());
     ganVtThe(); veTB(); veLK(); taiLK();
@@ -2405,7 +2647,7 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
     document.getElementById('moBL').onclick = function () { blMo(S.cty); };   // b173; b210 thành thẻ nổi bật phía trên
     if (!BL.d[S.cty]) blTai(S.cty, 1).then(null, function () { });   // b185: máy chưa có bảng lương công ty này thì tải sẵn ngầm
     var bcaB = document.getElementById('moBCA'); if (bcaB) bcaB.onclick = function () { bcaMo(S.cty); };   // b179; b210 thành thẻ trên cùng thay thẻ vân tay
-    veCho(); v7Viec();
+    veCho(); v7Viec(); veGt();
     var cn = document.getElementById('capNhat'); if (cn) cn.onclick = moCapNhat;
     if (S.cty === 'HOJEONG') {
       var cnN = S.cn && S.cn.cty === S.cty ? S.cn.ds.length : null;
@@ -2582,6 +2824,7 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
 
   // ---------- hồ sơ + phiếu ----------
   function moHs(p, giu) {
+    if (!S.hs && !moHs._v && $app.querySelector('.top')) { moHs._v = 1; try { chuyenMan(1, function () { moHs(p, giu); }); } finally { moHs._v = 0; } return; }   // b225
     if (!p) return;
     var coThang = true, cu = !!p.fid, nay = cu ? nguoiThangNay(p) : null;
     S.hs = { p: p, kieu: 'TUAN', ngay: '' };
@@ -2614,7 +2857,8 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
       '<div class="sec" style="margin:6px 4px -6px">Thông tin</div><div class="card"><div class="kv">' +
       [['Ngày sinh', p.ns], ['Giới tính', inHoaThuong(p.gt)], ['CCCD', p.cccd], ['Ngày vào làm', p.nvao], ['Ca', p.ca], ['SĐT', p.sdt], ['Địa chỉ', inHoaThuong(p.dc)], cu ? ['Làm lần cuối', p.vt ? ngayDM(p.vt) + '/' + String(p.vt).slice(0, 4) : ''] : ['Tình trạng', /^LÀM$/i.test(p.ghi) ? 'Đang làm' : /^NGHỈ$/i.test(p.ghi) ? 'Đã nghỉ' : ''], ['Ghi chú', /^(LÀM|NGHỈ)$/i.test(p.ghi) ? '' : p.ghi]]
         .filter(function (x) { return x[1]; }).map(function (x) { return '<span>' + x[0] + '</span><b>' + esc(x[1]) + '</b>'; }).join('') + '</div></div></main>';
-    document.getElementById('bk').onclick = function () { S.hs = null; veDs(); };
+    S.lui = function () { S.hs = null; veDs(); }; S.luiNode = $app.querySelector('.top');   // b225: nút ‹ và vuốt mép trái
+    document.getElementById('bk').onclick = luiMan;
     ganTimHs();
     var bNay = document.getElementById('hsNay'); if (bNay) bNay.onclick = function () { moHs(nay); };
     if (!cu) veHsCho();
@@ -4316,7 +4560,14 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
     return CCS.kho ? 'Kho CCCD đã lưu trên Drive' : CCS.dslMo ? (dslCq() ? 'Lập danh sách nhận việc' : 'Lập danh sách đi làm theo ca') : CCS.theMo ? 'In thẻ ra vào HOJEONG' : 'Ghép 2 mặt CCCD, in khổ A4';
   }
   function veCCCD() {
-    khung('Giấy tờ đi làm', ccPhu(), '', '<div id="ccThan" class="ccw"></div>');
+    if (S.dtGt) {   // b225: Thẻ ra vào / Danh sách đi làm nằm trong Đối tác › công ty
+      var cq = S.dtGt === 'ds' && dslCq();
+      khung(S.dtGt === 'the' ? 'Thẻ ra vào' : cq ? 'Danh sách nhận việc' : 'Danh sách đi làm', S.dtGt === 'the' ? 'Làm thẻ, in màu cho người đi làm ' + S.cty : cq ? 'Mẫu của ' + S.cty + ', gửi nhân sự trước 08:00' : 'Lập theo ca, in và gửi nhân sự ' + S.cty, '', '<div id="ccThan" class="ccw"></div>');
+      var cT = ((S.toi && S.toi.cty) || []).concat((S.toi && S.toi.ctt) || []).filter(function (c) { return c.ma === S.cty; })[0];
+      dtNutLui(cT ? cT.ten : S.cty, function () { CCS.theMo = false; CCS.dslMo = false; CCS.kho = null; S.dtGt = null; S.tab = 'ld'; S.dtMo = true; veDs(); });
+      ccVe(); return;
+    }
+    khung('CCCD', ccPhu(), '', '<div id="ccThan" class="ccw"></div>');
     ccVe(); ccTamDem();
   }
   function ccCap() {   // 0) cặp anh ghép tay ; 1) mặt trước + mặt sau cùng số CCCD (máy chủ đọc) ; 2) ảnh chưa có số: ghép theo thứ tự chọn
@@ -4532,7 +4783,12 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
   function ccVe() {
     if (THUC.on && !ccBan()) ccThuc(0);
     var t = document.getElementById('ccThan'); if (!t || S.tab !== 'cc') return;
-    var phu = document.querySelector('.top small'); if (phu) phu.textContent = ccPhu();   // b186
+    var muonGt = CCS.theMo ? 'the' : CCS.dslMo ? 'ds' : null;   // b225: Thẻ / Danh sách mở ở đâu cũng đưa về Đối tác › công ty
+    if (muonGt !== (S.dtGt || null)) {
+      if (muonGt) { S.dtGt = muonGt; S.dtMo = true; var cG = muonGt === 'the' ? 'HOJEONG' : ((CCS.dsl.sua && CCS.dsl.sua.cty) || CCS.dsl.cty || S.cty); if (cG && cG !== S.cty) { S.cty = cG; luu('vlta_cty', cG); } veCCCD(); return; }
+      S.dtGt = null; S.tab = 'ld'; S.dtMo = true; veDs(); return;
+    }
+    var phu = document.querySelector('.top small'); if (phu && !S.dtGt) phu.textContent = ccPhu();   // b186
     if (CCS.kho) { ccVeKho(t); return; }
     if (CCS.duyet) { ccVeDuyet(t); return; }
     if (CCS.dslMo && (CCS.anLuot || !CCS.dang && !CCS.soat)) { dslVe(t); return; }   // b224: đã rời lượt thì sang Thẻ / Danh sách được, lượt vẫn chạy
@@ -4547,7 +4803,9 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
         '<button class="btn" id="ccChon">Chọn ảnh trong album</button></div>' +
         '<div class="grp v8nav">' + (CCS.tamN ? (CCS.ghCo ? v8Hang('ccMC', 'mc', mcDang0 ? 'Máy chủ đang xử lý ảnh chờ…' : 'Máy chủ xử lý ' + CCS.tamN + ' ảnh chờ', '', 1, mcDang0) : '') +
           v8Hang('ccTam', 'cat', CCS.ghCo ? 'Cắt ghép trên điện thoại' : 'Xử lý ảnh chờ trong CCCD TẠM', CCS.ghCo ? '' : CCS.tamN + ' ảnh') : CCS.tamN === 0 ? v8Hang('', 'cat', 'Không còn ảnh chờ trong CCCD TẠM', '', 0, 1) : '') +
-        v8Hang('ccKho', 'tim', 'Tìm ảnh trong kho') + '</div>' + ccDuyetThe() + ccChayHtml() + ccKqHtml();
+        v8Hang('ccKho', 'tim', 'Tìm ảnh trong kho') + '</div>' +
+        '<button class="it dtChuyen" id="ccSangDt"><span class="v7ti">' + ICON.dt + '</span><span class="cau" style="flex:1;min-width:0">Thẻ ra vào, danh sách đi làm nay nằm trong Đối tác, ở từng công ty.</span><i class="v7ch" aria-hidden="true">›</i></button>' +   // b225
+        ccDuyetThe() + ccChayHtml() + ccKqHtml();
     } else if (CCS.soat) {
       var sv = CCS.soat;
       h += '<div class="card"><div class="row sp"><b>Đang soát ảnh trong CCCD TẠM…</b><span class="meta num" id="ccSoatTg">' + Math.round((Date.now() - sv.t0) / 1000) + ' giây</span></div>' +
@@ -4562,7 +4820,9 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
         '<button class="btn" id="ccChon">Chọn ảnh trong album</button></div>' +
         '<div class="grp v8nav">' + (CCS.tamN ? (CCS.ghCo ? v8Hang('ccMC', 'mc', mcDang ? 'Máy chủ đang xử lý ảnh chờ…' : 'Máy chủ xử lý ' + CCS.tamN + ' ảnh chờ', '', 1, mcDang) : '') +
           v8Hang('ccTam', 'cat', CCS.ghCo ? 'Cắt ghép trên điện thoại' : 'Xử lý ảnh chờ trong CCCD TẠM', CCS.ghCo ? '' : CCS.tamN + ' ảnh') : CCS.tamN === 0 ? v8Hang('', 'cat', 'Không còn ảnh chờ trong CCCD TẠM', '', 0, 1) : '') +
-        v8Hang('ccKho', 'tim', 'Tìm ảnh trong kho') + '</div>' + ccDuyetThe() + ccChayHtml() + ccKqHtml();
+        v8Hang('ccKho', 'tim', 'Tìm ảnh trong kho') + '</div>' +
+        '<button class="it dtChuyen" id="ccSangDt"><span class="v7ti">' + ICON.dt + '</span><span class="cau" style="flex:1;min-width:0">Thẻ ra vào, danh sách đi làm nay nằm trong Đối tác, ở từng công ty.</span><i class="v7ch" aria-hidden="true">›</i></button>' +   // b225
+        ccDuyetThe() + ccChayHtml() + ccKqHtml();
     } else {
       if (CCS.tam) h += '<div class="note" style="margin-bottom:10px">Lượt này lấy ' + CCS.tam.n + ' ảnh từ <b>CCCD TẠM</b>. Bấm <b>Lưu kho</b> để đưa người đã ghép đúng vào thư mục năm sinh; ảnh gốc của họ chuyển sang CCCD TẠM/ĐÃ XỬ LÝ. Ảnh lẻ, ảnh chưa đọc được vẫn để lại trong CCCD TẠM.</div>' + ccKqHtml();
       if (CCS.doi) h += '<div class="note warn ccdoi"><span>Chạm vào ảnh muốn đổi chỗ</span><button class="btn sm ghost" id="ccDoiThoi">Thôi</button></div>';
@@ -6047,10 +6307,11 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
     Promise.all([mot(), mot(), mot()]).then(function () {
       ccTd(''); CCS.kho = null; CCS.theMo = true; var lg = theLogoNap(); if (!lg.complete) lg.onload = function () { ccVe(); };
       ccVe(); setTimeout(function () { window.scrollTo(0, 0); }, 50);
-      if (loi) toastLoi(loi + ' người không lấy được ảnh mặt trước.'); else toast('Đã thêm ' + n + ' người vào Thẻ HOJEONG. Gõ mã thẻ rồi in.');
+      if (loi) toastLoi(loi + ' người không lấy được ảnh mặt trước.'); else toast('Đã thêm ' + n + ' người vào Thẻ ra vào. Gõ mã thẻ rồi in.');
     });
   }
-  function ccChe() {   // nút chuyển In CCCD | Thẻ HOJEONG
+  function ccChe() {   // nút chuyển In CCCD | Thẻ HOJEONG – b225: bỏ, Thẻ / Danh sách nằm trong Đối tác
+    return '';
     return '<div class="seg" id="ccChe"><button data-che="0"' + (CCS.theMo || CCS.dslMo ? '' : ' class="on"') + '>In CCCD</button><button data-che="1"' + (CCS.theMo && !CCS.dslMo ? ' class="on"' : '') + '>Thẻ HOJEONG</button><button data-che="2"' + (CCS.dslMo ? ' class="on"' : '') + '>Danh sách</button></div>';
   }
   function ccCheNoi(t) { t.querySelectorAll('[data-che]').forEach(function (b) { b.onclick = function () { var c = b.getAttribute('data-che'); CCS.theMo = c === '1'; CCS.dslMo = c === '2'; var lg = theLogoNap(); if (!lg.complete) lg.onload = function () { ccVe(); }; ccVe(); window.scrollTo(0, 0); }; }); }
@@ -6306,7 +6567,7 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
     if (SU) { }
     else if (!L.ctys) h += '<div class="meta">Đang tải danh sách công ty…</div>';
     else if (!L.ctys.length) h += '<div class="meta">Chưa có công ty nào làm danh sách đi làm.</div>';
-    else h += '<div class="seg" id="dlCty">' + L.ctys.map(function (c) { return '<button data-dc="' + esc(c.ma) + '"' + (c.ma === L.cty ? ' class="on"' : '') + '>' + esc(c.ma) + '</button>'; }).join('') + '</div>' +
+    else h += (S.dtGt ? '' : '<div class="seg" id="dlCty">' + L.ctys.map(function (c) { return '<button data-dc="' + esc(c.ma) + '"' + (c.ma === L.cty ? ' class="on"' : '') + '>' + esc(c.ma) + '</button>'; }).join('') + '</div>') +   // b225: công ty đã chọn ở Đối tác
       '<div class="row dsdn"><span class="meta">' + (CQ ? 'Ngày nhận việc' : 'Ngày làm') + '</span><input class="inp" type="date" id="dlNgay" value="' + esc(L.ngay) + '"></div>' +
       (CQ ? '<div class="v8han">Gửi danh sách cho nhân sự ' + esc(L.cty) + ' trước 08:00 sáng ngày nhận việc.</div><div class="meta cau">Mẫu của công ty không chia ca.</div>' :
         '<div class="seg" id="dlCa">' + ['Ngày', 'Đêm'].map(function (c) { return '<button data-ca="' + c + '"' + (L.ca === c ? ' class="on"' : '') + '>Ca ' + c.toLowerCase() + '</button>'; }).join('') + '</div>');
@@ -6315,7 +6576,7 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
       h += '<div class="meta">Loại việc cho người chọn tiếp theo:</div><div class="seg" id="dlLv">' + g.lv.map(function (v) { return '<button data-lv="' + esc(v) + '"' + (L.lv === v ? ' class="on"' : '') + '>' + esc(v) + ' · ' + (dem[v] || 0) + '</button>'; }).join('') + '</div>' +
         '<div class="meta">Chạm nhãn loại việc ở từng người để đổi.</div>';
     }
-    if (g && g.coMa && !SU) h += '<div class="meta cau">Mã nhân viên lấy theo mã thẻ đã in. Làm thẻ ở mục Thẻ HOJEONG rồi bấm Lập danh sách để mang sẵn mã thẻ của lượt in.</div>';
+    if (g && g.coMa && !SU) h += '<div class="meta cau">Mã nhân viên lấy theo mã thẻ đã in. Làm thẻ ở mục Thẻ ra vào rồi bấm Lập danh sách để mang sẵn mã thẻ của lượt in.</div>';
     h += '</div>';
     var CU = (g || SU) && !CQ ? dslCuHtml(ds) : null;   // 20/11: người đã đi làm ở công ty – gợi ý sẵn, chạm để thêm (CHUNQIU: người đến phỏng vấn nhận việc, không gợi ý)
     if (CU) h += CU.h;
@@ -6341,13 +6602,14 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
       if (CQ) h += '<div class="meta cau v7nt">' + yDong(['Quê quán, thường trú ghi đúng như trên CCCD.', 'Máy tự đọc từ ảnh CCCD, dòng đỏ là còn thiếu.', 'Bấm Sửa để điền chỗ còn thiếu.']) + '</div>';   // b220: ghi chú nằm cạnh danh sách người
     }
     if (!SU) dslGanTai();
-    if (!SU && L.gan && L.gan.length) {   // b220: nhóm theo ngày nhận việc, mỗi ngày 1 khung (kiểu chuẩn sổ thu chi)
+    var ganL = (L.gan || []).map(function (x, i) { return [x, i]; }).filter(function (y) { return !S.dtGt || y[0].cty === L.cty; }).slice(0, 8);   // b225: chỉ danh sách của công ty đang làm
+    if (!SU && ganL.length) {   // b220: nhóm theo ngày nhận việc, mỗi ngày 1 khung (kiểu chuẩn sổ thu chi)
       var nhG = [], mG = {}, homG = (function () { var d = new Date(); return ('0' + d.getDate()).slice(-2) + '/' + ('0' + (d.getMonth() + 1)).slice(-2); })();
-      L.gan.slice(0, 8).forEach(function (x, i) { var k = String(x.ngay).slice(0, 5); if (!mG[k]) { mG[k] = []; nhG.push(k); } mG[k].push([x, i]); });
-      h += q2H('Danh sách đã xuất gần đây') + '<div class="meta v8dd">' + yDong(['Nhóm theo ngày nhận việc.', 'Chạm để in hoặc gửi lại.']) + '</div>' + nhG.map(function (k) {
+      ganL.forEach(function (y) { var k = String(y[0].ngay).slice(0, 5); if (!mG[k]) { mG[k] = []; nhG.push(k); } mG[k].push(y); });
+      h += q2H('Danh sách đã xuất gần đây') + '<div class="meta v8dd">' + yDong([S.dtGt ? 'Chỉ danh sách của ' + L.cty + '.' : 'Nhóm theo ngày nhận việc.', 'Chạm để in hoặc gửi lại.']) + '</div>' + nhG.map(function (k) {
         return '<div class="soNg"><div class="soNgH"><b>' + (k === homG ? 'Hôm nay · ' + k : (v7Thu(k) || '') + k) + '</b></div><div class="grp">' + mG[k].map(function (y) {
           var x = y[0];
-          return '<button class="it" data-dg="' + y[1] + '"><div style="min-width:0;flex:1"><div class="nm">' + esc(x.cty) + (x.ca ? ' · Ca ' + esc(String(x.ca).toLowerCase()) : ' · Nhận việc') + '</div><div class="sub">' + x.n + ' người · ' + esc(x.nguoi) + ' xuất lúc ' + esc(x.luc) + '</div></div><i class="v7ch">›</i></button>';
+          return '<button class="it" data-dg="' + y[1] + '"><div style="min-width:0;flex:1"><div class="nm">' + (S.dtGt ? (x.ca ? 'Ca ' + esc(String(x.ca).toLowerCase()) : 'Nhận việc') : esc(x.cty) + (x.ca ? ' · Ca ' + esc(String(x.ca).toLowerCase()) : ' · Nhận việc')) + '</div><div class="sub">' + x.n + ' người · ' + esc(x.nguoi) + ' xuất lúc ' + esc(x.luc) + '</div></div><i class="v7ch">›</i></button>';
         }).join('') + '</div></div>';
       }).join('');
     }
@@ -6669,6 +6931,9 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
     }, function (er) { ccTd(''); toastLoi(er.message); });
   }
   var BAN_MOI = [
+    { so: 225, ds: [{ i: '🏢', t: 'Tab Đối tác: chọn công ty để làm việc', m: 'Tab Lao động đổi tên thành Đối tác. Mở ra là các công ty, mỗi công ty một thẻ màu riêng, ghi số người đi làm và số việc cần làm.', c: [['Vào công ty', 'Đối tác → chạm thẻ công ty → việc cần làm nằm trên cùng → chạm [[‹ Đối tác]] hoặc vuốt từ mép trái để quay lại']] },
+      { i: '🪪', t: 'Thẻ ra vào, danh sách đi làm nằm trong từng công ty', m: 'Tab Giấy tờ đổi tên thành CCCD, chỉ còn In CCCD và kho CCCD dùng chung cho mọi công ty.', c: [['Làm thẻ, lập danh sách', 'Đối tác → HOJEONG → [[Thẻ ra vào]] hoặc [[Danh sách đi làm theo ca]]'], ['CHUNQIU', 'Đối tác → CHUNQIU → [[Danh sách nhận việc]]']] },
+      { i: '👆', t: 'Chuyển màn mượt như iPhone', m: 'Màn mới trượt từ phải vào. Vuốt từ mép trái màn hình để quay lại màn trước.' }] },
     { so: 224, ds: ['Giấy tờ đi làm: đang cắt ghép ảnh CCCD có nút Quay lại, việc vẫn chạy tiếp; chạm dòng Lượt cắt ghép để mở lại.'] },
     { so: 223, ds: ['Mở app không còn ô bắt bật thông báo che màn hình. Muốn bật thì vào Tài khoản, chọn Thông báo.', ['Xem app như nhân viên: vòng "Đang tải…" không còn bị kéo dài che cả màn hình.', 'chu']] },
     { so: 222, ds: ['In CCCD: khối Lượt xử lý trên điện thoại và danh sách Đã lưu gần đây trình bày gọn như các mục khác, không còn hiện đường dẫn file.'] },
@@ -8009,9 +8274,10 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
     var b = document.querySelector('.nav button[data-t="ld"]'); if (!b) return;
     var n = choCanLam().length + tbDs().length, e = b.querySelector('.bd');
     try { n += cqNhacDs().length; } catch (er) { }   // b153: hẹn nhận việc chờ xác nhận
+    if (S.tab === 'ld' && !S.dtMo && !S.hs) veDTCap();   // b225: thẻ công ty cập nhật việc cần làm
     if (!n) { if (e) e.remove(); return; }
-    if (!e) { e = document.createElement('span'); e.className = 'bd'; b.appendChild(e); }
-    e.textContent = n > 99 ? '99+' : n;
+    if (!e) { e = document.createElement('span'); b.appendChild(e); }
+    e.className = 'bd dot'; e.textContent = '';   // b225: chấm báo
   }
   function toastNut(m, nut, fn, ms) { return bnrDua({ m: m, nut: nut, fn: fn, ms: ms || 10000 }); }
   // ---------- b193 (23/11): THÔNG BÁO TRƯỢT TỪ TRÊN XUỐNG kiểu iPhone ----------
@@ -8122,7 +8388,7 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
   }
   function chuongVeLd(ma, hop) {
     if (ma && S.cty !== ma) { S.cty = ma; luu('vlta_cty', ma); }
-    S.hs = null; S.utMo = 0; moTab('ld');
+    S.hs = null; S.utMo = 0; S.dtMo = true; moTab('ld');
     if (hop) setTimeout(function () { var e = document.getElementById(hop); if (e) e.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 350);
   }
   function chuongXem() { return docSo('vlta_chuongXem') || []; }
@@ -8185,7 +8451,7 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
       '<div class="meta" style="padding:8px 12px 2px">Chuyển khoản xong chạm vào người đó để ghi trả lương.</div></div>';
     var bk = document.getElementById('choKhac');   // b217: phiếu công ty khác = 1 dòng trong khung việc (anh chốt từ b156)
     if (bk) { bk.innerHTML = thuTu.map(function (ma) { return '<button class="it v7ro" data-cc="' + esc(ma) + '"><span class="v7ti">' + V7_VI + '</span><div><div class="nm" style="font-weight:600">Phiếu ở công ty khác</div><div class="sub">' + esc(tenCty(ma)) + ' còn ' + khac[ma] + ' phiếu chưa ghi chuyển</div></div><i class="v7ch" aria-hidden="true">›</i></button>'; }).join(''); bk.querySelectorAll('[data-cc]').forEach(function (b) { b.onclick = function () { ctyChuyen(b.getAttribute('data-cc')); window.scrollTo(0, 0); }; }); }
-    if (thuTu.length && !bk) h += '<div class="choKhac"><span class="cau">Công ty khác còn phiếu đã gửi chưa ghi chuyển:</span>' + thuTu.map(function (ma) {
+    if (thuTu.length && !bk && !S.dtMo) h += '<div class="choKhac"><span class="cau">Công ty khác còn phiếu đã gửi chưa ghi chuyển:</span>' + thuTu.map(function (ma) {
       return '<button class="link" data-cc="' + esc(ma) + '">' + esc(tenCty(ma)) + ' · ' + khac[ma] + ' phiếu ›</button>'; }).join('') + '</div>';
     box.innerHTML = h;
     if (ds.length) ganChoDong(box, ds);
@@ -8759,7 +9025,7 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
     var b = e.target && e.target.closest ? e.target.closest('[data-ut]') : null; if (!b) return;
     var c = b.getAttribute('data-ut');
     if (!(S.toi && S.toi.cty || []).some(function (y) { return y.ma === c; })) { toast('Bạn chưa được xem ' + c + '.'); return; }
-    S.cty = c; luu('vlta_cty', c); moTab('ld'); S.utQ = ''; S.utHet = 0; moUT();
+    S.cty = c; luu('vlta_cty', c); S.dtMo = true; moTab('ld'); S.utQ = ''; S.utHet = 0; moUT();
   });
 
   // ---------- 27/10: xem / sửa / xoá 1 dòng ứng / trả (chủ, kế toán: mọi dòng; sale: dòng mình ghi trên app trong hôm nay) ----------
@@ -9511,7 +9777,7 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
     if (!cu) { cu = document.createElement('div'); cu.id = 'cqDai'; cu.className = 'cqDai'; document.body.appendChild(cu); }
     cu.innerHTML = '<span class="cau">' + esc(t) + '</span><button class="btn sm" id="cqDaiXn">Xác nhận</button><button class="cqDaiX" id="cqDaiX" aria-label="Đóng">×</button>';
     cu.querySelector('#cqDaiX').onclick = function () { CQ.daiTat = 1; cu.remove(); };
-    cu.querySelector('#cqDaiXn').onclick = function () { cu.remove(); S.cty = ds[0].ma; luu('vlta_cty', S.cty); moTab('ld'); };
+    cu.querySelector('#cqDaiXn').onclick = function () { cu.remove(); S.cty = ds[0].ma; luu('vlta_cty', S.cty); S.dtMo = true; moTab('ld'); };
   }
   function cqVe() {
     var ma = S.cty, d = CQ.d[ma], l = document.getElementById('list'), hd = document.getElementById('ldHead');
@@ -10704,7 +10970,8 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
   }
   function v7Viec() {   // b217: khung gom Kiểm tra vân tay / File gửi / Phiếu công ty khác – ẩn khi không còn dòng nào
     var w = document.getElementById('v7viec'); if (!w) return;
-    var f = function () { w.classList.toggle('hidden', !w.textContent.trim()); }; f();
+    var o = document.getElementById('v7w') || w;   // b225: ẩn cả tiêu đề Bảng công khi trống
+    var f = function () { o.classList.toggle('hidden', !w.textContent.trim()); }; f();
     if (!w._mo && window.MutationObserver) { w._mo = new MutationObserver(f); w._mo.observe(w, { childList: true, subtree: true, characterData: true }); }
   }
   function lnBatThuong(o, so) {   // b207: khoản bất thường làm lệch lợi nhuận tháng; b217: mục riêng ngay dưới số lớn, trả {h, ten} – ten = công ty đã nằm trong mục này
