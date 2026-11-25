@@ -2022,7 +2022,7 @@ b.yT0{display:block;margin-bottom:2px}
       if (o.loi) { if (!im) toast(o.loi); return; }
       S.lucDs = Date.now();
       if (o.toi && o.toi.anhGiu && S.toi) o.toi.anh = S.toi.anh;   // ảnh đại diện không đổi: máy chủ không gửi lại
-      var doiVai = o.toi && S.toi && (o.toi.vai !== S.toi.vai || String(o.toi.phuTrach) !== String(S.toi.phuTrach) || (o.toi.saleTen && S.toi.saleTen && o.toi.saleTen !== S.toi.saleTen));
+      var doiVai = o.toi && S.toi && (__v(o.toi).vai !== S.toi.vai || String(o.toi.phuTrach) !== String(S.toi.phuTrach) || (o.toi.saleTen && S.toi.saleTen && o.toi.saleTen !== S.toi.saleTen));
       var doiCt = o.toi && S.toi && JSON.stringify(o.toi.ctt || []) !== JSON.stringify(S.toi.ctt || []);   // 12/11: vừa có / bỏ công ty chính thức
       if (o.toi) { delete o.toi.anhGiu; S.toi = __v(o.toi); }
       if (doiCt) { luuDs(); if (S.tab === 'ld' && !S.hs && !S.utMo && !S.vtMo && !document.querySelector('.sheet')) veDs(); (S.toi.ctt || []).forEach(function (c) { cqTai(c.ma, 1); }); }
