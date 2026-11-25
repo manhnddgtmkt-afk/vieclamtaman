@@ -2513,6 +2513,7 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
   }
   function manDong(el, tu, den, ms, ez) { return el.animate([{ transform: tu }, { transform: den }], { duration: ms, easing: ez || MAN_EZ, fill: 'forwards' }); }
   function manHuy(el) { try { (el.getAnimations ? el.getAnimations() : []).forEach(function (a) { a.cancel(); }); } catch (e) { } el.style.transform = ''; }
+  function manXong(a, ms, fn) { var da = 0, f = function () { if (da) return; da = 1; fn(); }; a.onfinish = f; setTimeout(f, ms + 160); }   // chốt: app xuống nền giữa chừng thì hiệu ứng vẫn kết thúc
   function manHienCD() { [].forEach.call($app.querySelectorAll(MAN_CD), function (g) { try { g.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 180, easing: 'ease-out' }); } catch (e) { } }); }
   function chuyenMan(huong, fn) {   // huong 1: vào màn con, -1: lùi về màn trước
     if (MAN_DANG || manGiam() || !Element.prototype.animate || !$app.querySelector('.top')) {
@@ -2527,11 +2528,11 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
       moi.forEach(function (e) { xong = manDong(e, 'translate3d(' + W + 'px,0,0)', 'translate3d(0,0,0)', 440); });
       manDong(cu.lop, 'translate3d(0,0,0)', 'translate3d(' + (-0.3 * W) + 'px,0,0)', 440);
       cu.lop.lastChild.animate([{ opacity: 0 }, { opacity: 0.12 }], { duration: 440, easing: MAN_EZ, fill: 'forwards' });
-      xong.onfinish = function () {
+      manXong(xong, 440, function () {
         moi.forEach(function (e) { manHuy(e); e.classList.remove('manTren'); }); $app.classList.remove('manAnCD'); manHienCD();
         manHuy(cu.lop); try { cu.lop.lastChild.getAnimations().forEach(function (a) { a.cancel(); }); } catch (e) { }
         cu.lop.remove(); cu.lop.classList.remove('duoi'); MAN.push(cu); MAN_DANG = 0;
-      };
+      });
     } else {
       tr = MAN.pop();
       fn(); window.scrollTo(0, tr ? tr.y : 0);
@@ -2540,7 +2541,7 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
       moi.forEach(function (e) { manDong(e, 'translate3d(' + (-0.3 * W) + 'px,0,0)', 'translate3d(0,0,0)', 380); });
       nen.animate([{ opacity: 0.12 }, { opacity: 0 }], { duration: 380, easing: MAN_EZ, fill: 'forwards' });
       xong = manDong(cu.lop, 'translate3d(0,0,0)', 'translate3d(' + W + 'px,0,0)', 380);
-      xong.onfinish = function () { moi.forEach(manHuy); cu.lop.remove(); nen.remove(); MAN_DANG = 0; };
+      manXong(xong, 380, function () { moi.forEach(manHuy); cu.lop.remove(); nen.remove(); MAN_DANG = 0; });
     }
   }
   function dtNutLui(nhan, fn) {   // nút ‹ quay lại ở đầu màn con; cũng là việc khi vuốt từ mép trái
@@ -2584,7 +2585,7 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
       var tu2 = v.duoi.lop.style.transform; v.duoi.lop.style.transform = ''; manDong(v.duoi.lop, tu2, 'translate3d(' + (lui ? 0 : -0.3 * v.W) + 'px,0,0)', ms, ez);
       var mo = v.duoi.lop.lastChild, o0 = mo.style.opacity; mo.style.opacity = ''; mo.animate([{ opacity: o0 }, { opacity: lui ? 0 : 0.12 }], { duration: ms, easing: ez, fill: 'forwards' });
     }
-    xong.onfinish = function () {
+    manXong(xong, ms, function () {
       var duoi = v.duoi;
       if (duoi) { manHuy(duoi.lop); try { duoi.lop.lastChild.getAnimations().forEach(function (q) { q.cancel(); }); } catch (er) { } duoi.lop.lastChild.style.opacity = ''; }
       if (lui) {
@@ -2598,7 +2599,7 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
         if (duoi) { duoi.lop.remove(); duoi.lop.classList.remove('duoi'); }
         MAN_DANG = 0;
       }
-    };
+    });
   }
   document.addEventListener('touchend', vuTha); document.addEventListener('touchcancel', vuTha);
   function veDs() {
