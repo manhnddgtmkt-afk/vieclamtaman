@@ -1333,7 +1333,7 @@ html.xnMo #ptr{top:calc(env(safe-area-inset-top,0px) + 42px)}
   // b219: chủ xem app như sale (chỉ xem). Yêu cầu nằm ở sessionStorage (đóng app là hết); dữ liệu lúc xem chỉ để trong bộ nhớ tạm,
   //   không đọc / ghi localStorage của chủ. Phiên gửi máy chủ = "<phiên chủ>.xn.<SĐT sale>", máy chủ chỉ cho lệnh đọc (PB120).
   var XNHU = null, XNHU_MEM = null;
-  var XNHU_DOC = { toi: 1, ds: 1, phieu: 1, phieuTuan: 1, cho: 1, tb: 1, thuNhap: 1, kbDs: 1, vdoDs: 1, vdoKhuc: 1, bangLuong: 1,
+  var XNHU_DOC = { toi: 1, quy: 1, ds: 1, phieu: 1, phieuTuan: 1, cho: 1, tb: 1, thuNhap: 1, kbDs: 1, vdoDs: 1, vdoKhuc: 1, bangLuong: 1,
     dslCty: 1, dslCu: 1, dslGan: 1, dslDoc: 1, cccdTamDs: 1, cccdDanhBa: 1, cccdTim: 1, cccdAnh: 1, theDs: 1, theMa: 1, theAnh: 1,
     ctDs: 1, nhaTk: 1, ntDs: 1, cnDs: 1, utGan: 1, utThieu: 1, lkTT: 1, vtTep: 1, vtXem: 1, timCu: 1, visionTT: 1, ghTT: 1, wpKhoa: 1 };
   try {
@@ -1801,17 +1801,20 @@ html.xnMo #ptr{top:calc(env(safe-area-inset-top,0px) + 42px)}
     var canh = setTimeout(function () { toastLoi('Mạng chậm, app chưa mở lại được. Tắt hẳn app rồi mở lại.'); }, 25000);
     hanGio(dongBoMa ? fetch(DONG_BO_MA) : null, 12000).then(lamMoiApp).then(function () { location.reload(); });
   }
-  function moXemNhu() {   // b219: chủ chọn sale để xem app như sale đó
-    var sh = moSheet('<div class="row sp"><h3>Xem app như sale</h3><button class="link" id="xnDong">Đóng</button></div>' +
-      '<div class="meta cau" style="margin:4px 2px 12px">' + yDong(['App hiện đúng như máy của sale đó.', 'Chỉ xem, không ghi hay sửa được gì.', 'Bấm Thoát ở thanh trên cùng để quay lại tài khoản của bạn.']) + '</div>' +
+  function moXemNhu() {   // b219: chủ chọn nhân viên (kế toán / sale) để xem app như người đó
+    var sh = moSheet('<div class="row sp"><h3>Xem app như nhân viên</h3><button class="link" id="xnDong">Đóng</button></div>' +
+      '<div class="meta cau" style="margin:4px 2px 12px">' + yDong(['App hiện đúng như máy của người đó.', 'Chỉ xem, không ghi hay sửa được gì.', 'Bấm Thoát ở thanh trên cùng để quay lại tài khoản của bạn.']) + '</div>' +
       '<div class="set" id="xnDs"><div class="meta" style="padding:14px 16px">Đang tải danh sách…</div></div>');
     sh.querySelector('#xnDong').onclick = function () { sh.remove(); };
     apiT({ v: 'nv', im: 1 }).then(function (o) {
       var el = sh.querySelector('#xnDs'); if (!el) return;
       if (o.loi) { el.innerHTML = '<div class="meta" style="padding:14px 16px">' + esc(o.loi) + '</div>'; return; }
-      var ds = (o.ds || []).filter(function (x) { return /sale/i.test(String(x.vai || '')) && !/kho/i.test(String(x.trangThai || '')) && x.sdt; });
-      if (!ds.length) { el.innerHTML = '<div class="meta" style="padding:14px 16px">Chưa có tài khoản sale nào đang dùng.</div>'; return; }
-      el.innerHTML = ds.map(function (x) { return '<button data-xn="' + esc(x.sdt) + '" data-ten="' + esc(x.ten) + '"><span>' + esc(x.ten) + '<small>' + esc(['Sale', x.phuTrach ? 'phụ trách ' + x.phuTrach : ''].filter(String).join(' · ')) + '</small></span><span class="ch" style="margin-left:auto">›</span></button>'; }).join('');
+      var ds = (o.ds || []).filter(function (x) { return !x.toi && !/ch[uủ]/i.test(String(x.vai || '')) && !/kho/i.test(String(x.trangThai || '')) && x.sdt; });
+      if (!ds.length) { el.innerHTML = '<div class="meta" style="padding:14px 16px">Chưa có tài khoản nhân viên nào đang dùng.</div>'; return; }
+      el.innerHTML = ds.map(function (x) {
+        var nguoi = x.saleTen ? hoaDau(String(x.saleTen).toLowerCase()) : x.ten, ten = nguoi + (nguoi !== x.ten ? ' (' + x.ten + ')' : '');
+        return '<button data-xn="' + esc(x.sdt) + '" data-ten="' + esc(ten) + '"><span>' + esc(nguoi) + '<small>' + esc(['Tài khoản ' + x.ten, x.phuTrach ? 'phụ trách ' + String(x.phuTrach).split(',').join(', ') : ''].filter(String).join(' · ')) + '</small></span><span class="ch" style="margin-left:auto">›</span></button>';
+      }).join('');
       el.querySelectorAll('[data-xn]').forEach(function (b) { b.onclick = function () { xnhuVao(b.getAttribute('data-xn'), b.getAttribute('data-ten')); }; });
     }, function (e) { var el = sh.querySelector('#xnDs'); if (el) el.innerHTML = '<div class="meta" style="padding:14px 16px">' + esc(e.message || 'Chưa tải được.') + '</div>'; });
   }
@@ -1830,7 +1833,7 @@ html.xnMo #ptr{top:calc(env(safe-area-inset-top,0px) + 42px)}
       '<button id="tdTb"><span>Thông báo<small>' + (wpDaBat() ? 'Đã bật trên máy này · bấm để gửi thử' : wpTrangThai() === 'khong' ? 'Máy này chưa nhận được thông báo' : 'Chưa bật trên máy này') + '</small></span><span class="v" style="color:var(' + (wpDaBat() ? '--good)">✓' : '--warn)">!') + '</span></button>' +
       (window.PB ? '<button id="tdPb"><span>Phiên bản ' + PB.so + '<small id="tdPbTt">Ra lúc ' + esc(PB.luc) + ' · đang kiểm tra…</small></span><span class="v" id="tdPbV"></span></button><button id="tdMoi"><span>Có gì mới</span><span class="ch" style="margin-left:auto">›</span></button>' : '') + '</div>' +
       (laChu ? '<div class="sec" style="margin:8px 4px -6px">Quản trị</div><div class="set"><button id="tdNv"><span>Quản lý nhân viên</span><span class="ch" style="margin-left:auto">›</span></button>' +
-        '<button id="tdXn"><span>Xem app như sale<small>Thấy đúng màn hình của sale, chỉ xem</small></span><span class="ch" style="margin-left:auto">›</span></button>' +
+        '<button id="tdXn"><span>Xem app như nhân viên<small>Thấy đúng màn hình của từng người, chỉ xem</small></span><span class="ch" style="margin-left:auto">›</span></button>' +
         '<button id="tdVi"><span>Khoá đọc ảnh CCCD<small id="tdViTt">Đang kiểm tra…</small></span><span class="ch" style="margin-left:auto">›</span></button>' +
         '<div id="eVi" class="hidden" style="padding:0 16px 12px"><div class="meta" style="margin-bottom:8px">Dán khoá Cloud Vision (bắt đầu bằng AIza…). Khoá chỉ lưu trên máy chủ, không gửi xuống điện thoại của nhân viên.</div><div class="row"><input class="inp" id="tVi" placeholder="AIza…" autocomplete="off" autocapitalize="off" spellcheck="false" style="font-size:16px;padding:11px 14px"><button class="btn sm" id="tViOk">Lưu</button></div><button class="btn lk" id="tViXoa" style="padding-left:0">Bỏ khoá, quay về đọc bằng Drive</button></div>' +
         '<button id="tdGh"><span>Khoá xử lý CCCD trên máy chủ<small id="tdGhTt">Đang kiểm tra…</small></span><span class="ch" style="margin-left:auto">›</span></button>' +
@@ -6513,7 +6516,7 @@ html.xnMo #ptr{top:calc(env(safe-area-inset-top,0px) + 42px)}
     }, function (er) { ccTd(''); toastLoi(er.message); });
   }
   var BAN_MOI = [
-    { so: 219, ds: [['Xem app như sale: vào Tài khoản → Xem app như sale → chọn tên sale. App hiện đúng màn hình của sale đó, chỉ xem, không ghi được gì. Bấm Thoát ở thanh cam trên cùng để quay lại.', 'chu']] },
+    { so: 219, ds: [['Xem app như nhân viên: vào Tài khoản → Xem app như nhân viên → chọn tên. App hiện đúng màn hình của người đó, chỉ xem, không ghi được gì. Bấm Thoát ở thanh cam trên cùng để quay lại.', 'chu']] },
     { so: 218, ds: ['Cần kiểm tra: người nhận trước chỉ ghi Nhận trước, không lặp lại số tiền.', 'Sale xem danh sách người mình tuyển không còn lặp tên sale ở từng dòng.'] },
     { so: 217, ds: [['Tổng quan vẽ lại: số lợi nhuận tháng có phần cách tính ngay dưới, khoản bất thường thành mục riêng.', 'chu'], ['Lãi từng công ty ghi kỳ công và biên của từng công ty, chạm biểu tượng (i) để xem biên là gì.', 'chu'], 'Lao động: vân tay, file gửi HOJEONG, phiếu ở công ty khác gom chung một khung.', 'Danh sách Còn phải trả nối liền số tổng; người đang đi làm đã trả đủ gập thành một dòng.', 'Hồ sơ: khoản ứng / trả ghi theo tuần lương, ô tuần ghi Chưa trả hoặc Đã trả.', ['Thu chi có hai ô Đã thu, Đã chi; mỗi ngày trong sổ ghi rõ thứ.', 'chu']] },
     { so: 216, ds: [['Chi phí chung ở Tổng quan gom theo nhóm, chạm vào nhóm để xem từng khoản.', 'chu'], 'Chuông gom các thông báo cùng loại của một công ty thành một dòng, chạm để xem từng người.', 'Hồ sơ chỉ hiện các khoản ứng / trả trong kỳ, khớp với số Đã ứng, Đã trả.'] },
