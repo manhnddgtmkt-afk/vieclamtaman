@@ -1413,6 +1413,7 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
 .v8lui{display:inline-flex;align-items:center;gap:4px;min-height:44px;padding:0 6px;margin:-6px 0 -4px -6px;background:none;border:0;color:var(--blue);font:inherit;font-size:16px;font-weight:600;cursor:pointer;align-self:flex-start}
 .v8lui i{font-style:normal;font-size:26px;line-height:1;margin-top:-3px}
 .v8bar{margin-top:6px}
+.ccch span:first-child{flex:1}.ccch small{white-space:normal}   /* b224: dòng Chỉnh ảnh in không bị cắt chữ */
 </style>
 </head>
 <body>
@@ -4740,7 +4741,8 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
     else if (CCS.dang) { tt = CCS.dang.tai ? 'Đang tải ảnh từ CCCD TẠM ' + CCS.dang.i + '/' + CCS.dang.n : 'Đang cắt ghép ảnh ' + (CCS.dang.i + 1) + '/' + CCS.dang.n; pct = Math.round(100 * CCS.dang.i / CCS.dang.n); }
     else {
       var cp = ccCap(), con = cp.filter(function (p) { var st = CCS.tt[p.k] || {}; return p.t && p.s && !st.ok && !st.co; }).length;
-      tt = 'Lượt cắt ghép · ' + cp.length + ' người'; phu = con ? 'Còn ' + con + ' người chưa lưu kho' : 'Đã lưu kho hết';
+      var le = cp.filter(function (p) { return !(p.t && p.s); }).length;   // người mới có 1 mặt
+      tt = 'Lượt cắt ghép · ' + cp.length + ' người'; phu = con || le ? 'Còn ' + [con ? con + ' người chưa lưu kho' : '', le ? le + ' người thiếu 1 mặt' : ''].filter(String).join(', ') : 'Đã lưu kho hết';
     }
     return '<div class="grp v8nav"><button class="it v8h1" id="ccVaoLuot"><span class="v7ti">' + V8_IC.cat + '</span><div style="min-width:0;flex:1"><div class="nm">' + tt + '</div>' +
       (pct >= 0 ? '<div class="ccbar0 v8bar"><i style="width:' + pct + '%"></i></div>' : '<div class="sub' + (/^Còn/.test(phu) ? ' v8cam' : '') + '">' + phu + '</div>') + '</div><i class="v7ch">›</i></button></div>';
