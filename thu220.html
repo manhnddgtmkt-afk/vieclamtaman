@@ -1371,7 +1371,8 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
 .v8tk{width:22px;height:22px;border-radius:50%;border:1.5px solid var(--line);flex:none;display:grid;place-items:center;font-size:12px;font-style:normal;font-weight:700;color:#fff}
 .v8tk.ok{background:var(--good);border-color:var(--good)}
 .v8am{text-align:right;flex:none}.v8am b{display:block;font-size:15px;font-variant-numeric:tabular-nums;white-space:nowrap}.v8am b.ok{color:var(--good);font-size:13.5px}
-.v8am small{display:block;font-size:12.5px;color:var(--muted);white-space:nowrap}
+.v8am small{display:block;font-size:12.5px;color:var(--muted);white-space:nowrap}.v8am{max-width:58%}.v8am b.ok{white-space:normal}
+.ccmay{white-space:normal}.ccmay b{white-space:nowrap}
 .v8dg{margin:0 6px;font-size:13.5px;color:var(--muted);line-height:1.5}.v8dg>b{display:block;color:var(--fg);font-weight:600;margin-bottom:2px}.v8dg .row{gap:12px}.v8dg .cau{margin-top:4px}
 .v8do{color:var(--bad)}
 .v8cn{text-align:center;margin-top:8px}.v8cn a{color:var(--blue);font-weight:600;text-decoration:none}
@@ -5900,7 +5901,7 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
     var ds = theDs(), n = ds.filter(function (e) { return e.chon; }).length, h = ccChe();
     theMaTai(); theGanMa(ds);
     var caiDat = '';   // b220: người làm thẻ trước, Cài đặt in sau (bản vẽ L2.3)
-    if (!ds.length) h += '<div class="card v8h"><b class="v8t">Thẻ ra vào HOJEONG</b><ol class="ySt"><li>Bấm Chọn người trong kho CCCD.</li><li>Chạm ảnh từng người rồi bấm Làm thẻ.</li><li>Quay lại đây bấm In thẻ.</li></ol><div class="meta">Người chưa có ảnh CCCD trong kho thì <span style="white-space:nowrap">bấm Thêm người.</span></div><button class="btn" id="thKho">Chọn người trong kho CCCD</button></div>';
+    if (!ds.length) h += '<div class="card v8h"><b class="v8t">Thẻ ra vào HOJEONG</b><ol class="ySt"><li>Bấm Chọn người trong kho CCCD.</li><li>Chạm ảnh từng người rồi <span style="white-space:nowrap">bấm Làm thẻ.</span></li><li>Quay lại đây bấm In thẻ.</li></ol><div class="meta">Người chưa có ảnh CCCD trong kho thì <span style="white-space:nowrap">bấm Thêm người.</span></div><button class="btn" id="thKho">Chọn người trong kho CCCD</button></div>';
     else caiDat = q2H('Cài đặt in') + '<div class="card v8cd"><div class="row thk"><span class="meta">Khổ giấy</span><div class="seg" id="thKho">' + ['A4', 'A5'].map(function (g) { return '<button data-tk="' + g + '"' + (theKho() === g ? ' class="on"' : '') + '>' + g + (g === 'A4' ? ' · 8 thẻ/tờ' : ' · 4 thẻ/tờ') + '</button>'; }).join('') + '</div></div>' +
       '<div class="row thk"><span class="meta">Sáng ảnh</span><input type="range" id="thSang" min="0" max="100" step="5" value="' + theSangMuc() + '" style="flex:1"><span class="meta num" id="thSangV" style="min-width:64px;text-align:right">' + theSangChu() + '</span></div>' +
       '<div class="meta cau">' + yDong(['Mỗi thẻ 8,0 × 5,5 cm, cần in màu.', theKho() === 'A5' ? 'Đặt giấy A5 vào khay; hộp in hiện khổ 5 × 7 inch là đúng.' : '']) + '</div></div>';
@@ -10064,8 +10065,8 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
     var tren = diem.filter(function (v) { return v > g; }), cuoi = tren[1] || tren[0] || Math.max(g, diem[diem.length - 1]);
     var pct = function (v) { return Math.max(0, Math.min(100, v / (cuoi * 1.08) * 100)); }, lbTruoc = -99;
     var mk = diem.filter(function (v) { return v <= cuoi; }).map(function (v) {
-      var dat = g >= v, p = pct(v), coLb = p - lbTruoc >= 17; if (coLb) lbTruoc = p; var lb = v === c.b1 ? 'Vàng' : (c.moc.filter(function (m) { return m[0] === v; })[0] ? '+' + vnd0(c.moc.filter(function (m) { return m[0] === v; })[0][1] / 1000) + 'k' : '');
-      return '<i class="m' + (dat ? ' dat' : '') + '" style="left:' + p + '%"></i>' + (coLb ? '<span class="l' + (dat ? ' dat' : '') + '" style="left:' + Math.min(92, Math.max(8, p)) + '%">' + (dat ? '✓ ' : '') + tnGio(v) + (lb ? '<br>' + lb : '') + '</span>' : '');
+      var dat = g >= v, p = pct(v), coLb = p - lbTruoc >= 22; if (coLb) lbTruoc = p; var lb = v === c.b1 ? 'Vàng' : (c.moc.filter(function (m) { return m[0] === v; })[0] ? '+' + vnd0(c.moc.filter(function (m) { return m[0] === v; })[0][1] / 1000) + 'k' : '');
+      return '<i class="m' + (dat ? ' dat' : '') + '" style="left:' + p + '%"></i>' + (coLb ? '<span class="l' + (dat ? ' dat' : '') + '" style="left:' + Math.min(92, Math.max(8, p)) + '%">' + tnGio(v) + (lb ? '<br>' + lb : '') + '</span>' : '');
     }).join('');
     if (ct.kyTruoc && ct.kyTruoc.gio > 0 && ct.kyTruoc.gio < cuoi) mk += '<i class="m" style="left:' + pct(ct.kyTruoc.gio) + '%;background:var(--tn-vang);opacity:1"></i>';
     var trk = '<div class="tn-trk"><div class="f" data-w="' + pct(g) + '"></div>' + mk + '<span class="ban" style="left:' + Math.min(88, Math.max(12, pct(g))) + '%">' + tnGio(g) + ' giờ</span></div>';
@@ -10079,7 +10080,7 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
     if (o.tra) {
       var tm = { tieu: o.tra.tieu, dau: o.tra.dau, dong: [o.tra.dong] }, tr = o.tra.dong, tt = traSaleTieu(tm), phai = tqGt(tm, tr, 'Phải trả'), dau = tqGt(tm, tr, 'Còn thiếu trước'), soDau = Number(String(dau).replace(/[^\d-]/g, '')) || 0;
       traHtml = q2H('Lương kỳ trước') + '<div class="grp"><div class="it"><div style="flex:1;min-width:0"><div class="nm">Lương ' + esc(tt.thang) + '</div><div class="sub">' +
-        yDong([tt.qua ? 'Chưa trả · quá hạn ' + esc(tt.ng) : 'Nhận ngày ' + esc(tt.ng), soDau > 0 ? 'Gồm nợ cũ ' + esc(soVN(dau)) : soDau < 0 ? 'Đã trả trước ' + esc(soVN(String(dau).replace(/^[-−]/, ''))) : '']) +
+        yDong([tt.qua ? 'Chưa trả · quá hạn ' + esc(tt.ng) : 'Nhận ngày ' + esc(tt.ng), soDau > 0 ? 'Gồm nợ cũ ' + tnD(soDau) : soDau < 0 ? 'Đã trả trước ' + tnD(-soDau) : '']) +
         '</div></div><b class="num' + (tt.qua ? ' v8do' : '') + '">' + tnD(soTien(phai)) + '</b></div></div>';
     }
     var vdHtml = q2H('Phụ cấp truyền thông') + '<div class="card"><div class="row sp"><b>' + vd.n + '/' + vd.so + ' video</b><span class="meta">Tối đa ' + tnD(vd.toiDa) + '</span></div>' +
@@ -10093,13 +10094,13 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
         '<div class="v8am">' + (dat ? (lb ? '<b class="ok">' + lb + '</b>' : '') : '<b class="num">' + tnD(tnLuongGio(c, v) + tnMoc(c, v) + pc + (vd.tien || 0)) + '</b>' + (lb ? '<small>' + lb + '</small>' : '')) + '</div></div>';
     }).join('') + '</div><div class="meta v7nt">' + yDong(['Lương cả kỳ đã gồm phụ cấp hiện có.', 'Giờ theo dữ liệu công ty gửi.']) + '</div>';
     var dgHtml = '<div class="v8dg"><b>Đơn giá lương theo giờ</b>' + [['Giờ 1 – ' + tnGio(c.b1), c.g1], ['Giờ ' + tnGio(c.b1 + 1) + ' – ' + tnGio(c.b2), c.g2], ['Từ giờ ' + tnGio(c.b2 + 1), c.g3]].map(function (r) {
-      return '<div class="row sp"><span>' + r[0] + '</span><span class="num">' + vnd(r[1]) + '/giờ</span></div>'; }).join('') + '<div class="cau">' + yDong(['Riêng BEST tính giờ trọn tháng (1 – cuối tháng).', 'Trả cùng ngày 5.']) + '</div></div>';
+      return '<div class="row sp"><span>' + r[0] + '</span><span class="num">' + vnd(r[1]) + '/giờ</span></div>'; }).join('') + ((x && x.pc || []).some(function (p) { return p.cty === 'BEST'; }) ? '<div class="cau">' + yDong(['Riêng BEST tính giờ trọn tháng <span style="white-space:nowrap">(1 – cuối tháng).</span>', 'Trả cùng ngày 5.']) + '</div>' : '') + '</div>';
     var pcHtml = x && x.pc && x.pc.length ? q2H('Phụ cấp phụ trách công ty') + '<div class="grp">' + x.pc.map(function (p) {
       return '<div class="it"><div style="flex:1;min-width:0"><div class="nm">' + esc(p.cty) + '</div><div class="sub">' + yDong([p.loai === 'chinh' ? 'Phụ trách chính' : 'Đồng phụ trách', p.co ? '' : 'Chưa có người đi làm']) + '</div></div><b class="num"' + (p.co ? '' : ' style="color:var(--muted)"') + '>' + tnD(p.tien) + '</b></div>';
     }).join('') + '</div><div class="meta v7nt">Chỉ tính công ty có người đi làm trong kỳ.</div>' : '';
     var chips = chuX && ct.sales && ct.sales.length ? '<div class="tn-chips">' + ct.sales.map(function (s) { return '<button data-s="' + esc(s) + '"' + (s === (S.tnSale || ct.ten) ? ' class="on"' : '') + '>' + esc(s) + '</button>'; }).join('') + '</div>' : '';
     t.innerHTML = '<div class="tn-k v8col">' + chips +
-      '<div class="card hero"><div class="tn-hd"><div class="tn-ten"><b>' + esc(tenHien) + '</b><span>Kỳ ' + tnNgay(ct.kyTu) + ' – ' + tnNgay(ct.kyDen) + ' · trả ' + ngTra + '</span></div>' +
+      '<div class="card hero"><div class="tn-hd"><div class="tn-ten"><b>' + esc(tenHien) + '</b><span>' + yDong(['Kỳ ' + tnNgay(ct.kyTu) + ' – ' + tnNgay(ct.kyDen), 'Trả lương ngày ' + ngTra]) + '</span></div>' +
       '<span class="tn-hang" style="background:' + hang.bg + ';color:' + hang.fg + '">Hạng ' + hang.t + '</span></div>' +
       '<div class="meta">Lương tạm tính kỳ này</div><div class="tn-big" id="tnTong">' + tnD(tong) + '</div>' +
       '<div class="tn-ct">' +
