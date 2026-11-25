@@ -1311,6 +1311,14 @@ b.yT0{display:block;margin-bottom:2px}
 #lso .soNgH{flex-wrap:wrap;row-gap:2px}#lso .soNgH>.num{margin-left:auto;text-align:right;white-space:normal}
 @media (min-width:341px){.nhaR{grid-template-columns:14px minmax(0,1fr) 30px 30px 34px 56px}}
 .soC .it.so .nm{font-weight:400}
+/* b219: chủ xem app như sale */
+#xnhuBar{position:fixed;left:0;right:0;top:0;z-index:99;display:flex;align-items:center;gap:10px;padding:calc(env(safe-area-inset-top,0px) + 4px) 12px 4px 16px;min-height:calc(env(safe-area-inset-top,0px) + 34px);background:#B45309;color:#fff;font-size:13px;line-height:18px}
+#xnhuBar span{flex:1;min-width:0}#xnhuBar b{font-weight:700}
+#xnhuBar button{flex:none;height:26px;padding:0 12px;border:0;border-radius:99px;background:rgba(255,255,255,.22);color:#fff;font:inherit;font-weight:600}
+html.xnMo .top{padding-top:calc(var(--xnh,34px) + 10px)}
+html.xnMo .vdoTabW{top:var(--xnh,34px)}
+html.xnMo .bnr,html.xnMo .ttpill,html.xnMo .cqDai{top:calc(var(--xnh,34px) + 8px)}
+html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
 </style>
 </head>
 <body>
@@ -1319,6 +1327,31 @@ b.yT0{display:block;margin-bottom:2px}
 (function () {
   'use strict';
   var S = { t: null, toi: null, cty: null, data: {}, loc: 'all', q: '', hs: null, tqNhom: null };
+  // b219: chủ xem app như sale (chỉ xem). Yêu cầu nằm ở sessionStorage (đóng app là hết); dữ liệu lúc xem chỉ để trong bộ nhớ tạm,
+  //   không đọc / ghi localStorage của chủ. Phiên gửi máy chủ = "<phiên chủ>.xn.<SĐT sale>", máy chủ chỉ cho lệnh đọc (PB120).
+  var XNHU = null, XNHU_MEM = null;
+  var XNHU_DOC = { toi: 1, quy: 1, ccChayTT: 1, ds: 1, phieu: 1, phieuTuan: 1, cho: 1, tb: 1, thuNhap: 1, kbDs: 1, vdoDs: 1, vdoKhuc: 1, bangLuong: 1,
+    dslCty: 1, dslCu: 1, dslGan: 1, dslDoc: 1, cccdTamDs: 1, cccdDanhBa: 1, cccdTim: 1, cccdAnh: 1, theDs: 1, theMa: 1, theAnh: 1,
+    ctDs: 1, nhaTk: 1, ntDs: 1, cnDs: 1, utGan: 1, utThieu: 1, lkTT: 1, vtTep: 1, vtXem: 1, timCu: 1, visionTT: 1, ghTT: 1, wpKhoa: 1 };
+  try {
+    var xn0 = JSON.parse(sessionStorage.getItem('vlta_xn') || 'null'), tChu = localStorage.getItem('vlta_t') || '';
+    if (xn0 && /^0\d{9}$/.test(xn0.sdt) && /^[0-9a-f]{64}$/.test(tChu)) {
+      XNHU = { sdt: xn0.sdt, ten: String(xn0.ten || 'sale') };
+      XNHU_MEM = { vlta_t: tChu + '.xn.' + xn0.sdt, vlta_theme: localStorage.getItem('vlta_theme') || 'auto' };
+      document.documentElement.classList.add('xnMo');
+    } else if (xn0) sessionStorage.removeItem('vlta_xn');
+  } catch (e) { }
+  function xnhuThoat() { try { sessionStorage.removeItem('vlta_xn'); } catch (e) { } location.reload(); }
+  function xnhuVao(sdt, ten) { try { sessionStorage.setItem('vlta_xn', JSON.stringify({ sdt: sdt, ten: ten })); } catch (e) { toast('Máy này không mở được chế độ xem như.'); return; } location.reload(); }
+  function xnhuThanh() {
+    if (!XNHU || document.getElementById('xnhuBar')) return;
+    var b = document.createElement('div'); b.id = 'xnhuBar';
+    b.innerHTML = '<span>Xem như <b>' + esc(XNHU.ten) + '</b> · chỉ xem</span><button type="button" id="xnhuRa">Thoát</button>';
+    document.body.appendChild(b);
+    document.getElementById('xnhuRa').onclick = xnhuThoat;
+    function cao() { document.documentElement.style.setProperty('--xnh', Math.ceil(b.getBoundingClientRect().height) + 'px'); }   // chữ xuống 2 dòng thì đầu trang lùi theo
+    cao(); window.addEventListener('resize', cao); setTimeout(cao, 600);
+  }
   // 22/10: Safari iPhone in có lề đầu/chân trang (~17 mm) và phóng ~5%: lớp ios để căn CCCD giữa tờ
   if (/iPhone|iPad|iPod/.test(navigator.userAgent) || (/Macintosh/.test(navigator.userAgent) && navigator.maxTouchPoints > 1)) document.documentElement.classList.add('ios');
   var $app = document.getElementById('app');
@@ -1553,8 +1586,8 @@ b.yT0{display:block;margin-bottom:2px}
   function gioVN(n) { n = Math.round((Number(n) || 0) * 10) / 10; var p = String(Math.abs(n)).split('.'); return (n < 0 ? '−' : '') + p[0].replace(/\B(?=(\d{3})+(?!\d))/g, '.') + (p[1] ? ',' + p[1] : ''); }   // giờ công: 1.373,5
   function kd(s) { return String(s || '').normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/đ/g, 'd').replace(/Đ/g, 'D').toLowerCase(); }
   function chu(ten) { var p = String(ten || '?').trim().split(/\s+/); return p[p.length - 1].charAt(0).toUpperCase(); }
-  function luu(k, v) { try { if (v === null) localStorage.removeItem(k); else localStorage.setItem(k, v); } catch (e) { } }
-  function doc(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
+  function luu(k, v) { if (XNHU_MEM) { if (v === null) delete XNHU_MEM[k]; else XNHU_MEM[k] = String(v); return; } try { if (v === null) localStorage.removeItem(k); else localStorage.setItem(k, v); } catch (e) { } }
+  function doc(k) { if (XNHU_MEM) return Object.prototype.hasOwnProperty.call(XNHU_MEM, k) ? XNHU_MEM[k] : null; try { return localStorage.getItem(k); } catch (e) { return null; } }
   function toast(m) { bnrDua({ m: m, ms: 3500 }); }   // b193: thông báo trượt từ trên xuống, vuốt lên để tắt (bnrDua)
   function serialDate(n) { return new Date(Math.round((n - 25569) * 864e5)); }
   function ddmm(d, nam) { function p(x) { return (x < 10 ? '0' : '') + x; } return p(d.getUTCDate()) + '/' + p(d.getUTCMonth() + 1) + (nam ? '/' + d.getUTCFullYear() : ''); }
@@ -1605,6 +1638,7 @@ b.yT0{display:block;margin-bottom:2px}
   }
   var API_DANG = 0;   // 07/11: số lệnh máy chủ đang chờ trả lời (vuốt làm mới biết lúc xong)
   function api(q) {
+    if (XNHU && q && q.v && !XNHU_DOC[q.v]) { try { console.info('[xem như] chặn lệnh ' + q.v); } catch (e) { } return Promise.resolve({ loi: 'Đang xem như ' + XNHU.ten + ' – chỉ xem, không ghi được.' }); }
     var tt = (q.im || q.lang) ? null : ttBat(q);   // 21/10: q.im = tải ngầm; q.lang = việc lâu chạy nền (nút tự báo đang làm) -> không hiện thanh chờ
     API_DANG++;
     return (BEN_V[q.v] ? apiBen(q) : api0(q)).then(function (o) { API_DANG--; if (tt) ttTat(tt); return o; }, function (e) { API_DANG--; if (tt) ttTat(tt); throw e; });
@@ -1718,6 +1752,7 @@ b.yT0{display:block;margin-bottom:2px}
     }
   }
   function dangXuat(het) {
+    if (XNHU) { xnhuThoat(); return; }
     if (!het && S.t) api({ v: 'ra', t: S.t }).catch(function () { });
     S.t = null; S.toi = null; S.data = {}; luu('vlta_t', null); luu('vlta_bl', null); luu('vlta_lk', null); LK = null; BL.d = {}; luu('vlta_ds', null); luu('vlta_toi', null); luuSo('vlta_tq', null); luuSo('vlta_tn', null); luuSo('vlta_quy', null); QUY = null; TQ = null; TN = null; PC = {};
     var wh = document.querySelector('.wpHop'); if (wh) wh.remove();
@@ -1765,6 +1800,23 @@ b.yT0{display:block;margin-bottom:2px}
     var canh = setTimeout(function () { toastLoi('Mạng chậm, app chưa mở lại được. Tắt hẳn app rồi mở lại.'); }, 25000);
     hanGio(dongBoMa ? fetch(DONG_BO_MA) : null, 12000).then(lamMoiApp).then(function () { location.reload(); });
   }
+  function moXemNhu() {   // b219: chủ chọn nhân viên (kế toán / sale) để xem app như người đó
+    var sh = moSheet('<div class="row sp"><h3>Xem app như nhân viên</h3><button class="link" id="xnDong">Đóng</button></div>' +
+      '<div class="meta cau" style="margin:4px 2px 12px">' + yDong(['App hiện đúng như máy của người đó.', 'Chỉ xem, không ghi hay sửa được gì.', 'Bấm Thoát ở thanh trên cùng để quay lại tài khoản của bạn.']) + '</div>' +
+      '<div class="set" id="xnDs"><div class="meta" style="padding:14px 16px">Đang tải danh sách…</div></div>');
+    sh.querySelector('#xnDong').onclick = function () { sh.remove(); };
+    apiT({ v: 'nv', im: 1 }).then(function (o) {
+      var el = sh.querySelector('#xnDs'); if (!el) return;
+      if (o.loi) { el.innerHTML = '<div class="meta" style="padding:14px 16px">' + esc(o.loi) + '</div>'; return; }
+      var ds = (o.ds || []).filter(function (x) { return !x.toi && !/ch[uủ]/i.test(String(x.vai || '')) && !/kho/i.test(String(x.trangThai || '')) && x.sdt; });
+      if (!ds.length) { el.innerHTML = '<div class="meta" style="padding:14px 16px">Chưa có tài khoản nhân viên nào đang dùng.</div>'; return; }
+      el.innerHTML = ds.map(function (x) {
+        var nguoi = x.saleTen ? hoaDau(String(x.saleTen).toLowerCase()) : x.ten, ten = nguoi + (nguoi !== x.ten ? ' (' + x.ten + ')' : '');
+        return '<button data-xn="' + esc(x.sdt) + '" data-ten="' + esc(ten) + '"><span>' + esc(nguoi) + '<small>' + esc(['Tài khoản ' + x.ten, x.phuTrach ? 'phụ trách ' + String(x.phuTrach).split(',').join(', ') : ''].filter(String).join(' · ')) + '</small></span><span class="ch" style="margin-left:auto">›</span></button>';
+      }).join('');
+      el.querySelectorAll('[data-xn]').forEach(function (b) { b.onclick = function () { xnhuVao(b.getAttribute('data-xn'), b.getAttribute('data-ten')); }; });
+    }, function (e) { var el = sh.querySelector('#xnDs'); if (el) el.innerHTML = '<div class="meta" style="padding:14px 16px">' + esc(e.message || 'Chưa tải được.') + '</div>'; });
+  }
   function moTaiKhoan() {
     var u = S.toi, th = doc('vlta_theme') || 'auto', laChu = u.vai === 'chu';
     var tenTheme = (THEMES.filter(function (x) { return x[0] === th; })[0] || THEMES[0])[1];
@@ -1780,6 +1832,7 @@ b.yT0{display:block;margin-bottom:2px}
       '<button id="tdTb"><span>Thông báo<small>' + (wpDaBat() ? 'Đã bật trên máy này · bấm để gửi thử' : wpTrangThai() === 'khong' ? 'Máy này chưa nhận được thông báo' : 'Chưa bật trên máy này') + '</small></span><span class="v" style="color:var(' + (wpDaBat() ? '--good)">✓' : '--warn)">!') + '</span></button>' +
       (window.PB ? '<button id="tdPb"><span>Phiên bản ' + PB.so + '<small id="tdPbTt">Ra lúc ' + esc(PB.luc) + ' · đang kiểm tra…</small></span><span class="v" id="tdPbV"></span></button><button id="tdMoi"><span>Có gì mới</span><span class="ch" style="margin-left:auto">›</span></button>' : '') + '</div>' +
       (laChu ? '<div class="sec" style="margin:8px 4px -6px">Quản trị</div><div class="set"><button id="tdNv"><span>Quản lý nhân viên</span><span class="ch" style="margin-left:auto">›</span></button>' +
+        '<button id="tdXn"><span>Xem app như nhân viên<small>Thấy đúng màn hình của từng người, chỉ xem</small></span><span class="ch" style="margin-left:auto">›</span></button>' +
         '<button id="tdVi"><span>Khoá đọc ảnh CCCD<small id="tdViTt">Đang kiểm tra…</small></span><span class="ch" style="margin-left:auto">›</span></button>' +
         '<div id="eVi" class="hidden" style="padding:0 16px 12px"><div class="meta" style="margin-bottom:8px">Dán khoá Cloud Vision (bắt đầu bằng AIza…). Khoá chỉ lưu trên máy chủ, không gửi xuống điện thoại của nhân viên.</div><div class="row"><input class="inp" id="tVi" placeholder="AIza…" autocomplete="off" autocapitalize="off" spellcheck="false" style="font-size:16px;padding:11px 14px"><button class="btn sm" id="tViOk">Lưu</button></div><button class="btn lk" id="tViXoa" style="padding-left:0">Bỏ khoá, quay về đọc bằng Drive</button></div>' +
         '<button id="tdGh"><span>Khoá xử lý CCCD trên máy chủ<small id="tdGhTt">Đang kiểm tra…</small></span><span class="ch" style="margin-left:auto">›</span></button>' +
@@ -1800,6 +1853,7 @@ b.yT0{display:block;margin-bottom:2px}
     document.getElementById('rTheme').onclick = function () { an('eTheme'); };
     if (laChu) {
       document.getElementById('tdNv').onclick = function () { sh.remove(); moQLNV(); };
+      document.getElementById('tdXn').onclick = function () { sh.remove(); moXemNhu(); };
       var viTt = document.getElementById('tdViTt');
       function viHien(o) { viTt.textContent = o.loi ? o.loi : o.co ? (o.dem >= o.toiDa ? 'Đã dùng hết ' + o.toiDa + ' lượt đọc nhanh tháng này. Đang đọc chậm qua Drive.' : 'Đọc nhanh · đã dùng ' + o.dem + '/' + o.toiDa + ' lượt tháng này') : 'Chưa có khoá. Đang đọc chậm qua Drive.'; }
       apiT({ v: 'visionTT', im: 1 }).then(viHien, function () { viTt.textContent = 'Chưa kiểm tra được'; });
@@ -2000,7 +2054,7 @@ b.yT0{display:block;margin-bottom:2px}
     if (/[?&]tab=vdo/.test(location.search)) KBV.phan = /[?&]p=kb/.test(location.search) ? 'kb' : 'vdo';   // bản 145: thông báo kịch bản mở phần Kịch bản, thông báo video mở phần Video
     if (/[?&]tab=/.test(location.search)) try { history.replaceState(null, '', location.pathname); } catch (e) { }
     moTab(t);
-    setTimeout(xemMoi, 600); setTimeout(wpChan, 900);   // bản 142: bắt bật thông báo
+    if (XNHU) xnhuThanh(); else { setTimeout(xemMoi, 600); setTimeout(wpChan, 900); }   // bản 142: bắt bật thông báo; b219: đang xem như sale thì thôi
     if (t !== 'ld') taiDs(false, !!S.data[S.cty]);
   }
   function luuDs() { try { luu('vlta_ds', JSON.stringify(S.data)); luu('vlta_toi', JSON.stringify(S.toi)); } catch (e) { } }
@@ -6461,6 +6515,7 @@ b.yT0{display:block;margin-bottom:2px}
     }, function (er) { ccTd(''); toastLoi(er.message); });
   }
   var BAN_MOI = [
+    { so: 219, ds: [['Xem app như nhân viên: vào Tài khoản → Xem app như nhân viên → chọn tên. App hiện đúng màn hình của người đó, chỉ xem, không ghi được gì. Bấm Thoát ở thanh cam trên cùng để quay lại.', 'chu']] },
     { so: 218, ds: ['Cần kiểm tra: người nhận trước chỉ ghi Nhận trước, không lặp lại số tiền.', 'Sale xem danh sách người mình tuyển không còn lặp tên sale ở từng dòng.'] },
     { so: 217, ds: [['Tổng quan vẽ lại: số lợi nhuận tháng có phần cách tính ngay dưới, khoản bất thường thành mục riêng.', 'chu'], ['Lãi từng công ty ghi kỳ công và biên của từng công ty, chạm biểu tượng (i) để xem biên là gì.', 'chu'], 'Lao động: vân tay, file gửi HOJEONG, phiếu ở công ty khác gom chung một khung.', 'Danh sách Còn phải trả nối liền số tổng; người đang đi làm đã trả đủ gập thành một dòng.', 'Hồ sơ: khoản ứng / trả ghi theo tuần lương, ô tuần ghi Chưa trả hoặc Đã trả.', ['Thu chi có hai ô Đã thu, Đã chi; mỗi ngày trong sổ ghi rõ thứ.', 'chu']] },
     { so: 216, ds: [['Chi phí chung ở Tổng quan gom theo nhóm, chạm vào nhóm để xem từng khoản.', 'chu'], 'Chuông gom các thông báo cùng loại của một công ty thành một dòng, chạm để xem từng người.', 'Hồ sơ chỉ hiện các khoản ứng / trả trong kỳ, khớp với số Đã ứng, Đã trả.'] },
@@ -6821,6 +6876,7 @@ b.yT0{display:block;margin-bottom:2px}
     return 'khong';
   }
   function wpChan() {
+    if (XNHU) return;   // b219: đang xem như nhân viên – không hỏi bật thông báo
     var cu = document.querySelector('.wpHop');
     function bo() { if (cu) cu.remove(); document.documentElement.classList.remove('wpKhoa'); }   // b197: gỡ ô chặn + mở lại cuộn trang
     if (!S.t || !S.toi || !wpTrangApp()) { bo(); return; }
