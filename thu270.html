@@ -2620,6 +2620,9 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
     var taT = document.getElementById('taTop'); if (!taT || nhaCo() || laCQ(S.cty)) return;
     var h = diLamHtml(S.data[S.cty]);
     // 26/11 anh: bỏ đếm theo tờ đăng ký (đăng ký đi làm không phải đã đi làm); kỳ mới chưa có bảng công thì ghi rõ chưa có
+    var dT = S.data[S.cty];
+    if (!h && dT && !dT.moc && dT.tr && dT.tr.n) h = '<div class="dlm cu" id="dlm"><div class="dlmT"><b class="num">' + dT.tr.n + '</b><span>Người đi làm ngày ' + ngayDM(dT.tr.d) + '</span></div>' +   // PB155
+      '<div class="dlmP">Ca ngày ' + (dT.tr.n - dT.tr.dem) + ' · Ca đêm ' + dT.tr.dem + '</div><div class="dlmP">' + yDong(['Theo bảng công kỳ trước.', 'Kỳ mới chưa có giờ.']) + '</div></div>';
     if (!h) { var d0 = S.data[S.cty]; h = '<div class="dlm" id="dlm"><div class="dlmT"><span>Người đi làm</span></div><div class="dlmP">' + yDong(['Kỳ mới' + (d0 && d0.ky ? ' ' + esc(String(d0.ky).replace(/\/\d{4}/g, '')) : '') + ' chưa có bảng công.', 'Số người đi làm sẽ hiện khi có giờ ngày đầu kỳ.']) + '</div></div>'; }
     taT.innerHTML = '<div class="taTop">' + h + '</div>';
   }
@@ -2737,7 +2740,7 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
       if (tp) { var hn0 = tp.d === ymdNay(); return { so: tp.so, nhan: hn0 ? 'người đi làm hôm nay' : 'người đi làm ngày ' + ngayDM(tp.d), cu: !hn0 }; }
     }
     var d = S.data[c.ma]; if (!d || !d.ds) return null;
-    if (!ban && !d.moc) return { txt: 'Kỳ mới chưa có bảng công', cu: true };   // 26/11 anh: đăng ký / xuất danh sách không phải đã đi làm – chỉ bảng công mới tính
+    if (!ban && !d.moc) return d.tr && d.tr.n ? { so: d.tr.n, nhan: 'người đi làm ngày ' + ngayDM(d.tr.d), cu: true } : { txt: 'Kỳ mới chưa có bảng công', cu: true };   // PB155: ngày cuối có giờ của bảng công kỳ trước   // 26/11 anh: đăng ký / xuất danh sách không phải đã đi làm – chỉ bảng công mới tính
     var hn = d.moc === ymdNay();
     return { so: soDiLam(d), nhan: !d.moc ? 'người đang làm' : hn ? 'người đi làm hôm nay' : 'người đi làm ngày ' + ngayDM(d.moc), cu: !!(d.moc && !hn) };
   }
