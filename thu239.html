@@ -13,7 +13,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
 <script src="config.js"></script>
-<script>window.PB = { so: 241, luc: "26/11 12:26" };</script>
+<script>window.PB = { so: 241, luc: "26/11 12:28" };</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap">
 <style>
@@ -11241,7 +11241,7 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
     // b239: thưởng vượt kỳ trước chỉ ghi ở dải dưới thẻ Kỳ trước (anh chê lặp) – lộ trình chỉ cắm cờ
     var sauMoc = c.moc.filter(function (m) { return m[0] > VM_H[VM_H.length - 1].g; });
     sauHtml += '<div class="meta t9Pm">' + (sauMoc.length ? '<div class="t9Pk"><div class="t9Ph">Sau Kim cương</div>' + sauMoc.map(function (m) { return '<div class="t9Pi"><span><b>' + tnNguoiDeu(m[0], nkKy) + ' người</b> đi làm đều/tháng</span><span>Lên tới <b>' + t9K(tnLenToi(c, m[0], pc, vd)) + '</b></span></div>'; }).join('') + '</div>' : '') +
-      '<div class="t9Pg"><div><b>Số người:</b> người đi làm đều cả tháng.</div><div><b>Số tiền:</b> thu nhập lên tới khi đạt hạng.</div><div class="t9Pg2">Đã gồm lương giờ, thưởng, phụ cấp <span class="nw">và tiền ' + (vd.so || 30) + ' video.</span></div></div></div>';
+      ''</div>';
     sauHtml += '</div>';
     // chi tiết cách tính (gập lại) – b239: chia 3 nhóm, bậc lương đang ở được tô, mốc đã đạt có dấu ✓
     var bac = g > c.b2 ? 2 : g > c.b1 ? 1 : 0;
