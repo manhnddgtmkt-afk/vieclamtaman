@@ -13,7 +13,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
 <script src="config.js"></script>
-<script>window.PB = { so: 245, luc: "26/11 13:12" };</script>
+<script>window.PB = { so: 245, luc: "26/11 13:19" };</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap">
 <style>
@@ -1094,21 +1094,17 @@ textarea.inp{font-family:inherit}
 .bca-tsua{display:flex;gap:8px;align-items:stretch}.bca-tsua .inp{flex:1;min-width:0;font-size:16px;padding:9px 12px;text-transform:uppercase}.bca-tsua .btn{flex:none;width:auto;padding:0 16px}
 /* b243 (26/11): GIÁ VENDOR trong Bảng lương công nhân – chỉ chủ và tài khoản được cho phép */
 .gvK{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:0 14px}
-.gvK>details{border-bottom:1px solid var(--line)}.gvK>details:last-child{border-bottom:0}
-.gvK summary{list-style:none;display:grid;grid-template-columns:minmax(0,1fr) auto 12px;align-items:center;column-gap:10px;padding:10px 0;min-height:52px;cursor:pointer}
-.gvK summary::-webkit-details-marker{display:none}
-.gvT{font-weight:700;font-size:15px;min-width:0;white-space:normal;overflow-wrap:break-word}
 .gvS{text-align:right;white-space:nowrap}.gvS b{display:block;font-size:16px;font-weight:700;font-variant-numeric:tabular-nums}.gvS small{display:block;font-size:11.5px;color:var(--muted)}
 .gvS.thieu b{color:var(--bad);font-size:14px}
-.gvCv{font-style:normal;color:var(--muted);font-size:16px;transition:transform .2s}.gvK details[open] .gvCv{transform:rotate(90deg)}
-.gvD{padding:0 0 10px}
+.gvTop{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;column-gap:10px;padding:12px 0 10px}.gvTop>span:first-child{font-weight:700;font-size:15px}
+.gvAi{font-size:13px;line-height:1.45;color:var(--muted);border-top:1px solid var(--line);padding:8px 0;white-space:normal}
 .gvR{display:grid;grid-template-columns:minmax(0,1fr) auto;column-gap:12px;align-items:center;padding:7px 0;border-top:1px solid var(--line);font-size:14px}
 .gvR.c3{grid-template-columns:minmax(0,1fr) auto auto}
 .gvR>span{color:var(--muted);min-width:0}
 .gvR>b{text-align:right;font-weight:700;font-variant-numeric:tabular-nums;white-space:nowrap;min-width:70px}
 .gvR>b small{display:block;font-size:11.5px;font-weight:600;color:var(--warn)}
 .gvR.dau{border-top:0;padding-top:2px}.gvR.dau>b,.gvR.dau>span{font-size:12px;font-weight:700;color:var(--muted)}
-.gvNote{font-size:13px;line-height:1.45;color:var(--muted);padding:2px 0 8px;white-space:normal}
+.gvNote{font-size:13px;line-height:1.45;color:var(--muted);padding:0 0 8px;white-space:normal}
 .gvNote.bad{color:var(--bad)}
 .gvChu{display:flex;justify-content:space-between;align-items:center;gap:10px;border-top:1px solid var(--line);padding-top:6px;font-size:13px;color:var(--muted)}
 .gvChu span{min-width:0}
@@ -7598,7 +7594,7 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
     }, function (er) { ccTd(''); toastLoi(er.message); });
   }
   var BAN_MOI = [
-    { so: 245, ds: [{ i: '💼', v: 'gv', t: 'Giá vendor', m: 'Bảng lương công nhân của từng công ty có thêm mục Giá vendor, ghi rõ vendor nhận bao nhiêu tiền mỗi giờ.' }] },
+    { so: 245, ds: [{ i: '💼', v: 'gv', t: 'Giá vendor', m: 'Bảng lương công nhân của từng công ty có thêm mục Giá vendor, ghi rõ vendor ở công ty đó nhận bao nhiêu tiền mỗi giờ.' }] },
     { so: 244, ds: [{ i: '👑', t: 'Trang Thu nhập mới', m: 'Trang Thu nhập ghi rõ cần bao nhiêu người đi làm đều mỗi tháng để lên hạng, thu nhập tăng lên bao nhiêu và thưởng vượt kỳ trước.' }] },
     { so: 241, ds: [{ i: '✅', t: 'Tự vào bảng công', m: 'Xuất danh sách xong, người trong danh sách tự vào bảng công, ai không đi làm thì bỏ khỏi tờ đăng ký là tự xoá khỏi bảng công.' }] },
     { so: 238, ds: ['Trang Thu nhập: mục Cách tính lương ghi thưởng mốc giờ thành từng dòng, không còn bị dồn chữ dọc.'] },
@@ -9245,71 +9241,74 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
   }
   function gvHomNay(tu) { var m = /(\d{1,2})\/(\d{1,2})\/(\d{4})/.exec(tu || ''); if (!m) return false; var d = new Date(+m[3], m[2] - 1, +m[1]), h = new Date(); h.setHours(0, 0, 0, 0); return d <= h; }
   function gvTien(n) { return n === null || n === undefined ? '–' : vnd(n); }
-  function gvHtml(cty) {
+  function gvHtml(cty) {   // 26/11 13:20 anh chốt: 1 giá vendor chung cho cả công ty
     var g = BL.gv[cty], d = BL.d[cty] || {};
     var h = '<div class="bl-sec">Giá vendor' + (g && g.ky ? ' kỳ <span class="lien">' + esc(g.ky) + '</span>' : '') + '</div>';
     if (!g) return h + '<div class="meta">Đang tải giá vendor…</div>';
     if (g.loi) return h + '<div class="note bad cau">Chưa tải được giá vendor. ' + esc(g.loi) + '</div>';
     if (g.khong) return h + '<div class="note warn cau">' + esc(g.khong) + '</div>';
-    var muc = g.muc || [], mApd = g.moi && gvHomNay(g.moi.tu), loai1 = '';
+    var muc = g.muc || [], c = g.chung, ds = g.vd || [], mApd = g.moi && gvHomNay(g.moi.tu), loai1 = '';
     (d.bang || []).forEach(function (b) { if (!loai1 && b.loai) loai1 = blHoa(b.loai); });
-    var ds = g.vd || [];
-    if (!ds.length) h += '<div class="gvK"><div class="gvNote cau" style="padding:12px 0">' + esc(cty) + ' chưa có vendor nào trong danh sách nguồn tuyển.</div></div>';
-    else h += '<div class="gvK">' + ds.map(function (v, i) {
-      var s0 = v.thieu ? '<span class="gvS thieu"><b>Chưa có giá</b></span>' : '<span class="gvS"><b>' + gvTien(mApd && v.dgMoi ? v.dgMoi[0] : v.dg[0]) + '</b><small>/ giờ ' + esc((muc[0] || 'ngày thường').toLowerCase()) + '</small></span>';
-      var ct = '';
-      if (v.thieu) ct = '<div class="gvNote bad cau">' + (g.sua ? yDong(['Chưa đặt số Tâm An giữ lại.', 'Bảng công đang tính cho vendor này bằng đúng giá công ty.']) : yDong(['Chưa đặt giá cho vendor này.', 'Báo chủ đặt giá trước khi đối chiếu với vendor.'])) + '</div>';
-      else {
-        var c3 = !!(g.ten2 && v.dg2);
-        ct = (c3 ? '<div class="gvR c3 dau"><span>Mức giờ</span><b>' + esc(loai1 || 'Loại chính') + '</b><b>' + esc(blHoa(g.ten2)) + '</b></div>' : '') +
-          muc.map(function (m, k) {
-            if (!k && !c3 && !v.dgMoi) return '';   // mức đầu đã ghi ở dòng tên vendor
-            var o1 = gvTien(v.dg[k]) + (v.dgMoi ? '<small>Từ ' + esc(g.moi.tu.slice(0, 5)) + ': ' + vnd0(v.dgMoi[k]) + '</small>' : '');
-            return '<div class="gvR' + (c3 ? ' c3' : '') + '"><span>' + esc(m) + '</span><b>' + o1 + '</b>' + (c3 ? '<b>' + gvTien(v.dg2[k]) + '</b>' : '') + '</div>';
-          }).join('');
-      }
-      if (g.sua) ct += '<div class="gvChu"><span class="cau">' + (v.giu === null || v.giu === undefined ? 'Tâm An giữ lại: chưa đặt' : 'Tâm An giữ lại <span class="lien">' + vnd(v.giu) + ' / giờ</span>') + '</span><button data-gvs="' + i + '">Sửa giá</button></div>';
-      return '<details' + (v.thieu ? ' open' : '') + '><summary><span class="gvT">' + esc(v.ten) + '</span>' + s0 + '<i class="gvCv" aria-hidden="true">›</i></summary><div class="gvD">' + ct + '</div></details>';
-    }).join('') + '</div>';
+    h += '<div class="gvK">';
+    if (!c) h += '<div class="gvTop"><span>Vendor nhận</span><span class="gvS thieu"><b>Chưa đặt giá</b></span></div>';
+    else {
+      var c3 = !!(g.ten2 && c.dg2);
+      h += '<div class="gvTop"><span>Vendor nhận</span><span class="gvS"><b>' + gvTien(mApd && c.dgMoi ? c.dgMoi[0] : c.dg[0]) + '</b><small>/ giờ ' + esc((muc[0] || 'ngày thường').toLowerCase()) + '</small></span></div>' +
+        (c3 ? '<div class="gvR c3 dau"><span>Mức giờ</span><b>' + esc(loai1 || 'Loại chính') + '</b><b>' + esc(blHoa(g.ten2)) + '</b></div>' : '') +
+        muc.map(function (m, k) {
+          if (!k && !c3 && !c.dgMoi) return '';   // mức đầu đã là số chính
+          var o1 = gvTien(c.dg[k]) + (c.dgMoi ? '<small>Từ ' + esc(g.moi.tu.slice(0, 5)) + ': ' + vnd0(c.dgMoi[k]) + '</small>' : '');
+          return '<div class="gvR' + (c3 ? ' c3' : '') + '"><span>' + esc(m) + '</span><b>' + o1 + '</b>' + (c3 ? '<b>' + gvTien(c.dg2[k]) + '</b>' : '') + '</div>';
+        }).join('');
+    }
+    h += '<div class="gvAi cau">' + (ds.length ? 'Áp dụng cho ' + ds.map(function (v) { return esc(v.ten); }).join(', ') + '.' : esc(cty) + ' chưa có vendor nào.') + '</div>';
+    if (g.lech) {
+      var ly = ds.filter(function (v) { return v.thieu || (g.sua && c && v.giu !== c.giu); }).map(function (v) { return esc(v.ten) + (v.thieu ? ' chưa có giá' : ' đang nhận ' + vnd(v.dg[0])); });
+      h += '<div class="gvNote bad cau">' + (g.sua ? yDong(['Giá các vendor đang chưa giống nhau.'].concat(ly.length ? [ly.join(', ') + '.'] : [])) : yDong(['Giá các vendor đang chưa giống nhau.', 'Báo chủ kiểm tra trước khi đối chiếu với vendor.'])) + '</div>';
+    }
+    if (g.sua && c) h += '<div class="gvChu"><span class="cau">Tâm An giữ lại <span class="lien">' + vnd(c.giu) + ' / giờ</span></span><button id="gvSuaC">' + (g.lech ? 'Đặt giá chung' : 'Sửa giá') + '</button></div>';
+    h += '</div>';
     if (g.sua) h += '<button class="btn ghost" id="gvThem">Thêm vendor cho ' + esc(cty) + '</button>';
-    h += '<div class="meta cau">' + yDong(['Giá vendor nhận cho mỗi giờ làm, đơn vị đồng.'].concat(g.sua ? ['Sửa giá là áp dụng cho cả kỳ ' + (g.ky || 'đang chạy') + '.'] : []).concat(['Chỉ chủ và tài khoản được chủ cho phép mới thấy mục này.'])) + '</div>';
+    h += '<div class="meta cau">' + yDong(['Mọi vendor ở ' + esc(cty) + ' nhận cùng một giá, đơn vị đồng mỗi giờ.'].concat(g.sua ? ['Sửa giá là áp dụng cho cả kỳ ' + esc(g.ky || 'đang chạy') + '.'] : []).concat(['Chỉ chủ và tài khoản được chủ cho phép mới thấy mục này.'])) + '</div>';
     return h;
   }
   function gvGan(nd) {
     var g = BL.gv[BL.cty]; if (!g || !g.sua) return;
-    nd.querySelectorAll('[data-gvs]').forEach(function (b) { b.onclick = function () { gvSuaMo(BL.cty, g.vd[+b.getAttribute('data-gvs')]); }; });
-    var t = nd.querySelector('#gvThem'); if (t) t.onclick = function () { gvSuaMo(BL.cty, null); };
+    var s1 = nd.querySelector('#gvSuaC'); if (s1) s1.onclick = function () { gvSuaMo(BL.cty, 0); };
+    var t = nd.querySelector('#gvThem'); if (t) t.onclick = function () { gvSuaMo(BL.cty, 1); };
   }
-  function gvSuaMo(cty, v) {
+  function gvSuaMo(cty, them) {
     var g = BL.gv[cty]; if (!g || !g.sua) return;
-    var them = !v, P = g.P, m0 = ((g.muc || [])[0] || 'ngày thường').toLowerCase();
-    var cu = !them && v.dg ? v.dg[0] : '';
-    var sh = moSheet('<h3>' + (them ? 'Thêm vendor' : 'Sửa giá vendor') + '</h3><div class="meta cau">' + yDong([esc(cty) + ' · kỳ ' + esc(g.ky || 'đang chạy') + '.', 'Giá công ty ' + vnd(P) + ' / giờ ' + esc(m0) + '.']) + '</div>' +
-      (them ? '<input class="inp" id="gvTen" maxlength="40" placeholder="Tên vendor *">' : '<div class="gvXem"><span>Vendor</span><b>' + esc(v.ten) + '</b></div>') +
-      '<label class="lb">Vendor nhận (đ / giờ ' + esc(m0) + ')</label><input class="inp" id="gvGia" inputmode="numeric" placeholder="Ví dụ 31.500" value="' + (cu === '' ? '' : vnd0(cu)) + '">' +
-      '<div id="gvXem"></div><div class="msg" id="gvM"></div><button class="btn" id="gvOk">Lưu</button><button class="btn ghost" id="gvHuy">Thôi</button>');
+    var P = g.P, c = g.chung, m0 = ((g.muc || [])[0] || 'ngày thường').toLowerCase(), canGia = !them || !c, cu = c ? c.dg[0] : '';
+    var sh = moSheet('<h3>' + (them ? 'Thêm vendor' : (g.lech ? 'Đặt giá chung cho tất cả vendor' : 'Sửa giá vendor')) + '</h3><div class="meta cau">' + yDong([esc(cty) + ', kỳ ' + esc(g.ky || 'đang chạy') + '.', 'Giá công ty ' + vnd(P) + ' / giờ ' + esc(m0) + '.']) + '</div>' +
+      (them ? '<input class="inp" id="gvTen" maxlength="40" placeholder="Tên vendor *">' : '') +
+      (canGia ? '<label class="lb">Vendor nhận (đ / giờ ' + esc(m0) + ')</label><input class="inp" id="gvGia" inputmode="numeric" placeholder="Ví dụ 31.500" value="' + (cu === '' ? '' : vnd0(cu)) + '">'
+        : '<div class="gvXem"><span>Vendor nhận</span><b>' + vnd(cu) + ' / giờ</b></div><div class="meta cau">Vendor mới nhận cùng giá với các vendor khác ở ' + esc(cty) + '.</div>') +
+      '<div id="gvXem"></div>' + (!them && (g.vd || []).length ? '<div class="meta cau">Áp dụng cho ' + g.vd.map(function (v) { return esc(v.ten); }).join(', ') + '.</div>' : '') +
+      '<div class="msg" id="gvM"></div><button class="btn" id="gvOk">Lưu</button><button class="btn ghost" id="gvHuy">Thôi</button>');
     var o = sh.querySelector('#gvGia'), xem = sh.querySelector('#gvXem'), msg = sh.querySelector('#gvM');
-    function so() { var x = String(o.value).replace(/\D/g, ''); return x ? Number(x) : NaN; }
+    function so() { if (!o) return cu; var x = String(o.value).replace(/\D/g, ''); return x ? Number(x) : NaN; }
     function ve() {
+      if (!o) return;
       var x = so();
       if (!(x > 0)) { xem.innerHTML = ''; return; }
       if (x > P) { xem.innerHTML = '<div class="note bad cau">Giá vendor không được cao hơn giá công ty ' + vnd(P) + '.</div>'; return; }
       xem.innerHTML = '<div class="gvXem"><span>Tâm An giữ lại</span><b>' + vnd(P - x) + ' / giờ</b></div>' +
         (cu !== '' && x !== cu ? '<div class="gvXem"><span>Trước đây vendor nhận</span><b>' + vnd(cu) + ' / giờ</b></div>' : '');
     }
-    o.oninput = function () { var x = so(); o.value = x > 0 ? vnd0(x) : ''; ve(); };
+    if (o) o.oninput = function () { var x = so(); o.value = x > 0 ? vnd0(x) : ''; ve(); };
     ve();
     sh.querySelector('#gvHuy').onclick = function () { sh.remove(); };
     sh.querySelector('#gvOk').onclick = function () {
-      var btn = this, x = so(), ten = them ? String(sh.querySelector('#gvTen').value).trim() : v.ten;
+      var btn = this, x = so(), ten = them ? String(sh.querySelector('#gvTen').value).trim() : '';
       if (them && !ten) { msg.textContent = 'Nhập tên vendor.'; return; }
       if (!(x > 0) || x > P) { msg.textContent = 'Nhập giá vendor nhận, không cao hơn giá công ty.'; return; }
       btn.disabled = true; msg.textContent = 'Đang lưu…';
-      apiT({ v: 'gvSua', cty: cty, ten: ten, giu: P - x, them: them ? 1 : 0 }).then(function (k) {
+      apiT(them ? { v: 'gvSua', cty: cty, ten: ten, giu: P - x, them: 1 } : { v: 'gvSua', cty: cty, giu: P - x, chung: 1 }).then(function (k) {
         btn.disabled = false;
         if (!k || k.loi) { msg.textContent = (k && k.loi) || 'Chưa lưu được.'; return; }
         BL.gv[cty] = k; sh.remove();
-        toast((them ? 'Đã thêm ' : 'Đã lưu giá ') + ten + ': ' + vnd(x) + ' / giờ ' + m0 + '.');
+        toast(them ? 'Đã thêm vendor ' + ten + ' ở ' + cty + '.' : 'Đã lưu giá vendor ' + cty + ': ' + vnd(x) + ' / giờ ' + m0 + '.');
         if (k.canh) toastLoi(k.canh);
         if (BL.cty === cty) blVe();
       }, function (e) { btn.disabled = false; msg.textContent = 'Chưa lưu được. ' + e.message; });
