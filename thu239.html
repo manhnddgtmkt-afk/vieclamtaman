@@ -13,7 +13,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
 <script src="config.js"></script>
-<script>window.PB = { so: 238, luc: "26/11 09:54" };</script>
+<script>window.PB = { so: 238, luc: "26/11 11:37" };</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap">
 <style>
@@ -1545,7 +1545,7 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
 .t9xT{font-style:normal;font-size:11.5px;font-weight:600;color:var(--muted);border:1px solid var(--line);padding:1px 8px;border-radius:999px;white-space:nowrap}
 .t9xG{display:grid;grid-template-columns:1fr 1fr;gap:8px}.t9xG .t9xM:last-child:nth-child(odd){grid-column:1/-1}
 .t9xM{display:flex;flex-direction:column;gap:1px;padding:9px 12px;border-radius:12px;background:var(--soft)}.t9xM span{font-size:13px;color:var(--muted)}.t9xM b{font-size:15.5px;font-weight:700;white-space:nowrap}
-.t9xM.da{background:var(--good-bg)}.t9xM.da span,.t9xM.da b{color:var(--good)}
+.t9xM i{font-style:normal;font-size:12px;color:var(--muted)}.t9xM.da{background:var(--good-bg)}.t9Pk{line-height:1.6}.t9Pk .t9Pn{color:var(--fg)}.t9xM.da span,.t9xM.da b{color:var(--good)}
 .t9xN{margin-top:6px;font-size:12.5px;color:var(--muted);padding:0 2px}
 .t9xF{display:flex;gap:10px;align-items:flex-start;margin-top:14px;font-size:12.5px;line-height:1.45;color:var(--muted)}.t9xF i{flex:none;width:18px;height:18px;border-radius:50%;border:1.5px solid var(--muted);font-style:normal;font-weight:700;font-size:11px;display:flex;align-items:center;justify-content:center;margin-top:1px}
 /* b239 (26/11): trang Thu nhập thiết kế lại – 1 khối chính, bảng chi tiết, lộ trình 6 hạng */
@@ -11034,6 +11034,9 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
     apiT({ v: 'anhLon', sdt: sdt }).then(function (o) { if (o && o.a) { anhNetLuu(sdt, o.k, o.a); cb(o.a); } }, function () { });
   }
   // thu nhập lên tới khi đạt g giờ: lương giờ + thưởng mốc + phụ cấp phụ trách + truyền thông đủ video
+  // số người đi làm đều cả kỳ tương đương g giờ (10 giờ/người/ngày, bỏ Chủ nhật)
+  function tnNgLamKy(tu, den) { var n = 0, d = new Date(tu); d.setHours(12, 0, 0, 0); var e = new Date(den); e.setHours(12, 0, 0, 0); while (d <= e) { if (d.getDay() !== 0) n++; d.setDate(d.getDate() + 1); } return n || 26; }
+  function tnNguoiDeu(g, nk) { return Math.ceil(g / (nk * 10)); }
   function tnLenToi(c, g, pc, vd) { return tnLuongGio(c, g) + tnMoc(c, g) + (pc || 0) + ((vd && vd.toiDa) || 1000000); }
   // b233 (26/11 anh duyệt): 6 hạng, mỗi hạng 1 khung liền khối (vương miện + vòng kim loại + cánh, Gemini vẽ). Vòng kim loại của khung = vòng tiến độ.
   // g: số giờ đạt hạng; c: màu vòng (= màu khung); ts/td: màu chữ nền sáng/tối; K: hình học ảnh khung 600 px (tâm vòng, bán kính trong, độ dày vòng)
@@ -11211,8 +11214,9 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
       return '<button class="t9N' + (i < L ? ' ok' : i === L ? ' cur' : '') + '" data-l="' + i + '"' + (i > L ? '' : ' disabled') + ' style="--nc:' + h.c + '"><span class="t9Ni"><img src="' + VM_IMG + 'km_' + h.im + '.webp" alt=""></span>' +
         (i < L ? '<b>✓</b><i>đã đạt</i>' : i === L ? '<b>Hiện tại</b><i>&nbsp;</i>' : ct.ketThuc ? '<b>' + tnGio(h.g) + '</b><i>giờ</i>' : nn > 0 ? '<b>+' + nn + '</b><i>người</i>' : '<b>✓</b><i>đủ nhịp</i>') + '<small>' + t9K(tnLenToi(c, h.g, pc, vd)) + '</small></button>';
     }).join('') + '</div>';
+    var nkKy = tnNgLamKy(ct.kyTu, ct.kyDen);
     var sauMoc = c.moc.filter(function (m) { return m[0] > VM_H[VM_H.length - 1].g; });
-    sauHtml += '<div class="meta t9Pm">' + (sauMoc.length ? '<div>Sau Kim cương: ' + sauMoc.map(function (m) { return '<span class="nw">' + tnGio(m[0]) + ' giờ lên tới <b>' + t9K(tnLenToi(c, m[0], pc, vd)) + '</b></span>'; }).join('<br>') + '</div>' : '') +
+    sauHtml += '<div class="meta t9Pm">' + (sauMoc.length ? '<div class="t9Pk"><div>Sau Kim cương:</div>' + sauMoc.map(function (m) { return '<div><b class="t9Pn">' + tnNguoiDeu(m[0], nkKy) + ' người</b> đi làm đều cả tháng → lên tới <b>' + t9K(tnLenToi(c, m[0], pc, vd)) + '</b></div>'; }).join('') + '</div>' : '') +
       '<div class="t9Pg">Số tiền dưới mỗi hạng là thu nhập lên tới: lương giờ, thưởng mốc, <span class="nw">phụ cấp phụ trách</span> và <span class="nw">truyền thông đủ ' + (vd.so || 30) + ' video.</span></div></div>';
     sauHtml += '</div>';
     // chi tiết cách tính (gập lại) – b239: chia 3 nhóm, bậc lương đang ở được tô, mốc đã đạt có dấu ✓
@@ -11220,7 +11224,7 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
     var dg = [['1 – ' + tnGio(c.b1) + ' giờ', c.g1], [tnGio(c.b1 + 1) + ' – ' + tnGio(c.b2) + ' giờ', c.g2], ['Từ ' + tnGio(c.b2 + 1) + ' giờ', c.g3]].map(function (r, i) { return '<div class="t9xR' + (i === bac ? ' on' : '') + '"><span>' + r[0] + (i === bac ? '<em>bậc hiện tại</em>' : '') + '</span><b class="num">' + vnd(r[1]) + '<small>/giờ</small></b></div>'; }).join('');
     var ctHtml = '<details class="card tn-dt"><summary>Cách tính lương kỳ này</summary>' +
       '<div class="t9xH">Lương theo giờ quản lý</div><div class="t9xB">' + dg + '</div>' +
-      '<div class="t9xH">Thưởng khi đạt mốc giờ</div><div class="t9xG">' + c.moc.map(function (m) { var da = g >= m[0]; return '<div class="t9xM' + (da ? ' da' : '') + '"><span>' + (da ? '✓ ' : '') + tnGio(m[0]) + ' giờ</span><b class="num">+' + tnD(m[1]) + '</b></div>'; }).join('') + '</div>' +
+      '<div class="t9xH">Thưởng khi đạt mốc giờ</div><div class="t9xG">' + c.moc.map(function (m) { var da = g >= m[0]; return '<div class="t9xM' + (da ? ' da' : '') + '"><span>' + (da ? '✓ ' : '') + tnGio(m[0]) + ' giờ</span><b class="num">+' + tnD(m[1]) + '</b><i>≈ ' + tnNguoiDeu(m[0], tnNgLamKy(ct.kyTu, ct.kyDen)) + ' người đi làm đều</i></div>'; }).join('') + '</div>' +
       (x && x.pc && x.pc.length ? '<div class="t9xH">Phụ cấp phụ trách công ty</div><div class="t9xB">' + x.pc.map(function (p) { return '<div class="t9xR"><span><b>' + esc(p.cty) + '</b><i class="t9xT">' + (p.loai === 'chinh' ? 'Chính' : 'Đồng phụ trách') + '</i></span><b class="num">' + tnD(p.tien) + '</b></div>'; }).join('') + '</div>' +
         (x.pc.some(function (p) { return p.cty === 'BEST'; }) ? '<div class="t9xN">Riêng BEST tính giờ trọn tháng <span class="nw">(1 – cuối tháng).</span></div>' : '') : '') +
       (vd.ds && vd.ds.length ? '<div class="t9xH">Video được duyệt gần đây</div><div class="t9xB">' + vd.ds.slice(0, 5).map(function (v) { return '<div class="t9xR"><span class="cau">' + esc(v.t) + '</span><small class="num">' + tnNgay(v.l) + '</small></div>'; }).join('') + '</div>' : '') +
