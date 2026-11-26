@@ -13,7 +13,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
 <script src="config.js"></script>
-<script>window.PB = { so: 268, luc: "26/11 17:25" };</script>
+<script>window.PB = { so: 268, luc: "26/11 17:45" };</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap">
 <style>
@@ -316,6 +316,7 @@ body:has(.fab) .ttpill{bottom:calc(var(--navH,66px) + 68px)}
 .sheet>div{position:relative}
 .shX{border:0;background:var(--soft);color:var(--muted);width:32px;height:32px;min-height:0;border-radius:16px;font-size:22px;font-weight:400;line-height:1;padding:0;flex:none;display:inline-flex;align-items:center;justify-content:center}
 .shXa{position:absolute;top:12px;right:12px;z-index:2}
+.shXa+h3,.shXa+*>h3:first-child,.shXa+*>.row:first-child{padding-right:40px}
 .sheet>div>h3:first-of-type{padding-right:40px}
 /* b199: bảng công ghi tháng ở ngày đầu kỳ và ngày 01 */
 .ld b.m{font-size:11.5px;letter-spacing:-.2px}
@@ -3517,7 +3518,8 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
     document.body.appendChild(sh);
     sh.onclick = function (e) { if (e.target === sh) sh.remove(); };
     try {   // b199: hộp nào cũng có nút × ở góc trên (nút Đóng / Xong sẵn có ở hàng tiêu đề thì đổi thành ×)
-      var k0 = sh.firstChild, d0 = k0.firstElementChild, b0 = d0 && d0.classList.contains('row') ? [].filter.call(d0.children, function (x) { return x.tagName === 'BUTTON' && /^(Đóng|Xong)$/.test(x.textContent.trim()); })[0] : null;
+      var k0 = sh.firstChild, d0 = k0.firstElementChild; if (d0 && !d0.classList.contains('row') && d0.firstElementChild && d0.firstElementChild.classList.contains('row')) d0 = d0.firstElementChild;   // b268: hộp có lớp bọc (Thẻ đã in trước đây…) – trước đây thêm × đè lên nút Đóng
+      var b0 = d0 && d0.classList.contains('row') ? [].filter.call(d0.children, function (x) { return x.tagName === 'BUTTON' && /^(Đóng|Xong)$/.test(x.textContent.trim()); })[0] : null;
       if (b0) { b0.textContent = '×'; b0.className = 'shX'; b0.setAttribute('aria-label', 'Đóng'); }
       else if (![].some.call(k0.querySelectorAll('button'), function (x) { return x.textContent.trim() === '×'; })) { k0.insertAdjacentHTML('afterbegin', '<button class="shX shXa" aria-label="Đóng">×</button>'); k0.querySelector('.shXa').onclick = function () { sh.remove(); }; }
     } catch (e0) { }
@@ -5065,6 +5067,7 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
   function ccVe() {
     if (THUC.on && !ccBan()) ccThuc(0);
     var t = document.getElementById('ccThan'); if (!t || S.tab !== 'cc') return;
+    if (!CCS.theMo) CCS.theTuDk = null;   // b268
     var muonGt = CCS.theMo ? 'the' : CCS.dslMo ? 'ds' : null;   // b225: Thẻ / Danh sách mở ở đâu cũng đưa về Đối tác › công ty
     if (muonGt !== (S.dtGt || null)) {
       if (muonGt) { S.dtGt = muonGt; S.dtMo = true; var cG = muonGt === 'the' ? 'HOJEONG' : ((CCS.dsl.sua && CCS.dsl.sua.cty) || CCS.dsl.cty || S.cty); if (cG && cG !== S.cty) { S.cty = cG; luu('vlta_cty', cG); } veCCCD(); return; }
@@ -6510,6 +6513,7 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
   }
   function ccVeThe(t) {
     var ds = theDs(), n = ds.filter(function (e) { return e.chon; }).length, h = ccChe();
+    if (CCS.theTuDk) h = '<button class="v8lui" id="thLuiDk"><i>‹</i>Quay lại Đăng ký đi làm</button>' + h;   // b268
     theMaTai(); theGanMa(ds);
     var caiDat = '';   // b220: người làm thẻ trước, Cài đặt in sau (bản vẽ L2.3)
     if (!ds.length) h += '<div class="card v8h"><b class="v8t">Thẻ ra vào HOJEONG</b><ol class="ySt"><li>Bấm Chọn người trong kho CCCD.</li><li>Chạm ảnh từng người rồi <span style="white-space:nowrap">bấm Làm thẻ.</span></li><li>Quay lại đây bấm In thẻ.</li></ol><div class="meta">Người chưa có ảnh CCCD trong kho thì <span style="white-space:nowrap">bấm Thêm người.</span></div><button class="btn" id="thKho">Chọn người trong kho CCCD</button></div>';
@@ -6537,6 +6541,7 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
       '<button class="it v8h1" id="thLs"><span class="v7ti">' + V8_IC.the + '</span><div style="min-width:0;flex:1"><div class="row sp" style="gap:8px"><span class="nm">Thẻ đã in trước đây</span>' + (CCS.thLs ? '<span class="v8n">' + CCS.thLs.length + ' thẻ</span>' : '') + '</div><div class="sub">Tìm tên hoặc mã thẻ để in lại</div></div><i class="v7ch">›</i></button></div>';
     h += '<div class="ccday">' + ccMay(1) + '<button class="btn ghost" id="thThem">Thêm người</button><button class="btn ghost ccgui" id="thGui" aria-label="Chia sẻ PDF"' + (n ? '' : ' disabled') + '>' + ICON_GUI + '</button><button class="btn" id="thIn"' + (n ? '' : ' disabled') + '>' + (n ? 'In ' + n + ' thẻ' : 'In thẻ') + '</button></div><div class="ccdem"></div>';
     t.innerHTML = h; ccDayDat(t); ccCheNoi(t);
+    var bLd = document.getElementById('thLuiDk'); if (bLd) bLd.onclick = function () { var o = CCS.theTuDk, L = CCS.dsl; CCS.theTuDk = null; CCS.theMo = false; CCS.dslMo = true; if (o) { L.cty = o.cty; L.ngay = o.ngay; L.ca = o.ca; L.dkChon = 1; } ccVe(); window.scrollTo(0, 0); };   // b268
     var sl = document.getElementById('thSang');
     if (sl) { sl.oninput = function () { luu('vlta_the_sang', sl.value); var v = document.getElementById('thSangV'); if (v) v.textContent = theSangChu(); }; sl.onchange = function () { ccVe(); }; }
     function e_(k) { return CCS.the[k]; }
@@ -7467,7 +7472,7 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
       }).then(function () { xong++; ccTd('Đang lấy ảnh ' + xong + '/' + n + '…'); return mot(); });
     }
     truoc.then(function () { return Promise.all([mot(), mot(), mot()]); }).then(function () {
-      ccTd(''); CCS.kho = null; CCS.dslMo = false; CCS.theMo = true; theMaTai(); var lg = theLogoNap(); if (!lg.complete) lg.onload = function () { ccVe(); };
+      ccTd(''); CCS.kho = null; CCS.dslMo = false; CCS.theMo = true; CCS.theTuDk = { cty: CCS.dsl.cty, ngay: CCS.dsl.ngay, ca: CCS.dsl.ca }; theMaTai(); var lg = theLogoNap(); if (!lg.complete) lg.onload = function () { ccVe(); };
       ccVe(); setTimeout(function () { window.scrollTo(0, 0); }, 50);
       if (khongAnh.length) toastLoi('Chưa có ảnh của ' + khongAnh.map(function (x) { return hoaDau(x.ten || x.so); }).join(', ') + '. Bấm Chọn ảnh khác ở thẻ đó.');
       else toast('Đã điền sẵn ' + n + ' thẻ. Kiểm tra rồi bấm In.');
