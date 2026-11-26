@@ -13,7 +13,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
 <script src="config.js"></script>
-<script>window.PB = { so: 256, luc: "26/11 14:11" };</script>
+<script>window.PB = { so: 256, luc: "26/11 14:13" };</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap">
 <style>
@@ -11270,7 +11270,7 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
   function hangMung(x, L) {   // b257 (26/11 anh): man chuc mung co hieu ung, to dan theo hang
     L = Math.max(0, Math.min(VM_H.length - 1, L || 0));
     var h = VM_H[L], d = document.createElement('div'), ng = Math.ceil((h.g || 0) / 260);
-    var R = [62, 68, 74, 80, 86, 94][L], nP = [45, 75, 105, 135, 170, 220][L], tia = [0.18, 0.24, 0.3, 0.36, 0.42, 0.5][L];
+    var Wt = Math.min([270, 295, 320, 340, 356, 372][L], innerWidth - 16), R = Math.round(Wt * (h.K[4] + h.K[5] / 2) / h.K[0]), nP = [45, 75, 105, 135, 170, 220][L], tia = [0.18, 0.24, 0.3, 0.36, 0.42, 0.5][L];
     var chu2 = Array.prototype.map.call(h.t, function (c, i) { return c === ' ' ? '<i class="hmSp"> </i>' : '<i style="animation-delay:' + (1.15 + i * 0.07).toFixed(2) + 's">' + esc(c) + '</i>'; }).join('');
     d.className = 'hm-ov hmL' + L;
     d.style.cssText = '--c:' + h.c + ';--cs:' + h.ts + ';--cd:' + h.td + ';--tia:' + tia;
