@@ -2746,7 +2746,11 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
       if (tp) { var hn0 = tp.d === ymdNay(); return { so: tp.so, nhan: hn0 ? 'người đi làm hôm nay' : 'người đi làm ngày ' + ngayDM(tp.d), cu: !hn0 }; }
     }
     var d = S.data[c.ma]; if (!d || !d.ds) return null;
-    if (!ban && !d.moc) { var dk = dkHomNay(c.ma); if (dk && dk.na + dk.nb) return { so: dk.na + dk.nb, nhan: 'người đi làm hôm nay' }; }
+    if (!ban && !d.moc) {   // kỳ mới chưa có bảng công: giống đầu trang công ty (danh sách đi làm hôm nay, không có thì ghi chưa có bảng công)
+      if (!DK || !DK.d) return null;
+      var dk = dkHomNay(c.ma); if (dk && dk.na + dk.nb) return { so: dk.na + dk.nb, nhan: 'người đi làm hôm nay' };
+      return { txt: 'Kỳ mới chưa có bảng công', cu: true };
+    }
     var hn = d.moc === ymdNay();
     return { so: soDiLam(d), nhan: !d.moc ? 'người đang làm' : hn ? 'người đi làm hôm nay' : 'người đi làm ngày ' + ngayDM(d.moc), cu: !!(d.moc && !hn) };
   }
@@ -2754,7 +2758,7 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
     var c = o.c, m = dtMau(c), s = soCty(c);
     return '<button class="dtc" data-c="' + esc(c.ma) + '" style="--d1:' + m[0] + ';--d2:' + m[1] + ';--d3:' + m[2] + ';--d4:' + m[3] + '">' +
       '<b class="dtc-t">' + esc(c.ten) + '</b>' +
-      '<span class="dtc-l' + (s && s.cu ? ' cu' : '') + '">' + DT_NG + '<span>' + (s ? s.so + ' ' + s.nhan : 'Đang tải số người…') + '</span></span>' +
+      '<span class="dtc-l' + (s && s.cu ? ' cu' : '') + '">' + DT_NG + '<span>' + (s ? (s.txt || s.so + ' ' + s.nhan) : 'Đang tải số người…') + '</span></span>' +
       dkTheDong(c.ma) +   // b226
       (function () { try { return vmPt(c.ma); } catch (e) { return ''; } })() +   // b249
       (o.v ? '<span class="dtc-ch">' + DT_CANH + o.v + ' việc cần làm</span>' : '') +
