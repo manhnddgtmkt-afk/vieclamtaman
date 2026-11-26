@@ -13,7 +13,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
 <script src="config.js"></script>
-<script>window.PB = { so: 258, luc: "26/11 14:28" };</script>
+<script>window.PB = { so: 259, luc: "26/11 14:36" };</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap">
 <style>
@@ -7629,7 +7629,7 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
     }, function (er) { ccTd(''); toastLoi(er.message); });
   }
   var BAN_MOI = [
-    { so: 258, ds: [{ i: '👑', t: 'Vương miện cho mọi người cùng thấy', m: 'Ai lên hạng thì cả app hiện màn chúc mừng có hiệu ứng, hạng càng cao càng hoành tráng. Thẻ công ty có ảnh sale phụ trách đội vương miện; thông báo, phiếu chờ, danh sách đã xuất, Content và màn đăng nhập cũng có.' }, { i: '👑', t: 'Trang Thu nhập mới', m: 'Trang Thu nhập ghi rõ cần bao nhiêu người đi làm đều mỗi tháng để lên hạng, thu nhập tăng lên bao nhiêu và thưởng vượt kỳ trước.' }] },
+    { so: 259, ds: [{ i: '👑', t: 'Vương miện cho mọi người cùng thấy', m: 'Ai lên hạng thì cả app hiện màn chúc mừng có hiệu ứng, hạng càng cao càng hoành tráng. Thẻ công ty có ảnh sale phụ trách đội vương miện; thông báo, phiếu chờ, danh sách đã xuất, Content và màn đăng nhập cũng có.' }, { i: '👑', t: 'Trang Thu nhập mới', m: 'Trang Thu nhập ghi rõ cần bao nhiêu người đi làm đều mỗi tháng để lên hạng, thu nhập tăng lên bao nhiêu và thưởng vượt kỳ trước.' }] },
     { so: 249, ds: [{ i: '💼', v: 'gv', t: 'Giá vendor', m: 'Bảng lương công nhân của từng công ty có thêm mục Giá vendor, ghi rõ vendor ở công ty đó nhận bao nhiêu tiền mỗi giờ.' }] },
     { so: 241, ds: [{ i: '✅', t: 'Tự vào bảng công', m: 'Xuất danh sách xong, người trong danh sách tự vào bảng công, ai không đi làm thì bỏ khỏi tờ đăng ký là tự xoá khỏi bảng công.' }] },
     { so: 238, ds: ['Trang Thu nhập: mục Cách tính lương ghi thưởng mốc giờ thành từng dòng, không còn bị dồn chữ dọc.'] },
@@ -11409,7 +11409,7 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
     var ct = o.ct, x = ct.x || null, c = (x && x.cfg) || TN_CFG0, vd = ct.video || { n: 0, tien: 0, so: 30, toiDa: 1000000, ds: [] };
     if (!c.moc.some(function (m) { return m[0] === 1000; }) && !o._cu) { c = JSON.parse(JSON.stringify(c)); c.moc = TN_CFG0.moc.slice(); }   // b233: bảng tổng hợp chưa tính lại thì vẫn hiện mốc mới
     var g = x ? Number(x.gio) || 0 : 0, lg = tnLuongGio(c, g), mc = tnMoc(c, g), pc = x ? x.pcTien || 0 : 0;
-    TN_GT = !o._cu && ct.kyCu ? tnGioKy(ct.kyCu) : 0;
+    TN_GT = !o._cu ? ((ct.x && ct.x.vuot && Number(ct.x.vuot.gioT)) || (ct.kyCu ? tnGioKy(ct.kyCu) : 0)) : 0;   // b259: lay gio ky truoc theo bang luong TONG_HOP (khop tien tra)
     var tv = tnVuot(g), tong = lg + mc + tv + pc + (vd.tien || 0);
     var L = vmCap(g), H = VM_H[L], chuX = laChu(), moiVd = Math.round((vd.toiDa || 1000000) / (vd.so || 30));
     var tenTk = String(ct.ten || S.toi.ten || ''), laVai = /^(kế toán|sale|thủ quỹ|nhân viên|quản lý)\b/i.test(tenTk);
@@ -11515,7 +11515,7 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
         '<b>Kỳ trước <span class="nw">' + tnNgay(k.tu) + ' – ' + tnNgay(k.den) + '</span></b>' +
         (gK ? '<em class="t9Kh"><img src="' + VM_IMG + 'km_' + hK.im + '.webp" alt="">Hạng ' + hK.n + '</em>' + (nK ? '<em class="t9Kn">≈ ' + nK + ' người đi làm đều/tháng</em>' : '') : '') +
         '<small>' + (da ? 'Đã trả ngày ' + tnNgay(k.traNgay) : '<i>●</i> Chờ chốt · trả ngày ' + tnNgay(k.traNgay)) + '</small></span><b class="num">' + tnD(k.cu ? k.tong : (k.ct ? tnTongCt(k.ct) : 0)) + '</b><i class="t9Kv">›</i></button>' +
-        (gK >= TN_VUOT.tu ? '<div class="t9Vk' + (tv ? ' da' : '') + '"><span><b>' + (tv ? '✓ Đã vượt kỳ trước' : 'Thưởng vượt kỳ trước') + '</b><small>' + (tv ? 'Kỳ trước ' + tnGio(gK) + ' giờ' : 'Còn thiếu ' + tnGio(Math.floor(gK) + 1 - g) + ' giờ') + '</small></span><b class="num">+' + tnD(TN_VUOT.tien) + '</b></div>' : '');
+        ((TN_GT || gK) >= TN_VUOT.tu ? '<div class="t9Vk' + (tv ? ' da' : '') + '"><span><b>' + (tv ? '✓ Đã vượt kỳ trước' : 'Thưởng vượt kỳ trước') + '</b><small>' + (tv ? 'Kỳ trước ' + tnGio(TN_GT || gK) + ' giờ' : 'Còn thiếu ' + tnGio(Math.floor(TN_GT || gK) + 1 - g) + ' giờ') + '</small></span><b class="num">+' + tnD(TN_VUOT.tien) + '</b></div>' : '');
     }
     var kc = !o._cu && ct.kyCu ? ct.kyCu : null, kcTren = kc ? t9Kc(kc, kc.daTra) : '', kcDuoi = '', tienHtml = '';
 
