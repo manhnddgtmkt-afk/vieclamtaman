@@ -13,7 +13,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
 <script src="config.js"></script>
-<script>window.PB = { so: 268, luc: "26/11 17:12" };</script>
+<script>window.PB = { so: 268, luc: "26/11 17:19" };</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap">
 <style>
@@ -7122,7 +7122,7 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
         return '<div class="dkxNh">' + vmNho(s, 28) + esc(s) + ' · ' + mN[s].length + '</div>' + mN[s].map(function (e) {
           var x = e.dk, sub = [], canh = '';
           if (x) {
-            if (x.ma) sub.push('Mã ' + x.ma + (HJ && dkmMoi(x) ? ' · Mới cấp' : '')); else if (HJ) sub.push('Đang cấp mã thẻ…');   // b268
+            if (x.ma) sub.push('Mã ' + x.ma + (HJ && dkmMoi(x) ? ' · Mới cấp' : '')); else if (HJ && (tt.xs || []).indexOf(x.so) < 0) sub.push('Đang cấp mã thẻ…');   // b268
             if (trung[kd(e.ten || '')] > 1 && x.so) sub.push('CCCD …' + String(x.so).slice(-4)); if (x.ghi) sub.push(x.ghi);
           }
           else if (e.p && e.p.doc) sub.push('Đang đọc số CCCD…');
@@ -7185,7 +7185,7 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
       t.querySelectorAll('[data-dka]').forEach(function (b) { b.onclick = function () { var e = e_(b.getAttribute('data-dka')); if (e) dkAnhChon(e); }; });
       dkGtNoi(t, L.cty, L.ngay, L.ca);
       dkAnhTai(tt.ds);
-      if (tt.ds.some(function (x) { return !String(x.ma || '').trim(); })) dkCapMaGoi(L.cty);
+      if (tt.ds.some(function (x) { return !String(x.ma || '').trim() && (tt.xs || []).indexOf(x.so) < 0; })) dkCapMaGoi(L.cty);
     }
     var bTb = document.getElementById('dkkTb'); if (bTb) bTb.onclick = wpChan;
     var fi = document.getElementById('dlFile'); fi.onchange = function () { var f = fi.files; L.tuId = ccId; CCS.anLuot = false; ccNap(f); fi.value = ''; };
