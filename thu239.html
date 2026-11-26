@@ -13,7 +13,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
 <script src="config.js"></script>
-<script>window.PB = { so: 240, luc: "26/11 12:08" };</script>
+<script>window.PB = { so: 240, luc: "26/11 12:15" };</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap">
 <style>
@@ -1549,7 +1549,7 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
 .t9xN{margin-top:6px;font-size:12.5px;color:var(--muted);padding:0 2px}
 .t9xF{display:flex;gap:10px;align-items:flex-start;margin-top:14px;font-size:12.5px;line-height:1.45;color:var(--muted)}.t9xF i{flex:none;width:18px;height:18px;border-radius:50%;border:1.5px solid var(--muted);font-style:normal;font-weight:700;font-size:11px;display:flex;align-items:center;justify-content:center;margin-top:1px}
 .t9Kh{display:flex;align-items:center;gap:6px;font-style:normal;font-size:13px;font-weight:600;color:var(--fg);line-height:1.35;flex-wrap:wrap}.t9Kh img{width:22px;height:auto}
-.t9Vk{margin:-6px 0 12px;padding:9px 14px;border-radius:0 0 16px 16px;background:var(--good-bg);color:var(--good);font-size:13.5px;line-height:1.4}.t9Vk b{font-weight:800}
+.t9Vk{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:-6px 0 12px;padding:10px 14px;border-radius:0 0 16px 16px;background:var(--good-bg);color:var(--good)}.t9Vk>span{display:flex;flex-direction:column;min-width:0}.t9Vk>span b{font-size:14px;font-weight:700}.t9Vk>span small{font-size:12.5px;color:var(--fg);opacity:.75}.t9Vk>b{flex:none;font-size:17px;font-weight:800;white-space:nowrap}
 .t9Fl{position:absolute;top:-12px;transform:translateX(-50%);z-index:2;font-style:normal;font-size:13px;line-height:1;color:var(--good)}
 .t9V{display:flex;gap:10px;align-items:flex-start;margin-top:12px;padding:10px 12px;border-radius:12px;background:var(--good-bg);font-size:12.5px;line-height:1.4;color:var(--fg);text-align:left}.t9V>i{font-style:normal;color:var(--good);font-size:15px}.t9V b{color:var(--good)}
 /* b239 (26/11): trang Thu nhập thiết kế lại – 1 khối chính, bảng chi tiết, lộ trình 6 hạng */
@@ -11264,7 +11264,7 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
         '<b>Kỳ trước <span class="nw">' + tnNgay(k.tu) + ' – ' + tnNgay(k.den) + '</span></b>' +
         (gK ? '<em class="t9Kh"><img src="' + VM_IMG + 'km_' + hK.im + '.webp" alt="">Hạng ' + hK.n + '</em>' + (nK ? '<em class="t9Kn">≈ ' + nK + ' người đi làm đều/tháng</em>' : '') : '') +
         '<small>' + (da ? 'Đã trả ngày ' + tnNgay(k.traNgay) : '<i>●</i> Chờ chốt · trả ngày ' + tnNgay(k.traNgay)) + '</small></span><b class="num">' + tnD(k.cu ? k.tong : (k.ct ? tnTongCt(k.ct) : 0)) + '</b><i class="t9Kv">›</i></button>' +
-        (gK >= TN_VUOT.tu ? '<div class="t9Vk' + (tv ? ' da' : '') + '">' + (tv ? '✓ Đã vượt ' + tnGio(gK) + ' giờ kỳ trước: <b>+' + tnD(TN_VUOT.tien) + '</b>' : 'Còn thiếu <b>' + tnGio(Math.floor(gK) + 1 - g) + ' giờ</b> là vượt kỳ trước, <span class="nw">thưởng <b>+' + tnD(TN_VUOT.tien) + '</b></span>') + '</div>' : '');
+        (gK >= TN_VUOT.tu ? '<div class="t9Vk' + (tv ? ' da' : '') + '"><span><b>' + (tv ? '✓ Đã vượt kỳ trước' : 'Thưởng vượt kỳ trước') + '</b><small>' + (tv ? 'Kỳ trước ' + tnGio(gK) + ' giờ' : 'Còn thiếu ' + tnGio(Math.floor(gK) + 1 - g) + ' giờ') + '</small></span><b class="num">+' + tnD(TN_VUOT.tien) + '</b></div>' : '');
     }
     var kc = !o._cu && ct.kyCu ? ct.kyCu : null, kcTren = kc ? t9Kc(kc, kc.daTra) : '', kcDuoi = '', tienHtml = '';
 
