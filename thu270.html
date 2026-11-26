@@ -2619,11 +2619,7 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
   function taTopVe() {   // b268 (anh Mạnh 26/11): mở công ty là thấy ngay số lao động Tâm An đang đi làm (như TREND)
     var taT = document.getElementById('taTop'); if (!taT || nhaCo() || laCQ(S.cty)) return;
     var h = diLamHtml(S.data[S.cty]);
-    if (!h && DK && !DK.d) dkTai();
-    if (!h && DK && DK.d) {   // kỳ mới chưa có bảng công / vân tay: lấy theo tờ đăng ký đi làm hôm nay
-      var dk = dkHomNay(S.cty), na = dk ? dk.na : 0, nb = dk ? dk.nb : 0;
-      if (na + nb) h = '<div class="dlm" id="dlm"><div class="dlmT"><b class="num">' + (na + nb) + '</b><span>Người đi làm hôm nay</span></div><div class="dlmP">Ca ngày ' + na + ' · Ca đêm ' + nb + '</div><div class="dlmP">Theo danh sách đi làm, chưa có bảng công kỳ mới</div></div>';
-    }
+    // 26/11 anh: bỏ đếm theo tờ đăng ký (đăng ký đi làm không phải đã đi làm); kỳ mới chưa có bảng công thì ghi rõ chưa có
     if (!h) { var d0 = S.data[S.cty]; h = '<div class="dlm" id="dlm"><div class="dlmT"><span>Người đi làm</span></div><div class="dlmP">' + yDong(['Kỳ mới' + (d0 && d0.ky ? ' ' + esc(String(d0.ky).replace(/\/\d{4}/g, '')) : '') + ' chưa có bảng công.', 'Số người đi làm sẽ hiện khi có giờ ngày đầu kỳ.']) + '</div></div>'; }
     taT.innerHTML = '<div class="taTop">' + h + '</div>';
   }
@@ -2732,12 +2728,6 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
     var v = dlVT(cty); if (v) return { so: v.n, d: svYmd(v.d) };
     return null;
   }
-  function dkHomNay(cty) {   // số người trên danh sách đi làm hôm nay (kỳ mới chưa có bảng công)
-    if (!DK || !DK.d) return null;
-    var hn = ymdNay(), a = dkCaTT(cty, hn, 'Ngày'), b = dkCaTT(cty, hn, 'Đêm');
-    var so = function (t) { return t.xs && t.xs.length ? t.ds.filter(function (x) { return t.xs.indexOf(x.so) >= 0; }).length : t.ds.length; };
-    return { na: so(a), nb: so(b) };
-  }
   function soCty(c) {   // số người hiện trên thẻ công ty
     if (laCQ(c.ma)) { var q = CQ.d[c.ma]; return q ? { so: (q.dem || {}).dangLam || 0, nhan: 'người đang làm' } : null; }
     var ca = (S.toi && S.toi.cty || []).filter(function (x) { return x.ma === c.ma; })[0], ban = ca && ca.het === false;   // sale ở "Công ty khác": chỉ số người mình tuyển
@@ -2747,11 +2737,7 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
       if (tp) { var hn0 = tp.d === ymdNay(); return { so: tp.so, nhan: hn0 ? 'người đi làm hôm nay' : 'người đi làm ngày ' + ngayDM(tp.d), cu: !hn0 }; }
     }
     var d = S.data[c.ma]; if (!d || !d.ds) return null;
-    if (!ban && !d.moc) {   // kỳ mới chưa có bảng công: giống đầu trang công ty (danh sách đi làm hôm nay, không có thì ghi chưa có bảng công)
-      if (!DK || !DK.d) return null;
-      var dk = dkHomNay(c.ma); if (dk && dk.na + dk.nb) return { so: dk.na + dk.nb, nhan: 'người đi làm hôm nay' };
-      return { txt: 'Kỳ mới chưa có bảng công', cu: true };
-    }
+    if (!ban && !d.moc) return { txt: 'Kỳ mới chưa có bảng công', cu: true };   // 26/11 anh: đăng ký / xuất danh sách không phải đã đi làm – chỉ bảng công mới tính
     var hn = d.moc === ymdNay();
     return { so: soDiLam(d), nhan: !d.moc ? 'người đang làm' : hn ? 'người đi làm hôm nay' : 'người đi làm ngày ' + ngayDM(d.moc), cu: !!(d.moc && !hn) };
   }
@@ -14119,6 +14105,5 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
   } else veDangNhap();
 })();
 </script>
-<script>if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(function () { });</script>
 </body>
 </html>
