@@ -13,7 +13,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
 <script src="config.js"></script>
-<script>window.PB = { so: 249, luc: "26/11 13:36" };</script>
+<script>window.PB = { so: 250, luc: "26/11 13:47" };</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap">
 <style>
@@ -1215,6 +1215,8 @@ textarea.inp{font-family:inherit}
 .hero.tn-hro{background:radial-gradient(circle 150px at 50% 136px,var(--vm-nen,#EEF3FF) 0,var(--vm-nen,#EEF3FF) 35%,var(--card,#fff) 100%)}   /* b232: quầng màu hạng chỉ quanh ảnh, không lan xuống số tiền */
 .meBtn.vmB{background:none;padding:0;overflow:visible}
 .tkh .avw>.vm{margin-top:22px}
+.dtc-pt{display:flex;flex-wrap:wrap;align-items:center;gap:6px 14px;margin-top:12px;font-size:14px;line-height:20px;color:var(--fg)}.dtc-pt em{font-style:normal;font-size:13px;color:var(--muted);font-weight:600}.dtc-pn{display:inline-flex;align-items:center;gap:6px}.dtc-pn b{font-weight:700}
+.cg-ic.cg-av{background:none;overflow:visible}.seg .vm{margin-right:6px;flex:none}.hmP{margin-top:6px;font-size:15px;color:var(--muted);text-align:center}
 .vm img.vmK{height:auto!important;max-height:none!important;object-fit:contain!important;border-radius:0!important;display:block}
 .dkxNh .vm{margin:0 8px 0 2px}
 .v8kt{margin-top:10px;padding-top:10px;border-top:1px solid var(--line)}.tn-ct span small{display:block;font-size:12px;color:var(--muted);white-space:normal;overflow-wrap:break-word}
@@ -2017,7 +2019,7 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
   }
   function buocPin() {
     var c = document.getElementById('lgc'), keys = [1, 2, 3, 4, 5, 6, 7, 8, 9, 'đổi số', 0, '⌫'];
-    c.innerHTML = '<div class="lg-user"><div class="av">' + esc(chu(LG.ten)) + '</div><div><b>Chào ' + esc(LG.ten) + '</b><div class="meta">' + esc(LG.sdt) + '</div></div></div>' +
+    c.innerHTML = '<div class="lg-user">' + ((function () { try { var hx = hangCua(LG.ten); return hx ? vmAv({ anh: hx.anh, ch: chu(hx.ten), size: 46, L: hx.gioT != null ? vmCap(hx.gioT) : hangSo(hx) }) : ''; } catch (e) { return ''; } })() || '<div class="av">' + esc(chu(LG.ten)) + '</div>') + '<div><b>Chào ' + esc(LG.ten) + '</b><div class="meta">' + esc(LG.sdt) + '</div></div></div>' +
       '<div class="meta" style="text-align:center">' + (LG.moi ? 'Nhập mã PIN tạm quản trị viên đã cấp' : 'Nhập mã PIN') + '</div>' +
       '<div class="dots" id="dots">' + '<i></i>'.repeat(6) + '</div><div class="msg" id="msg"></div>' +
       '<div class="pad">' + keys.map(function (k) { return '<button class="' + (typeof k === 'string' && k.length > 1 ? 'tx' : '') + '" data-k="' + k + '">' + k + '</button>'; }).join('') + '</div>';
@@ -2630,6 +2632,7 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
       '<b class="dtc-t">' + esc(c.ten) + '</b>' +
       '<span class="dtc-l' + (s && s.cu ? ' cu' : '') + '">' + DT_NG + '<span>' + (s ? s.so + ' ' + s.nhan : 'Đang tải số người…') + '</span></span>' +
       dkTheDong(c.ma) +   // b226
+      (function () { try { return vmPt(c.ma); } catch (e) { return ''; } })() +   // b249
       (o.v ? '<span class="dtc-ch">' + DT_CANH + o.v + ' việc cần làm</span>' : '') +
       '<span class="dtc-go" aria-hidden="true">' + DT_MUI + '</span></button>';
   }
@@ -7284,7 +7287,7 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
       h += q2H('Danh sách đã xuất gần đây') + '<div class="meta v8dd">' + yDong([S.dtGt ? 'Chỉ danh sách của ' + L.cty + '.' : 'Nhóm theo ngày nhận việc.', 'Chạm để in hoặc gửi lại.']) + '</div>' + nhG.map(function (k) {
         return '<div class="soNg"><div class="soNgH"><b>' + (k === homG ? 'Hôm nay · ' + k : (v7Thu(k) || '') + k) + '</b></div><div class="grp">' + mG[k].map(function (y) {
           var x = y[0];
-          return '<button class="it" data-dg="' + y[1] + '"><div style="min-width:0;flex:1"><div class="nm">' + (S.dtGt ? (x.ca ? 'Ca ' + esc(String(x.ca).toLowerCase()) : 'Nhận việc') : esc(x.cty) + (x.ca ? ' · Ca ' + esc(String(x.ca).toLowerCase()) : ' · Nhận việc')) + '</div><div class="sub">' + x.n + ' người · ' + esc(x.nguoi) + ' xuất lúc ' + esc(x.luc) + '</div></div><i class="v7ch">›</i></button>';
+          return '<button class="it" data-dg="' + y[1] + '">' + vmNho(x.nguoi, 36) + '<div style="min-width:0;flex:1"><div class="nm">' + (S.dtGt ? (x.ca ? 'Ca ' + esc(String(x.ca).toLowerCase()) : 'Nhận việc') : esc(x.cty) + (x.ca ? ' · Ca ' + esc(String(x.ca).toLowerCase()) : ' · Nhận việc')) + '</div><div class="sub">' + x.n + ' người · ' + esc(x.nguoi) + ' xuất lúc ' + esc(x.luc) + '</div></div><i class="v7ch">›</i></button>';
         }).join('') + '</div></div>';
       }).join('');
     }
@@ -7595,8 +7598,8 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
     }, function (er) { ccTd(''); toastLoi(er.message); });
   }
   var BAN_MOI = [
+    { so: 250, ds: [{ i: '👑', t: 'Vương miện cho mọi người cùng thấy', m: 'Ai lên hạng thì cả app hiện màn chúc mừng. Thẻ công ty có ảnh sale phụ trách đội vương miện; thông báo, phiếu chờ, danh sách đã xuất, Content và màn đăng nhập cũng có.' }, { i: '👑', t: 'Trang Thu nhập mới', m: 'Trang Thu nhập ghi rõ cần bao nhiêu người đi làm đều mỗi tháng để lên hạng, thu nhập tăng lên bao nhiêu và thưởng vượt kỳ trước.' }] },
     { so: 249, ds: [{ i: '💼', v: 'gv', t: 'Giá vendor', m: 'Bảng lương công nhân của từng công ty có thêm mục Giá vendor, ghi rõ vendor ở công ty đó nhận bao nhiêu tiền mỗi giờ.' }] },
-    { so: 248, ds: [{ i: '👑', t: 'Trang Thu nhập mới', m: 'Trang Thu nhập ghi rõ cần bao nhiêu người đi làm đều mỗi tháng để lên hạng, thu nhập tăng lên bao nhiêu và thưởng vượt kỳ trước.' }] },
     { so: 241, ds: [{ i: '✅', t: 'Tự vào bảng công', m: 'Xuất danh sách xong, người trong danh sách tự vào bảng công, ai không đi làm thì bỏ khỏi tờ đăng ký là tự xoá khỏi bảng công.' }] },
     { so: 238, ds: ['Trang Thu nhập: mục Cách tính lương ghi thưởng mốc giờ thành từng dòng, không còn bị dồn chữ dọc.'] },
     { so: 233, ds: [{ i: '💎', t: 'Trang Thu nhập mới', m: 'Khung hạng mới có cánh cho 6 hạng (thêm Lục bảo ở 4.000 giờ). Vòng tiến độ ôm ảnh đại diện, ghi rõ cần thêm bao nhiêu người mỗi ngày để lên hạng. Lên Bạc thưởng 100.000 đ, lên Vàng thưởng 200.000 đ.' }] },
@@ -8487,7 +8490,7 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
     var h = '', ds = VDO.ds;   // bản 128: bỏ dòng chú thích chung (mỗi thẻ đã ghi ngày tự xoá của chính video đó)
     if (VDO.chu) {   // bản 143: chủ chia tab con Cá nhân / từng sale (chờ duyệt) / Chưa rõ sale
       var tabs = vdoTabs(), loc = vdoLocHt(tabs), tb = tabs.filter(function (t) { return t.k === loc; })[0];
-      h += '<div id="vdoTabMoc"></div><div class="vdoTabW" id="vdoTabW"><div class="seg vdoTab">' + tabs.map(function (t) { var n = t.k === '_ca' || t.k === '_ro' ? 0 : t.ds.length; return '<button data-vdoloc="' + esc(t.k) + '"' + (t.k === loc ? ' class="on"' : '') + '><span class="ell">' + esc(t.ten) + '</span>' + (n ? '<span class="vdoSo">' + n + '</span>' : '') + '</button>'; }).join('') + '</div></div>';
+      h += '<div id="vdoTabMoc"></div><div class="vdoTabW" id="vdoTabW"><div class="seg vdoTab">' + tabs.map(function (t) { var n = t.k === '_ca' || t.k === '_ro' ? 0 : t.ds.length; return '<button data-vdoloc="' + esc(t.k) + '"' + (t.k === loc ? ' class="on"' : '') + '>' + (t.k.charAt(0) !== '_' ? vmNho(t.k, 20) || vmNho(t.ten, 20) : '') + '<span class="ell">' + esc(t.ten) + '</span>' + (n ? '<span class="vdoSo">' + n + '</span>' : '') + '</button>'; }).join('') + '</div></div>';
       ds = tb.ds; h += '<div class="v8col">';   // b220: phần dưới thanh tab xếp đều như các màn khác
       if (ds.length) h += q2H(tb.k === '_ca' ? 'Video của bạn · ' + ds.length : tb.k === '_ro' ? 'Chưa rõ sale · ' + ds.length + ' video' : 'Chờ duyệt · ' + ds.length + ' video', tb.k !== '_ca' && tb.k !== '_ro' && ds.length > 1 ? '<button class="v8lk" id="vdoDall">Duyệt tất cả</button>' : '');
       if (!ds.length) h += '<div class="empty">' + (tb.k === '_ca' ? '<b class="yT">Chưa có video của bạn</b>Video dựng xong sẽ tự hiện ở đây.' : '<b class="yT">Không có video nào chờ duyệt</b>Video mới hoặc bản sửa lại sẽ tự hiện ở đây.') + '</div>';
@@ -9039,14 +9042,14 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
     var out = [];
     try {
       (VDO.ds || []).filter(function (v) { return v.cho; }).forEach(function (v) {
-        out.push({ k: 'vc:' + v.id + ':' + (v.md || ''), loai: 'vdo', t: 'Video chờ bạn duyệt', p: vdoTen(v) + ' · ' + vdoLucDong(v), luc: v.mo || v.tao || 0, mo: moVdo, g: 'vc', tn: vdoTen(v), pn: vdoLucDong(v) });
+        out.push({ ai: v.ai || v.k || '', k: 'vc:' + v.id + ':' + (v.md || ''), loai: 'vdo', t: 'Video chờ bạn duyệt', p: vdoTen(v) + ' · ' + vdoLucDong(v), luc: v.mo || v.tao || 0, mo: moVdo, g: 'vc', tn: vdoTen(v), pn: vdoLucDong(v) });
       });
       (VDO.ds || []).filter(function (v) { return !v.cho && v.cua && !v.toi; }).forEach(function (v) {
         out.push({ k: 'vm:' + v.id + ':' + (v.md || ''), loai: 'vdo', t: 'Video của bạn đã dựng xong', p: vdoTen(v) + ' · ' + vdoLucDong(v), luc: v.mo || v.tao || 0, mo: moVdo, g: 'vm', tn: vdoTen(v), pn: vdoLucDong(v) });
       });
     } catch (e) { }
     choCanLam().forEach(function (x) {
-      out.push({ k: 'ph:' + x.ma, loai: 'tien', t: hoaDau(x.ten) + ' – phiếu đã gửi, chưa ghi chuyển khoản', p: [ctyTen(x.cty), x.tuan, vnd0(x.so) + ' đ', 'gửi ' + gioPhut(x.luc)].join(' · '), luc: x.luc || 0, gap: laQua(x), mo: function () { moChoViec(x); }, g: 'ph|' + x.cty, gTen: ctyTen(x.cty), so: x.so, tn: hoaDau(x.ten), pn: [x.tuan, vnd0(x.so) + ' đ', 'gửi ' + gioPhut(x.luc)].join(' · ') });
+      out.push({ ai: x.toi ? '' : x.nguoi, k: 'ph:' + x.ma, loai: 'tien', t: hoaDau(x.ten) + ' – phiếu đã gửi, chưa ghi chuyển khoản', p: [ctyTen(x.cty), x.tuan, vnd0(x.so) + ' đ', 'gửi ' + gioPhut(x.luc)].join(' · '), luc: x.luc || 0, gap: laQua(x), mo: function () { moChoViec(x); }, g: 'ph|' + x.cty, gTen: ctyTen(x.cty), so: x.so, tn: hoaDau(x.ten), pn: [x.tuan, vnd0(x.so) + ' đ', 'gửi ' + gioPhut(x.luc)].join(' · ') });
     });
     var nh = {}, thu = [];
     tbDs().forEach(function (x) { if (!nh[x.cty]) { nh[x.cty] = []; thu.push(x.cty); } nh[x.cty].push(x); });
@@ -9089,7 +9092,7 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
       var nhomG = {}; ds.forEach(function (x) { if (x.g) (nhomG[x.g] = nhomG[x.g] || []).push(x); });
       var dong = function (x, i, gon) {
         var moi = xem.indexOf(x.k) < 0;
-        return '<button class="cg-it' + (moi ? ' moi' : '') + (x.gap ? ' gap' : '') + (gon ? ' cg-con' : '') + '" data-i="' + i + '">' + (gon ? '' : '<i class="cg-ic ' + x.loai + '">' + IC[x.loai] + '</i>') +
+        return '<button class="cg-it' + (moi ? ' moi' : '') + (x.gap ? ' gap' : '') + (gon ? ' cg-con' : '') + '" data-i="' + i + '">' + (gon ? '' : ((x.ai && vmNho(x.ai, 36)) ? '<i class="cg-ic cg-av">' + vmNho(x.ai, 36) + '</i>' : '<i class="cg-ic ' + x.loai + '">' + IC[x.loai] + '</i>')) +
           '<span class="cg-nd"><b class="cau">' + esc(gon && x.tn ? x.tn : x.t) + '</b><small>' + esc(gon && x.pn ? x.pn : x.p) + '</small></span>' + (moi ? '<i class="cg-cham" aria-label="Mới"></i>' : '') + '</button>';
       };
       var daVe = {};
@@ -9113,7 +9116,7 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
   }
   function choDong(x, i) {
     var qua = laQua(x), nhieu = (S.toi.cty || []).length > 1 && x.cty !== S.cty;
-    return '<button class="it" data-ch="' + i + '"><div style="min-width:0;flex:1"><div class="nm ell">' + esc(hoaDau(x.ten)) + '</div>' +
+    return '<button class="it" data-ch="' + i + '">' + (!x.toi ? vmNho(x.nguoi, 36) : '') + '<div style="min-width:0;flex:1"><div class="nm ell">' + esc(hoaDau(x.ten)) + '</div>' +
       '<div class="sub ell">' + esc([x.tuan.replace(/^Tuần /, 'Tuần '), x.toi ? '' : tenSale(x.nguoi) + ' gửi', nhieu ? x.cty : ''].filter(String).join(' · ')) + '</div>' +
       '<div class="sub ell"' + (qua ? ' style="color:var(--bad)"' : '') + '>' + esc('Gửi ' + gioPhut(x.luc) + ' · ' + (qua ? 'đã ' + truoc(x.luc).replace(/ trước$/, '') : truoc(x.luc))) + '</div></div>' +
       '<div class="amt num">' + vnd(x.so) + '</div></button>';
@@ -11218,9 +11221,32 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
   var SALE_HANG = docSo('vlta_hang') || null, SH_LUC = 0;
   function taiHang(ep) {
     if (!S.t || (!ep && Date.now() - SH_LUC < 120000)) return; SH_LUC = Date.now();
-    apiT({ v: 'saleHang', im: 1 }).then(function (o) { if (o.loi || giongJ(o.ds, SALE_HANG)) return; SALE_HANG = o.ds; luuSo('vlta_hang', o.ds); try { veMe(); } catch (e) { } }, function () { });
+    apiT({ v: 'saleHang', im: 1 }).then(function (o) { if (o.loi || giongJ(o.ds, SALE_HANG)) return; SALE_HANG = o.ds; luuSo('vlta_hang', o.ds); try { veMe(); } catch (e) { } try { if (S.tab === 'ld' && !S.hs && !S.dtMo) veDTCap(); } catch (e2) { } try { hangSoat(o.ds); } catch (e3) { } }, function () { });
   }
-  function hangCua(ten) { var k = kd(String(ten || '')).toUpperCase().trim(); return (SALE_HANG || []).filter(function (x) { return x.k === k || kd(String(x.ten || '')).toUpperCase() === k; })[0] || null; }
+  function hangCua(ten) { var k = kd(String(ten || '')).toUpperCase().trim(); return k ? (SALE_HANG || []).filter(function (x) { return x.k === k || kd(String(x.ten || '')).toUpperCase() === k || (x.tk && kd(String(x.tk)).toUpperCase() === k); })[0] || null : null; }
+  // b250 (26/11 anh): khoe vuong mien trong app – ai len hang thi MOI may deu hien man chuc mung (1 lan / may)
+  function hangSoat(ds) {
+    var cu = docSo('vlta_hangThay'), moi = {}, mung = [];
+    (ds || []).forEach(function (x) {
+      var k = x.ky + '|' + x.k, L = vmCap(x.gio); moi[k] = cu && cu[k] != null ? Math.max(L, cu[k]) : L;
+      if (cu && cu[k] != null && L > cu[k] && !(S.toi && S.toi.saleTen === x.k)) mung.push([x, L]);
+    });
+    luuSo('vlta_hangThay', moi);
+    mung.forEach(function (m, i) { setTimeout(function () { hangMung(m[0], m[1]); }, 600 + i * 400); });
+  }
+  function hangMung(x, L) {
+    var h = VM_H[L], d = document.createElement('div'), ng = Math.ceil((h.g || 0) / 260);
+    d.className = 'tn-ov tn-cm';
+    d.innerHTML = '<div class="tn-ovk">' + vmKhung({ L: L, anh: x.anh, ch: chu(x.ten), R: 78 }) + '<div class="tn-cm1">' + esc(hoaDau(x.ten)) + ' vừa lên</div><div class="tn-cm2" style="color:' + h.td + '">SALE HẠNG ' + h.t + '</div>' +
+      (ng ? '<div class="hmP">Đạt mốc ' + ng + ' người đi làm đều/tháng</div>' : '') + '<button class="btn tn-cmb">Chúc mừng 🎉</button></div>';
+    d.onclick = function (e) { if (e.target === d || e.target.tagName === 'BUTTON') d.remove(); };
+    document.body.appendChild(d); try { tnPhao(); } catch (e) { }
+  }
+  function vmPt(ma) {   // the cong ty: sale phu trach (anh nho co vuong mien + ten)
+    var ds = (SALE_HANG || []).filter(function (x) { return (x.pt || []).indexOf(String(ma).toUpperCase()) >= 0; });
+    if (!ds.length) return '';
+    return '<span class="dtc-pt"><em>Phụ trách</em>' + ds.map(function (x) { return '<span class="dtc-pn">' + vmNho(x.k, 24) + '<b>' + esc(hoaDau(x.ten)) + '</b></span>'; }).join('') + '</span>';
+  }
   function hangSo(x) { return x ? vmCap(x.gio) : 0; }   // b233: tính lại hạng theo giờ (máy chủ cũ trả số hạng 5 bậc)
   function vmNho(ten, z) { var x = hangCua(ten); return x ? vmAv({ anh: x.anh, ch: chu(x.ten), size: z || 26, L: x.gioT != null ? vmCap(x.gioT) : hangSo(x) }) : ''; }
   function veMe() {   // ảnh góc trên: sale có hạng thì đội vương miện nhỏ
