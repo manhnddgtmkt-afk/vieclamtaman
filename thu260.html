@@ -13,7 +13,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
 <script src="config.js"></script>
-<script>window.PB = { so: 259, luc: "26/11 15:03" };</script>
+<script>window.PB = { so: 259, luc: "26/11 15:11" };</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap">
 <style>
@@ -10168,7 +10168,8 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
         '<span class="s">' + x.a[0] + '</span><span class="s">' + x.a[1] + '</span><span class="v">' + x.a[2] + '</span><span class="c">' + nhaLech(x.c) + '</span></button>' + (mo ? nhaChiTiet(o, t, x.k) : '');
     }).join('');
     var hangTxt = viTA ? 'Tâm An hạng ' + viTA + '/' + ds.length + ' ngày ' + esc(ddmm(serialDate(L.d))) + (viP ? (viP === viTA ? ' (ngày trước cũng hạng ' + viP + ')' : ' (ngày trước hạng ' + viP + ')') : '') + '.' : '';
-    box.innerHTML = '<div class="card nhaC">' + tieu + '<small>Theo từng ngày · số mới nhất đủ 2 ca</small></div>' + oTA + dai +
+    box.innerHTML = '<div class="card nhaC">' + tieu + '<small>Theo từng ngày · số mới nhất đủ 2 ca</small></div>' + oTA +   // b260: anh bỏ dải 7 ngày
+
       '<div class="nh2H">Các nhà ngày ' + (L ? esc(tenN(L.d)) : '–') + '<span>Cả HOJEONG ' + tL + ' người' + (tP === null ? '' : ' · ' + nhaLech(tL - tP)) + '</span></div>' +
       '<div class="nhaR nhaHd"><span class="k">#</span><span class="n">Nhà</span><span class="s">Ngày</span><span class="s">Đêm</span><span class="v">Cộng</span><span class="c">So hôm trước</span></div>' + dong +
       '<div class="nhaG">' + (hangTxt ? hangTxt + '<br>' : '') + (P ? 'So với ' + esc(tenN(P.d)) + ' (ngày làm việc trước đó).<br>' : '') + (o.luc ? 'Cập nhật ' + esc(gioPhut(o.luc)) + (o.file ? ' từ ' + esc(o.file) : '') + '.<br>' : '') + 'Chạm tên nhà để xem từng ngày.</div></div>';
