@@ -13,7 +13,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
 <script src="config.js"></script>
-<script>window.PB = { so: 268, luc: "26/11 18:16" };</script>
+<script>window.PB = { so: 268, luc: "26/11 18:19" };</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap">
 <style>
@@ -6560,7 +6560,7 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
     if (CCS.theTuDk) h = '<button class="v8lui" id="thLuiDk"><i>‹</i>Quay lại Đăng ký đi làm</button>' + h;   // b268
     theMaTai(); theGanMa(ds);
     var caiDat = '';   // b220: người làm thẻ trước, Cài đặt in sau (bản vẽ L2.3)
-    if (!ds.length) h += '<div class="card v8h"><b class="v8t">Thẻ ra vào HOJEONG</b><ol class="ySt"><li>Bấm Chọn người trong kho CCCD.</li><li>Chạm ảnh từng người rồi <span style="white-space:nowrap">bấm Làm thẻ.</span></li><li>Quay lại đây bấm In thẻ.</li></ol><div class="meta">Người chưa có ảnh CCCD trong kho thì <span style="white-space:nowrap">bấm Thêm người.</span></div><button class="btn" id="thKho">Chọn người trong kho CCCD</button></div>';
+    if (!ds.length) h += '<div class="card v8h"><b class="v8t">Thẻ ra vào HOJEONG</b><ol class="ySt"><li>Bấm Thêm người.</li><li>Chọn trong kho CCCD, chọn ảnh CCCD hoặc tự nhập.</li><li>Kiểm tra tên, mã thẻ rồi bấm In thẻ.</li></ol><button class="btn" id="thKho">Thêm người</button></div>';   // b268
     else caiDat = q2H('Cài đặt in') + '<div class="card v8cd"><div class="row thk"><span class="meta">Khổ giấy</span><div class="seg" id="thKho">' + ['A4', 'A5'].map(function (g) { return '<button data-tk="' + g + '"' + (theKho() === g ? ' class="on"' : '') + '>' + g + (g === 'A4' ? ' · 8 thẻ/tờ' : ' · 4 thẻ/tờ') + '</button>'; }).join('') + '</div></div>' +
       '<div class="row thk"><span class="meta">Sáng ảnh</span><input type="range" id="thSang" min="0" max="100" step="5" value="' + theSangMuc() + '" style="flex:1"><span class="meta num" id="thSangV" style="min-width:64px;text-align:right">' + theSangChu() + '</span></div>' +
       '<div class="meta cau">' + yDong(['Mỗi thẻ 8,0 × 5,5 cm, cần in màu.', theKho() === 'A5' ? 'Đặt giấy A5 vào khay; hộp in hiện khổ 5 × 7 inch là đúng.' : '']) + '</div></div>';
@@ -6598,7 +6598,7 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
     t.querySelectorAll('[data-tt]').forEach(function (i) { i.oninput = function () { var e = e_(i.getAttribute('data-tt')); e.ten = i.value.toUpperCase(); e.sua = 1; xemLai(e.k); var hd = t.querySelector('[data-tc2="' + e.k + '"] b'); if (hd) hd.textContent = e.ten || 'Người thêm tay'; }; i.onblur = function () { i.value = e_(i.getAttribute('data-tt')).ten; }; });
     t.querySelectorAll('[data-tm]').forEach(function (i) { i.oninput = function () { i.value = i.value.replace(/\D/g, '').slice(0, 10); var e = e_(i.getAttribute('data-tm')); e.ma = i.value; delete e.maGY; e.maTay = 1; xemLai(e.k); var g = t.querySelector('[data-tg2="' + e.k + '"]'); if (g) g.innerHTML = theMaGhiChu(e); }; });
     t.querySelectorAll('[data-tv]').forEach(function (im) { im.onclick = function () { ccXemTo(theVe(e_(im.getAttribute('data-tv')), 1004).toDataURL('image/jpeg', 0.9)); }; });
-    var thK = document.getElementById('thKho'); if (thK) thK.onclick = function () { ccKhoMo(); ccVe(); window.scrollTo(0, 0); };   // b199
+    var thK = document.getElementById('thKho'); if (thK && thK.tagName === 'BUTTON') thK.onclick = theThemMenu;   // b268   // b199
     document.getElementById('thThem').onclick = theThemMenu;   // b268: 4 cách thêm người
     document.getElementById('thGui').onclick = theGui;
     document.getElementById('thLs').onclick = function () { if (!CCS.thLs) { toast('Đang tải danh sách thẻ đã in…'); theLsTai(); return; } theLsMo(); };
