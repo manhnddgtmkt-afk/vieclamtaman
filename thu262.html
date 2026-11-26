@@ -13,7 +13,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
 <script src="config.js"></script>
-<script>window.PB = { so: 265, luc: "26/11 16:34" };</script>
+<script>window.PB = { so: 265, luc: "26/11 16:38" };</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap">
 <style>
@@ -1801,7 +1801,7 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
   //  4. Ô chọn (select) không tự xuống dòng được -> phủ lớp chữ hiện đủ tên khoản đã chọn
   var PH_SEL = '.top small,.vtTx small,.q2sd .meta,.tbMeta,.sub,.q2pr small,.dsdt .meta,.ckc small,.nhaH small,.nhaO small,.nhaO i,.nhaG,.bl-g small,.tn-hd .tn-ten span,.tn-ct span small,.lnR>span small,.tqr small,.ell,.meta,.tp,.q2ls,.thls .sub,.tn-vd span,.bca-l3';
   function phMot(el) {
-    if (el.__ph || !el.isConnected || el.closest(CAU_BO + ',.phW') || el.querySelector('.phW') || el.textContent.indexOf(' · ') < 0) return;
+    if (el.__ph || !el.isConnected || el.closest(CAU_BO + ',.phW') || el.querySelector('.phW,.vm') || el.textContent.indexOf(' · ') < 0) return;   // b262: dòng có ảnh vương miện (.vm) không bọc, kẻo khung cắt mất vương miện
     for (var c = el.firstElementChild; c; c = c.nextElementSibling) if (!/^inline/.test(getComputedStyle(c).display)) return;
     if (/^(SUMMARY|LI|BUTTON|A|LABEL)$/.test(el.tagName)) return;
     var st = getComputedStyle(el); if (st.display === 'inline' || st.display === 'list-item' || /right|center|end/.test(st.textAlign) || st.whiteSpace === 'nowrap') return;
@@ -11279,9 +11279,9 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
   var VM_IMG = './img/';
   // ảnh nhỏ (góc trên, màn đăng ký): ảnh tròn viền màu hạng + vương miện cắt từ khung
   function vmAv(o) {
-    var L = Math.max(0, Math.min(VM_H.length - 1, o.L || 0)), h = VM_H[L], z = o.size, nh = z <= 30, kw = Math.round(z * (nh ? 0.8 : 0.62));   // b262: ảnh nhỏ (≤30 px) vương miện to hơn cho dễ thấy
+    var L = Math.max(0, Math.min(VM_H.length - 1, o.L || 0)), h = VM_H[L], z = o.size, kw = Math.round(z * 0.62);
     return '<span class="vm" style="width:' + z + 'px;height:' + z + 'px"><span class="vmP" style="width:' + z + 'px;height:' + z + 'px;font-size:' + Math.round(z * 0.42) + 'px;box-shadow:0 0 0 2px ' + h.c + '">' +
-      (o.anh ? '<img src="' + esc(o.anh) + '" alt="">' : esc(o.ch || '')) + '</span><img class="vmK" src="' + VM_IMG + 'km_' + h.im + '.webp" alt="" style="width:' + kw + 'px;top:-' + Math.round(z * (nh ? 0.42 : 0.3)) + 'px;left:auto;right:-' + Math.round(z * (nh ? 0.3 : 0.2)) + 'px;transform:rotate(28deg)"></span>';
+      (o.anh ? '<img src="' + esc(o.anh) + '" alt="">' : esc(o.ch || '')) + '</span><img class="vmK" src="' + VM_IMG + 'km_' + h.im + '.webp" alt="" style="width:' + kw + 'px;top:-' + Math.round(z * 0.3) + 'px;left:auto;right:-' + Math.round(z * 0.2) + 'px;transform:rotate(28deg)"></span>';
   }
   // khung lớn: ảnh đại diện + khung hạng + vòng tiến độ (f, fh: phần đã có / phần có từ hôm qua, 0–1). R: bán kính vòng (px)
   function vmKhung(o) {
