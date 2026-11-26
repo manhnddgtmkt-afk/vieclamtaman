@@ -13,7 +13,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
 <script src="config.js"></script>
-<script>window.PB = { so: 245, luc: "26/11 13:19" };</script>
+<script>window.PB = { so: 247, luc: "26/11 13:25" };</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap">
 <style>
@@ -231,7 +231,7 @@ textarea.inp{font-size:15px;resize:vertical}
 .bars i.in{background:var(--good)}.bars i.out{background:var(--bad)}
 /* tài khoản */
 .avw{position:relative;cursor:pointer;flex:0 0 auto}
-.avw span{position:absolute;right:-4px;bottom:-4px;font-size:15px;background:var(--card);border-radius:50%;width:24px;height:24px;display:grid;place-items:center;box-shadow:0 1px 3px rgba(0,0,0,.3)}
+.avw>span{position:absolute;right:-4px;bottom:-4px;font-size:15px;background:var(--card);border-radius:50%;width:24px;height:24px;display:grid;place-items:center;box-shadow:0 1px 3px rgba(0,0,0,.3)}
 .av.img{object-fit:cover;padding:0}
 .meBtn{overflow:hidden;padding:0}
 .meBtn img{width:100%;height:100%;object-fit:cover;display:block}
@@ -405,7 +405,7 @@ body .tch b{font-size:clamp(11.5px,3.4vw,13px)}.gcL span{overflow-wrap:anywhere}
 .inp{border:1.5px solid var(--edge);border-radius:12px}
 .tkh{display:flex;flex-direction:column;align-items:center;gap:4px;padding:4px 0 8px}
 .tkh .avw .av{width:88px;height:88px;font-size:32px}
-.tkh .avw span{width:30px;height:30px;right:-2px;bottom:-2px;background:var(--cta);color:#fff;border:3px solid var(--bg);font-size:13px}
+.tkh .avw>span{width:30px;height:30px;right:-2px;bottom:-2px;background:var(--cta);color:#fff;border:3px solid var(--bg);font-size:13px}
 .tkh b{font-size:22px;font-weight:700;margin-top:6px}
 .tkh .meta{font-size:14px}
 .set{background:var(--card);border-radius:16px;overflow:hidden}
@@ -1214,6 +1214,7 @@ textarea.inp{font-family:inherit}
 .tn-top .tn-tn{display:block;font-size:20px;margin-top:24px}.tn-top .meta{margin-top:2px}
 .hero.tn-hro{background:radial-gradient(circle 150px at 50% 136px,var(--vm-nen,#EEF3FF) 0,var(--vm-nen,#EEF3FF) 35%,var(--card,#fff) 100%)}   /* b232: quầng màu hạng chỉ quanh ảnh, không lan xuống số tiền */
 .meBtn.vmB{background:none;padding:0;overflow:visible}
+.tkh .avw>.vm{margin-top:22px}
 .vm img.vmK{height:auto!important;max-height:none!important;object-fit:contain!important;border-radius:0!important;display:block}
 .dkxNh .vm{margin:0 8px 0 2px}
 .v8kt{margin-top:10px;padding-top:10px;border-top:1px solid var(--line)}.tn-ct span small{display:block;font-size:12px;color:var(--muted);white-space:normal;overflow-wrap:break-word}
@@ -2269,7 +2270,7 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
       NV = o;
       l.innerHTML = o.ds.map(function (x, i) {
         var khoa = /KHO/i.test(kd(x.trangThai).toUpperCase());
-        return '<button class="it" data-i="' + i + '"><div class="av">' + esc(chu(x.ten)) + '</div><div style="min-width:0"><div class="nm">' + esc(x.ten || '(chưa có tên)') + (khoa ? '<span class="tag">KHOÁ</span>' : '') + (x.toi ? '<span class="tag moi">bạn</span>' : '') + '</div>' +
+        return '<button class="it" data-i="' + i + '">' + ((x.saleTen && typeof vmNho === 'function' && vmNho(x.saleTen, 40)) || '<div class="av">' + esc(chu(x.ten)) + '</div>') + '<div style="min-width:0"><div class="nm">' + esc(x.ten || '(chưa có tên)') + (khoa ? '<span class="tag">KHOÁ</span>' : '') + (x.toi ? '<span class="tag moi">bạn</span>' : '') + '</div>' +
           '<div class="sub">' + esc([x.sdt, x.vai, x.phuTrach ? 'phụ trách ' + x.phuTrach : '', x.saleTen ? 'cột SALE: ' + x.saleTen : ''].filter(String).join(' · ')) + '</div>' +
           '<div class="sub">' + esc(x.coPinTam ? 'Đang chờ đăng nhập lần đầu (PIN tạm)' : (x.coPin ? 'Đã đặt PIN riêng' : 'Chưa có PIN')) + (x.vaoCuoi ? ' · vào lần cuối ' + esc(x.vaoCuoi) : '') + '</div></div></button>';
       }).join('') || '<div class="empty">Chưa có tài khoản.</div>';
@@ -7594,8 +7595,8 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
     }, function (er) { ccTd(''); toastLoi(er.message); });
   }
   var BAN_MOI = [
-    { so: 245, ds: [{ i: '💼', v: 'gv', t: 'Giá vendor', m: 'Bảng lương công nhân của từng công ty có thêm mục Giá vendor, ghi rõ vendor ở công ty đó nhận bao nhiêu tiền mỗi giờ.' }] },
-    { so: 244, ds: [{ i: '👑', t: 'Trang Thu nhập mới', m: 'Trang Thu nhập ghi rõ cần bao nhiêu người đi làm đều mỗi tháng để lên hạng, thu nhập tăng lên bao nhiêu và thưởng vượt kỳ trước.' }] },
+    { so: 247, ds: [{ i: '💼', v: 'gv', t: 'Giá vendor', m: 'Bảng lương công nhân của từng công ty có thêm mục Giá vendor, ghi rõ vendor ở công ty đó nhận bao nhiêu tiền mỗi giờ.' }] },
+    { so: 246, ds: [{ i: '👑', t: 'Trang Thu nhập mới', m: 'Trang Thu nhập ghi rõ cần bao nhiêu người đi làm đều mỗi tháng để lên hạng, thu nhập tăng lên bao nhiêu và thưởng vượt kỳ trước.' }] },
     { so: 241, ds: [{ i: '✅', t: 'Tự vào bảng công', m: 'Xuất danh sách xong, người trong danh sách tự vào bảng công, ai không đi làm thì bỏ khỏi tờ đăng ký là tự xoá khỏi bảng công.' }] },
     { so: 238, ds: ['Trang Thu nhập: mục Cách tính lương ghi thưởng mốc giờ thành từng dòng, không còn bị dồn chữ dọc.'] },
     { so: 233, ds: [{ i: '💎', t: 'Trang Thu nhập mới', m: 'Khung hạng mới có cánh cho 6 hạng (thêm Lục bảo ở 4.000 giờ). Vòng tiến độ ôm ảnh đại diện, ghi rõ cần thêm bao nhiêu người mỗi ngày để lên hạng. Lên Bạc thưởng 100.000 đ, lên Vàng thưởng 200.000 đ.' }] },
@@ -11221,7 +11222,7 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
   }
   function hangCua(ten) { var k = kd(String(ten || '')).toUpperCase().trim(); return (SALE_HANG || []).filter(function (x) { return x.k === k || kd(String(x.ten || '')).toUpperCase() === k; })[0] || null; }
   function hangSo(x) { return x ? vmCap(x.gio) : 0; }   // b233: tính lại hạng theo giờ (máy chủ cũ trả số hạng 5 bậc)
-  function vmNho(ten, z) { var x = hangCua(ten); return x ? vmAv({ anh: x.anh, ch: chu(x.ten), size: z || 26, L: hangSo(x) }) : ''; }
+  function vmNho(ten, z) { var x = hangCua(ten); return x ? vmAv({ anh: x.anh, ch: chu(x.ten), size: z || 26, L: x.gioT != null ? vmCap(x.gioT) : hangSo(x) }) : ''; }
   function veMe() {   // ảnh góc trên: sale có hạng thì đội vương miện nhỏ
     var b = document.getElementById('me'); if (!b || !S.toi) return;
     var x = S.toi.saleTen ? hangCua(S.toi.saleTen) : null;
