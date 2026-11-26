@@ -13,7 +13,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
 <script src="config.js"></script>
-<script>window.PB = { so: 256, luc: "26/11 14:05" };</script>
+<script>window.PB = { so: 257, luc: "26/11 14:24" };</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap">
 <style>
@@ -1309,6 +1309,36 @@ textarea.inp{font-family:inherit}
 .tn-ovk{display:flex;flex-direction:column;align-items:center;text-align:center;color:#fff;max-width:360px;width:100%}.tn-ovk .vkk{--vc:#fff}
 .tn-ovt{font-size:13px;color:#B5B9DC;margin-bottom:6px}.tn-ovn{display:flex;align-items:center;gap:14px;margin-top:22px;font-size:12.5px;color:#B5B9DC;text-align:left}
 .tn-ovm{font-size:14px;color:#D9DCF0;margin-top:16px;line-height:1.5}.tn-ovk .btn{margin-top:20px;min-width:150px;background:#2E3462;color:#fff}
+.hm-ov{position:fixed;inset:0;z-index:70;display:flex;align-items:center;justify-content:center;padding:24px;overflow:hidden;background:radial-gradient(circle at 50% 38%,color-mix(in srgb,var(--c) 26%,#0b0d1c) 0%,#070814 62%);animation:hmNen .45s ease-out both}
+.hm-ov.hmTat{animation:hmTat .26s ease-in both}
+.hmRay{position:absolute;left:50%;top:38%;width:220vmax;height:220vmax;margin:-110vmax 0 0 -110vmax;background:repeating-conic-gradient(from 0deg,color-mix(in srgb,var(--c) calc(var(--tia)*100%),transparent) 0deg 7deg,transparent 7deg 20deg);-webkit-mask-image:radial-gradient(circle,#000 0,rgba(0,0,0,.6) 12%,transparent 38%);mask-image:radial-gradient(circle,#000 0,rgba(0,0,0,.6) 12%,transparent 38%);animation:hmRayVao .9s .25s both,hmXoay 30s linear infinite;pointer-events:none}
+.hmGlow{position:absolute;left:50%;top:38%;width:520px;height:520px;margin:-260px 0 0 -260px;border-radius:50%;background:radial-gradient(circle,color-mix(in srgb,var(--c) 70%,transparent) 0%,transparent 62%);animation:hmGlowVao .7s .2s both,hmTho 2.6s 1s ease-in-out infinite;pointer-events:none}
+.hmCv{position:absolute;inset:0;pointer-events:none;z-index:3}
+.hmK{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;text-align:center;max-width:360px;width:100%}
+.hmFr{position:relative;animation:hmPop .85s .35s cubic-bezier(.2,1.5,.4,1) both}
+.hmBurst{position:absolute;left:50%;top:50%;width:120px;height:120px;margin:-60px 0 0 -60px;border-radius:50%;background:radial-gradient(circle,#fff 0,color-mix(in srgb,var(--cd) 80%,transparent) 30%,transparent 70%);animation:hmBurst .9s .45s ease-out both;pointer-events:none;z-index:5}
+.hmWave{position:absolute;left:50%;top:50%;width:180px;height:180px;margin:-90px 0 0 -90px;border-radius:50%;border:3px solid var(--cd);opacity:0;animation:hmWave 1.4s .6s ease-out both;pointer-events:none}.hmWave.w2{animation-delay:.9s}
+.hmT1{margin-top:14px;font-size:16px;color:#E8ECF7;animation:hmLen .5s 1s both}.hmT1 b{color:#fff;font-weight:800}
+.hmT2{margin-top:6px;display:flex;flex-direction:column;align-items:center;line-height:1.05}
+.hmSale{font-size:14px;font-weight:800;letter-spacing:4px;color:var(--cd);animation:hmLen .5s 1.05s both}
+.hmTen{margin-top:4px;font-weight:900;letter-spacing:1px;white-space:nowrap}
+.hmTen i{display:inline-block;font-style:normal;background:linear-gradient(100deg,var(--cs) 0%,var(--cd) 30%,#fff 45%,var(--cd) 60%,var(--c) 100%);background-size:250% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 2px 8px color-mix(in srgb,var(--c) 60%,transparent));animation:hmChu .5s cubic-bezier(.2,1.6,.4,1) both,hmAnh 2.4s 2s linear infinite}
+.hmTen i.hmSp{width:.28em;animation:none;filter:none}
+.hmP{margin-top:12px;font-size:15px;color:#C8CEDC;animation:hmLen .5s 1.6s both}
+.hmB{margin-top:22px;min-width:200px;background:linear-gradient(180deg,var(--cd),var(--c));color:#1a1206;font-weight:800;border:0;box-shadow:0 6px 22px color-mix(in srgb,var(--c) 55%,transparent);animation:hmLen .5s 1.8s both}
+.hmL0 .hmRay{opacity:.6}.hmL5 .hmFr{animation:hmPop .85s .35s cubic-bezier(.2,1.5,.4,1) both,hmBay 3.2s 1.4s ease-in-out infinite}
+.hm-ov.hmTinh *,.hm-ov.hmTinh{animation:none!important}
+@keyframes hmNen{from{opacity:0}}@keyframes hmTat{to{opacity:0;transform:scale(1.04)}}
+@keyframes hmXoay{to{transform:rotate(360deg)}}@keyframes hmRayVao{from{opacity:0;transform:scale(.3)}}
+@keyframes hmGlowVao{from{opacity:0;transform:scale(.2)}}@keyframes hmTho{50%{transform:scale(1.12);opacity:.8}}
+@keyframes hmPop{0%{opacity:0;transform:scale(.15) rotate(-12deg);filter:brightness(3) blur(6px)}60%{opacity:1;filter:brightness(1.6) blur(0)}100%{transform:none;filter:none}}
+@keyframes hmBurst{0%{opacity:0;transform:scale(.2)}25%{opacity:1}100%{opacity:0;transform:scale(4.2)}}
+@keyframes hmWave{0%{opacity:.9;transform:scale(.5)}100%{opacity:0;transform:scale(2.6)}}
+@keyframes hmLen{from{opacity:0;transform:translateY(14px)}}
+@keyframes hmChu{0%{opacity:0;transform:translateY(18px) scale(.4)}100%{opacity:1;transform:none}}
+@keyframes hmAnh{from{background-position:120% 0}to{background-position:-130% 0}}
+@keyframes hmBay{50%{transform:translateY(-8px)}}
+@media (prefers-reduced-motion:reduce){.hm-ov *,.hm-ov{animation:none!important}}
 .tn-cm1{font-size:13px;letter-spacing:2px;color:#FFD27A;font-weight:800;margin-top:8px}.tn-cm2{font-size:28px;font-weight:800}.tn-ovk .tn-cmb{background:#F29A1F;color:#3a2200}
 @media (max-width:340px){.tn-big{font-size:28px}.tn-trk .l{font-size:10.5px}}
 /* b203: tách ý kiểu iOS – mỗi dòng một ý, số thẳng cột phải, ghi chú đứng riêng */
@@ -7599,7 +7629,7 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
     }, function (er) { ccTd(''); toastLoi(er.message); });
   }
   var BAN_MOI = [
-    { so: 256, ds: [{ i: '👑', t: 'Vương miện cho mọi người cùng thấy', m: 'Ai lên hạng thì cả app hiện màn chúc mừng. Thẻ công ty có ảnh sale phụ trách đội vương miện; thông báo, phiếu chờ, danh sách đã xuất, Content và màn đăng nhập cũng có.' }, { i: '👑', t: 'Trang Thu nhập mới', m: 'Trang Thu nhập ghi rõ cần bao nhiêu người đi làm đều mỗi tháng để lên hạng, thu nhập tăng lên bao nhiêu và thưởng vượt kỳ trước.' }] },
+    { so: 257, ds: [{ i: '👑', t: 'Vương miện cho mọi người cùng thấy', m: 'Ai lên hạng thì cả app hiện màn chúc mừng có hiệu ứng, hạng càng cao càng hoành tráng. Thẻ công ty có ảnh sale phụ trách đội vương miện; thông báo, phiếu chờ, danh sách đã xuất, Content và màn đăng nhập cũng có.' }, { i: '👑', t: 'Trang Thu nhập mới', m: 'Trang Thu nhập ghi rõ cần bao nhiêu người đi làm đều mỗi tháng để lên hạng, thu nhập tăng lên bao nhiêu và thưởng vượt kỳ trước.' }] },
     { so: 249, ds: [{ i: '💼', v: 'gv', t: 'Giá vendor', m: 'Bảng lương công nhân của từng công ty có thêm mục Giá vendor, ghi rõ vendor ở công ty đó nhận bao nhiêu tiền mỗi giờ.' }] },
     { so: 241, ds: [{ i: '✅', t: 'Tự vào bảng công', m: 'Xuất danh sách xong, người trong danh sách tự vào bảng công, ai không đi làm thì bỏ khỏi tờ đăng ký là tự xoá khỏi bảng công.' }] },
     { so: 238, ds: ['Trang Thu nhập: mục Cách tính lương ghi thưởng mốc giờ thành từng dòng, không còn bị dồn chữ dọc.'] },
@@ -11237,14 +11267,54 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
     luuSo('vlta_hangThay2', moi);
     mung.forEach(function (m, i) { setTimeout(function () { hangMung(m[0], m[1]); }, 600 + i * 400); });
   }
-  function hangMung(x, L) {
+  function hangMung(x, L) {   // b257 (26/11 anh): man chuc mung co hieu ung, to dan theo hang
+    L = Math.max(0, Math.min(VM_H.length - 1, L || 0));
     var h = VM_H[L], d = document.createElement('div'), ng = Math.ceil((h.g || 0) / 260);
-    d.className = 'tn-ov tn-cm';
-    d.innerHTML = '<div class="tn-ovk">' + vmKhung({ L: L, anh: x.anh, ch: chu(x.ten), R: 78 }) + '<div class="tn-cm1">' + esc(hoaDau(x.ten)) + ' vừa lên</div><div class="tn-cm2" style="color:' + h.td + '">SALE HẠNG ' + h.t + '</div>' +
-      (ng ? '<div class="hmP">Đạt mốc ' + ng + ' người đi làm đều/tháng</div>' : '') + '<button class="btn tn-cmb">Chúc mừng 🎉</button></div>';
-    d.onclick = function (e) { if (e.target === d || e.target.tagName === 'BUTTON') d.remove(); };
-    document.body.appendChild(d); try { tnPhao(); } catch (e) { }
+    var Wt = Math.min([270, 295, 320, 340, 356, 372][L], innerWidth - 16), R = Math.round(Wt * (h.K[4] + h.K[5] / 2) / h.K[0]), nP = [45, 75, 105, 135, 170, 220][L], tia = [0.18, 0.24, 0.3, 0.36, 0.42, 0.5][L];
+    var chu2 = Array.prototype.map.call(h.t, function (c, i) { return c === ' ' ? '<i class="hmSp"> </i>' : '<i style="animation-delay:' + (1.15 + i * 0.07).toFixed(2) + 's">' + esc(c) + '</i>'; }).join('');
+    d.className = 'hm-ov hmL' + L;
+    d.style.cssText = '--c:' + h.c + ';--cs:' + h.ts + ';--cd:' + h.td + ';--tia:' + tia;
+    d.innerHTML = '<i class="hmRay"></i><i class="hmGlow"></i><canvas class="hmCv"></canvas>' +
+      '<div class="hmK"><div class="hmFr"><i class="hmBurst"></i>' + (L >= 3 ? '<i class="hmWave"></i><i class="hmWave w2"></i>' : '') + vmKhung({ L: L, anh: x.anh, ch: chu(x.ten), R: R }) + '</div>' +
+      '<div class="hmT1">🎉 Chúc mừng <b>' + esc(hoaDau(x.ten)) + '</b> đã lên</div>' +
+      '<div class="hmT2"><span class="hmSale">SALE HẠNG</span><span class="hmTen" style="font-size:' + (30 + L * 3) + 'px">' + chu2 + '</span></div>' +
+      (ng ? '<div class="hmP">Đạt mốc ' + ng + ' người đi làm đều/tháng</div>' : '') +
+      '<button class="btn hmB">Chúc mừng 🎉</button></div>';
+    d.onclick = function (e) { if (e.target === d || e.target.tagName === 'BUTTON') { d.classList.add('hmTat'); setTimeout(function () { d.remove(); }, 260); } };
+    document.body.appendChild(d);
+    try { if (navigator.vibrate) navigator.vibrate(L >= 3 ? [40, 60, 40, 60, 120] : [40, 60, 80]); } catch (e) { }
+    try { if (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) { d.classList.add('hmTinh'); return; } } catch (e) { }
+    var cv = d.querySelector('.hmCv'), cx = cv.getContext('2d'), W, H, dpr = Math.min(2, window.devicePixelRatio || 1), ps = [], t0 = performance.now();
+    function kt() { W = cv.width = innerWidth * dpr; H = cv.height = innerHeight * dpr; cv.style.width = innerWidth + 'px'; cv.style.height = innerHeight + 'px'; }
+    kt();
+    var mau = [h.c, h.td, '#FFFFFF', '#FFD27A', h.ts];
+    function them(n, ban) {   // ban: phao ban tu giua len; khong: roi tu tren xuong
+      for (var i = 0; i < n; i++) {
+        var a = Math.random() * Math.PI * 2, v = (4 + Math.random() * 7 + L) * dpr;
+        ps.push(ban ? { x: W / 2, y: H * 0.36, vx: Math.cos(a) * v, vy: Math.sin(a) * v - 4 * dpr, s: (4 + Math.random() * 5) * dpr, r: Math.random() * 6, vr: (Math.random() - .5) * .3, m: mau[i % mau.length], k: i % 4, t: 0 }
+          : { x: Math.random() * W, y: -20 * dpr - Math.random() * H * 0.5, vx: (Math.random() - .5) * 2 * dpr, vy: (1.5 + Math.random() * 2.5) * dpr, s: (4 + Math.random() * 5) * dpr, r: Math.random() * 6, vr: (Math.random() - .5) * .25, m: mau[i % mau.length], k: i % 4, t: 0 });
+      }
+    }
+    function sao(c, r) { c.beginPath(); for (var i = 0; i < 10; i++) { var a = i * Math.PI / 5 - Math.PI / 2, q = i % 2 ? r * 0.45 : r; c.lineTo(Math.cos(a) * q, Math.sin(a) * q); } c.closePath(); c.fill(); }
+    setTimeout(function () { them(Math.round(nP * 0.6), 1); }, 650);
+    setTimeout(function () { them(Math.round(nP * 0.6), 0); }, 1300);
+    if (L >= 4) setTimeout(function () { them(Math.round(nP * 0.4), 1); }, 2100);
+    (function ve(t) {
+      if (!d.isConnected) return;
+      cx.clearRect(0, 0, W, H);
+      ps.forEach(function (p) {
+        p.t++; p.vy += 0.16 * dpr; p.vx *= 0.99; p.vy *= 0.99; p.x += p.vx; p.y += p.vy; p.r += p.vr;
+        cx.save(); cx.translate(p.x, p.y); cx.rotate(p.r); cx.fillStyle = p.m; cx.globalAlpha = Math.max(0, 1 - p.t / 260);
+        if (p.k === 3 || (L === 5 && p.k === 2)) { if (L === 5 && p.k === 2) { cx.beginPath(); cx.moveTo(0, -p.s); cx.lineTo(p.s * .7, 0); cx.lineTo(0, p.s); cx.lineTo(-p.s * .7, 0); cx.closePath(); cx.fill(); } else sao(cx, p.s * 0.9); }
+        else cx.fillRect(-p.s / 2, -p.s / 4, p.s, p.s / 2 * (1 + Math.abs(Math.sin(p.t / 8))));
+        cx.restore();
+      });
+      ps = ps.filter(function (p) { return p.y < H + 40 && p.t < 260; });
+      if (ps.length || t - t0 < 3000) requestAnimationFrame(ve);
+    })(t0);
   }
+  // b257: trang thu (thuNNN.html?mung=L&ai=ten) – xem man chuc mung len hang
+  try { if (/\/thu\d+\.html$/.test(location.pathname) && /[?&]mung=\d/.test(location.search)) setTimeout(function () { var m = /[?&]mung=(\d)/.exec(location.search), a = /[?&]ai=([^&]+)/.exec(location.search), x = (a && hangCua(decodeURIComponent(a[1]))) || (SALE_HANG || [])[0] || { ten: 'Long', anh: '' }; hangMung(x, Number(m[1])); }, 3500); } catch (eT) { }
   function vmPt(ma) {   // the cong ty: sale phu trach (anh nho co vuong mien + ten)
     var ds = (SALE_HANG || []).filter(function (x) { return (x.pt || []).indexOf(String(ma).toUpperCase()) >= 0; });
     if (!ds.length) return '';
