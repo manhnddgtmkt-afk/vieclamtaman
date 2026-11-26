@@ -13,7 +13,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
 <script src="config.js"></script>
-<script>window.PB = { so: 259, luc: "26/11 14:36" };</script>
+<script>window.PB = { so: 260, luc: "26/11 15:13" };</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap">
 <style>
@@ -675,6 +675,17 @@ textarea.inp{font-family:inherit}
 .nhaCt tr.x td{color:var(--muted)}
 .nhaCt tr.tb td{font-weight:800;background:var(--tint);color:var(--blue)}
 .nhaCt small{display:block;font-size:11px;color:var(--muted);margin-top:8px;line-height:1.45}
+.nh2A{margin-top:12px;background:var(--tint);border-radius:14px;padding:12px 14px}
+.nh2T{display:flex;align-items:baseline;flex-wrap:wrap;gap:4px 8px}.nh2T small{flex-basis:100%;font-size:12.5px;font-weight:700;color:var(--blue)}
+.nh2T b{font-size:30px;font-weight:800;line-height:1.1}.nh2T .dv{font-size:13px;color:var(--muted)}
+.nh2C{font-size:14px;font-weight:800;padding:2px 9px;border-radius:99px;margin-left:4px}.nh2C.up{color:var(--good);background:var(--good-bg)}.nh2C.dn{color:#C2410C;background:rgba(234,88,12,.14)}.nh2C.z{color:var(--muted);background:var(--soft)}
+.nh2A i{display:block;font-style:normal;font-size:12.5px;color:var(--muted);line-height:1.55;margin-top:4px}.nh2A i.nh2D{color:var(--fg)}
+.nh2S{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px;align-items:end;margin-top:14px;padding:0 2px}
+.nh2c{display:flex;flex-direction:column;align-items:center;gap:4px}.nh2v{font-size:13px;font-weight:800;font-variant-numeric:tabular-nums}
+.nh2b{width:100%;max-width:30px;border-radius:6px 6px 3px 3px;background:var(--blue);opacity:.55}.nh2c.up .nh2b{background:var(--good);opacity:1}.nh2c.up .nh2v{color:var(--good)}.nh2c.dn .nh2b{background:#EA580C;opacity:.9}.nh2c.dn .nh2v{color:#EA580C}
+.nh2c.ng .nh2b{background:var(--line);opacity:1}.nh2c.ng .nh2v{color:var(--muted)}.nh2c.cd .nh2b{background:repeating-linear-gradient(45deg,var(--blue) 0 4px,transparent 4px 8px);opacity:.7}
+.nh2d{font-size:11px;color:var(--muted)}.nh2Gc{margin-top:6px}
+.nh2H{display:flex;justify-content:space-between;align-items:baseline;gap:8px;margin-top:16px;font-size:13px;font-weight:800}.nh2H span{font-size:12px;font-weight:600;color:var(--muted)}
 .nhaG{margin-top:10px;font-size:11.5px;color:var(--muted);line-height:1.5;white-space:normal;overflow-wrap:break-word}
 .nhaR .nd{display:none;font-size:11px;color:var(--muted);font-weight:500;margin-top:3px;white-space:nowrap}
 /* màn hẹp / chữ phóng to: ca ngày, ca đêm xuống dòng dưới tên; 2 ô đầu xếp dọc */
@@ -7629,6 +7640,7 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
     }, function (er) { ccTd(''); toastLoi(er.message); });
   }
   var BAN_MOI = [
+    { so: 260, ds: [{ i: '📊', v: 'chu', t: 'Các nhà ở HOJEONG theo từng ngày', m: 'Số người của Tâm An ngày gần nhất kèm tăng / giảm so với ngày trước, dải 7 ngày, bảng các nhà xếp theo ngày đó.' }] },
     { so: 259, ds: [{ i: '👑', t: 'Vương miện cho mọi người cùng thấy', m: 'Ai lên hạng thì cả app hiện màn chúc mừng có hiệu ứng, hạng càng cao càng hoành tráng. Thẻ công ty có ảnh sale phụ trách đội vương miện; thông báo, phiếu chờ, danh sách đã xuất, Content và màn đăng nhập cũng có.' }, { i: '👑', t: 'Trang Thu nhập mới', m: 'Trang Thu nhập ghi rõ cần bao nhiêu người đi làm đều mỗi tháng để lên hạng, thu nhập tăng lên bao nhiêu và thưởng vượt kỳ trước.' }] },
     { so: 249, ds: [{ i: '💼', v: 'gv', t: 'Giá vendor', m: 'Bảng lương công nhân của từng công ty có thêm mục Giá vendor, ghi rõ vendor ở công ty đó nhận bao nhiêu tiền mỗi giờ.' }] },
     { so: 241, ds: [{ i: '✅', t: 'Tự vào bảng công', m: 'Xuất danh sách xong, người trong danh sách tự vào bảng công, ai không đi làm thì bỏ khỏi tờ đăng ký là tự xoá khỏi bảng công.' }] },
@@ -10112,7 +10124,7 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
     var tA = tb(A, ''), tB = tb(B, '');
     return { m: m, A: A, cot: cot, ds: ds, nghi: nghi, tong: tA || [0, 0, 0], tongC: tA && tB ? tA[2] - tB[2] : null, hangTruoc: viTruoc, soTruoc: hB.length };
   }
-  function veNha() {
+  function veNha() {   // b260 (26/11 anh): xem bien dong TUNG NGAY – so chinh = ngay gan nhat du 2 ca, xep hang theo ngay do
     var box = document.getElementById('nhaBox');
     if (!box) return;
     if (!nhaCo()) { box.innerHTML = ''; return; }
@@ -10120,23 +10132,47 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
     if (!o) { box.innerHTML = '<div class="card nhaC">' + tieu + '<small>Đang tải…</small></div></div>'; taiNha(cty, 0); return; }
     if (!NHA_T[cty] || Date.now() - NHA_T[cty] > 6e5) taiNha(cty, 1);
     if (o.loi || !o.ds || !o.ds.length) { box.innerHTML = '<div class="card nhaC">' + tieu + '</div><div class="nhaG">' + esc(o.loi || 'Chưa có số liệu. Máy sẽ tự đếm khi có file vân tay mới.') + '</div></div>'; return; }
-    var t = nhaTinh(o), viTA = 0;
-    t.ds.forEach(function (x, i) { if (x.k === o.ta) viTA = i + 1; });
-    var taX = t.ds[viTA - 1], ngay = t.A.map(function (x) { return ddmm(serialDate(x.d)).slice(0, 2); });
-    var ngayTxt = t.A.length ? 'Trung bình ' + t.A.length + ' ngày làm việc gần nhất' : 'Chưa có ngày làm việc nào đủ ca đêm';
-    var oS = '<div class="nhaO v7o1"><div><small>Cả HOJEONG</small><b class="num">' + t.tong[2] + '</b><span class="dv">người/ngày</span>' +   // b217: bỏ ô Tâm An (lặp số với dòng trong bảng)
-      '<i>Ngày ' + t.tong[0] + ' · Đêm ' + t.tong[1] + (t.tongC === null ? '' : ' · ' + nhaLech(t.tongC) + ' so tuần trước') + '</i></div></div>';
-    var hangTxt = viTA ? 'Tâm An hạng ' + viTA + '/' + t.ds.length + (t.hangTruoc > 0 ? (t.hangTruoc === viTA ? ', tuần trước cũng hạng ' + viTA : ', tuần trước hạng ' + t.hangTruoc) : '') + '.' : '';
-    var max = 1; t.ds.forEach(function (x) { max = Math.max(max, x.a[2]); });
-    var dong = t.ds.map(function (x, i) {
+    var t = nhaTinh(o), m = t.m, ta = o.ta;
+    var lam = o.ds.filter(function (x) { return x.du && !t.nghi(x); }), L = lam[lam.length - 1] || null, P = lam[lam.length - 2] || null;
+    var E = o.ds[o.ds.length - 1], dang = E && !E.du && (!L || E.d > L.d) ? E : null;
+    var tenN = function (d) { return nhaThu(d) + ' ' + ddmm(serialDate(d)); };
+    var lech = function (a, b) { return b === null ? null : a - b; };
+    // khoi Tam An: so ngay gan nhat + bien dong
+    var vL = L ? nhaTong(L, ta) : 0, vP = P ? nhaTong(P, ta) : null, cL = lech(vL, vP);
+    var oTA = '<div class="nh2A"><div class="nh2T"><small>Tâm An · ' + (L ? esc(tenN(L.d)) : 'chưa có ngày đủ 2 ca') + '</small><b class="num">' + vL + '</b><span class="dv">người</span>' +
+      (cL === null ? '' : '<span class="nh2C ' + (cL > 0 ? 'up' : cL < 0 ? 'dn' : 'z') + '">' + (cL > 0 ? '↑ +' + cL : cL < 0 ? '↓ ' + cL : '= không đổi') + '</span>') + '</div>' +
+      '<i>Ca ngày ' + (L ? nhaCa(L, ta, 0) : 0) + ' · Ca đêm ' + (L ? nhaCa(L, ta, 1) : 0) + (P ? ' · so với ' + esc(tenN(P.d)) + ' (' + vP + ' người)' : '') + '</i>' +
+      (dang ? '<i class="nh2D">' + esc(tenN(dang.d)) + ': đã có <b>' + nhaCa(dang, ta, 0) + '</b> người ca ngày, chưa có ca đêm</i>' : '') + '</div>';
+    // dai 7 ngay (bo Chu nhat)
+    var cot = [], d0 = E.d; for (var d = d0; cot.length < 7 && d > d0 - 14; d--) if (serialDate(d).getUTCDay() !== 0) cot.unshift(d);
+    var mx = 1; cot.forEach(function (d) { if (m[d]) mx = Math.max(mx, nhaTong(m[d], ta)); });
+    var truoc = null;
+    var dai = '<div class="nh2S">' + cot.map(function (d) {
+      var x = m[d], v = x ? nhaTong(x, ta) : 0, ng = !x || t.nghi(x), cd = x && !x.du, cl = '';
+      if (!ng && !cd && truoc !== null) cl = v > truoc ? ' up' : v < truoc ? ' dn' : '';
+      if (!ng && !cd) truoc = v;
+      var h = ng ? 6 : Math.max(6, Math.round(52 * v / mx));
+      return '<div class="nh2c' + cl + (ng ? ' ng' : '') + (cd ? ' cd' : '') + '"><span class="nh2v">' + (ng ? (x ? '–' : '') : v + (cd ? '+' : '')) + '</span><span class="nh2b" style="height:' + h + 'px"></span><span class="nh2d">' + ddmm(serialDate(d)).slice(0, 5) + '</span></div>';
+    }).join('') + '</div><div class="nhaG nh2Gc">Cột xanh: tăng so với ngày trước · cam: giảm · "+": chưa có ca đêm · "–": HOJEONG nghỉ hoặc thiếu số</div>';
+    // bang cac nha theo ngay L
+    var ks = {}; [L, P].forEach(function (x) { if (x) for (var k in x.n) ks[k] = 1; }); delete ks[o.ra];
+    var ds = Object.keys(ks).map(function (k) { var a = L ? [nhaCa(L, k, 0), nhaCa(L, k, 1)] : [0, 0]; return { k: k, a: [a[0], a[1], a[0] + a[1]], c: P ? (a[0] + a[1]) - nhaTong(P, k) : null }; })
+      .filter(function (x) { return x.a[2] > 0 || (x.c !== null && x.c < 0); }).sort(function (a, b) { return b.a[2] - a.a[2] || a.k.localeCompare(b.k); });
+    var viTA = 0; ds.forEach(function (x, i) { if (x.k === ta) viTA = i + 1; });
+    var viP = 0; if (P) Object.keys(P.n).filter(function (k) { return k !== o.ra; }).map(function (k) { return { k: k, v: nhaTong(P, k) }; }).sort(function (a, b) { return b.v - a.v || a.k.localeCompare(b.k); }).forEach(function (x, i) { if (x.k === ta) viP = i + 1; });
+    var tL = L ? nhaTong(L, '') - nhaTong(L, o.ra) : 0, tP = P ? nhaTong(P, '') - nhaTong(P, o.ra) : null;
+    var max = 1; ds.forEach(function (x) { max = Math.max(max, x.a[2]); });
+    var dong = ds.map(function (x, i) {
       var mo = S.nhaMo === x.k, w = Math.max(4, Math.round(100 * x.a[2] / max));
-      return '<button class="nhaR' + (x.k === o.ta ? ' ta' : '') + (mo ? ' mo' : '') + '" data-k="' + esc(x.k) + '"><span class="k">' + (i + 1) + '</span><span class="nb"><span class="n">' + esc(nhaTen(o, x.k)) + '<i>' + (mo ? '▾' : '›') + '</i></span>' +
-        '<span class="br" style="width:' + w + '%"><span class="d" style="flex:' + x.a[0] + '"></span><span class="e" style="flex:' + x.a[1] + '"></span></span><span class="nd">Ngày ' + x.a[0] + ' · Đêm ' + x.a[1] + '</span></span>' +
+      return '<button class="nhaR' + (x.k === ta ? ' ta' : '') + (mo ? ' mo' : '') + '" data-k="' + esc(x.k) + '"><span class="k">' + (i + 1) + '</span><span class="nb"><span class="n">' + esc(nhaTen(o, x.k)) + '<i>' + (mo ? '▾' : '›') + '</i></span>' +
+        '<span class="br" style="width:' + w + '%"><span class="d" style="flex:' + x.a[0] + '"></span><span class="e" style="flex:' + x.a[1] + '"></span></span></span>' +
         '<span class="s">' + x.a[0] + '</span><span class="s">' + x.a[1] + '</span><span class="v">' + x.a[2] + '</span><span class="c">' + nhaLech(x.c) + '</span></button>' + (mo ? nhaChiTiet(o, t, x.k) : '');
     }).join('');
-    box.innerHTML = '<div class="card nhaC">' + tieu + '<small>' + esc(ngayTxt) + '</small></div>' + oS +
-      '<div class="nhaR nhaHd"><span class="k">#</span><span class="n">Nhà</span><span class="s">Ngày</span><span class="s">Đêm</span><span class="v">Cộng</span><span class="c">So tuần trước</span></div>' + dong +
-      '<div class="nhaG">' + (hangTxt ? hangTxt + '<br>' : '') + (o.luc ? 'Cập nhật ' + esc(gioPhut(o.luc)) + '.<br>' : '') + 'Chạm tên nhà để xem từng ngày.</div></div>';
+    var hangTxt = viTA ? 'Tâm An hạng ' + viTA + '/' + ds.length + ' ngày ' + esc(ddmm(serialDate(L.d))) + (viP ? (viP === viTA ? ' (ngày trước cũng hạng ' + viP + ')' : ' (ngày trước hạng ' + viP + ')') : '') + '.' : '';
+    box.innerHTML = '<div class="card nhaC">' + tieu + '<small>Theo từng ngày · số mới nhất đủ 2 ca</small></div>' + oTA + dai +
+      '<div class="nh2H">Các nhà ngày ' + (L ? esc(tenN(L.d)) : '–') + '<span>Cả HOJEONG ' + tL + ' người' + (tP === null ? '' : ' · ' + nhaLech(tL - tP)) + '</span></div>' +
+      '<div class="nhaR nhaHd"><span class="k">#</span><span class="n">Nhà</span><span class="s">Ngày</span><span class="s">Đêm</span><span class="v">Cộng</span><span class="c">So hôm trước</span></div>' + dong +
+      '<div class="nhaG">' + (hangTxt ? hangTxt + '<br>' : '') + (P ? 'So với ' + esc(tenN(P.d)) + ' (ngày làm việc trước đó).<br>' : '') + (o.luc ? 'Cập nhật ' + esc(gioPhut(o.luc)) + (o.file ? ' từ ' + esc(o.file) : '') + '.<br>' : '') + 'Chạm tên nhà để xem từng ngày.</div></div>';
     box.querySelectorAll('button.nhaR[data-k]').forEach(function (b) { b.onclick = function () { var k = b.getAttribute('data-k'); S.nhaMo = S.nhaMo === k ? '' : k; veNha(); }; });
   }
   function nhaChiTiet(o, t, k) {   // b171: bảng mỗi ngày 1 dòng (mới nhất trên cùng) + dòng Trung bình/ngày = số ngoài danh sách
