@@ -2869,7 +2869,7 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
     var tenLoc = function (f) { return f === 'am' ? 'Nhận trước' : f === 'moi' ? 'Người mới' : /^cb:/.test(f) ? f.slice(3) : 'Cần kiểm tra'; };
     var luc = '<button class="link" id="capNhat" style="padding:0;font-size:13px">Cập nhật ' + (S.cty === 'BEST' ? 'chấm công' : 'vân tay') + '</button>';
     var noiDs = !k && canTra.length > 0;   // b217: số tổng và danh sách Còn phải trả chung một khung
-    hd.innerHTML = '<div id="gtBox"></div><div id="v7w"><div class="sec v7sec">Bảng công</div><div class="v7viec" id="v7viec">' + theDauHtml(d) + '<div id="lkBox"></div>' + blTheHtml() + '</div></div>' +   // b226: Giấy tờ đi làm + Bảng công (có Bảng lương công nhân) ở đầu trang
+    hd.innerHTML = '<div id="gtBox"></div><div id="v7w"><div class="sec v7sec">Bảng công</div><div class="v7viec" id="v7viec">' + theDauHtml(d) + '<div id="lkBox"></div>' + blTheHtml() + '<div id="ckxBox"></div></div></div>' +   // b226: Giấy tờ đi làm + Bảng công (có Bảng lương công nhân) ở đầu trang
       '<div id="tbBox"></div><div id="choBox"></div><div id="ktBox"></div>' +
       '<div class="card hero' + (noiDs ? ' v7tren' : '') + '"><div class="meta">Còn phải trả' + (d.ky ? ' · kỳ ' + esc(String(d.ky).replace(/\/\d{4}/g, '')) : '') + '</div><div class="row" style="align-items:baseline;gap:4px 10px;flex-wrap:wrap"><span class="big num' + (tong > 0 ? '' : ' c-xanh') + '">' + vnd(tong) + '</span>' + (tong > 0 ? '' + (new Date().getDay() === 3 ? '<span class="pill warn">Hôm nay trả lương</span>' : '<span class="pill mo">Trả vào thứ Tư</span>') : '<span class="pill good">Đã trả đủ</span>') + '</div>' +
       (canTra.length ? '<div class="meta">' + canTra.length + ' người</div>' : '') +
@@ -2885,7 +2885,7 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
     document.getElementById('moBL').onclick = function () { blMo(S.cty); };   // b173; b210 thành thẻ nổi bật phía trên
     if (!BL.d[S.cty]) blTai(S.cty, 1).then(null, function () { });   // b185: máy chưa có bảng lương công ty này thì tải sẵn ngầm
     var bcaB = document.getElementById('moBCA'); if (bcaB) bcaB.onclick = function () { bcaMo(S.cty); };   // b179; b210 thành thẻ trên cùng thay thẻ vân tay
-    veCho(); v7Viec(); veGt();
+    veCho(); v7Viec(); veGt(); ckxVe();   // b263: Xuất file CCCD gửi pháp nhân (25 -> mùng 5)
     var cn = document.getElementById('capNhat'); if (cn) cn.onclick = moCapNhat;
     if (S.cty === 'HOJEONG') {
       var cnN = S.cn && S.cn.cty === S.cty ? S.cn.ds.length : null;
@@ -7641,6 +7641,7 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
     }, function (er) { ccTd(''); toastLoi(er.message); });
   }
   var BAN_MOI = [
+    { so: 263, ds: [{ i: '🪪', t: 'Xuất file CCCD gửi pháp nhân trên app', m: 'Tab Lao động → chọn công ty → Xuất file CCCD (từ ngày 25 đến mùng 5). Chỉ gửi người có công trong kỳ; bấm Tạo PDF xong thoát app vẫn chạy, xong sẽ báo về điện thoại. MINGJIE gửi DT Vina, công ty khác gửi Đại Thành.' }] },
     { so: 262, ds: [{ i: '📝', t: 'Lý do trả công lẻ', m: 'Trả công lẻ hoặc điền giờ ngày máy chấm thiếu giờ ở HOJEONG phải ghi lý do, lý do được ghi chú vào file gửi HOJEONG.' }] },
     { so: 261, ds: [{ i: '📊', v: 'chu', t: 'Biến động lao động Tâm An và bảng xếp hạng nhà thầu', m: 'Số người của Tâm An ngày gần nhất kèm tăng / giảm so với ngày trước, dải 7 ngày, xếp hạng các nhà thầu theo ngày đó.' }] },
     { so: 259, ds: [{ i: '👑', t: 'Vương miện cho mọi người cùng thấy', m: 'Ai lên hạng thì cả app hiện màn chúc mừng có hiệu ứng, hạng càng cao càng hoành tráng. Thẻ công ty có ảnh sale phụ trách đội vương miện; thông báo, phiếu chờ, danh sách đã xuất, Content và màn đăng nhập cũng có.' }, { i: '👑', t: 'Trang Thu nhập mới', m: 'Trang Thu nhập ghi rõ cần bao nhiêu người đi làm đều mỗi tháng để lên hạng, thu nhập tăng lên bao nhiêu và thưởng vượt kỳ trước.' }] },
@@ -12284,6 +12285,108 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
     var y = m[3] ? (+m[3] < 100 ? 2000 + +m[3] : +m[3]) : 0;
     if (!y) { var k = /^(\d{4})-T(\d{2})$/.exec((typeof QUY !== 'undefined' && QUY && QUY.ky) || ''), hn = new Date(), yy = k ? +k[1] : hn.getFullYear(), mk = k ? +k[2] : hn.getMonth() + 1; y = +m[2] > mk ? yy - 1 : yy; }
     var d = new Date(y, +m[2] - 1, +m[1]); return isNaN(d) ? '' : ['Chủ nhật', 'Thứ Hai', 'Thứ Ba', 'Thứ Tư', 'Thứ Năm', 'Thứ Sáu', 'Thứ Bảy'][d.getDay()] + ' ';
+  }
+  // ---------- b263 (26/11): XUẤT FILE CCCD GỬI PHÁP NHÂN (Đại Thành / DT Vina) ----------
+  //   Chỉ hiện từ ngày 25 đến mùng 5 (25–31: kỳ tháng này; 1–5: kỳ tháng trước); chủ, kế toán, sale phụ trách công ty.
+  //   Kiểm tra = đối chiếu người có công với kho CCCD; Tạo PDF = máy chủ GitHub dựng PDF (thoát app vẫn chạy, xong báo về điện thoại).
+  var CKX = { tt: {}, luc: {}, kiem: {}, sh: null, hen: 0 };
+  var CKX_PN = { MINGJIE: 'DT Vina' };
+  var ICON_CKX = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2.5"/><circle cx="8.5" cy="11" r="2"/><path d="M5.8 15.8c.6-1.4 1.6-2.1 2.7-2.1s2.1.7 2.7 2.1M13.5 10h4.5M13.5 13.5h3"/></svg>';
+  function ckxDot() { var d = new Date(), ng = d.getDate(), th = d.getMonth() + 1, nm = d.getFullYear(); if (ng >= 25) return { thang: th, nam: nm }; if (ng <= 5) { th--; if (!th) { th = 12; nm--; } return { thang: th, nam: nm }; } return null; }
+  function ckxPN(cty) { var t = CKX.tt[cty]; return t && t.pn ? (t.pn === 'DT VINA' ? 'DT Vina' : t.pn === 'ĐẠI THÀNH' ? 'Đại Thành' : t.pn) : (CKX_PN[cty] || 'Đại Thành'); }
+  function ckxCo(cty) {
+    if (!ckxDot() || laCQ(cty)) return false;
+    var c = ((S.toi && S.toi.cty) || []).filter(function (x) { return x.ma === cty; })[0];
+    return !!(c && c.het);
+  }
+  function ckxTai(cty, ep) {
+    if (!ep && CKX.luc[cty] && Date.now() - CKX.luc[cty] < 60000) return Promise.resolve(CKX.tt[cty]);
+    CKX.luc[cty] = Date.now();
+    return apiT({ v: 'ckxTT', cty: cty, im: 1 }).then(function (o) {
+      if (!o || o.loi) return null;
+      var cu = CKX.tt[cty], xong = cu && cu.dang && !o.dang && o.kq && o.kq.luc > cu.dang.luc;
+      CKX.tt[cty] = o;
+      if (xong) toast(o.kq.loi ? 'Xuất file CCCD ' + cty + ' bị lỗi – mở mục Xuất file CCCD để xem.' : 'Đã xuất xong file CCCD ' + cty + '.');
+      if (S.cty === cty) { ckxVe(); ckxVeSh(); }
+      return o;
+    }, function () { return null; });
+  }
+  function ckxVe() {
+    var b = document.getElementById('ckxBox'); if (!b) return;
+    var cty = S.cty;
+    if (!ckxCo(cty)) { b.innerHTML = ''; return; }
+    var t = CKX.tt[cty], dot = ckxDot(), sub = 'Kỳ T' + dot.thang + ' · mở từ ngày 25 đến mùng 5';
+    if (t && t.dang) sub = 'Máy chủ đang tạo PDF…';
+    else if (t && t.kq && t.kq.luc) sub = t.kq.loi ? 'Lần xuất gần nhất bị lỗi · ' + ngayGio(t.kq.luc) : 'Đã xuất ' + ngayGio(t.kq.luc) + (t.kq.thieu && t.kq.thieu.length ? ' · thiếu ' + t.kq.thieu.length + ' người' : ' · đủ ' + t.kq.co + ' người');
+    b.innerHTML = '<button class="it v7ro" id="moCKX"><span class="v7ti">' + ICON_CKX + '</span><div style="flex:1;min-width:0"><div class="nm" style="font-weight:600">Xuất file CCCD gửi ' + esc(ckxPN(cty)) + '</div><div class="sub">' + esc(sub) + '</div></div><i class="v7ch" aria-hidden="true">›</i></button>';
+    document.getElementById('moCKX').onclick = function () { ckxMo(cty); };
+    ckxTai(cty);
+  }
+  function ckxMo(cty) {
+    if (CKX.sh) CKX.sh.remove();
+    CKX.cty = cty;
+    CKX.sh = moSheet('<h3>Xuất file CCCD gửi ' + esc(ckxPN(cty)) + '</h3><div class="meta">' + esc(cty) + ' · kỳ T' + ckxDot().thang + ' · chỉ người có công trong kỳ</div><div id="ckxNd"></div>');
+    ckxVeSh(); ckxTai(cty, 1);
+    clearInterval(CKX.hen);
+    CKX.hen = setInterval(function () {   // đang chạy trên máy chủ: 20 giây hỏi lại 1 lần (chỉ khi hộp còn mở)
+      if (!CKX.sh || !document.body.contains(CKX.sh)) { clearInterval(CKX.hen); CKX.sh = null; return; }
+      var t = CKX.tt[cty]; if (t && t.dang && !document.hidden) ckxTai(cty, 1);
+    }, 20000);
+  }
+  function ckxVeSh() {
+    var nd = document.getElementById('ckxNd'); if (!nd || !CKX.sh) return;
+    var cty = CKX.cty, t = CKX.tt[cty], kt = CKX.kiem[cty], h = '';
+    if (!t) { nd.innerHTML = '<div class="meta" style="margin-top:10px">Đang tải…</div>'; return; }
+    if (t.dang) h += '<div class="card"><b>Máy chủ đang tạo PDF…</b><div class="meta v7nt">' + yDong(['Do ' + esc(t.dang.ten || '') + ' bấm lúc ' + esc(ngayGio(t.dang.luc)) + '.', 'Thường mất 3–5 phút.', 'Thoát app vẫn chạy, xong sẽ báo về điện thoại.']) + '</div></div>';
+    if (t.kq && t.kq.luc) {
+      var k = t.kq;
+      if (k.loi) h += q2H('Lần xuất gần nhất', esc(ngayGio(k.luc))) + '<div class="note warn">' + yDong(['Bị lỗi: ' + esc(k.loi), 'Bấm Tạo PDF để thử lại. Lỗi lặp lại thì chụp màn hình gửi Claude.']) + '</div>';
+      else {
+        var d = [['Người có công', k.tong + ' người'], ['Có ảnh CCCD trong PDF', k.co + ' người']];
+        if (k.moi) d.push(['Vừa ghép từ CCCD TẠM', k.moi + ' người']);
+        d.push(['Còn thiếu ảnh', (k.thieu || []).length + ' người']);
+        h += q2H('Lần xuất gần nhất', esc(ngayGio(k.luc))) + '<div class="grp v8kq">' + d.map(function (r) { var th = r[0] === 'Còn thiếu ảnh' && (k.thieu || []).length; return '<div class="it"><span class="nm" style="flex:1;min-width:0">' + esc(r[0]) + '</span><b class="num' + (th ? ' v8cam' : '') + '">' + esc(r[1]) + '</b></div>'; }).join('') + '</div>' +
+          '<div class="meta v7nt">' + yDong([esc(k.ten || ''), (k.mb ? esc(k.mb) + ' MB' : '') + (k.ai ? ' · do ' + esc(k.ai) + ' bấm' : '')]) + '</div>' +
+          ((k.thieu || []).length ? '<div class="grp">' + k.thieu.map(function (x) { return '<div class="it" style="display:block"><div class="nm">' + esc(hoaDau(x.ten)) + '</div><div class="sub">' + esc(x.ly) + '</div></div>'; }).join('') + '</div>' : '') +
+          '<a class="btn" style="display:block;text-align:center;text-decoration:none" href="' + esc(k.link) + '" target="_blank" rel="noopener">Mở file PDF</a>' +
+          '<div class="meta v7nt">' + yDong(['PDF mở trong Google Drive.', 'Muốn gửi Zalo / Gmail: trong Drive bấm ⋯ → Gửi bản sao (hoặc Chia sẻ).']) + '</div>';
+      }
+    }
+    h += q2H('Kiểm tra trước khi tạo PDF', '');
+    if (kt && kt.dang) h += '<div class="meta">Đang đối chiếu danh sách người có công với kho CCCD… (có thể mất 1–2 phút nếu kho có ảnh mới)</div>';
+    else if (kt && kt.o) {
+      var o = kt.o;
+      h += '<div class="grp v8kq">' + [['Người có công', o.tong], ['Đã có ảnh CCCD', o.co], ['Ghép được từ CCCD TẠM', o.tam.length], ['Còn thiếu ảnh', o.thieu.length]].filter(function (r, i) { return i !== 2 || r[1]; })
+        .map(function (r) { return '<div class="it"><span class="nm" style="flex:1;min-width:0">' + esc(r[0]) + '</span><b class="num' + (r[0] === 'Còn thiếu ảnh' && r[1] ? ' v8cam' : '') + '">' + r[1] + ' người</b></div>'; }).join('') + '</div>';
+      if (o.thieu.length) h += '<div class="grp">' + o.thieu.map(function (x) { return '<div class="it" style="display:block"><div class="nm">' + esc(hoaDau(x.ten)) + (x.so ? ' · ' + esc(x.so) : '') + '</div><div class="sub">' + esc(x.ly) + '</div>' + (x.goiY ? '<div class="sub">' + esc(x.goiY) + '</div>' : '') + '</div>'; }).join('') + '</div>' +
+        '<div class="meta v7nt">' + yDong(['Bổ sung ảnh: mở tab CCCD → chọn 2 mặt thẻ → Lưu kho.', 'Xong quay lại đây bấm Kiểm tra lại.']) + '</div><button class="btn ghost" id="ckxCC">Mở tab CCCD</button>';
+      h += '<div class="meta v7nt">' + yDong(['Kiểm lúc ' + esc(ngayGio(kt.luc)) + '.']) + '</div>';
+    } else h += '<div class="meta v7nt">' + yDong(['Bấm Kiểm tra để xem ai đã có ảnh, ai còn thiếu.', 'Có thể bỏ qua, bấm Tạo PDF luôn.']) + '</div>';
+    if (kt && kt.loi) h += '<div class="note warn">' + esc(kt.loi) + '</div>';
+    var nThieu = kt && kt.o ? kt.o.thieu.length : 0;
+    h += '<button class="btn ghost" id="ckxKT"' + (kt && kt.dang ? ' disabled' : '') + '>' + (kt && kt.o ? 'Kiểm tra lại' : 'Kiểm tra danh sách') + '</button>' +
+      '<button class="btn" id="ckxTao"' + (t.dang || (kt && kt.dang) ? ' disabled' : '') + '>' + (t.dang ? 'Đang tạo PDF…' : nThieu ? 'Vẫn tạo PDF (thiếu ' + nThieu + ' người)' : 'Tạo PDF') + '</button>' +
+      '<div class="meta v7nt">' + yDong(['Bấm Tạo PDF xong có thể thoát app.', 'Bản PDF cũ cùng tháng tự vào Thùng rác.']) + '</div>';
+    nd.innerHTML = h;
+    var b;
+    if ((b = document.getElementById('ckxCC'))) b.onclick = function () { if (CKX.sh) CKX.sh.remove(); CKX.sh = null; moTab('cc'); };
+    if ((b = document.getElementById('ckxKT'))) b.onclick = function () { ckxKiem(cty); };
+    if ((b = document.getElementById('ckxTao'))) b.onclick = function () { ckxTao(cty, this); };
+  }
+  function ckxKiem(cty) {
+    CKX.kiem[cty] = { dang: 1 }; ckxVeSh();
+    apiT({ v: 'ckxKiem', cty: cty, lang: 1 }).then(function (o) {
+      CKX.kiem[cty] = o.loi ? { loi: o.loi } : { o: o, luc: Date.now() }; ckxVeSh();
+    }, function (e) { CKX.kiem[cty] = { loi: e.message }; ckxVeSh(); });
+  }
+  function ckxTao(cty, b) {
+    b.disabled = true; b.textContent = 'Đang gửi lệnh…';
+    apiT({ v: 'ckxChay', cty: cty }).then(function (o) {
+      if (o.loi) { toastLoi(o.loi); ckxVeSh(); return; }
+      var t = CKX.tt[cty] = CKX.tt[cty] || {}; t.dang = o.dang;
+      toast(o.ok ? 'Máy chủ bắt đầu tạo PDF, khoảng 3–5 phút. Thoát app vẫn chạy, xong sẽ báo về điện thoại.' : 'Máy chủ đang tạo PDF lượt trước, chờ lượt đó xong nhé.');
+      ckxVeSh(); ckxVe();
+    }, function (e) { toastLoi(e.message); ckxVeSh(); });
   }
   function v7Viec() {   // b217: khung gom Kiểm tra vân tay / File gửi / Phiếu công ty khác – ẩn khi không còn dòng nào
     var w = document.getElementById('v7viec'); if (!w) return;
