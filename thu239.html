@@ -13,7 +13,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
 <script src="config.js"></script>
-<script>window.PB = { so: 240, luc: "26/11 12:18" };</script>
+<script>window.PB = { so: 241, luc: "26/11 12:20" };</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap">
 <style>
@@ -1584,7 +1584,7 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
 .t9D{border-top:1px solid var(--line);padding-top:12px;margin-top:2px}.t9D summary{font-size:14px;color:var(--cta);font-weight:600}
 .t9Kc{display:flex;align-items:center;gap:10px;width:100%;text-align:left;font:inherit;color:var(--fg);border:1px solid var(--line);cursor:pointer;padding:12px 14px}
 .t9Kc>span{flex:1;min-width:0;display:flex;flex-direction:column}.t9Kc>span b{font-size:15px;font-weight:600}.t9Kc small{font-size:12.5px;color:var(--warn);font-weight:600}.t9Kc small i{font-style:normal}
-.t9Kn{font-style:normal;font-size:13px;font-weight:600;color:var(--fg);line-height:1.35}.t9Hc{margin-top:10px;font-size:14px;color:var(--muted)}.t9Hc b{color:var(--fg)}.t9Kc.da small{color:var(--muted);font-weight:400}.t9Kc>b{flex:none;font-size:17px;font-weight:800;white-space:nowrap}.t9Kc .nw,.t9Gt .nw,.t9Pm .nw{white-space:nowrap}.t9Kv{font-style:normal;color:var(--muted);font-size:20px;flex:none}
+.t9Kn{font-style:normal;font-size:13px;font-weight:600;color:var(--fg);line-height:1.35}.t9Hc{margin-top:10px;font-size:14px;color:var(--muted)}.t9Hc b{color:var(--fg)}.t9Hc small{display:block;font-size:12px;margin-top:1px}.t9Kc.da small{color:var(--muted);font-weight:400}.t9Kc>b{flex:none;font-size:17px;font-weight:800;white-space:nowrap}.t9Kc .nw,.t9Gt .nw,.t9Pm .nw{white-space:nowrap}.t9Kv{font-style:normal;color:var(--muted);font-size:20px;flex:none}
 .thuBar{margin:0 0 4px;padding:10px 12px;border:1.5px dashed var(--cta);border-radius:14px}.thuBar b{font-size:13px;color:var(--cta)}.thuBar div{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}.thuBar button{font:inherit;font-size:13px;padding:6px 10px;border-radius:999px;border:1px solid var(--line);background:var(--card);color:var(--fg)}.thuBar button.on{background:var(--fg);color:var(--bg);border-color:var(--fg)}
 </style>
 </head>
@@ -11193,7 +11193,7 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
       gan = !ct.ketThuc && nl > 0 && con <= Math.max(tb, 3) * 10 * 1.2;
       heroLb = 'Để lên ' + esc(tenDich(toi));
       if (ct.ketThuc) { heroLb = 'Kỳ đã kết thúc'; heroCau = tnGio(g) + ' / ' + tnGio(toi.g) + ' giờ'; heroPhu = 'Chốt lương ngày ' + ngTra; }
-      else if (gan) { heroCau = 'Còn ' + tnGio(con) + ' giờ'; heroPhu = 'Khoảng ' + Math.max(1, Math.ceil(con / 10)) + ' người làm 1 ngày là đủ'; }
+      else if (gan) { heroCau = 'Còn ' + tnGio(con) + ' giờ'; heroPhu = Math.max(1, Math.ceil(con / 10)) + ' người làm 1 ngày là đủ'; }
       else {
         var canT = tnNguoiDeu(toi.g, tnNgLamKy(ct.kyTu, ct.kyDen));
         if (g && tb >= canT) { heroCau = 'Giữ ' + tb + ' người'; heroPhu = 'Đi làm đều đến ' + denNg + ' · <span class="nw">đang có ' + tnGio(g) + ' / ' + tnGio(toi.g) + ' giờ</span>'; }
@@ -11212,13 +11212,13 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
       '<div class="t9L">' + (ct.ketThuc ? 'Lương tạm tính · chờ chốt giờ' : 'Thu nhập kỳ này · ' + tnNgay(ct.kyTu) + ' – ' + tnNgay(ct.kyDen)) + '</div>' +
       '<div class="t9T num" id="tnTong">' + tnD(tong) + '</div>' +
       (tangT > 0 && !ct.ketThuc ? '<div class="t9Up">↑ ' + tnD(tangT) + ' từ hôm qua</div>' : '') +
-      '<div class="t9Hc">' + (g ? 'Hiện có <b>~' + Math.max(1, tb || Math.round(g / 10)) + ' người</b> đi làm đều' + (x && x.capNhat ? ' <span class="nw">· tính đến ' + esc(String(x.capNhat).slice(0, 5)) + '</span>' : '') : 'Chưa có giờ công kỳ này' + (x && x.capNhat ? ' <span class="nw">· tính đến ' + esc(String(x.capNhat).slice(0, 5)) + '</span>' : '')) + '</div>' + goalHtml + '</div>';
+      '<div class="t9Hc">' + (g ? 'Hiện có <b>~' + Math.max(1, tb || Math.round(g / 10)) + ' người</b> đi làm đều' : 'Chưa có giờ công kỳ này') + (x && x.capNhat ? '<small>Tính đến ngày ' + esc(String(x.capNhat).slice(0, 5)) + '</small>' : '') + '</div>' + goalHtml + '</div>';
     // chi tiết thu nhập: bảng 4 dòng
     var pcTen = x && x.pc && x.pc.length ? x.pc.map(function (p) { return p.cty; }).join(', ') : '';
     var dongCt = [
       ['Lương giờ quản lý', g ? tnGio(g) + ' giờ' + (tb ? ' · ~' + tb + ' người/ngày' : '') : 'Chưa có vân tay kỳ này', lg],
       ['Thưởng mốc giờ', mc ? 'Đã đạt mốc ' + tnGio(c.moc.filter(function (m) { return g >= m[0]; }).pop()[0]) + ' giờ' : 'Mốc đầu ' + tnGio(c.moc[0][0]) + ' giờ', mc],
-      TN_GT >= TN_VUOT.tu ? ['Thưởng vượt kỳ trước', tv ? 'Đã vượt ' + tnGio(TN_GT) + ' giờ của kỳ trước' : 'Còn thiếu ' + tnGio(Math.max(1, Math.floor(TN_GT) + 1 - g)) + ' giờ là vượt kỳ trước (' + tnGio(TN_GT) + ' giờ)', tv] : null,
+      tv ? ['Thưởng vượt kỳ trước', tv ? 'Đã vượt ' + tnGio(TN_GT) + ' giờ của kỳ trước' : 'Còn thiếu ' + tnGio(Math.max(1, Math.floor(TN_GT) + 1 - g)) + ' giờ là vượt kỳ trước (' + tnGio(TN_GT) + ' giờ)', tv] : null,
       ['Phụ trách công ty', pcTen || 'Chưa phụ trách công ty nào', pc],
       ['Video', vd.n + ' / ' + vd.so + ' video · +' + t9K(moiVd) + ' mỗi video', vd.tien || 0]];
     dongCt = dongCt.filter(Boolean);
@@ -11238,7 +11238,7 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
       var pV = (iV + (TN_GT - VM_H[iV].g) / (VM_H[iV + 1].g - VM_H[iV].g)) / (VM_H.length - 1);
       sauHtml = sauHtml.replace('<div class="t9Tr">', '<div class="t9Tr"><i class="t9Fl' + (tv ? ' da' : '') + '" style="left:calc(30px + (100% - 60px) * ' + pV.toFixed(3) + ')">' + (tv ? '✓' : '⚑') + '</i>');
     }
-    if (TN_GT >= TN_VUOT.tu) sauHtml += '<div class="t9V' + (tv ? ' da' : '') + '"><i>' + (tv ? '✓' : '⚑') + '</i><span>' + (tv ? '<b>Đã vượt kỳ trước · +' + t9K(TN_VUOT.tien) + '</b><br>Kỳ trước ' + tnGio(TN_GT) + ' giờ' : '<b>Còn thiếu ' + tnGio(Math.floor(TN_GT) + 1 - g) + ' giờ là vượt kỳ trước · thưởng +' + t9K(TN_VUOT.tien) + '</b><br>Kỳ trước ' + tnGio(TN_GT) + ' giờ, <span class="nw">vượt khi có ' + tnNguoiDeu(Math.floor(TN_GT) + 1, nkKy) + ' người đi làm đều/tháng</span>') + '</span></div>';
+    // b239: thưởng vượt kỳ trước chỉ ghi ở dải dưới thẻ Kỳ trước (anh chê lặp) – lộ trình chỉ cắm cờ
     var sauMoc = c.moc.filter(function (m) { return m[0] > VM_H[VM_H.length - 1].g; });
     sauHtml += '<div class="meta t9Pm">' + (sauMoc.length ? '<div class="t9Pk"><div>Sau Kim cương:</div>' + sauMoc.map(function (m) { return '<div class="t9Pi"><span class="t9Pn">Mốc ' + tnGio(m[0]) + ' giờ · lên tới <b>' + t9K(tnLenToi(c, m[0], pc, vd)) + '</b></span><br>đạt khi có ' + tnNguoiDeu(m[0], nkKy) + ' người đi làm đều/tháng</div>'; }).join('') + '</div>' : '') +
       '<div class="t9Pg">Dưới mỗi hạng: số người đi làm đều/tháng để đạt hạng và thu nhập lên tới (gồm lương giờ, thưởng mốc, <span class="nw">phụ cấp phụ trách</span> và <span class="nw">truyền thông đủ ' + (vd.so || 30) + ' video).</span></div></div>';
