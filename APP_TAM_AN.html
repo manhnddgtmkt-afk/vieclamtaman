@@ -6902,7 +6902,7 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
   function dkCau(ngay, ca) { return 'ca ' + ca.toLowerCase() + ' ' + ngayDM(ngay); }   // trong câu: ca ngày 26/11
   function dkCaTT(cty, ngay, ca) {   // -> { can, chot, nguoiChot, lucChot, xuat, ds: người đang đăng ký }
     var d = DK.d || { ca: [], ds: [] }, c = d.ca.filter(function (x) { return x.cty === cty && x.ngay === ngay && x.ca === ca; })[0] || {};
-    return { can: c.can || 0, chot: c.chot || 0, nguoiChot: c.nguoiChot || '', lucChot: c.lucChot || '', xuat: c.xuat || '', themSo: c.themSo || [], ds: d.ds.filter(function (x) { return x.cty === cty && x.ngay === ngay && x.ca === ca; }) };
+    return { can: c.can || 0, chot: 0 /* b264: bỏ chốt ca */, nguoiChot: c.nguoiChot || '', lucChot: c.lucChot || '', xuat: c.xuat || '', themSo: c.themSo || [], xs: c.xs || [], ds: d.ds.filter(function (x) { return x.cty === cty && x.ngay === ngay && x.ca === ca; }) };
   }
   function dkQuan(cty) { var u = S.toi || {}; return u.vai === 'chu' || (u.phuTrach || []).indexOf(cty) >= 0; }   // chủ + người phụ trách: đặt số cần, chốt ca
   function dkDuocSua(x) { var u = S.toi || {}; return String(u.sdt || '').replace(/\D/g, '') === x.sdt || dkQuan(x.cty); }   // người đã thêm, phụ trách, chủ: bỏ / chuyển
@@ -7019,10 +7019,9 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
   function dkxQl(tt) {   // ⋯ ở thẻ: chủ + người phụ trách
     var L = CCS.dsl;
     var sh = moSheet('<h3>' + esc(L.cty) + ' · ' + esc(dkCau(L.ngay, L.ca)) + '</h3><div class="meta cau">' + tt.ds.length + ' người đã đăng ký' + (tt.can ? ', cần ' + tt.can + ' người' : '') + '.</div>' +
-      '<button class="btn ghost" id="dkxCan">' + (tt.can ? 'Đổi số người cần' : 'Đặt số người cần') + '</button><button class="btn ghost" id="dkxChot">' + (tt.chot ? 'Mở lại ca' : 'Chốt ca') + '</button><button class="btn lk" id="dkxTh">Thôi</button>');
+      '<button class="btn ghost" id="dkxCan">' + (tt.can ? 'Đổi số người cần' : 'Đặt số người cần') + '</button><button class="btn lk" id="dkxTh">Thôi</button>');
     sh.querySelector('#dkxTh').onclick = function () { sh.remove(); };
     sh.querySelector('#dkxCan').onclick = function () { sh.remove(); dkCanSua(tt); };
-    sh.querySelector('#dkxChot').onclick = function () { sh.remove(); if (tt.chot) dkCaGui({ chot: 0 }, 'Đã mở lại ' + dkCau(L.ngay, L.ca) + '. Sale thêm người được tiếp.'); else dkChotHoi(tt); };
   }
   function dkxThem(fi) {   // hộp Thêm người: người đã đi làm gần đây (chạm là thêm) + kho CCCD + ảnh mới
     var L = CCS.dsl, CQ = !!((dslCfg() || {}).cq), sh = moSheet('<div class="dkxSh"></div>'), box = sh.querySelector('.dkxSh');
@@ -7088,8 +7087,8 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
     // 2. thẻ ca: số + người theo sale
     var pill = tt.chot ? '<span class="pill mo">Đã chốt</span>' : !tt.can ? '' : n < tt.can ? '<span class="pill warn">Còn thiếu ' + (tt.can - n) + '</span>' : n > tt.can ? '<span class="pill warn">Thừa ' + (n - tt.can) + '</span>' : '<span class="pill good">Đủ người</span>';
     h += '<div class="card dsd1 dkxThe"><div class="dkxDau"><div class="dkxSo"><b class="num">' + n + '</b><span>' + (tt.can ? '/ ' + tt.can + ' người' : 'người đã đăng ký') + '</span>' + pill + '</div>' +
-      (ql ? '<button class="dkxMn" id="dkxQl" aria-label="Quản lý ca: số người cần, chốt ca"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg></button>' : '') + '</div>' +
-      (tt.chot ? '<div class="meta cau">' + yDong([tt.xuat ? 'Đã xuất danh sách lúc ' + esc(tt.xuat) + '.' : 'Ca này đã chốt, không nhận đăng ký thêm.', tt.themSo.length ? tt.themSo.length + ' người đã tự vào bảng công.' : '', /* b241 */ tt.nguoiChot && !tt.xuat ? esc(tt.nguoiChot) + ' chốt lúc ' + esc(tt.lucChot) + '.' : '']) + '</div>' : '') +
+      (ql ? '<button class="dkxMn" id="dkxQl" aria-label="Số người cần cho ca này"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg></button>' : '') + '</div>' +
+      (tt.xuat ? '<div class="meta cau">' + yDong(['Đã xuất danh sách lúc ' + esc(tt.xuat) + '.', tt.themSo.length ? tt.themSo.length + ' người đã tự vào bảng công.' : '', /* b264: người thêm sau lần xuất */ (function () { if (!tt.xs.length) return ''; var k = tt.ds.filter(function (x) { return tt.xs.indexOf(x.so) < 0; }).length; return k ? k + ' người thêm sau lần xuất, chưa có trong danh sách đã in.' : ''; })()]) + '</div>' : '') +
       (CQ ? '<div class="v8han">Phỏng vấn lúc ' + dkGioPV(L.ca) + '. Gửi danh sách cho nhân sự ' + esc(L.cty) + ' trước giờ phỏng vấn.</div>' : '');
     if (!ds.length) h += '<div class="dkxRong meta cau">' + yDong(tt.chot ? ['Chưa có ai đăng ký ca này.'] : ['Chưa có ai đăng ký ca này.', 'Bấm Thêm người ở dưới để đăng ký.']) + '</div>';
     else {
@@ -7641,6 +7640,7 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
     }, function (er) { ccTd(''); toastLoi(er.message); });
   }
   var BAN_MOI = [
+    { so: 264, ds: [{ i: '🔓', t: 'Bỏ chốt ca', m: 'Xuất danh sách xong vẫn thêm, bỏ, chuyển người được, xuất lại thì người mới tự vào bảng công.' }] },
     { so: 263, ds: [{ i: '🪪', t: 'Xuất file CCCD gửi pháp nhân trên app', m: 'Tab Lao động → chọn công ty → Xuất file CCCD (từ ngày 25 đến mùng 5). Chỉ gửi người có công trong kỳ; bấm Tạo PDF xong thoát app vẫn chạy, xong sẽ báo về điện thoại. MINGJIE gửi DT Vina, công ty khác gửi Đại Thành.' }] },
     { so: 262, ds: [{ i: '📝', t: 'Lý do trả công lẻ', m: 'Trả công lẻ hoặc điền giờ ngày máy chấm thiếu giờ ở HOJEONG phải ghi lý do, lý do được ghi chú vào file gửi HOJEONG.' }] },
     { so: 261, ds: [{ i: '📊', v: 'chu', t: 'Biến động lao động Tâm An và bảng xếp hạng nhà thầu', m: 'Số người của Tâm An ngày gần nhất kèm tăng / giảm so với ngày trước, dải 7 ngày, xếp hạng các nhà thầu theo ngày đó.' }] },
