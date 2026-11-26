@@ -13,7 +13,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
 <script src="config.js"></script>
-<script>window.PB = { so: 268, luc: "26/11 17:45" };</script>
+<script>window.PB = { so: 268, luc: "26/11 17:51" };</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap">
 <style>
@@ -2410,8 +2410,29 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
     document.getElementById('me').onclick = moTaiKhoan;
     document.getElementById('chuong').onclick = chuongMo;
     try { var nv0 = document.querySelector('.nav'); if (nv0 && nv0.offsetHeight) document.documentElement.style.setProperty('--navH', nv0.offsetHeight + 'px'); } catch (e0) { }   // b198: thanh nút chính đặt sát trên thanh tab
-    document.querySelectorAll('.nav button').forEach(function (b) { b.onclick = function () { var t = b.getAttribute('data-t'); if (t === 'vdo' && S.tab !== 'vdo') KBV.phan = 'kb'; if (t === 'ld') S.dtMo = false; moTab(t); }; });   // b225: chạm tab Đối tác luôn về danh sách công ty
+    document.querySelectorAll('.nav button').forEach(function (b) { b.onclick = function () {
+      var t = b.getAttribute('data-t'), cu = S.dtGt ? 'ld' : S.tab;
+      if (t !== cu) { tabNho(cu); if (tabVe(t)) return; }   // b268 (anh Mạnh 26/11): sang tab khác rồi quay lại thì về đúng chỗ cũ; chạm lại tab đang mở thì về đầu tab như cũ
+      if (t === 'vdo' && S.tab !== 'vdo') KBV.phan = 'kb'; if (t === 'ld') S.dtMo = false; moTab(t);
+    }; });   // b225: chạm tab Đối tác (đang mở) về danh sách công ty
     capBadge(); vdoBadge();
+  }
+  var TABN = {};   // b268: chỗ đang đứng của từng tab
+  function tabNho(k) { TABN[k] = { tab: S.tab, dtGt: S.dtGt, dtMo: S.dtMo, cty: S.cty, theMo: CCS.theMo, dslMo: CCS.dslMo, theTuDk: CCS.theTuDk, kb: typeof KBV !== 'undefined' ? KBV.phan : '', y: window.scrollY, luc: Date.now() }; }
+  function tabVe(t) {   // -> true nếu đã vẽ lại đúng chỗ cũ của tab t
+    var o = TABN[t]; if (!o || Date.now() - o.luc > 6 * 3600000) return false;
+    try {
+      if (t === 'vdo' && o.kb) KBV.phan = o.kb;
+      if (o.tab === 'cc' || o.tab === 'ld') {
+        setTimeout(function () { if (typeof guiTomTat === 'function') guiTomTat(); }, 0);
+        S.tab = o.tab; S.hs = null; S.utMo = 0; S.vtMo = 0; luu('vlta_tab', o.tab); MAN.length = 0;
+        S.dtGt = o.dtGt; S.dtMo = o.dtMo; if (o.cty) S.cty = o.cty;
+        if (o.tab === 'cc') { CCS.theMo = o.theMo; CCS.dslMo = o.dslMo; CCS.theTuDk = o.theTuDk; veCCCD(); }
+        else { veDs(); taiDs(false, !!S.data[S.cty]); }
+      } else moTab(t);
+      [60, 400].forEach(function (ms) { setTimeout(function () { window.scrollTo(0, o.y || 0); }, ms); });
+      return true;
+    } catch (e) { return false; }
   }
   function moTab(t) {
     setTimeout(function () { if (typeof guiTomTat === 'function') guiTomTat(); }, 0);
@@ -3519,9 +3540,13 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
     sh.onclick = function (e) { if (e.target === sh) sh.remove(); };
     try {   // b199: hộp nào cũng có nút × ở góc trên (nút Đóng / Xong sẵn có ở hàng tiêu đề thì đổi thành ×)
       var k0 = sh.firstChild, d0 = k0.firstElementChild; if (d0 && !d0.classList.contains('row') && d0.firstElementChild && d0.firstElementChild.classList.contains('row')) d0 = d0.firstElementChild;   // b268: hộp có lớp bọc (Thẻ đã in trước đây…) – trước đây thêm × đè lên nút Đóng
-      var b0 = d0 && d0.classList.contains('row') ? [].filter.call(d0.children, function (x) { return x.tagName === 'BUTTON' && /^(Đóng|Xong)$/.test(x.textContent.trim()); })[0] : null;
+      var b0 = d0 && d0.classList.contains('row') ? [].filter.call(d0.children, function (x) { return x.tagName === 'BUTTON' && /^(Đóng|Xong|Thôi)$/.test(x.textContent.trim()); })[0] : null;
       if (b0) { b0.textContent = '×'; b0.className = 'shX'; b0.setAttribute('aria-label', 'Đóng'); }
-      else if (![].some.call(k0.querySelectorAll('button'), function (x) { return x.textContent.trim() === '×'; })) { k0.insertAdjacentHTML('afterbegin', '<button class="shX shXa" aria-label="Đóng">×</button>'); k0.querySelector('.shXa').onclick = function () { sh.remove(); }; }
+      else if (![].some.call(k0.querySelectorAll('button'), function (x) { return x.textContent.trim() === '×'; })) { k0.insertAdjacentHTML('afterbegin', '<button class="shX shXa" aria-label="Đóng">×</button>'); k0.querySelector('.shXa').onclick = function () { var th = shThoi()[0]; if (th) th.click(); if (document.body.contains(sh)) sh.remove(); }; }
+      // b268 (anh Mạnh 26/11): đã có × thì không để thêm nút "Thôi" (trùng). Ẩn nút Thôi, bấm × chạy đúng việc của nút Thôi (vd vẽ lại màn)
+      var shThoi = function () { return [].filter.call(sh.querySelectorAll('button'), function (x) { return !x.classList.contains('shX') && x.textContent.trim() === 'Thôi'; }); };
+      var anThoi = function () { shThoi().forEach(function (x) { if (x.style.display !== 'none') x.style.display = 'none'; }); };
+      anThoi(); try { new MutationObserver(anThoi).observe(sh, { childList: true, subtree: true }); } catch (eM) { }
     } catch (e0) { }
     return sh;
   }
