@@ -13,7 +13,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
 <script src="config.js"></script>
-<script>window.PB = { so: 268, luc: "26/11 18:23" };</script>
+<script>window.PB = { so: 268, luc: "26/11 18:26" };</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap">
 <style>
@@ -2614,6 +2614,17 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
   function soDiLam(d) { return d && d.ds ? d.ds.filter(function (p) { return dangLam(d, p); }).length : 0; }
   function svYmd(sv) { var x = serialDate(sv); return x.getUTCFullYear() + '-' + ('0' + (x.getUTCMonth() + 1)).slice(-2) + '-' + ('0' + x.getUTCDate()).slice(-2); }
   function dlVT(cty) { var t = cty && cty !== 'BEST' ? VTT[cty] : null; return t && t.dl && t.dl.tong >= 0 ? t.dl : null; }   // 24/10: số theo bảng tổng file vân tay (đã trừ người chuyển nhà)
+  function taTopVe() {   // b268 (anh Mạnh 26/11): mở công ty là thấy ngay số lao động Tâm An đang đi làm (như TREND)
+    var taT = document.getElementById('taTop'); if (!taT || nhaCo() || laCQ(S.cty)) return;
+    var h = diLamHtml(S.data[S.cty]);
+    if (!h && DK && !DK.d) dkTai();
+    if (!h && DK && DK.d) {   // kỳ mới chưa có bảng công / vân tay: lấy theo tờ đăng ký đi làm hôm nay
+      var hn = ymdNay(), a = dkCaTT(S.cty, hn, 'Ngày'), b = dkCaTT(S.cty, hn, 'Đêm');
+      var so = function (t) { return t.xs && t.xs.length ? t.ds.filter(function (x) { return t.xs.indexOf(x.so) >= 0; }).length : t.ds.length; }, na = so(a), nb = so(b);
+      if (na + nb) h = '<div class="dlm" id="dlm"><div class="dlmT"><b class="num">' + (na + nb) + '</b><span>Người đi làm hôm nay</span></div><div class="dlmP">Ca ngày ' + na + ' · Ca đêm ' + nb + '</div><div class="dlmP">Theo danh sách đi làm, chưa có bảng công kỳ mới</div></div>';
+    }
+    taT.innerHTML = h ? '<div class="taTop">' + h + '</div>' : '';
+  }
   function diLamHtml(d, cty) {
     var v = dlVT(cty || S.cty);
     if (v) {
@@ -2925,8 +2936,8 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
     // b197: việc phải làm (Cần kiểm tra, Còn phải trả) lên trên; các lối tắt và thống kê người đi làm các nhà xuống dưới danh sách
     var dz = document.getElementById('ldDuoi') || hd; if (dz !== hd) dz.innerHTML = ''; dz.insertAdjacentHTML('beforeend', '<div id="dlBox"></div><div id="nhaBox"></div><div class="grp v7nav" id="ldNut"></div>');   // b217: mục Người đi làm (thẻ ngày + bảng các nhà), rồi nhóm lối tắt
     var dlB = document.getElementById('dlBox'), dlH = diLamHtml(d); if (dlB) dlB.innerHTML = dlH ? '<div class="sec v7sec">Người đi làm</div>' + dlH : '';
-    var taT = document.getElementById('taTop');   // b268 (anh Mạnh 26/11): mở công ty là thấy ngay số lao động Tâm An đang đi làm (như TREND)
-    if (taT && !nhaCo()) { taT.innerHTML = dlH ? '<div class="taTop">' + dlH + '</div>' : ''; if (dlB && dlH) dlB.innerHTML = ''; }
+    if (dlB && dlH && !nhaCo()) dlB.innerHTML = '';   // b268: số người đi làm đã lên đầu trang (taTopVe)
+    taTopVe();
     dz = document.getElementById('ldNut');
     ganVtThe(); veTB(); veLK(); taiLK();
     dz.insertAdjacentHTML('beforeend', '<button class="it v7ro" id="moUT"><div><div class="nm">Ứng / trả gần đây</div></div><i class="v7ch" aria-hidden="true">›</i></button>');
@@ -6902,7 +6913,7 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
     apiT({ v: 'dkDs', im: 1 }).then(function (o) {
       DK.dang = 0;
       if (!o || o.loi || !o.ca) { DK.loi = (o && o.loi) || 'Chưa tải được tờ đăng ký.'; if (!DK.d) dslDcVe(); return; }
-      if (dkNhan(o)) { dkVeLai(); try { chuongCap(); } catch (eC) { } }   // b268: chuông nhắc CCCD chưa vào kho
+      if (dkNhan(o)) { dkVeLai(); try { chuongCap(); taTopVe(); } catch (eC) { } }   // b268: chuông nhắc CCCD chưa vào kho; thẻ số người đầu trang công ty
       if (fn) fn();
     }, function (er) { DK.dang = 0; DK.loi = er.message; if (!DK.d) dslDcVe(); });
   }
