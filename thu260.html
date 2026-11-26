@@ -13,7 +13,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
 <script src="config.js"></script>
-<script>window.PB = { so: 260, luc: "26/11 15:21" };</script>
+<script>window.PB = { so: 260, luc: "26/11 15:23" };</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap">
 <style>
@@ -683,7 +683,7 @@ textarea.inp{font-family:inherit}
 .nh2D{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;margin-top:10px;padding-top:9px;border-top:1px solid var(--line);font-size:13px;color:var(--muted)}.nh2D b{color:var(--fg);font-weight:700}.nh2Dm{margin-left:auto;font-size:12px}
 .nh2S{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:8px;align-items:end;margin-top:16px;padding:0 2px}
 .nh2c{display:flex;flex-direction:column;align-items:center;gap:5px}.nh2v{font-size:13px;font-weight:700;font-variant-numeric:tabular-nums;line-height:1}
-.nh2b{width:100%;max-width:28px;border-radius:5px 5px 2px 2px;background:var(--blue);opacity:.5}.nh2c.up .nh2b{background:var(--good);opacity:1}.nh2c.up .nh2v{color:var(--good)}.nh2c.dn .nh2b{background:#EA580C;opacity:.9}.nh2c.dn .nh2v{color:#EA580C}
+.nh2b{width:100%;max-width:28px;border-radius:5px 5px 2px 2px;background:var(--blue);opacity:.5}.nh2c.nTg .nh2b{background:var(--good);opacity:1}.nh2c.nTg .nh2v{color:var(--good)}.nh2c.nGm .nh2b{background:#EA580C;opacity:.9}.nh2c.nGm .nh2v{color:#EA580C}
 .nh2c.ng .nh2b{background:var(--line);opacity:1}.nh2c.ng .nh2v{color:var(--muted);font-size:11px;font-weight:600}.nh2c.cd .nh2b{background:repeating-linear-gradient(45deg,var(--blue) 0 3px,transparent 3px 6px);opacity:.8}
 .nh2d{font-size:11px;color:var(--muted);font-variant-numeric:tabular-nums}
 .nh2Lg{display:flex;align-items:center;justify-content:center;gap:6px;margin-top:10px;font-size:11.5px;color:var(--muted)}.nh2Lg i{width:9px;height:9px;border-radius:2px;margin-left:8px}.nh2Lg i:first-child{margin-left:0}.nh2Lg i.up{background:var(--good)}.nh2Lg i.dn{background:#EA580C}.nh2Lg i.cd{background:repeating-linear-gradient(45deg,var(--blue) 0 2px,transparent 2px 4px)}
@@ -10153,7 +10153,7 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
     var truoc = null;
     var dai = '<div class="nh2S">' + cot.map(function (d) {
       var x = m[d], v = x ? nhaTong(x, ta) : 0, ng = !x || t.nghi(x), cd = x && !x.du, cl = '';
-      if (!ng && !cd && truoc !== null) cl = v > truoc ? ' up' : v < truoc ? ' dn' : '';
+      if (!ng && !cd && truoc !== null) cl = v > truoc ? ' nTg' : v < truoc ? ' nGm' : '';
       if (!ng && !cd) truoc = v;
       var h = ng ? 4 : Math.max(6, Math.round(48 * v / mx));
       return '<div class="nh2c' + cl + (ng ? ' ng' : '') + (cd ? ' cd' : '') + '"><span class="nh2v">' + (ng ? 'nghỉ' : v) + '</span><span class="nh2b" style="height:' + h + 'px"></span><span class="nh2d">' + dm(d) + '</span></div>';
