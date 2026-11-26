@@ -13,7 +13,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
 <script src="config.js"></script>
-<script>window.PB = { so: 240, luc: "26/11 12:07" };</script>
+<script>window.PB = { so: 240, luc: "26/11 12:08" };</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap">
 <style>
@@ -11216,7 +11216,7 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
     var dongCt = [
       ['Lương giờ quản lý', g ? tnGio(g) + ' giờ' + (tb ? ' · ~' + tb + ' người/ngày' : '') : 'Chưa có vân tay kỳ này', lg],
       ['Thưởng mốc giờ', mc ? 'Đã đạt mốc ' + tnGio(c.moc.filter(function (m) { return g >= m[0]; }).pop()[0]) + ' giờ' : 'Mốc đầu ' + tnGio(c.moc[0][0]) + ' giờ', mc],
-      TN_GT >= TN_VUOT.tu ? ['Thưởng vượt kỳ trước', tv ? 'Đã vượt ' + tnGio(TN_GT) + ' giờ của kỳ trước' : 'Còn ' + tnGio(Math.max(1, Math.floor(TN_GT) + 1 - g)) + ' giờ để vượt ' + tnGio(TN_GT) + ' giờ kỳ trước', tv] : null,
+      TN_GT >= TN_VUOT.tu ? ['Thưởng vượt kỳ trước', tv ? 'Đã vượt ' + tnGio(TN_GT) + ' giờ của kỳ trước' : 'Còn thiếu ' + tnGio(Math.max(1, Math.floor(TN_GT) + 1 - g)) + ' giờ là vượt kỳ trước (' + tnGio(TN_GT) + ' giờ)', tv] : null,
       ['Phụ trách công ty', pcTen || 'Chưa phụ trách công ty nào', pc],
       ['Video', vd.n + ' / ' + vd.so + ' video · +' + t9K(moiVd) + ' mỗi video', vd.tien || 0]];
     dongCt = dongCt.filter(Boolean);
@@ -11236,7 +11236,7 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
       var pV = (iV + (TN_GT - VM_H[iV].g) / (VM_H[iV + 1].g - VM_H[iV].g)) / (VM_H.length - 1);
       sauHtml = sauHtml.replace('<div class="t9Tr">', '<div class="t9Tr"><i class="t9Fl' + (tv ? ' da' : '') + '" style="left:calc(30px + (100% - 60px) * ' + pV.toFixed(3) + ')">' + (tv ? '✓' : '⚑') + '</i>');
     }
-    if (TN_GT >= TN_VUOT.tu) sauHtml += '<div class="t9V' + (tv ? ' da' : '') + '"><i>' + (tv ? '✓' : '⚑') + '</i><span><b>' + (tv ? 'Đã vượt kỳ trước' : 'Vượt kỳ trước') + ' · +' + t9K(TN_VUOT.tien) + '</b><br>' + tnGio(TN_GT) + ' giờ, <span class="nw">đạt khi có ' + tnNguoiDeu(Math.floor(TN_GT) + 1, nkKy) + ' người đi làm đều/tháng</span></span></div>';
+    if (TN_GT >= TN_VUOT.tu) sauHtml += '<div class="t9V' + (tv ? ' da' : '') + '"><i>' + (tv ? '✓' : '⚑') + '</i><span>' + (tv ? '<b>Đã vượt kỳ trước · +' + t9K(TN_VUOT.tien) + '</b><br>Kỳ trước ' + tnGio(TN_GT) + ' giờ' : '<b>Còn thiếu ' + tnGio(Math.floor(TN_GT) + 1 - g) + ' giờ là vượt kỳ trước · thưởng +' + t9K(TN_VUOT.tien) + '</b><br>Kỳ trước ' + tnGio(TN_GT) + ' giờ, <span class="nw">vượt khi có ' + tnNguoiDeu(Math.floor(TN_GT) + 1, nkKy) + ' người đi làm đều/tháng</span>') + '</span></div>';
     var sauMoc = c.moc.filter(function (m) { return m[0] > VM_H[VM_H.length - 1].g; });
     sauHtml += '<div class="meta t9Pm">' + (sauMoc.length ? '<div class="t9Pk"><div>Sau Kim cương:</div>' + sauMoc.map(function (m) { return '<div class="t9Pi"><span class="t9Pn">Mốc ' + tnGio(m[0]) + ' giờ · lên tới <b>' + t9K(tnLenToi(c, m[0], pc, vd)) + '</b></span><br>đạt khi có ' + tnNguoiDeu(m[0], nkKy) + ' người đi làm đều/tháng</div>'; }).join('') + '</div>' : '') +
       '<div class="t9Pg">Dưới mỗi hạng: số người đi làm đều/tháng để đạt hạng và thu nhập lên tới (gồm lương giờ, thưởng mốc, <span class="nw">phụ cấp phụ trách</span> và <span class="nw">truyền thông đủ ' + (vd.so || 30) + ' video).</span></div></div>';
@@ -11264,7 +11264,7 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
         '<b>Kỳ trước <span class="nw">' + tnNgay(k.tu) + ' – ' + tnNgay(k.den) + '</span></b>' +
         (gK ? '<em class="t9Kh"><img src="' + VM_IMG + 'km_' + hK.im + '.webp" alt="">Hạng ' + hK.n + '</em>' + (nK ? '<em class="t9Kn">≈ ' + nK + ' người đi làm đều/tháng</em>' : '') : '') +
         '<small>' + (da ? 'Đã trả ngày ' + tnNgay(k.traNgay) : '<i>●</i> Chờ chốt · trả ngày ' + tnNgay(k.traNgay)) + '</small></span><b class="num">' + tnD(k.cu ? k.tong : (k.ct ? tnTongCt(k.ct) : 0)) + '</b><i class="t9Kv">›</i></button>' +
-        (gK >= TN_VUOT.tu ? '<div class="t9Vk' + (tv ? ' da' : '') + '">' + (tv ? '✓ Đã vượt ' + tnGio(gK) + ' giờ kỳ trước: <b>+' + tnD(TN_VUOT.tien) + '</b>' : 'Vượt <b>' + tnGio(gK) + ' giờ</b> kỳ trước <span class="nw">được thưởng <b>+' + tnD(TN_VUOT.tien) + '</b></span>') + '</div>' : '');
+        (gK >= TN_VUOT.tu ? '<div class="t9Vk' + (tv ? ' da' : '') + '">' + (tv ? '✓ Đã vượt ' + tnGio(gK) + ' giờ kỳ trước: <b>+' + tnD(TN_VUOT.tien) + '</b>' : 'Còn thiếu <b>' + tnGio(Math.floor(gK) + 1 - g) + ' giờ</b> là vượt kỳ trước, <span class="nw">thưởng <b>+' + tnD(TN_VUOT.tien) + '</b></span>') + '</div>' : '');
     }
     var kc = !o._cu && ct.kyCu ? ct.kyCu : null, kcTren = kc ? t9Kc(kc, kc.daTra) : '', kcDuoi = '', tienHtml = '';
 
