@@ -13,7 +13,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
 <script src="config.js"></script>
-<script>window.PB = { so: 241, luc: "26/11 12:30" };</script>
+<script>window.PB = { so: 241, luc: "26/11 12:40" };</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap">
 <style>
@@ -1552,6 +1552,11 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
 .t9Vk{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:-6px 0 12px;padding:10px 14px;border-radius:0 0 16px 16px;background:var(--good-bg);color:var(--good)}.t9Vk>span{display:flex;flex-direction:column;min-width:0}.t9Vk>span b{font-size:14px;font-weight:700}.t9Vk>span small{font-size:12.5px;color:var(--fg);opacity:.75}.t9Vk>b{flex:none;font-size:17px;font-weight:800;white-space:nowrap}
 .t9Fl{position:absolute;top:-12px;transform:translateX(-50%);z-index:2;font-style:normal;font-size:13px;line-height:1;color:var(--good)}
 .t9V{display:flex;gap:10px;align-items:flex-start;margin-top:12px;padding:10px 12px;border-radius:12px;background:var(--good-bg);font-size:12.5px;line-height:1.4;color:var(--fg);text-align:left}.t9V>i{font-style:normal;color:var(--good);font-size:15px}.t9V b{color:var(--good)}
+.tn-ovT{display:flex;flex-direction:column;align-items:center;margin-top:14px}.tn-ovT small{font-size:13px;color:#B5B9DC}.tn-ovT b{font-size:34px;font-weight:800;color:#5EE6A0;line-height:1.15}.tn-ovT em{font-style:normal;font-size:13px;color:#D9DCF0;margin-top:2px}
+.tn-ovL{width:100%;margin-top:14px;border-radius:14px;background:rgba(255,255,255,.07);padding:2px 14px;text-align:left}.tn-ovL>div{display:flex;align-items:center;justify-content:space-between;gap:10px;min-height:44px;padding:8px 0;border-top:1px solid rgba(255,255,255,.08);font-size:14px;color:#D9DCF0}.tn-ovL>div:first-child{border-top:0}.tn-ovL b{color:#fff;white-space:nowrap;font-weight:700}
+.tn-ovD>span{display:flex;align-items:center;gap:10px}.tn-ovD b{font-size:12.5px;letter-spacing:.4px}
+.tn-ovC{margin-top:14px;font-size:15px;color:#fff}.tn-ovC b{color:#FFD27A}.tn-ovC small{display:block;font-size:12.5px;color:#B5B9DC;margin-top:2px}
+.tn-ovk .btn{margin-top:18px;width:100%}
 /* b239 (26/11): trang Thu nhập thiết kế lại – 1 khối chính, bảng chi tiết, lộ trình 6 hạng */
 .tn-h3.t9H{padding:6px 16px 16px}.t9H .vkk{margin-bottom:0!important}
 .t9Nh{margin-top:-6px;position:relative;z-index:2}
@@ -11139,20 +11144,32 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
     ds.sort(function (a, b) { return a.g - b.g; });
     return ds.map(function (d) { var m = c.moc.filter(function (x) { return x[0] === d.g; })[0]; d.tien = m ? m[1] : 0; d.ten = d.L >= 0 ? VM_H[d.L].n : (d.g >= 10000 ? 'Sale huyền thoại' : d.g >= 7000 ? 'Huyền thoại' : 'mốc ' + tnGio(d.g) + ' giờ'); return d; });
   }
-  function tnXemThu(L, anh, ch, g) {   // xem thử khung hạng chưa mở
+  // b239 (26/11 anh): màn xem thử / chúc mừng phải nói thu nhập tăng thế nào, thưởng thế nào – không chỉ khoe khung
+  var TN_CTX = null;   // hienTN2 đặt: { c, pc, vd, g, nk, L, tb }
+  function tnQuyenLoi(L, daDat) {
+    var x = TN_CTX, h = VM_H[L]; if (!x) return '';
+    function t9K(v) { return v >= 1000000 ? (v % 1000000 ? String(v / 1000000).replace('.', ',') : v / 1000000) + ' tr' : Math.round(v / 1000) + 'k'; }
+    var lt = tnLenToi(x.c, h.g, x.pc, x.vd), ltNay = tnLenToi(x.c, VM_H[x.L].g, x.pc, x.vd), moc = (x.c.moc.filter(function (m) { return m[0] === h.g; })[0] || [0, 0])[1];
+    var can = tnNguoiDeu(h.g, x.nk);
+    return '<div class="tn-ovT"><small>Thu nhập lên tới</small><b>' + t9K(lt) + '</b>' + (!daDat && lt > ltNay ? '<em>Tăng thêm ' + t9K(lt - ltNay) + ' so với hạng ' + esc(VM_H[x.L].n) + '</em>' : '') + '</div>' +
+      '<div class="tn-ovL">' +
+      (moc ? '<div><span>Thưởng mốc' + (daDat ? ' đã cộng vào lương kỳ này' : ' khi đạt hạng') + '</span><b>+' + tnD(moc) + '</b></div>' : '') +
+      '<div><span>Lương giờ quản lý</span><b>' + (daDat ? '' : 'lên tới ') + tnD(tnLuongGio(x.c, h.g)) + '</b></div>' +
+      '<div class="tn-ovD"><span>' + vmAv({ anh: x.anh, ch: x.ch, size: 34, L: L }) + 'Danh hiệu</span><b>SALE HẠNG ' + h.t + '</b></div>' +
+      '</div>' +
+      (daDat ? '' : '<div class="tn-ovC">Cần <b>' + can + ' người</b> đi làm đều/tháng' + (x.tb ? '<small>Đang có ~' + x.tb + ' người</small>' : '') + '</div>');
+  }
+  function tnXemThu(L, anh, ch, g) {   // xem thử hạng chưa đạt
     var h = VM_H[L], d = document.createElement('div');
     d.className = 'tn-ov';
-    d.innerHTML = '<div class="tn-ovk"><div class="tn-ovt">Xem thử khi lên ' + esc(h.n) + '</div>' + vmKhung({ L: L, anh: anh, ch: ch, R: 92 }) +
-      '<div class="tn-ovn">' + vmAv({ anh: anh, ch: ch, size: 40, L: L }) + '<span>Ảnh của em ở góc trên app và ở màn Đăng ký đi làm</span></div>' +
-      '<div class="tn-ovm">Mở khoá khi đạt ' + tnGio(h.g) + ' giờ · còn ' + tnGio(Math.max(0, h.g - g)) + ' giờ</div><button class="btn">Đóng</button></div>';
+    d.innerHTML = '<div class="tn-ovk"><div class="tn-ovt">Khi lên hạng ' + esc(h.n) + '</div>' + vmKhung({ L: L, anh: anh, ch: ch, R: 78 }) + tnQuyenLoi(L, false) + '<button class="btn">Đóng</button></div>';
     d.onclick = function (e) { if (e.target === d || e.target.tagName === 'BUTTON') d.remove(); };
     document.body.appendChild(d);
   }
   function tnChucMung(L, anh, ch, tien) {   // vừa lên hạng: 1 lần mỗi hạng mỗi kỳ
     var h = VM_H[L], d = document.createElement('div');
     d.className = 'tn-ov tn-cm';
-    d.innerHTML = '<div class="tn-ovk">' + vmKhung({ L: L, anh: anh, ch: ch, R: 92 }) + '<div class="tn-cm1">LÊN HẠNG</div><div class="tn-cm2" style="color:' + h.td + '">Sale ' + esc(h.n) + '</div>' +
-      '<div class="tn-ovm cau">' + yDong(['Em vừa đạt ' + tnGio(h.g) + ' giờ.', 'Vương miện + cánh ' + esc(h.n) + ' đã mở khoá' + (tien ? ', thưởng +' + tnD(tien) : '') + '.', 'Cả nhóm vừa nhận thông báo chúc mừng.']) + '</div><button class="btn tn-cmb">Tuyệt vời</button></div>';
+    d.innerHTML = '<div class="tn-ovk">' + vmKhung({ L: L, anh: anh, ch: ch, R: 78 }) + '<div class="tn-cm1">CHÚC MỪNG</div><div class="tn-cm2" style="color:' + h.td + '">SALE HẠNG ' + h.t + '</div>' + tnQuyenLoi(L, true) + '<button class="btn tn-cmb">Tuyệt vời</button></div>';
     d.onclick = function (e) { if (e.target === d || e.target.tagName === 'BUTTON') d.remove(); };
     document.body.appendChild(d); tnPhao();
   }
@@ -11276,6 +11293,7 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
     document.getElementById('tnMoi').onclick = function (e) { e.preventDefault(); this.textContent = 'Đang tải…'; taiTN(true); };
     var kcB = document.getElementById('tnKc'); if (kcB) kcB.onclick = function () { tnXemCu(o); try { window.scrollTo(0, 0); } catch (e) { } };
     if (!alA && anhHien && alK) anhNet(alSdt, alK, function (a) { anhHien = a; t.querySelectorAll('.vkk .vkP img').forEach(function (im) { im.src = a; }); });
+    TN_CTX = { c: c, pc: pc, vd: vd, g: g, nk: tnNgLamKy(ct.kyTu, ct.kyDen), L: L, tb: tb, anh: anhHien, ch: chH };
     var xt = document.getElementById('tnXt'); if (xt) xt.onclick = function () { tnXemThu(toi.L, anhHien, chH, g); };
     t.querySelectorAll('.t9N[data-l]').forEach(function (b) { b.onclick = function () { tnXemThu(Number(b.getAttribute('data-l')), anhHien, chH, g); }; });
     t.querySelectorAll('.tn-chips button').forEach(function (b) { b.onclick = function () { S.tnSale = b.getAttribute('data-s'); var cc = TN_CHU[S.tnSale]; if (cc) hienTN(cc); taiTN(false, !!cc); }; });
@@ -11288,7 +11306,7 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
       if (vmCap(g) > vmCap(cu.g)) { var mL = c.moc.filter(function (m) { return m[0] === VM_H[L].g; })[0]; tnChucMung(L, anhHien, chH, mL ? mL[1] : 0); }
       else {
         var vuot = c.moc.filter(function (m) { return cu.g < m[0] && g >= m[0]; });
-        if (vuot.length) { tnPhao(); bnrDua({ m: 'Em vừa đạt mốc ' + tnGio(vuot[vuot.length - 1][0]) + ' giờ · thưởng +' + tnD(vuot[vuot.length - 1][1]), ms: 5000 }); }
+        if (vuot.length) { tnPhao(); bnrDua({ m: 'Đã đạt mốc ' + tnNguoiDeu(vuot[vuot.length - 1][0], tnNgLamKy(ct.kyTu, ct.kyDen)) + ' người đi làm đều/tháng · thưởng +' + tnD(vuot[vuot.length - 1][1]), ms: 5000 }); }
         else if (tong > cu.tong) {
           var lyDo = vd.n > cu.vd && g === cu.g ? (vd.n - cu.vd) + ' video vừa được duyệt' : g > cu.g ? 'công ty vừa cập nhật +' + tnGio(g - cu.g) + ' giờ' : 'số liệu vừa cập nhật';
           bnrDua({ m: 'Thu nhập +' + tnD(tong - cu.tong) + ': ' + lyDo, ms: 4500 });
