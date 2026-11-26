@@ -13,7 +13,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
 <script src="config.js"></script>
-<script>window.PB = { so: 238, luc: "26/11 11:46" };</script>
+<script>window.PB = { so: 239, luc: "26/11 11:48" };</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap">
 <style>
@@ -1580,7 +1580,7 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
 .t9D{border-top:1px solid var(--line);padding-top:12px;margin-top:2px}.t9D summary{font-size:14px;color:var(--cta);font-weight:600}
 .t9Kc{display:flex;align-items:center;gap:10px;width:100%;text-align:left;font:inherit;color:var(--fg);border:1px solid var(--line);cursor:pointer;padding:12px 14px}
 .t9Kc>span{flex:1;min-width:0;display:flex;flex-direction:column}.t9Kc>span b{font-size:15px;font-weight:600}.t9Kc small{font-size:12.5px;color:var(--warn);font-weight:600}.t9Kc small i{font-style:normal}
-.t9Kc.da small{color:var(--muted);font-weight:400}.t9Kc>b{flex:none;font-size:17px;font-weight:800;white-space:nowrap}.t9Kc .nw,.t9Gt .nw,.t9Pm .nw{white-space:nowrap}.t9Kv{font-style:normal;color:var(--muted);font-size:20px;flex:none}
+.t9Kn{font-style:normal;font-size:13px;font-weight:600;color:var(--fg);line-height:1.35}.t9Hc{margin-top:10px;font-size:14px;color:var(--muted)}.t9Hc b{color:var(--fg)}.t9Kc.da small{color:var(--muted);font-weight:400}.t9Kc>b{flex:none;font-size:17px;font-weight:800;white-space:nowrap}.t9Kc .nw,.t9Gt .nw,.t9Pm .nw{white-space:nowrap}.t9Kv{font-style:normal;color:var(--muted);font-size:20px;flex:none}
 .thuBar{margin:0 0 4px;padding:10px 12px;border:1.5px dashed var(--cta);border-radius:14px}.thuBar b{font-size:13px;color:var(--cta)}.thuBar div{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}.thuBar button{font:inherit;font-size:13px;padding:6px 10px;border-radius:999px;border:1px solid var(--line);background:var(--card);color:var(--fg)}.thuBar button.on{background:var(--fg);color:var(--bg);border-color:var(--fg)}
 </style>
 </head>
@@ -11196,7 +11196,8 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
       '<div class="tn-nh t9Nh"><span>SALE ' + H.t + '</span></div>' +
       '<div class="t9L">' + (ct.ketThuc ? 'Lương tạm tính · chờ chốt giờ' : 'Thu nhập kỳ này · ' + tnNgay(ct.kyTu) + ' – ' + tnNgay(ct.kyDen)) + '</div>' +
       '<div class="t9T num" id="tnTong">' + tnD(tong) + '</div>' +
-      (tangT > 0 && !ct.ketThuc ? '<div class="t9Up">↑ ' + tnD(tangT) + ' từ hôm qua</div>' : '') + goalHtml + '</div>';
+      (tangT > 0 && !ct.ketThuc ? '<div class="t9Up">↑ ' + tnD(tangT) + ' từ hôm qua</div>' : '') +
+      '<div class="t9Hc">' + (g ? 'Hiện có <b>~' + Math.max(1, tb || Math.round(g / 10)) + ' người</b> đi làm đều' + (x && x.capNhat ? ' <span class="nw">· tính đến ' + esc(String(x.capNhat).slice(0, 5)) + '</span>' : '') : 'Chưa có giờ công kỳ này' + (x && x.capNhat ? ' <span class="nw">· tính đến ' + esc(String(x.capNhat).slice(0, 5)) + '</span>' : '')) + '</div>' + goalHtml + '</div>';
     // chi tiết thu nhập: bảng 4 dòng
     var pcTen = x && x.pc && x.pc.length ? x.pc.map(function (p) { return p.cty; }).join(', ') : '';
     var dongCt = [
@@ -11235,8 +11236,13 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
       traHtml = q2H('Lương kỳ trước') + '<div class="grp"><div class="it"><div style="flex:1;min-width:0"><div class="nm">Lương ' + esc(tt.thang) + '</div><div class="sub">' + (tt.qua ? 'Chưa trả · quá hạn ' + esc(tt.ng) : 'Nhận ngày ' + esc(tt.ng)) + '</div></div><b class="num' + (tt.qua ? ' v8do' : '') + '">' + tnD(soTien(phai)) + '</b></div></div>';
     }
     var chips = chuX && ct.sales && ct.sales.length ? '<div class="tn-chips">' + ct.sales.map(function (s) { return '<button data-s="' + esc(s) + '"' + (s === (S.tnSale || ct.ten) ? ' class="on"' : '') + '>' + esc(s) + '</button>'; }).join('') + '</div>' : '';
-    var kc = !o._cu && ct.kyCu ? ct.kyCu : null, kcTren = kc && !kc.daTra ? t9Kc(kc, false) : '', kcDuoi = kc && kc.daTra ? t9Kc(kc, true) : '', tienHtml = '';
-    function t9Kc(k, da) { return '<button class="card t9Kc' + (da ? ' da' : '') + '" id="tnKc"><span><b>Kỳ trước <span class="nw">' + tnNgay(k.tu) + ' – ' + tnNgay(k.den) + '</span></b><small>' + (da ? 'Đã trả ngày ' + tnNgay(k.traNgay) : '<i>●</i> Chờ chốt · trả ngày ' + tnNgay(k.traNgay)) + '</small></span><b class="num">' + tnD(k.cu ? k.tong : (k.ct ? tnTongCt(k.ct) : 0)) + '</b><i class="t9Kv">›</i></button>'; }
+    var kc = !o._cu && ct.kyCu ? ct.kyCu : null, kcTren = kc ? t9Kc(kc, kc.daTra) : '', kcDuoi = '', tienHtml = '';
+    function t9Kc(k, da) {   // b239 (26/11 anh): kỳ trước luôn ở trên đầu, kèm số người đi làm đều tương đương
+      var gK = 0; if (k.cu) { var iG = (k.dau || []).indexOf('Tổng giờ'); gK = iG >= 0 ? Number(String((k.dong || [])[iG]).replace(/[^\d.]/g, '')) || 0 : 0; } else if (k.ct && k.ct.x) gK = Number(k.ct.x.gio) || 0;
+      var nK = gK ? Math.round(gK / (tnNgLamKy(k.tu, k.den) * 10)) : 0;
+      return '<button class="card t9Kc' + (da ? ' da' : '') + '" id="tnKc"><span><b>Kỳ trước <span class="nw">' + tnNgay(k.tu) + ' – ' + tnNgay(k.den) + '</span></b>' +
+        (nK ? '<em class="t9Kn">≈ ' + nK + ' người đi làm đều/tháng</em>' : '') +
+        '<small>' + (da ? 'Đã trả ngày ' + tnNgay(k.traNgay) : '<i>●</i> Chờ chốt · trả ngày ' + tnNgay(k.traNgay)) + '</small></span><b class="num">' + tnD(k.cu ? k.tong : (k.ct ? tnTongCt(k.ct) : 0)) + '</b><i class="t9Kv">›</i></button>'; }
     t.innerHTML = '<div class="tn-k v8col">' + (window.__THUBAR ? window.__THUBAR() : '') + chips + (chuX || o._cu ? '<div class="tn-dk"><span>Kỳ ' + tnNgay(ct.kyTu) + ' – ' + tnNgay(ct.kyDen) + '</span>' + (chuX ? '<b>' + esc(tenHien) + '</b>' : '') + '</div>' : '') +
       kcTren + heroHtml + sauHtml + o2Html.replace(/<\/div>$/, ctHtml.replace('card tn-dt', 'tn-dt t9D') + '</div>') + traHtml + kcDuoi +
       '<div class="meta v8cn">' + (x && x.capNhat ? 'Giờ cập nhật ' + esc(x.capNhat) + ' · ' : '') + '<a href="#" id="tnMoi">Làm mới</a></div></div>';
