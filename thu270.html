@@ -13,7 +13,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
 <script src="config.js"></script>
-<script>window.PB = { so: 268, luc: "26/11 21:18" };</script>
+<script>window.PB = { so: 268, luc: "26/11 21:31" };</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap">
 <style>
@@ -11104,7 +11104,7 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
       return '<button class="cq2VR" ' + v.a + '><i class="cq2Dot' + (v.do ? ' do' : '') + '"></i><span class="cq2T"><b class="cau">' + esc(v.t) + '</b><small class="cau">' + esc(v.s) + '</small></span><span class="cq2N">' + esc(v.n) + '</span></button>';
     }).join('') + '</div>';
     // 3 tab
-    h += '<div class="cq2Tab" role="tablist">' + [['lam', 'Đang làm · ' + lam.length], ['pv', 'Phỏng vấn'], ['nghi', 'Đã nghỉ · ' + nghi.length]].map(function (x) {
+    h += '<div class="cq2Tab" role="tablist">' + [['lam', 'Đang làm · ' + lam.length], ['pv', 'Phỏng vấn'], ['nghi', 'Đã nghỉ · ' + nghi.filter(function (p) { return !p.mot; }).length]].map(function (x) {
       return '<button role="tab" data-t="' + x[0] + '"' + (tab === x[0] ? ' class="on" aria-selected="true"' : '') + '>' + x[1] + '</button>';
     }).join('') + '</div>';
     var nhom = function (tieu, phai, ds) { return '<div class="cq2NH"><b class="ten">' + esc(tieu) + '</b>' + (phai ? '<span class="ten">' + esc(phai) + '</span>' : '') + '</div><div class="cq2Ds">' + ds + '</div>'; };
@@ -11140,7 +11140,9 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
         if (CQ.moCu) ngC.slice(1).forEach(function (n) { h += ngayCu(n); });
       }
     } else {
-      h += nghi.length ? '<div class="cq2NH"><b class="ten">Đã nghỉ · ' + nghi.length + '</b><span class="ten">Mới nghỉ lên đầu</span></div><div class="cq2Ds">' + nghi.map(function (p) { return cq2DongNV(d, p, cqLaVen(d, p)); }).join('') + '</div>' : '<div class="empty" style="padding:18px 10px">Chưa có ai nghỉ.</div>';
+      var nghiT = nghi.filter(function (p) { return !p.mot; }), mot1 = nghi.filter(function (p) { return p.mot; });   // làm 1 ngày không tính là nhận việc nên không đếm vào Đã nghỉ (khớp thẻ đầu trang)
+      h += nghiT.length ? '<div class="cq2NH"><b class="ten">Đã nghỉ · ' + nghiT.length + '</b><span class="ten">Mới nghỉ lên đầu</span></div><div class="cq2Ds">' + nghiT.map(function (p) { return cq2DongNV(d, p, cqLaVen(d, p)); }).join('') + '</div>' : '<div class="empty" style="padding:18px 10px">Chưa có ai nghỉ.</div>';
+      if (mot1.length) h += '<div class="cq2NH"><b class="ten">Làm 1 ngày rồi nghỉ · ' + mot1.length + '</b><span class="ten">Không tính nhận việc</span></div><div class="cq2Ds">' + mot1.map(function (p) { return cq2DongNV(d, p, cqLaVen(d, p)); }).join('') + '</div>';
     }
     // chế độ báo ứng viên mới
     var dot = (d.cc.dot || []).slice().sort(function (a, b) { return a.tu < b.tu ? -1 : 1; }).filter(function (x) { return x.tu <= hn; }).pop(), lg = (d.cc.luong || []).slice().sort(function (a, b) { return a.tu < b.tu ? -1 : 1; }).filter(function (x) { return x.tu <= hn; }).pop();
@@ -14108,5 +14110,6 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
   } else veDangNhap();
 })();
 </script>
+<script>if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(function () { });</script>
 </body>
 </html>
