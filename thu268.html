@@ -13,7 +13,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
 <script src="config.js"></script>
-<script>window.PB = { so: 268, luc: "26/11 17:51" };</script>
+<script>window.PB = { so: 268, luc: "26/11 17:56" };</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap">
 <style>
@@ -5089,6 +5089,7 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
     return '<button class="it v8h1' + (lenh ? ' v8lenh' : '') + '"' + (id ? ' id="' + id + '"' : '') + (tat ? ' disabled' : '') + '><span class="v7ti">' + V8_IC[ic] + '</span>' +
       '<span class="nm" style="flex:1;min-width:0">' + ten + '</span>' + (phai ? '<span class="v8n">' + phai + '</span>' : '') + (lenh || tat ? '' : '<i class="v7ch">›</i>') + '</button>';
   }
+  function ccGrp(h) { return h ? '<div class="grp v8nav">' + h + '</div>' : ''; }
   function ccVe() {
     if (THUC.on && !ccBan()) ccThuc(0);
     var t = document.getElementById('ccThan'); if (!t || S.tab !== 'cc') return;
@@ -5110,11 +5111,9 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
     if (nha) {
       var mcDang0 = CCS.chayMC && CCS.chayMC.dang;
       h += ccLuotHang() + '<div class="card v8h"><b class="v8t">In CCCD người mới</b><ol class="ySt"><li>Chọn cùng lúc ảnh 2 mặt từng người.</li><li>App tự cắt, nắn thẳng, ghép 2 mặt.</li><li>In mỗi người 1 tờ A4, lưu vào Drive.</li></ol><div class="meta">Không cần in thì bấm Lưu kho.</div>' +
-        '<button class="btn" id="ccChon">Chọn ảnh trong album</button></div>' +
-        '<div class="grp v8nav">' + (CCS.tamN ? (CCS.ghCo ? v8Hang('ccMC', 'mc', mcDang0 ? 'Máy chủ đang xử lý ảnh chờ…' : 'Máy chủ xử lý ' + CCS.tamN + ' ảnh chờ', '', 1, mcDang0) : '') +
-          v8Hang('ccTam', 'cat', CCS.ghCo ? 'Cắt ghép trên điện thoại' : 'Xử lý ảnh chờ trong CCCD TẠM', CCS.ghCo ? '' : CCS.tamN + ' ảnh') : CCS.tamN === 0 ? v8Hang('', 'cat', 'Không còn ảnh chờ trong CCCD TẠM', '', 0, 1) : '') +
-        v8Hang('ccKho', 'tim', 'Tìm ảnh trong kho') + '</div>' +
-        '<button class="it dtChuyen" id="ccSangDt"><span class="v7ti">' + ICON.dt + '</span><span class="cau" style="flex:1;min-width:0">Tạo thẻ ra vào, Đăng ký đi làm nay nằm trong Đối tác, ở từng công ty.</span><i class="v7ch" aria-hidden="true">›</i></button>' +   // b225
+        '<button class="btn" id="ccChon">Chọn ảnh trong album</button><button class="btn" id="ccKho">Tìm ảnh trong kho</button></div>' +   // b268: 2 nút dùng nhiều như nhau
+        ccGrp(CCS.tamN ? (CCS.ghCo ? v8Hang('ccMC', 'mc', mcDang0 ? 'Máy chủ đang xử lý ảnh chờ…' : 'Máy chủ xử lý ' + CCS.tamN + ' ảnh chờ', '', 1, mcDang0) : '') +
+          v8Hang('ccTam', 'cat', CCS.ghCo ? 'Cắt ghép trên điện thoại' : 'Xử lý ảnh chờ trong CCCD TẠM', CCS.ghCo ? '' : CCS.tamN + ' ảnh') : CCS.tamN === 0 ? v8Hang('', 'cat', 'Không còn ảnh chờ trong CCCD TẠM', '', 0, 1) : '') +   // b268: bỏ dòng "Tạo thẻ ra vào… nay nằm trong Đối tác"
         ccDuyetThe() + ccChayHtml() + ccKqHtml();
     } else if (CCS.soat) {
       var sv = CCS.soat;
@@ -5127,11 +5126,9 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
     } else if (!CCS.ds.length && false) {
       var mcDang = CCS.chayMC && CCS.chayMC.dang;   // b220: thẻ hướng dẫn chỉ 1 nút chính; việc khác thành hàng trong 1 khung
       h += '<div class="card v8h"><b class="v8t">In CCCD người mới</b><ol class="ySt"><li>Chọn cùng lúc ảnh 2 mặt từng người.</li><li>App tự cắt, nắn thẳng, ghép 2 mặt.</li><li>In mỗi người 1 tờ A4, lưu vào Drive.</li></ol><div class="meta">Không cần in thì bấm Lưu kho.</div>' +
-        '<button class="btn" id="ccChon">Chọn ảnh trong album</button></div>' +
-        '<div class="grp v8nav">' + (CCS.tamN ? (CCS.ghCo ? v8Hang('ccMC', 'mc', mcDang ? 'Máy chủ đang xử lý ảnh chờ…' : 'Máy chủ xử lý ' + CCS.tamN + ' ảnh chờ', '', 1, mcDang) : '') +
-          v8Hang('ccTam', 'cat', CCS.ghCo ? 'Cắt ghép trên điện thoại' : 'Xử lý ảnh chờ trong CCCD TẠM', CCS.ghCo ? '' : CCS.tamN + ' ảnh') : CCS.tamN === 0 ? v8Hang('', 'cat', 'Không còn ảnh chờ trong CCCD TẠM', '', 0, 1) : '') +
-        v8Hang('ccKho', 'tim', 'Tìm ảnh trong kho') + '</div>' +
-        '<button class="it dtChuyen" id="ccSangDt"><span class="v7ti">' + ICON.dt + '</span><span class="cau" style="flex:1;min-width:0">Tạo thẻ ra vào, Đăng ký đi làm nay nằm trong Đối tác, ở từng công ty.</span><i class="v7ch" aria-hidden="true">›</i></button>' +   // b225
+        '<button class="btn" id="ccChon">Chọn ảnh trong album</button><button class="btn" id="ccKho">Tìm ảnh trong kho</button></div>' +   // b268: 2 nút dùng nhiều như nhau
+        ccGrp(CCS.tamN ? (CCS.ghCo ? v8Hang('ccMC', 'mc', mcDang ? 'Máy chủ đang xử lý ảnh chờ…' : 'Máy chủ xử lý ' + CCS.tamN + ' ảnh chờ', '', 1, mcDang) : '') +
+          v8Hang('ccTam', 'cat', CCS.ghCo ? 'Cắt ghép trên điện thoại' : 'Xử lý ảnh chờ trong CCCD TẠM', CCS.ghCo ? '' : CCS.tamN + ' ảnh') : CCS.tamN === 0 ? v8Hang('', 'cat', 'Không còn ảnh chờ trong CCCD TẠM', '', 0, 1) : '') +   // b268: bỏ dòng "Tạo thẻ ra vào… nay nằm trong Đối tác"
         ccDuyetThe() + ccChayHtml() + ccKqHtml();
     } else {
       if (CCS.tam) h += '<div class="note" style="margin-bottom:10px">Lượt này lấy ' + CCS.tam.n + ' ảnh từ <b>CCCD TẠM</b>. Bấm <b>Lưu kho</b> để đưa người đã ghép đúng vào thư mục năm sinh; ảnh gốc của họ chuyển sang CCCD TẠM/ĐÃ XỬ LÝ. Ảnh lẻ, ảnh chưa đọc được vẫn để lại trong CCCD TẠM.</div>' + ccKqHtml();
@@ -6879,7 +6876,7 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
     apiT({ v: 'dkDs', im: 1 }).then(function (o) {
       DK.dang = 0;
       if (!o || o.loi || !o.ca) { DK.loi = (o && o.loi) || 'Chưa tải được tờ đăng ký.'; if (!DK.d) dslDcVe(); return; }
-      if (dkNhan(o)) dkVeLai();
+      if (dkNhan(o)) { dkVeLai(); try { chuongCap(); } catch (eC) { } }   // b268: chuông nhắc CCCD chưa vào kho
       if (fn) fn();
     }, function (er) { DK.dang = 0; DK.loi = er.message; if (!DK.d) dslDcVe(); });
   }
@@ -6954,7 +6951,11 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
   function dkCau(ngay, ca) { return 'ca ' + ca.toLowerCase() + ' ' + ngayDM(ngay); }   // trong câu: ca ngày 26/11
   function dkCaTT(cty, ngay, ca) {   // -> { can, chot, nguoiChot, lucChot, xuat, ds: người đang đăng ký }
     var d = DK.d || { ca: [], ds: [] }, c = d.ca.filter(function (x) { return x.cty === cty && x.ngay === ngay && x.ca === ca; })[0] || {};
-    return { can: c.can || 0, chot: 0 /* b264: bỏ chốt ca */, nguoiChot: c.nguoiChot || '', lucChot: c.lucChot || '', xuat: c.xuat || '', themSo: c.themSo || [], xs: c.xs || [], ds: d.ds.filter(function (x) { return x.cty === cty && x.ngay === ngay && x.ca === ca; }) };
+    return { can: c.can || 0, chot: dkQuaGio(ngay, ca) && !c.moKhoa ? 1 : 0 /* b268: khoá theo giờ vào ca */, moKhoa: c.moKhoa || '', moBoi: c.moBoi || '', nguoiChot: c.nguoiChot || '', lucChot: c.lucChot || '', xuat: c.xuat || '', themSo: c.themSo || [], xs: c.xs || [], ds: d.ds.filter(function (x) { return x.cty === cty && x.ngay === ngay && x.ca === ca; }) };
+  }
+  function dkQuaGio(ngay, ca) {   // b268 (anh Mạnh 26/11): ca ngày khoá từ 8:00, ca đêm từ 20:00 (giờ Việt Nam)
+    var m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(ngay || '')); if (!m) return false;
+    return Date.now() >= Date.UTC(+m[1], +m[2] - 1, +m[3], (ca === 'Đêm' ? 20 : 8) - 7);
   }
   function dkQuan(cty) { var u = S.toi || {}; return u.vai === 'chu' || (u.phuTrach || []).indexOf(cty) >= 0; }   // chủ + người phụ trách: đặt số cần, chốt ca
   function dkDuocSua(x) { var u = S.toi || {}; return String(u.sdt || '').replace(/\D/g, '') === x.sdt || dkQuan(x.cty); }   // người đã thêm, phụ trách, chủ: bỏ / chuyển
@@ -6963,7 +6964,7 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
     var o0 = dkCa0(ma), cac = [];
     dkCacNgay().forEach(function (n) { ['Ngày', 'Đêm'].forEach(function (ca) { if (n > o0.ngay || (n === o0.ngay && (ca === o0.ca || o0.ca === 'Ngày'))) cac.push([n, ca]); }); });
     return cac.map(function (c) { var tt = dkCaTT(ma, c[0], c[1]); return { c: c, tt: tt, n: tt.ds.length }; }).filter(function (x) { return x.n || x.tt.can; }).slice(0, 2).map(function (x) {
-      return '<span class="dtc-l dtc-dk' + (x.tt.chot ? ' chot' : '') + '">' + DK_IC + '<span>Ca ' + x.c[1].toLowerCase() + ' ' + ngayDM(x.c[0]) + ': ' + (x.tt.can ? x.n + '/' + x.tt.can : x.n) + ' người' + (x.tt.chot ? ' · Đã chốt' : '') + '</span></span>';
+      return '<span class="dtc-l dtc-dk' + (x.tt.chot ? ' chot' : '') + '">' + DK_IC + '<span>Ca ' + x.c[1].toLowerCase() + ' ' + ngayDM(x.c[0]) + ': ' + (x.tt.can ? x.n + '/' + x.tt.can : x.n) + ' người' + (x.tt.chot ? ' · Đã khoá' : '') + '</span></span>';
     }).join('');
   }
   function dkFab() {   // nút nổi Đăng ký đi làm: chỉ công ty có danh sách đi làm
@@ -7004,7 +7005,8 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
     var p = e.p; if (!p || e.nguon !== 'luot') return;
     var lu = dslLuu(p), st = CCS.tt[p.k] || {};
     if (lu === 'co') { if (p.co && !st.co && !st.ok) { CCS.tt[p.k] = { co: 1, so: p.so, ten: p.ten, duong: p.co }; ccGanThem({ so: p.so, ten: p.ten, duong: p.co, id: p.coId }, p); ccTamXong(p, p.so, true); } return; }
-    if (lu === 'luu' && !st.dang) ccXep(p.k, p.so, 'đọc từ ảnh');
+    if (lu === 'luu' && !st.dang) { ccXep(p.k, p.so, 'đọc từ ảnh'); return; }
+    if (lu !== 'luu') toastLoi('Chưa lưu được CCCD ' + hoaDau(e.ten || p.ten || p.so || '') + ' vào kho: ' + lu.toLowerCase() + '. Bấm Bổ sung ảnh CCCD ở dòng người đó để làm thủ công.');   // b268
   }
   function dkDongBo() {   // gửi người vừa thêm lên tờ đăng ký (mỗi lần 1 ca)
     if (!DK.d || DK.gui) return;
@@ -7033,7 +7035,7 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
         var tt = dkCaTT(cty, ng, ca), n = tt.ds.length, on = chon && chon.ngay === ng && chon.ca === ca;
         var tat = boQua && ((boQua.cty === cty && boQua.ngay === ng && boQua.ca === ca) || tt.chot);
         var so = tt.can ? n + '/' + tt.can + ' người' : n ? n + ' người' : '&nbsp;';   // ca chưa có ai: để trống cho dễ nhìn ca đã có người
-        return '<button class="dkkCa' + (on ? ' on' : '') + (tt.chot ? ' chot' : n ? ' co' : '') + '" data-kca="' + ng + '|' + ca + '"' + (tat ? ' disabled' : '') + (tt.chot ? ' aria-label="Ca ' + ca.toLowerCase() + ' ' + nh[1] + ', đã chốt"' : '') + '><span>Ca ' + ca.toLowerCase() + (tt.chot ? DK_KHOA : '') + '</span><small>' + so + '</small></button>';
+        return '<button class="dkkCa' + (on ? ' on' : '') + (tt.chot ? ' chot' : n ? ' co' : '') + '" data-kca="' + ng + '|' + ca + '"' + (tat ? ' disabled' : '') + (tt.chot ? ' aria-label="Ca ' + ca.toLowerCase() + ' ' + nh[1] + ', đã khoá"' : '') + '><span>Ca ' + ca.toLowerCase() + (tt.chot ? DK_KHOA : '') + '</span><small>' + so + '</small></button>';
       }).join('') + '</div>';
     }).join('');
   }
@@ -7068,12 +7070,15 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
       return '<button class="' + (on ? 'on' : '') + '" data-xca="' + ca + '">Ca ' + ca.toLowerCase() + so + (x.tt.chot ? DK_KHOA : x.thieu && !on ? '<i class="dkxCh thieu"></i>' : '') + '</button>';
     }).join('');
   }
-  function dkxQl(tt) {   // ⋯ ở thẻ: chủ + người phụ trách
-    var L = CCS.dsl;
-    var sh = moSheet('<h3>' + esc(L.cty) + ' · ' + esc(dkCau(L.ngay, L.ca)) + '</h3><div class="meta cau">' + tt.ds.length + ' người đã đăng ký' + (tt.can ? ', cần ' + tt.can + ' người' : '') + '.</div>' +
-      '<button class="btn ghost" id="dkxCan">' + (tt.can ? 'Đổi số người cần' : 'Đặt số người cần') + '</button><button class="btn lk" id="dkxTh">Thôi</button>');
+  function dkxQl(tt) {   // ⋯ ở thẻ: mở khoá (mọi người, b268) + số người cần (chủ + người phụ trách)
+    var L = CCS.dsl, ql = dkQuan(L.cty);
+    var sh = moSheet('<h3>' + esc(L.cty) + ' · ' + esc(dkCau(L.ngay, L.ca)) + '</h3><div class="meta cau">' + yDong([tt.ds.length + ' người đã đăng ký' + (tt.can ? ', cần ' + tt.can + ' người' : '') + '.',
+        tt.chot ? 'Ca đã khoá vì đã qua giờ vào ca.' : 'Ca ' + (L.ca === 'Đêm' ? 'đêm tự khoá lúc 20:00.' : 'ngày tự khoá lúc 8:00.')]) + '</div>' +
+      (tt.chot ? '<button class="btn" id="dkxMo">Mở khoá</button>' : '') +
+      (ql ? '<button class="btn ghost" id="dkxCan">' + (tt.can ? 'Đổi số người cần' : 'Đặt số người cần') + '</button>' : '') + '<button class="btn lk" id="dkxTh">Thôi</button>');
     sh.querySelector('#dkxTh').onclick = function () { sh.remove(); };
-    sh.querySelector('#dkxCan').onclick = function () { sh.remove(); dkCanSua(tt); };
+    var bc = sh.querySelector('#dkxCan'); if (bc) bc.onclick = function () { sh.remove(); dkCanSua(tt); };
+    var bm = sh.querySelector('#dkxMo'); if (bm) bm.onclick = function () { sh.remove(); dkCaGui({ moKhoa: 1 }, 'Đã mở khoá ' + dkCau(L.ngay, L.ca) + '.'); };
   }
   function dkxThem(fi) {   // hộp Thêm người: người đã đi làm gần đây (chạm là thêm) + kho CCCD + ảnh mới
     var L = CCS.dsl, CQ = !!((dslCfg() || {}).cq), sh = moSheet('<div class="dkxSh"></div>'), box = sh.querySelector('.dkxSh');
@@ -7137,9 +7142,10 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
     // 1. chọn ngày + ca
     h += '<div class="dkxNgs" id="dkkCa">' + dkxNgayHtml(L.cty, L.ngay) + '</div><div class="seg dkxCa">' + dkxCaHtml(L.cty, L.ngay, L.ca) + '</div>';
     // 2. thẻ ca: số + người theo sale
-    var pill = tt.chot ? '<span class="pill mo">Đã chốt</span>' : !tt.can ? '' : n < tt.can ? '<span class="pill warn">Còn thiếu ' + (tt.can - n) + '</span>' : n > tt.can ? '<span class="pill warn">Thừa ' + (n - tt.can) + '</span>' : '<span class="pill good">Đủ người</span>';
+    var pill = tt.chot ? '<span class="pill mo">Đã khoá</span>' : !tt.can ? '' : n < tt.can ? '<span class="pill warn">Còn thiếu ' + (tt.can - n) + '</span>' : n > tt.can ? '<span class="pill warn">Thừa ' + (n - tt.can) + '</span>' : '<span class="pill good">Đủ người</span>';
     h += '<div class="card dsd1 dkxThe"><div class="dkxDau"><div class="dkxSo"><b class="num">' + n + '</b><span>' + (tt.can ? '/ ' + tt.can + ' người' : 'người đã đăng ký') + '</span>' + pill + '</div>' +
-      (ql ? '<button class="dkxMn" id="dkxQl" aria-label="Số người cần cho ca này"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg></button>' : '') + '</div>' +
+      (true ? '<button class="dkxMn" id="dkxQl" aria-label="Mở khoá, số người cần cho ca này"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg></button>' : '') + '</div>' +
+      (tt.chot ? '<div class="meta cau dkxKhoa">' + yDong(['Ca đã khoá vì đã qua giờ vào ca.', 'Bấm nút ⋯ ở trên, chọn Mở khoá để thêm, bỏ, chuyển người.']) + '</div>' : tt.moKhoa && dkQuaGio(L.ngay, L.ca) ? '<div class="meta cau">' + esc('Đã mở khoá lúc ' + tt.moKhoa + (tt.moBoi ? ' (' + tt.moBoi + ')' : '') + '.') + '</div>' : '') +
       (tt.xuat ? '<div class="meta cau">' + yDong(['Đã xuất danh sách lúc ' + esc(tt.xuat) + '.', tt.themSo.length ? tt.themSo.length + ' người đã tự vào bảng công.' : '', /* b264: người thêm sau lần xuất */ (function () { if (!tt.xs.length) return ''; var k = tt.ds.filter(function (x) { return tt.xs.indexOf(x.so) < 0; }).length; return k ? k + ' người thêm sau lần xuất, chưa có trong danh sách đã in.' : ''; })()]) + '</div>' + dkGtHtml(L.cty, L.ngay, L.ca) : '') +
       (CQ ? '<div class="v8han">Phỏng vấn lúc ' + dkGioPV(L.ca) + '. Gửi danh sách cho nhân sự ' + esc(L.cty) + ' trước giờ phỏng vấn.</div>' : '');
     if (!ds.length) h += '<div class="dkxRong meta cau">' + yDong(tt.chot ? ['Chưa có ai đăng ký ca này.'] : ['Chưa có ai đăng ký ca này.', 'Bấm Thêm người ở dưới để đăng ký.']) + '</div>';
@@ -7164,6 +7170,7 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
           return '<div class="dkxDong">' + (HJ ? dkAvHtml(e) : '') + '<div class="dkxTen" data-dkm="' + esc(e.k) + '"><div class="nm">' + esc(e.ten ? hoaDau(e.ten) : 'Chưa đọc được tên') + '</div>' +
             (sub.length || (tuoi && tuoi < 18) ? '<div class="sub cau">' + (tuoi && tuoi < 18 ? '<span class="pill warn dkxTuoi">' + tuoi + ' tuổi</span>' : '') + esc(sub.join(' · ')) + '</div>' : '') + (canh ? '<div class="sub dsdw cau">' + esc(canh) + '</div>' : '') +
             (HJ && x && dkmMoi(x) && !x.anh && !CCS.dkAnh[x.so] ? '<div class="sub dkxThieu cau">Chưa có ảnh chân dung</div>' : '') +
+            (x && x.thieuKho ? '<div class="sub dsdw cau">Chưa lưu được CCCD vào kho.</div><button class="link dsds" data-bk="' + esc(e.k) + '">Bổ sung ảnh CCCD</button>' : '') +   // b268
             (e.dkLoi && !/đã được|đã chốt/.test(e.dkLoi) ? '<button class="link dsds" data-dr="' + esc(e.k) + '">Thử lại</button>' : '') +
             (CQ && x && e.chon ? dslDcDong(e) + '<button class="link dsds" data-dd="' + esc(e.k) + '">Sửa quê quán, thường trú, SĐT</button>' : '') + '</div>' +
             (g && g.lv && x && e.chon ? '<button class="dsdlv' + (g.lv.indexOf(e.lv) === 1 ? ' b' : '') + '" data-dv="' + esc(e.k) + '">' + esc(g.lv.indexOf(e.lv) >= 0 ? e.lv : g.lv[0]) + '</button>' : '') +
@@ -7211,6 +7218,10 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
       e.tenGo = v.toUpperCase(); e.ten = e.tenGo; e.tenNhap = ''; e.dkLoi = ''; if (ip) ip.blur(); ccVe();
     }; });
     var bq = document.getElementById('dkxQl'); if (bq) bq.onclick = function () { dkxQl(tt); };
+    t.querySelectorAll('[data-bk]').forEach(function (b) { ['pointerdown', 'pointerup'].forEach(function (k) { b.addEventListener(k, function (ev) { ev.stopPropagation(); }); }); b.onclick = function (ev) {   // b268: bổ sung CCCD thủ công
+      ev.stopPropagation(); var e = e_(b.getAttribute('data-bk')); if (!e || !e.dk) return;
+      dkCccdBo(e.dk, function (m) { if (m) toast(m); }, function () { e.dk.thieuKho = 0; delete CCS.anh[e.dk.so]; ccVe(); dkTai(1); });
+    }; });
     if (HJ) {   // b268
       t.querySelectorAll('[data-dka]').forEach(function (b) { b.onclick = function () { var e = e_(b.getAttribute('data-dka')); if (e) dkAnhChon(e); }; });
       dkGtNoi(t, L.cty, L.ngay, L.ca);
@@ -7267,9 +7278,9 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
     sh.querySelector('#dkkBo').onclick = function () { sh.remove(); dkBoGui(e); };
   }
   function dkMenu(e) {   // giữ ngón tay lên 1 người trên tờ đăng ký
-    var x = e.dk, duoc = dkDuocSua(x);
+    var x = e.dk, khoa = dkCaTT(x.cty, x.ngay, x.ca).chot, duoc = dkDuocSua(x) && !khoa;   // b268: ca đã khoá thì không chuyển, bỏ, sửa mã
     var sh = moSheet('<h3>' + esc(hoaDau(x.ten || x.so)) + '</h3><div class="meta cau">' + yDong([esc(x.so) + (x.ma ? ' · Mã ' + esc(x.ma) : ''), x.sale ? esc(x.sale) + ' đăng ký lúc ' + esc(x.luc) + '.' : '', x.ghi ? esc(x.ghi) + '.' : '',
-      duoc ? '' : 'Chỉ ' + esc(x.sale || 'người đã thêm') + ' hoặc người phụ trách ' + esc(x.cty) + ' mới chuyển, bỏ được người này.']) + '</div>' +
+      khoa ? 'Ca đã khoá. Bấm nút ⋯ ở thẻ ca, chọn Mở khoá rồi sửa.' : duoc ? '' : 'Chỉ ' + esc(x.sale || 'người đã thêm') + ' hoặc người phụ trách ' + esc(x.cty) + ' mới chuyển, bỏ được người này.']) + '</div>' +
       (duoc && DKM_CTY[x.cty] ? '<button class="btn ghost" id="dkkMa">' + (x.ma ? 'Sửa mã thẻ' : 'Nhập mã thẻ') + '</button>' : '') +
       (duoc ? '<button class="btn" id="dkkCh">Chuyển sang ca hoặc công ty khác</button><button class="btn ghost xoa" id="dkkBo">Bỏ khỏi tờ đăng ký</button>' : '') + '<button class="btn lk" id="dkkTh">Thôi</button>');
     sh.querySelector('#dkkTh').onclick = function () { sh.remove(); };
@@ -9439,6 +9450,12 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
       out.push({ k: 'tb:' + ma + ':' + ds.map(function (x) { return x.id; }).join(','), loai: 'sua', t: ctyTen(ma) + ': ' + ds.length + ' thay đổi trên bảng công cần xem lại', p: ten.slice(0, 3).join(', ') + (ten.length > 3 ? ' và ' + (ten.length - 3) + ' người khác' : ''),
         luc: Math.max.apply(null, ds.map(function (x) { return x.luc || 0; })), mo: function () { chuongVeLd(ma, 'tbBox'); } });
     });
+    try {   // b268: người trên tờ đăng ký chưa có CCCD trong kho -> người đã đăng ký (và chủ) phải bổ sung thủ công
+      var toiS = String((S.toi || {}).sdt || '').replace(/\D/g, ''), chu = (S.toi || {}).vai === 'chu';
+      ((DK && DK.d && DK.d.ds) || []).filter(function (x) { return x.thieuKho && (chu || x.sdt === toiS); }).forEach(function (x) {
+        out.push({ ai: chu && x.sdt !== toiS ? x.sale : '', k: 'kh:' + x.so + ':' + x.ngay, loai: 'sua', t: hoaDau(x.ten || x.so) + ' – chưa lưu được CCCD vào kho', p: ctyTen(x.cty) + ' · ' + dkCau(x.ngay, x.ca) + ' · Bổ sung ảnh CCCD thủ công', luc: 0, gap: true, mo: function () { dkMoCa(x.cty, x.ngay, x.ca); }, g: 'kh', tn: hoaDau(x.ten || x.so), pn: ctyTen(x.cty) + ' · ' + dkCau(x.ngay, x.ca) });
+      });
+    } catch (e) { }
     try {
       cqNhacDs().forEach(function (x) {
         var qua = x.p.hen < cqHn();
@@ -9466,7 +9483,7 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
     var ds = chuongDs().sort(function (a, b) { return (b.gap ? 1 : 0) - (a.gap ? 1 : 0) || (b.luc || 0) - (a.luc || 0); }), xem = chuongXem();
     var IC = { vdo: ICON.vdo, tien: '<b>đ</b>', sua: ICON_CHUONG, hen: ICON.tn };
     var h = '<div class="row sp"><h3>Thông báo</h3><button class="link" id="cgDong">Đóng</button></div>';
-    if (!ds.length) h += '<div class="cg-rong"><b class="yT">Không có việc nào đang chờ</b><span class="meta">Các việc sau sẽ hiện ở đây:</span><span class="yChip"><span>Video chờ duyệt</span><span>Phiếu chưa ghi chuyển</span><span>Thay đổi bảng công</span><span>Lịch hẹn nhận việc</span></span></div>';
+    if (!ds.length) h += '<div class="cg-rong"><b class="yT">Không có việc nào đang chờ</b><span class="meta">Các việc sau sẽ hiện ở đây:</span><span class="yChip"><span>Video chờ duyệt</span><span>Phiếu chưa ghi chuyển</span><span>Thay đổi bảng công</span><span>Lịch hẹn nhận việc</span><span>CCCD chưa vào kho</span></span></div>';
     else {
       // b216 (anh chốt 25/11): cùng một loại, cùng một công ty từ CHUONG_GOM dòng trở lên -> gom 1 dòng, chạm xổ ra, chạm lại thu vào
       var nhomG = {}; ds.forEach(function (x) { if (x.g) (nhomG[x.g] = nhomG[x.g] || []).push(x); });
@@ -9481,7 +9498,7 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
         if (!nh || nh.length < CHUONG_GOM) return dong(x, i);
         if (daVe[x.g]) return ''; daVe[x.g] = 1;
         var n = nh.length, nGap = nh.filter(function (y) { return y.gap; }).length, coMoi = nh.some(function (y) { return xem.indexOf(y.k) < 0; }), lo = x.g.split('|')[0];
-        var tieu = lo === 'ph' ? x.gTen + ' có ' + n + ' phiếu đã gửi, chưa ghi chuyển khoản' : lo === 'vc' ? n + ' video chờ bạn duyệt' : lo === 'vm' ? n + ' video của bạn đã dựng xong' : lo === 'cq' ? x.gTen + ' có ' + n + ' người hẹn nhận việc, chưa xác nhận' : x.t + ' và ' + (n - 1) + ' việc khác';
+        var tieu = lo === 'ph' ? x.gTen + ' có ' + n + ' phiếu đã gửi, chưa ghi chuyển khoản' : lo === 'vc' ? n + ' video chờ bạn duyệt' : lo === 'vm' ? n + ' video của bạn đã dựng xong' : lo === 'cq' ? x.gTen + ' có ' + n + ' người hẹn nhận việc, chưa xác nhận' : lo === 'kh' ? n + ' người chưa lưu được CCCD vào kho' : x.t + ' và ' + (n - 1) + ' việc khác';
         var phu = lo === 'ph' ? (nGap ? nGap + ' phiếu đã quá hạn · ' : '') + 'Tổng ' + vnd0(nh.reduce(function (a, y) { return a + (Number(y.so) || 0); }, 0)) + ' đ' : (nGap ? nGap + ' việc đã quá hạn · ' : '') + 'Chạm để xem từng dòng';
         return '<details class="cg-g"><summary class="cg-it' + (coMoi ? ' moi' : '') + (nGap ? ' gap' : '') + '"><i class="cg-ic ' + x.loai + '">' + IC[x.loai] + '</i><span class="cg-nd"><b class="cau">' + esc(tieu) + '</b><small>' + esc(phu) + '</small></span><i class="cg-mui" aria-hidden="true">›</i></summary>' +
           '<div class="cg-gc">' + nh.map(function (y) { return dong(y, ds.indexOf(y), 1); }).join('') + '</div></details>';
