@@ -13,7 +13,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
 <script src="config.js"></script>
-<script>window.PB = { so: 242, luc: "26/11 12:49" };</script>
+<script>window.PB = { so: 243, luc: "26/11 12:55" };</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap">
 <style>
@@ -1603,7 +1603,7 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
   var XNHU = null, XNHU_MEM = null;
   var XNHU_DOC = { toi: 1, quy: 1, ccChayTT: 1, ds: 1, phieu: 1, phieuTuan: 1, cho: 1, tb: 1, thuNhap: 1, kbDs: 1, vdoDs: 1, vdoKhuc: 1, bangLuong: 1,
     dslCty: 1, dslCu: 1, dslGan: 1, dslDoc: 1, cccdTamDs: 1, cccdDanhBa: 1, cccdTim: 1, cccdAnh: 1, theDs: 1, theMa: 1, theAnh: 1,
-    ctDs: 1, nhaTk: 1, ntDs: 1, cnDs: 1, utGan: 1, utThieu: 1, lkTT: 1, vtTep: 1, vtXem: 1, timCu: 1, visionTT: 1, ghTT: 1, wpKhoa: 1, dkDs: 1, utSo: 1 };
+    ctDs: 1, nhaTk: 1, ntDs: 1, cnDs: 1, utGan: 1, utThieu: 1, lkTT: 1, vtTep: 1, vtXem: 1, timCu: 1, visionTT: 1, ghTT: 1, wpKhoa: 1, dkDs: 1, utSo: 1, saleHang: 1, anhLon: 1 };
   try {
     var xn0 = JSON.parse(sessionStorage.getItem('vlta_xn') || 'null'), tChu = localStorage.getItem('vlta_t') || '';
     if (xn0 && /^0\d{9}$/.test(xn0.sdt) && /^[0-9a-f]{64}$/.test(tChu)) {
@@ -7572,7 +7572,7 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
     }, function (er) { ccTd(''); toastLoi(er.message); });
   }
   var BAN_MOI = [
-    { so: 242, ds: [{ i: '👑', t: 'Trang Thu nhập mới', m: 'Trang Thu nhập ghi rõ cần bao nhiêu người đi làm đều mỗi tháng để lên hạng, thu nhập tăng lên bao nhiêu và thưởng vượt kỳ trước.' }] },
+    { so: 243, ds: [{ i: '👑', t: 'Trang Thu nhập mới', m: 'Trang Thu nhập ghi rõ cần bao nhiêu người đi làm đều mỗi tháng để lên hạng, thu nhập tăng lên bao nhiêu và thưởng vượt kỳ trước.' }] },
     { so: 241, ds: [{ i: '✅', t: 'Tự vào bảng công', m: 'Xuất danh sách xong, người trong danh sách tự vào bảng công, ai không đi làm thì bỏ khỏi tờ đăng ký là tự xoá khỏi bảng công.' }] },
     { so: 238, ds: ['Trang Thu nhập: mục Cách tính lương ghi thưởng mốc giờ thành từng dòng, không còn bị dồn chữ dọc.'] },
     { so: 233, ds: [{ i: '💎', t: 'Trang Thu nhập mới', m: 'Khung hạng mới có cánh cho 6 hạng (thêm Lục bảo ở 4.000 giờ). Vòng tiến độ ôm ảnh đại diện, ghi rõ cần thêm bao nhiêu người mỗi ngày để lên hạng. Lên Bạc thưởng 100.000 đ, lên Vàng thưởng 200.000 đ.' }] },
