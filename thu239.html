@@ -13,7 +13,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
 <script src="config.js"></script>
-<script>window.PB = { so: 239, luc: "26/11 11:55" };</script>
+<script>window.PB = { so: 239, luc: "26/11 11:56" };</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap">
 <style>
@@ -11184,7 +11184,7 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
       else if (gan) { heroCau = 'Còn ' + tnGio(con) + ' giờ <span>là lên ' + esc(tenDich(toi)) + '</span>'; heroPhu = '<span class="nw">khoảng ' + Math.max(1, Math.ceil(con / 10)) + ' người làm 1 ngày</span> là đủ'; }
       else {   // b239 (26/11 anh): ghi theo số người đi làm đều cả tháng
         var canT = tnNguoiDeu(toi.g, tnNgLamKy(ct.kyTu, ct.kyDen));
-        if (g && tb >= canT) { heroCau = 'Đủ nhịp <span>lên ' + esc(tenDich(toi)) + ' ✓</span>'; heroPhu = 'cần ' + canT + ' người đi làm đều/tháng, <span class="nw">đang có ~' + tb + ' người</span>'; }
+        if (g && tb >= canT) { heroCau = 'Đã đủ người <span>để lên ' + esc(tenDich(toi)) + ' ✓</span>'; heroPhu = 'Đang có ~' + tb + ' người, cần ' + canT + ' người. <span class="nw">Giữ đến ' + denNg + ' là đạt.</span>'; }
         else { heroCau = canT + ' người <span>đi làm đều/tháng <span class="nw">để lên ' + esc(tenDich(toi)) + '</span></span>'; heroPhu = ''; }
       }
       if (!ct.ketThuc && tangG > 0) heroPhu += (heroPhu ? ' · ' : '') + '<b class="tn-hq">+' + tnGio(tangG) + ' giờ hôm qua</b>';
