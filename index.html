@@ -13,7 +13,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
 <script src="config.js"></script>
-<script>window.PB = { so: 247, luc: "26/11 13:24" };</script>
+<script>window.PB = { so: 248, luc: "26/11 13:33" };</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap">
 <style>
@@ -1564,7 +1564,7 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
 .t9Nh{margin-top:-6px;position:relative;z-index:2}
 .t9L{margin-top:12px;font-size:13px;color:var(--muted)}
 .t9T{font-size:34px;font-weight:800;letter-spacing:-.6px;line-height:1.15;color:var(--fg)}
-.t9Up{display:inline-block;margin-top:6px;font-size:13px;font-weight:700;color:var(--good);background:var(--good-bg);padding:3px 10px;border-radius:999px}
+.t9Up{display:inline-block;margin-top:6px;font-size:13px;font-weight:600;color:var(--good);background:var(--good-bg);padding:4px 12px;border-radius:14px;text-align:center;line-height:1.35}.t9Up b{font-weight:800}.t9Up small{display:block;font-size:12px;font-weight:500;opacity:.85}
 .t9G{display:flex;align-items:center;gap:12px;width:100%;margin-top:14px;padding:12px 14px;border:0;border-radius:16px;background:color-mix(in srgb,var(--vc) 12%,transparent);color:var(--fg);font:inherit;text-align:left;cursor:pointer;-webkit-tap-highlight-color:transparent}
 .t9G:disabled{cursor:default;opacity:1}.t9G.gan{box-shadow:inset 0 0 0 1.5px var(--vc)}
 .t9Gt{flex:1;min-width:0;white-space:normal;display:flex;flex-direction:column;gap:2px}
@@ -7574,7 +7574,7 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
     }, function (er) { ccTd(''); toastLoi(er.message); });
   }
   var BAN_MOI = [
-    { so: 247, ds: [{ i: '👑', t: 'Trang Thu nhập mới', m: 'Trang Thu nhập ghi rõ cần bao nhiêu người đi làm đều mỗi tháng để lên hạng, thu nhập tăng lên bao nhiêu và thưởng vượt kỳ trước.' }] },
+    { so: 248, ds: [{ i: '👑', t: 'Trang Thu nhập mới', m: 'Trang Thu nhập ghi rõ cần bao nhiêu người đi làm đều mỗi tháng để lên hạng, thu nhập tăng lên bao nhiêu và thưởng vượt kỳ trước.' }] },
     { so: 241, ds: [{ i: '✅', t: 'Tự vào bảng công', m: 'Xuất danh sách xong, người trong danh sách tự vào bảng công, ai không đi làm thì bỏ khỏi tờ đăng ký là tự xoá khỏi bảng công.' }] },
     { so: 238, ds: ['Trang Thu nhập: mục Cách tính lương ghi thưởng mốc giờ thành từng dòng, không còn bị dồn chữ dọc.'] },
     { so: 233, ds: [{ i: '💎', t: 'Trang Thu nhập mới', m: 'Khung hạng mới có cánh cho 6 hạng (thêm Lục bảo ở 4.000 giờ). Vòng tiến độ ôm ảnh đại diện, ghi rõ cần thêm bao nhiêu người mỗi ngày để lên hạng. Lên Bạc thưởng 100.000 đ, lên Vàng thưởng 200.000 đ.' }] },
@@ -11060,7 +11060,7 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
   function tnNgLamKy(tu, den) { var n = 0, d = new Date(tu); d.setHours(12, 0, 0, 0); var e = new Date(den); e.setHours(12, 0, 0, 0); while (d <= e) { if (d.getDay() !== 0) n++; d.setDate(d.getDate() + 1); } return n || 26; }
   function tnNguoiDeu(g, nk) { return Math.ceil(g / (nk * 10)); }
   // b239 (26/11 anh): giờ kỳ này vượt giờ kỳ trước thì thưởng 500.000 đ (kỳ trước từ 1.000 giờ – chờ anh chốt ngưỡng)
-  var TN_VUOT = { tien: 500000, tu: 1000 }, TN_GT = 0;
+  var TN_VUOT = { tien: 100000, tu: 1000 }, TN_GT = 0;
   function tnGioKy(k) { if (!k) return 0; if (k.cu) { var iG = (k.dau || []).indexOf('Tổng giờ'); return iG >= 0 ? Number(String((k.dong || [])[iG]).replace(/[^\d.]/g, '')) || 0 : 0; } return k.ct && k.ct.x ? Number(k.ct.x.gio) || 0 : 0; }
   function tnVuot(g) { return TN_GT >= TN_VUOT.tu && g > TN_GT ? TN_VUOT.tien : 0; }
   function t9Tr(v) { return v >= 1000000 ? String(Math.round(v / 100000) / 10).replace('.', ',') + '<em>triệu</em>' : tnD(v); }   // chỉ dùng ở ô hẹp của lộ trình
@@ -11213,7 +11213,15 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
     if (!sn) sn = { ng: homNay, gT: null, tT: null, gC: g, tC: tong };
     else if (sn.ng !== homNay) { sn = { ng: homNay, gT: sn.gC, tT: sn.tC, gC: g, tC: tong }; demLan = true; }
     sn.gC = g; sn.tC = tong; if (!o._cu) luuSo(kS, sn);
-    var tangT = sn.tT != null ? tong - sn.tT : 0, tangG = sn.gT != null ? Math.max(0, g - sn.gT) : 0;
+    var tangT = sn.tT != null ? tong - sn.tT : 0, tangG = sn.gT != null ? Math.max(0, g - sn.gT) : 0, upNh = 'từ hôm qua';
+    // b248 (26/11 anh chot cach B): may chu nho so lieu tung ngay -> moi may thay giong nhau, ngay dau ky van co
+    if (ct.hq) {
+      tangT = Math.max(0, Number(ct.hq.tien) || 0); tangG = Math.max(0, Number(ct.hq.gio) || 0);
+      if (ct.hq.tu === 'dau') upNh = 'từ đầu kỳ';
+      else { var dQ = new Date(); dQ.setDate(dQ.getDate() - 1); var qS = dQ.getFullYear() + '-' + ('0' + (dQ.getMonth() + 1)).slice(-2) + '-' + ('0' + dQ.getDate()).slice(-2); upNh = ct.hq.tu === qS ? 'so với hôm qua' : 'so với ngày ' + String(ct.hq.tu).slice(8, 10) + '/' + String(ct.hq.tu).slice(5, 7); }
+    }
+    var upNg = tangG >= 5 ? Math.max(1, Math.round(tangG / 10)) : 0;
+    var upHtml = tangT > 0 ? '<div class="t9Up"><b>↑ ' + tnD(tangT) + '</b> ' + upNh + (upNg ? '<small>thêm giờ công ≈ ' + upNg + ' người đi làm 1 ngày</small>' : '') + '</div>' : '';
     // đích + số người
     var ds = tnDich(c, g), toi = ds[0] || null, nl = tnNgayLam(ct.kyDen), nq = tnNgayQua(ct.kyTu), tb = nq > 0 ? Math.round(g / (nq * 10)) : 0;
     // b239 (26/11 anh): ô nhiệm vụ 3 tầng – nhãn nhỏ (để lên hạng gì) / số to / dòng giải thích, không trộn cỡ chữ trong 1 câu
@@ -11231,7 +11239,6 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
         if (g && tb >= canT) { heroCau = 'Giữ ' + tb + ' người'; heroPhu = 'Đi làm đều đến ' + denNg + ' · <span class="nw">đang có ' + tnGio(g) + ' / ' + tnGio(toi.g) + ' giờ</span>'; }
         else { heroCau = canT + ' người'; heroPhu = 'Đi làm đều/tháng'; }
       }
-      if (!ct.ketThuc && tangG > 0) heroPhu += ' · <b class="tn-hq">+' + tnGio(tangG) + ' giờ hôm qua</b>';
     } else { f = 1; fh = 1; heroLb = 'Đã đạt mọi mốc'; heroCau = tnGio(g) + ' giờ'; heroPhu = 'Giờ quản lý kỳ này'; }
     // b239: thiết kế lại – 1 khối chính (khung hạng + tổng tiền + nhiệm vụ), chi tiết dạng bảng, lộ trình 6 hạng
     function t9K(v) { return tnD(v); }
@@ -11243,7 +11250,7 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
       '<div class="tn-nh t9Nh"><span>SALE HẠNG ' + H.t + '</span></div>' +
       '<div class="t9L">' + (ct.ketThuc ? 'Lương tạm tính · chờ chốt giờ' : 'Thu nhập kỳ này · ' + tnNgay(ct.kyTu) + ' – ' + tnNgay(ct.kyDen)) + '</div>' +
       '<div class="t9T num" id="tnTong">' + tnD(tong) + '</div>' +
-      (tangT > 0 && !ct.ketThuc ? '<div class="t9Up">↑ ' + tnD(tangT) + ' từ hôm qua</div>' : '') +
+      (upHtml && !ct.ketThuc ? upHtml : '') +
       '<div class="t9Hc">' + (g ? 'Hiện có <b>~' + Math.max(1, tb || Math.round(g / 10)) + ' người</b> đi làm đều' : 'Chưa có giờ công kỳ này') + (x && x.capNhat ? '<small>Tính đến ngày ' + esc(String(x.capNhat).slice(0, 5)) + '</small>' : '') + '</div>' + goalHtml + '</div>';
     // chi tiết thu nhập: bảng 4 dòng
     var pcTen = x && x.pc && x.pc.length ? x.pc.map(function (p) { return p.cty; }).join(', ') : '';
