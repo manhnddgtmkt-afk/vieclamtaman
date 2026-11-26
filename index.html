@@ -13,7 +13,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
 <script src="config.js"></script>
-<script>window.PB = { so: 261, luc: "26/11 15:33" };</script>
+<script>window.PB = { so: 262, luc: "26/11 15:53" };</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap">
 <style>
@@ -3197,6 +3197,10 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
     var T = h.T || {}, best = S.cty === 'BEST', sua = !!T.sua, raw = (T.raw || {})[sv] || { v: best ? ['', ''] : ['', '', '', ''] };
     var thu = ['CN', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7'][serialDate(sv).getUTCDay()];
     var le = raw.le ? raw.le.reduce(function (a, x) { return a + x; }, 0) : 0;
+    // 26/11: trả công lẻ / điền giờ ngày máy chấm thiếu giờ – công ty đồng ý trả thì bắt buộc ghi lý do (đưa vào file gửi công ty)
+    var gcS = String(gc || ''), choLy = !best && /CHƯA CÓ LÝ DO/.test(gcS), thieuVT = !best && /(^|\n)(THIẾU GIỜ|CHƯA TÍNH ĐƯỢC GIỜ)/.test(gcS);
+    var nhanLy = 'Lý do ' + S.cty + ' đồng ý trả', goiYLy = 'Ví dụ: Tổ trưởng Lan cho về sớm vì bị sốt';
+    var nhanLy0 = choLy ? nhanLy : (thieuVT ? 'Lý do ' + S.cty + ' xác nhận ngày này' : 'Thêm ghi chú'), goiY0 = choLy || thieuVT ? goiYLy : 'Ví dụ: ' + S.cty + ' đồng ý trả';
     function oSo(k, nhan) { var x = raw.v[k]; return '<div><label class="lb">' + nhan + '</label><input class="inp" id="og' + k + '" inputmode="decimal" value="' + (x === '' || x === 0 ? '' : esc(String(x))) + '" placeholder="' + (raw.le && raw.le[k] ? 'lẻ ' + esc(String(raw.le[k])) + 'h' : '–') + '"></div>'; }
     function oGio(k, nhan) { var x = raw.v[k]; return '<div><label class="lb">' + nhan + '</label><input class="inp" id="og' + k + '" type="time" value="' + esc(/^\d{1,2}:\d{2}$/.test(x) ? ('0' + x).slice(-5) : '') + '"></div>'; }
     var sh = moSheet('<div><h3 class="ell">' + esc(hoaDau(h.p.ten)) + '</h3><div class="meta">' + thu + ' ' + esc(ddmm(serialDate(sv), true)) + '</div></div>' +
@@ -3212,16 +3216,18 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
         (best && le && !raw.xn ? '<div class="note warn">Về sớm – công lẻ ' + esc(String(le)) + ' giờ, chưa tính lương. ' + esc(S.cty) + ' đồng ý trả thì bấm "Trả công lẻ".</div>' : '') +
         '<div class="g2 ogN">' + (le && !raw.xn ? '<button class="btn ghost" id="ogXn">Trả công lẻ</button>' : '') + (best && raw.xn ? '<button class="btn ghost" id="ogBoLe">Bỏ trả công lẻ</button>' : '') + '<button class="btn ghost" id="ogBo"' + ((le && !raw.xn) || (best && raw.xn) ? '' : ' style="grid-column:1/-1"') + '>Không tính ngày</button></div>' : '') +
       // 24/10: bỏ "Báo sai giờ" – người không phụ trách công ty chỉ xem; người phụ trách sửa thẳng (chủ được báo tự động)
-      (sua ? '<label class="lb">Thêm ghi chú</label><textarea class="inp" id="bsNd" rows="2" placeholder="Ví dụ: ' + esc(S.cty) + ' đồng ý trả"></textarea>' +
+      (sua ? '<label class="lb" id="bsLb">' + esc(nhanLy0) + '</label><textarea class="inp" id="bsNd" rows="2" placeholder="' + esc(goiY0) + '"></textarea>' +
         '<div class="msg" id="bsM"></div><button class="btn" id="bsOk">Lưu</button>' : '') + '<button class="btn ghost" id="bsHuy">Đóng</button>');
     var n0 = best ? 2 : 4, kieu = '';
     function oDoc() { var a = []; for (var k = 0; k < n0; k++) a.push(document.getElementById('og' + k).value.trim()); return a; }
     if (sua) {
       var xn = document.getElementById('ogXn');
-      if (xn) xn.onclick = function () { if (!best) for (var k = 0; k < 4; k++) document.getElementById('og' + k).value = raw.le && raw.le[k] ? raw.le[k] : ''; xn.classList.add('on'); xn.textContent = '✓ Trả công lẻ'; document.getElementById('ogBo').classList.remove('on'); kieu = 'le'; };
+      if (xn) xn.onclick = function () { if (!best) for (var k = 0; k < 4; k++) document.getElementById('og' + k).value = raw.le && raw.le[k] ? raw.le[k] : ''; xn.classList.add('on'); xn.textContent = '✓ Trả công lẻ'; document.getElementById('ogBo').classList.remove('on'); kieu = 'le'; if (!best) datNhanLy(nhanLy, goiYLy, true); };
+      // 26/11: đổi nhãn ô ghi chú thành ô lý do (bắt buộc) khi trả công lẻ
+      var datNhanLy = function (nh, gy, tro) { var lb = document.getElementById('bsLb'), ta = document.getElementById('bsNd'); if (lb) lb.textContent = nh; if (ta) { ta.placeholder = gy; if (tro) ta.focus(); } };
       var boLe = document.getElementById('ogBoLe');   // 02/11: BEST bỏ xác nhận công lẻ
       if (boLe) boLe.onclick = function () { boLe.classList.add('on'); boLe.textContent = '✓ Bỏ trả công lẻ'; document.getElementById('ogBo').classList.remove('on'); kieu = 'boLe'; };
-      document.getElementById('ogBo').onclick = function () { for (var k = 0; k < n0; k++) document.getElementById('og' + k).value = ''; this.classList.add('on'); this.textContent = '✓ Không tính ngày'; kieu = 'bo'; if (xn) { xn.classList.remove('on'); xn.textContent = 'Trả công lẻ'; } if (boLe) { boLe.classList.remove('on'); boLe.textContent = 'Bỏ trả công lẻ'; } };
+      document.getElementById('ogBo').onclick = function () { for (var k = 0; k < n0; k++) document.getElementById('og' + k).value = ''; this.classList.add('on'); this.textContent = '✓ Không tính ngày'; kieu = 'bo'; if (xn) { xn.classList.remove('on'); xn.textContent = 'Trả công lẻ'; } if (boLe) { boLe.classList.remove('on'); boLe.textContent = 'Bỏ trả công lẻ'; } if (!best) datNhanLy(nhanLy0, goiY0); };
     }
     document.getElementById('bsHuy').onclick = function () { sh.remove(); };
     if (!sua) return;
@@ -3231,6 +3237,10 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
       var cu = raw.v.map(function (x) { return x === 0 && !best ? 0 : x; }), moi = sua ? oDoc() : null;
       var chuan = function (x) { x = String(x === undefined || x === null ? '' : x).trim(); return best ? x : (x === '' || Number(x.replace(',', '.')) === 0 ? '' : String(Number(x.replace(',', '.')))); };
       var doiGio = sua && moi.some(function (x, k) { return chuan(x) !== chuan(cu[k]); });
+      // 26/11: trả công lẻ / điền giờ ngày máy chấm thiếu giờ -> lý do bắt buộc, gửi kèm lệnh sửa giờ (không ghi thành ghi chú riêng)
+      var coSoMoi = sua && moi.some(function (x) { return soGio(x) > 0; }), coSoCu = raw.v.some(function (x) { return soGio(x) > 0; });
+      var canLy = !best && (kieu === 'le' || (thieuVT && kieu !== 'bo' && doiGio && coSoMoi && !coSoCu)), ghiLy = choLy && !doiGio && !!nd;
+      if ((canLy || ghiLy) && nd.length < 5) { m.textContent = 'Ghi lý do cụ thể: ai bên ' + S.cty + ' đồng ý, vì sao.'; document.getElementById('bsNd').focus(); return; }
       if (best && sua && (kieu === 'le' || kieu === 'boLe') && !doiGio) {   // 02/11: BEST trả / bỏ trả công lẻ – giờ vào/ra giữ nguyên, máy chủ ghi ô HC + sổ CONG_LE
         // b228: hiện ngay trên app, máy chủ ghi ngầm; lỗi thì trả lại như cũ
         var gioLe = kieu === 'le' && raw.le ? raw.le[0] : '', cuN1 = JSON.parse(JSON.stringify(n)), cuR1 = JSON.parse(JSON.stringify(raw));
@@ -3249,7 +3259,7 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
       if (!doiGio && !nd) { if (sua) { sh.remove(); return; } m.textContent = 'Ghi rõ giờ đúng hoặc lý do.'; return; }
       if (!sua && nd.length < 3) { m.textContent = 'Ghi rõ giờ đúng hoặc lý do.'; return; }
       sh.remove();
-      if (nd) apiT({ v: 'baoSai', cty: S.cty, r: h.p.r, s: sv, nd: nd, loai: sua ? 'gc' : '' }).then(function (o) { if (o.loi) toast(o.loi); else if (!doiGio) { toast(sua ? 'Đã thêm ghi chú' : 'Đã gửi báo sai giờ'); lamMoiHs(h); } }, function (e) { toast(e.message); });
+      if (nd && !canLy) apiT({ v: 'baoSai', cty: S.cty, r: h.p.r, s: sv, nd: nd, loai: ghiLy ? 'ly' : (sua ? 'gc' : '') }).then(function (o) { if (o.loi) toastLoi(o.loi); else if (!doiGio) { toast(ghiLy ? 'Đã ghi lý do' : (sua ? 'Đã thêm ghi chú' : 'Đã gửi báo sai giờ')); lamMoiHs(h); } }, function (e) { toast(e.message); });
       if (!doiGio) return;
       // hiện ngay trên app, đồng bộ với sheet chạy ngầm
       var cuN = JSON.parse(JSON.stringify(n)), cuR = JSON.parse(JSON.stringify(raw)), so = function (x) { return Number(String(x).replace(',', '.')) || 0; };
@@ -3257,7 +3267,7 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
       else { n.hc = so(moi[0]) + so(moi[2]); n.tc = so(moi[1]) + so(moi[3]); n.co = n.hc + n.tc > 0; n.ca = so(moi[2]) + so(moi[3]) > 0 ? 'Đêm' : n.co ? 'Ngày' : ''; }
       raw.v = moi.map(function (x) { return best || x === '' ? x : so(x); }); raw.le = 0; n.tienCho = 1; if (!T.raw) T.raw = {}; T.raw[sv] = raw;
       h.dongBo[sv] = 1; veLich(h, T);
-      apiT({ v: 'suaNgay', cty: S.cty, r: h.p.r, s: sv, cu: cuR.v, moi: moi, kieu: kieu }).then(function (o) {
+      apiT({ v: 'suaNgay', cty: S.cty, r: h.p.r, s: sv, cu: cuR.v, moi: moi, kieu: kieu, lyDo: canLy ? nd : '' }).then(function (o) {
         delete h.dongBo[sv];
         if (o.loi) { for (var k in cuN) n[k] = cuN[k]; T.raw[sv] = cuR; veLich(h, T); toastLoi('Chưa lưu được ' + ddmm(serialDate(sv)) + ': ' + o.loi); return; }
         lamMoiHs(h);
@@ -7642,6 +7652,7 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
     }, function (er) { ccTd(''); toastLoi(er.message); });
   }
   var BAN_MOI = [
+    { so: 262, ds: [{ i: '📝', t: 'Lý do trả công lẻ', m: 'Trả công lẻ hoặc điền giờ ngày máy chấm thiếu giờ ở HOJEONG phải ghi lý do, lý do được ghi chú vào file gửi HOJEONG.' }] },
     { so: 261, ds: [{ i: '📊', v: 'chu', t: 'Biến động lao động Tâm An và bảng xếp hạng nhà thầu', m: 'Số người của Tâm An ngày gần nhất kèm tăng / giảm so với ngày trước, dải 7 ngày, xếp hạng các nhà thầu theo ngày đó.' }] },
     { so: 259, ds: [{ i: '👑', t: 'Vương miện cho mọi người cùng thấy', m: 'Ai lên hạng thì cả app hiện màn chúc mừng có hiệu ứng, hạng càng cao càng hoành tráng. Thẻ công ty có ảnh sale phụ trách đội vương miện; thông báo, phiếu chờ, danh sách đã xuất, Content và màn đăng nhập cũng có.' }, { i: '👑', t: 'Trang Thu nhập mới', m: 'Trang Thu nhập ghi rõ cần bao nhiêu người đi làm đều mỗi tháng để lên hạng, thu nhập tăng lên bao nhiêu và thưởng vượt kỳ trước.' }] },
     { so: 249, ds: [{ i: '💼', v: 'gv', t: 'Giá vendor', m: 'Bảng lương công nhân của từng công ty có thêm mục Giá vendor, ghi rõ vendor ở công ty đó nhận bao nhiêu tiền mỗi giờ.' }] },
@@ -9980,7 +9991,7 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
     if (gon) {
       var dong = !k ? 'Chờ HOJEONG gửi danh sách linh kiện' : treGui ? '<span class="c-do">Chưa gửi HOJEONG file T' + esc(LK.thang) + '. Chạm để gửi, hoặc báo đã gửi bằng cách khác.</span>'
         : cuGui ? '<span class="c-cam">Bản mới khác bản đã gửi HOJEONG lúc ' + gioPhut(gui.luc) + '. Chạm để xem.</span>'
-        : chu ? 'Đã gửi HOJEONG lúc ' + gioPhut(gui.luc) + (gui.khac ? ' (gửi bằng cách khác)' : '') : (k.dat ? 'Đã làm xong, đã báo chủ doanh nghiệp.' : 'Còn điểm chưa đạt, đã báo chủ doanh nghiệp.');
+        : chu ? 'Đã gửi HOJEONG lúc ' + gioPhut(gui.luc) + (gui.khac ? ' (gửi bằng cách khác)' : '') : (k.xt && k.xt.length ? '<span class="c-cam">Còn ' + k.xt.length + ' ngày công lẻ chưa có lý do. Chạm để xem.</span>' : (k.dat ? 'Đã làm xong, đã báo chủ doanh nghiệp.' : 'Còn điểm chưa đạt, đã báo chủ doanh nghiệp.'));
       box.innerHTML = '<button class="tbk lkk lkGon" id="lkMoNut"><span class="v7ti lkIc">' + V7_DOC + '</span><span class="tbk-h"><b>Xuất file chốt công tháng ' + esc(String(LK.thang).replace(/^0/, '')) + '</b>' + (k ? pill : '') + '</span><span class="lkS">' + dong + (k && k.cb && !treGui && !cuGui ? ' <span class="c-cam">· có thay đổi</span>' : '') + '</span><i>›</i></button>';
       document.getElementById('lkMoNut').onclick = function () { S.lkMo = 1; veLK(); };
       return;
@@ -9991,6 +10002,9 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
       if (k.cb) h += '<div class="lkW"><b>Lưu ý:</b> ' + (chu ? esc(k.cb) : 'Bảng công thay đổi sau khi HOJEONG đã gửi danh sách, đã báo chủ doanh nghiệp.') + '</div>';
       if (chu) h += '<div class="lkS">Tiền công <b class="num">' + vnd(k.tc) + '</b><br>Hóa đơn linh kiện ' + esc(k.n) + ' dòng · <b class="num">' + vnd(k.tg) + '</b>' + (Math.abs(k.tc - k.tg) >= 1 ? ' <small>(lệch ' + vnd(k.tc - k.tg) + ')</small>' : '') + '</div>';
       else h += '<div class="lkS">' + (k.dat ? 'Đã làm xong file, đã báo chủ doanh nghiệp kiểm tra.' : 'File còn điểm chưa đạt, đã báo chủ doanh nghiệp.') + '</div>';
+      // 26/11: công lẻ HOJEONG đồng ý trả -> file gửi ghi chú lý do; thiếu lý do thì liệt kê để sale bổ sung
+      if (k.xt && k.xt.length) h += '<div class="lkW"><b>Còn ' + k.xt.length + ' ngày công lẻ chưa có lý do.</b><br>' + k.xt.map(esc).join('<br>') + '<br>Mở ngày đó trên bảng công, ghi lý do ' + esc(S.cty) + ' đồng ý trả rồi bấm Lưu.</div>';
+      else if (k.xn) h += '<div class="lkS">' + esc(String(k.xn)) + ' ngày công lẻ ' + esc(S.cty) + ' đã xác nhận trả.<br>Lý do đã ghi chú trong file gửi ' + esc(S.cty) + '.</div>';
       h += '<small>Làm lúc ' + gioPhut(k.luc) + ' theo file ' + esc(k.fl || '') + (daGui ? ' · đã gửi HOJEONG ' + gioPhut(gui.luc) : (gui && gui.id ? ' · bản đã gửi HOJEONG là bản lúc ' + gioPhut(gui.luc) : '')) + '</small>';
       if (LK.cho) h += '<div class="lkW">Có danh sách linh kiện mới hơn, máy sẽ làm lại trong vài phút.</div>';
       if (chu && k.ds && k.ds.length) h += '<details><summary>Xem ' + k.ds.length + ' điểm kiểm tra</summary>' + k.ds.map(function (d) { return '<div class="lkD' + (d[0] ? '' : ' sai') + '">' + (d[0] ? '✅ ' : '❌ ') + esc(d[1]) + (d[2] ? ' – ' + esc(d[2]) : '') + '</div>'; }).join('') + '</details>';
