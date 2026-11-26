@@ -13,7 +13,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
 <script src="config.js"></script>
-<script>window.PB = { so: 266, luc: "26/11 16:40" };</script>
+<script>window.PB = { so: 267, luc: "26/11 16:42" };</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap">
 <style>
@@ -7551,7 +7551,7 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
       if (lu === 'luu') { if (!st.dang) { ccXep(p.k, p.so, 'đọc từ ảnh'); nLuu++; } return; }
       chua++;
     });
-    apiT({ v: 'dslXuat', cty: L.cty, ngay: L.ngay, ca: CQ && !dkCo() ? '' : L.ca,   // b226: CHUNQIU có ca phỏng vấn 08:00 / 15:00 che: che || '', thu: L.thu ? 1 : 0,
+    apiT({ v: 'dslXuat', cty: L.cty, ngay: L.ngay, ca: CQ && !dkCo() ? '' : L.ca, che: che || '', thu: L.thu ? 1 : 0,   // b226: CHUNQIU có ca phỏng vấn 08:00 / 15:00. b267: che/thu từng bị nằm trong chú thích nên Thay/Thêm danh sách cũ không tới máy chủ
       ds: ds.map(function (e) { var x = { so: e.so, ten: e.ten || '', ngs: e.ngs || '', ma: e.ma || '', lv: g.lv ? e.lv : '' }; if (CQ) { var d = dslDcGui(e); if (d.qq != null) { x.qq = d.qq; x.tt = d.tt; x.sdt = d.sdt; } } return x; }) }).then(function (o) {
       if (!o || o.loi) { toastLoi(o && o.loi ? o.loi : 'Chưa tạo được danh sách.'); ccVe(); return; }
       if (o.trung) {
