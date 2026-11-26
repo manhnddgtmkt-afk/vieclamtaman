@@ -13,7 +13,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
 <script src="config.js"></script>
-<script>window.PB = { so: 237, luc: "26/11 09:08" };</script>
+<script>window.PB = { so: 238, luc: "26/11 09:12" };</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap">
 <style>
@@ -7510,6 +7510,7 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
     }, function (er) { ccTd(''); toastLoi(er.message); });
   }
   var BAN_MOI = [
+    { so: 238, ds: ['Trang Thu nhập: mục Cách tính lương ghi thưởng mốc giờ thành từng dòng, không còn bị dồn chữ dọc.'] },
     { so: 233, ds: [{ i: '💎', t: 'Trang Thu nhập mới', m: 'Khung hạng mới có cánh cho 6 hạng (thêm Lục bảo ở 4.000 giờ). Vòng tiến độ ôm ảnh đại diện, ghi rõ cần thêm bao nhiêu người mỗi ngày để lên hạng. Lên Bạc thưởng 100.000 đ, lên Vàng thưởng 200.000 đ.' }] },
     { so: 232, ds: [{ i: '👑', t: 'Vương miện theo hạng', m: 'Trang Thu nhập có ảnh đại diện đội vương miện theo hạng, ghi rõ cần bao nhiêu lao động để lên mốc tiếp theo và phần thưởng; kỳ trước chưa trả lương nằm trên cùng, bấm vào xem lại được.' }] },
     { so: 231, ds: ['Đăng ký đi làm: người chưa có họ tên thì máy tự tra theo số CCCD trong kho; không tra được thì sale gõ họ tên ngay tại dòng đó mới đăng ký được. Người dưới 18 tuổi có nhãn vàng ghi số tuổi cạnh tên.'] },
@@ -11146,7 +11147,7 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
     // chi tiết cách tính (gập lại)
     var dg = [['Giờ 1 – ' + tnGio(c.b1), c.g1], ['Giờ ' + tnGio(c.b1 + 1) + ' – ' + tnGio(c.b2), c.g2], ['Từ giờ ' + tnGio(c.b2 + 1), c.g3]].map(function (r) { return '<div class="row sp"><span>' + r[0] + '</span><span class="num">' + vnd(r[1]) + '/giờ</span></div>'; }).join('');
     var ctHtml = '<details class="card tn-dt"><summary>Cách tính lương kỳ này</summary><div class="v8dg">' + dg +
-      '<div class="row sp"><span>Thưởng mốc giờ</span><span class="num">' + c.moc.map(function (m) { return tnGio(m[0] / 1000) + 'k: ' + vnd0(m[1] / 1000) + 'k'; }).join(' · ') + '</span></div></div>' +
+      '</div><div class="meta" style="margin-top:10px">Thưởng khi đạt mốc giờ</div><div class="v8dg">' + c.moc.map(function (m) { return '<div class="row sp"><span>' + tnGio(m[0]) + ' giờ</span><span class="num">+' + tnD(m[1]) + '</span></div>'; }).join('') + '</div>' +
       (x && x.pc && x.pc.length ? '<div class="meta" style="margin-top:10px">Phụ cấp phụ trách công ty</div>' + x.pc.map(function (p) { return '<div class="row sp"><span>' + esc(p.cty) + ' · ' + (p.loai === 'chinh' ? 'chính' : 'đồng phụ trách') + '</span><span class="num">' + tnD(p.tien) + '</span></div>'; }).join('') : '') +
       ((x && x.pc || []).some(function (p) { return p.cty === 'BEST'; }) ? '<div class="meta cau">' + yDong(['Riêng BEST tính giờ trọn tháng <span style="white-space:nowrap">(1 – cuối tháng).</span>']) + '</div>' : '') +
       (vd.ds && vd.ds.length ? '<div class="meta" style="margin-top:10px">Video được duyệt gần đây</div>' + vd.ds.slice(0, 5).map(function (v) { return '<div class="row sp v8vr"><span class="cau">' + esc(v.t) + '</span><span class="meta num">' + tnNgay(v.l) + '</span></div>'; }).join('') : '') +
