@@ -13,7 +13,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
 <script src="config.js"></script>
-<script>window.PB = { so: 239, luc: "26/11 11:46" };</script>
+<script>window.PB = { so: 240, luc: "26/11 11:57" };</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap">
 <style>
@@ -10287,9 +10287,10 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
   }
   function ddTen(x) { var hn = dkYmd(new Date()); return 'Ca ' + x.ca.toLowerCase() + ' ' + (x.ngay === hn ? 'hôm nay' : 'hôm qua') + ' ' + ngayDM(x.ngay); }
   function ddVe() {   // trang công ty: khối "Chưa điểm danh" (quá giờ) ở trên + dòng Điểm danh (chưa tới giờ nhắc) / Nhập tay người mới ở dưới
-    var top = document.getElementById('ddBox'), moc = document.getElementById('moUT'); if (!moc || laCQ(S.cty)) return;
+    var top = document.getElementById('ddBox'), moc = document.getElementById('moUT'), L = CCS.dsl; if (!moc || laCQ(S.cty)) return;
+    if (!L.ctys && !ddVe.cho) { ddVe.cho = 1; var tl = function () { ddVe.cho = 0; ddVe(); }; if (L.ctyDang) setTimeout(tl, 900); else dslCtyTai(tl); }   // danh sách công ty có tờ đăng ký chưa tải: tải xong vẽ lại
     var co = ddCo(S.cty), cho = co ? ddCho(S.cty) : [], tre = cho.filter(function (x) { return x.tre; }), sap = cho.filter(function (x) { return !x.tre; });
-    if (co && !DK.d) dkTai();
+    if (co && !DK.d && !DK.dang) dkTai(1, ddVe);   // tờ đăng ký chưa tải: tải xong vẽ lại (dkVeLai cũng gọi ddVe khi có thay đổi)
     function dong(x, cls) {
       var cau = x.n + ' người trong danh sách đã in';
       return cls ? '<button class="ktr" data-ddm="' + x.ngay + '|' + x.ca + '"><span class="ktr-t"><b>' + esc(ddTen(x)) + '</b><span>' + esc(cau) + '</span></span><i class="v7ch" aria-hidden="true">›</i></button>'
