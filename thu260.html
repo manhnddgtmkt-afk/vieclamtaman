@@ -13,7 +13,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
 <script src="config.js"></script>
-<script>window.PB = { so: 260, luc: "26/11 15:26" };</script>
+<script>window.PB = { so: 260, luc: "26/11 15:29" };</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap">
 <style>
@@ -687,7 +687,7 @@ textarea.inp{font-family:inherit}
 .nh2c.ng .nh2b{background:var(--line);opacity:1}.nh2c.ng .nh2v{color:var(--muted);font-size:11px;font-weight:600}.nh2c.cd .nh2b{background:repeating-linear-gradient(45deg,var(--blue) 0 3px,transparent 3px 6px);opacity:.8}
 .nh2d{font-size:11px;color:var(--muted);font-variant-numeric:tabular-nums}
 .nh2Lg{display:flex;align-items:center;justify-content:center;gap:6px;margin-top:10px;font-size:11.5px;color:var(--muted)}.nh2Lg i{width:9px;height:9px;border-radius:2px;margin-left:8px}.nh2Lg i:first-child{margin-left:0}.nh2Lg i.up{background:var(--good)}.nh2Lg i.dn{background:#EA580C}.nh2Lg i.cd{background:repeating-linear-gradient(45deg,var(--blue) 0 2px,transparent 2px 4px)}
-.nh2H{margin-top:18px}.nh2H b{display:block;font-size:14px;font-weight:800}.nh2H small{display:block;margin-top:2px;font-size:12px;color:var(--muted)}
+.nh2H{margin-top:26px;margin-bottom:6px}.nh2H b{display:block;font-size:15px;font-weight:800;line-height:1.4}.nh2H small{display:block;margin-top:5px;font-size:12.5px;line-height:1.45;color:var(--muted)}.nh2H small+small{margin-top:2px}
 .nhaG{margin-top:10px;font-size:11.5px;color:var(--muted);line-height:1.5;white-space:normal;overflow-wrap:break-word}
 .nhaR .nd{display:none;font-size:11px;color:var(--muted);font-weight:500;margin-top:3px;white-space:nowrap}
 /* màn hẹp / chữ phóng to: ca ngày, ca đêm xuống dòng dưới tên; 2 ô đầu xếp dọc */
@@ -7642,7 +7642,7 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
     }, function (er) { ccTd(''); toastLoi(er.message); });
   }
   var BAN_MOI = [
-    { so: 261, ds: [{ i: '📊', v: 'chu', t: 'Bảng xếp hạng nhà thầu HOJEONG theo từng ngày', m: 'Số người của Tâm An ngày gần nhất kèm tăng / giảm so với ngày trước, dải 7 ngày, xếp hạng các nhà thầu theo ngày đó.' }] },
+    { so: 261, ds: [{ i: '📊', v: 'chu', t: 'Biến động lao động Tâm An và bảng xếp hạng nhà thầu', m: 'Số người của Tâm An ngày gần nhất kèm tăng / giảm so với ngày trước, dải 7 ngày, xếp hạng các nhà thầu theo ngày đó.' }] },
     { so: 259, ds: [{ i: '👑', t: 'Vương miện cho mọi người cùng thấy', m: 'Ai lên hạng thì cả app hiện màn chúc mừng có hiệu ứng, hạng càng cao càng hoành tráng. Thẻ công ty có ảnh sale phụ trách đội vương miện; thông báo, phiếu chờ, danh sách đã xuất, Content và màn đăng nhập cũng có.' }, { i: '👑', t: 'Trang Thu nhập mới', m: 'Trang Thu nhập ghi rõ cần bao nhiêu người đi làm đều mỗi tháng để lên hạng, thu nhập tăng lên bao nhiêu và thưởng vượt kỳ trước.' }] },
     { so: 249, ds: [{ i: '💼', v: 'gv', t: 'Giá vendor', m: 'Bảng lương công nhân của từng công ty có thêm mục Giá vendor, ghi rõ vendor ở công ty đó nhận bao nhiêu tiền mỗi giờ.' }] },
     { so: 241, ds: [{ i: '✅', t: 'Tự vào bảng công', m: 'Xuất danh sách xong, người trong danh sách tự vào bảng công, ai không đi làm thì bỏ khỏi tờ đăng ký là tự xoá khỏi bảng công.' }] },
@@ -10130,7 +10130,7 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
     var box = document.getElementById('nhaBox');
     if (!box) return;
     if (!nhaCo()) { box.innerHTML = ''; return; }
-    var cty = S.cty, o = NHA[cty], tieu = '<div class="nhaH"><b>BẢNG XẾP HẠNG NHÀ THẦU</b>';
+    var cty = S.cty, o = NHA[cty], tieu = '<div class="nhaH"><b>BIẾN ĐỘNG LAO ĐỘNG TÂM AN</b>';
     if (!o) { box.innerHTML = '<div class="card nhaC">' + tieu + '<small>Đang tải…</small></div></div>'; taiNha(cty, 0); return; }
     if (!NHA_T[cty] || Date.now() - NHA_T[cty] > 6e5) taiNha(cty, 1);
     if (o.loi || !o.ds || !o.ds.length) { box.innerHTML = '<div class="card nhaC">' + tieu + '</div><div class="nhaG">' + esc(o.loi || 'Chưa có số liệu. Máy sẽ tự đếm khi có file vân tay mới.') + '</div></div>'; return; }
@@ -10174,7 +10174,7 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
     }).join('');
     var hangTxt = viTA ? 'Tâm An hạng ' + viTA + '/' + ds.length + (viP ? (viP === viTA ? ', ngày ' + dm(P.d) + ' cũng hạng ' + viP : ', ngày ' + dm(P.d) + ' hạng ' + viP) : '') + '.' : '';
     box.innerHTML = '<div class="card nhaC">' + tieu + '</div>' + oTA + dai +
-      '<div class="nh2H"><b>Xếp hạng ngày ' + (L ? dm(L.d) : '—') + '</b><small>Cả HOJEONG ' + tL + ' người' + (tP === null ? '' : ' · ' + (tL - tP >= 0 ? '↑ ' : '↓ ') + Math.abs(tL - tP) + ' so với ' + dm(P.d)) + '</small></div>' +
+      '<div class="nh2H"><b>BẢNG XẾP HẠNG NHÀ THẦU</b><small>Ngày ' + (L ? dm(L.d) : '—') + '</small><small>Cả HOJEONG ' + tL + ' người' + (tP === null ? '' : ' · ' + (tL - tP >= 0 ? '↑ ' : '↓ ') + Math.abs(tL - tP) + ' so với ' + dm(P.d)) + '</small></div>' +
       '<div class="nhaR nhaHd"><span class="k">#</span><span class="n">Nhà thầu</span><span class="s">Ngày</span><span class="s">Đêm</span><span class="v">Cộng</span><span class="c">±</span></div>' + dong +
       '<div class="nhaG">' + (hangTxt ? hangTxt + '<br>' : '') + (o.luc ? 'Cập nhật ' + esc(gioPhut(o.luc)) + '.<br>' : '') + 'Chạm tên nhà thầu để xem từng ngày.</div></div>';
     box.querySelectorAll('button.nhaR[data-k]').forEach(function (b) { b.onclick = function () { var k = b.getAttribute('data-k'); S.nhaMo = S.nhaMo === k ? '' : k; veNha(); }; });
