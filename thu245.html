@@ -13,7 +13,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
 <script src="config.js"></script>
-<script>window.PB = { so: 245, luc: "26/11 13:06" };</script>
+<script>window.PB = { so: 245, luc: "26/11 13:12" };</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap">
 <style>
@@ -9247,7 +9247,7 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
   function gvTien(n) { return n === null || n === undefined ? '–' : vnd(n); }
   function gvHtml(cty) {
     var g = BL.gv[cty], d = BL.d[cty] || {};
-    var h = '<div class="bl-sec">Giá vendor' + (g && g.ky ? ' · kỳ <span class="lien">' + esc(g.ky) + '</span>' : '') + '</div>';
+    var h = '<div class="bl-sec">Giá vendor' + (g && g.ky ? ' kỳ <span class="lien">' + esc(g.ky) + '</span>' : '') + '</div>';
     if (!g) return h + '<div class="meta">Đang tải giá vendor…</div>';
     if (g.loi) return h + '<div class="note bad cau">Chưa tải được giá vendor. ' + esc(g.loi) + '</div>';
     if (g.khong) return h + '<div class="note warn cau">' + esc(g.khong) + '</div>';
@@ -9263,6 +9263,7 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
         var c3 = !!(g.ten2 && v.dg2);
         ct = (c3 ? '<div class="gvR c3 dau"><span>Mức giờ</span><b>' + esc(loai1 || 'Loại chính') + '</b><b>' + esc(blHoa(g.ten2)) + '</b></div>' : '') +
           muc.map(function (m, k) {
+            if (!k && !c3 && !v.dgMoi) return '';   // mức đầu đã ghi ở dòng tên vendor
             var o1 = gvTien(v.dg[k]) + (v.dgMoi ? '<small>Từ ' + esc(g.moi.tu.slice(0, 5)) + ': ' + vnd0(v.dgMoi[k]) + '</small>' : '');
             return '<div class="gvR' + (c3 ? ' c3' : '') + '"><span>' + esc(m) + '</span><b>' + o1 + '</b>' + (c3 ? '<b>' + gvTien(v.dg2[k]) + '</b>' : '') + '</div>';
           }).join('');
