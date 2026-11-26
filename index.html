@@ -13,7 +13,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
 <script src="config.js"></script>
-<script>window.PB = { so: 264, luc: "26/11 16:22" };</script>
+<script>window.PB = { so: 265, luc: "26/11 16:27" };</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap">
 <style>
@@ -7651,6 +7651,7 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
     }, function (er) { ccTd(''); toastLoi(er.message); });
   }
   var BAN_MOI = [
+    { so: 265, ds: [{ i: '🪪', t: 'Bổ sung ảnh CCCD ngay khi xuất file', m: 'Trong Xuất file CCCD, mỗi người còn thiếu có nút Bổ sung ảnh: chọn 2 mặt thẻ, máy tự cắt ghép, đọc số kiểm đúng người, lưu vào kho và tự điền DANH_SACH còn trống. CHUNQIU gửi Jobsmart.' }] },
     { so: 264, ds: [{ i: '🔓', t: 'Bỏ chốt ca', m: 'Xuất danh sách xong vẫn thêm, bỏ, chuyển người được, xuất lại thì người mới tự vào bảng công.' }] },
     { so: 263, ds: [{ i: '🪪', t: 'Xuất file CCCD gửi pháp nhân trên app', m: 'Tab Lao động → chọn công ty → Xuất file CCCD (từ ngày 25 đến mùng 5). Chỉ gửi người có công trong kỳ; bấm Tạo PDF xong thoát app vẫn chạy, xong sẽ báo về điện thoại. MINGJIE gửi DT Vina, công ty khác gửi Đại Thành.' }] },
     { so: 262, ds: [{ i: '📝', t: 'Lý do trả công lẻ', m: 'Trả công lẻ hoặc điền giờ ngày máy chấm thiếu giờ ở HOJEONG phải ghi lý do, lý do được ghi chú vào file gửi HOJEONG.' }] },
@@ -12300,11 +12301,11 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
   // ---------- b263 (26/11): XUẤT FILE CCCD GỬI PHÁP NHÂN (Đại Thành / DT Vina) ----------
   //   Chỉ hiện từ ngày 25 đến mùng 5 (25–31: kỳ tháng này; 1–5: kỳ tháng trước); chủ, kế toán, sale phụ trách công ty.
   //   Kiểm tra = đối chiếu người có công với kho CCCD; Tạo PDF = máy chủ GitHub dựng PDF (thoát app vẫn chạy, xong báo về điện thoại).
-  var CKX = { tt: {}, luc: {}, kiem: {}, sh: null, hen: 0 };
-  var CKX_PN = { MINGJIE: 'DT Vina' };
+  var CKX = { tt: {}, luc: {}, kiem: {}, bs: {}, sh: null, hen: 0 };
+  var CKX_PN = { MINGJIE: 'DT Vina', CHUNQIU: 'Jobsmart' };
   var ICON_CKX = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2.5"/><circle cx="8.5" cy="11" r="2"/><path d="M5.8 15.8c.6-1.4 1.6-2.1 2.7-2.1s2.1.7 2.7 2.1M13.5 10h4.5M13.5 13.5h3"/></svg>';
   function ckxDot() { var d = new Date(), ng = d.getDate(), th = d.getMonth() + 1, nm = d.getFullYear(); if (ng >= 25) return { thang: th, nam: nm }; if (ng <= 5) { th--; if (!th) { th = 12; nm--; } return { thang: th, nam: nm }; } return null; }
-  function ckxPN(cty) { var t = CKX.tt[cty]; return t && t.pn ? (t.pn === 'DT VINA' ? 'DT Vina' : t.pn === 'ĐẠI THÀNH' ? 'Đại Thành' : t.pn) : (CKX_PN[cty] || 'Đại Thành'); }
+  function ckxPN(cty) { var t = CKX.tt[cty]; return t && t.pn ? (t.pn === 'DT VINA' ? 'DT Vina' : t.pn === 'ĐẠI THÀNH' ? 'Đại Thành' : t.pn === 'JOBSMART' ? 'Jobsmart' : t.pn) : (CKX_PN[cty] || 'Đại Thành'); }
   function ckxCo(cty) {
     if (!ckxDot() || laCQ(cty)) return false;
     var c = ((S.toi && S.toi.cty) || []).filter(function (x) { return x.ma === cty; })[0];
@@ -12369,25 +12370,106 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
       var o = kt.o;
       h += '<div class="grp v8kq">' + [['Người có công', o.tong], ['Đã có ảnh CCCD', o.co], ['Ghép được từ CCCD TẠM', o.tam.length], ['Còn thiếu ảnh', o.thieu.length]].filter(function (r, i) { return i !== 2 || r[1]; })
         .map(function (r) { return '<div class="it"><span class="nm" style="flex:1;min-width:0">' + esc(r[0]) + '</span><b class="num' + (r[0] === 'Còn thiếu ảnh' && r[1] ? ' v8cam' : '') + '">' + r[1] + ' người</b></div>'; }).join('') + '</div>';
-      if (o.thieu.length) h += '<div class="grp">' + o.thieu.map(function (x) { return '<div class="it" style="display:block"><div class="nm">' + esc(hoaDau(x.ten)) + (x.so ? ' · ' + esc(x.so) : '') + '</div><div class="sub">' + esc(x.ly) + '</div>' + (x.goiY ? '<div class="sub">' + esc(x.goiY) + '</div>' : '') + '</div>'; }).join('') + '</div>' +
-        '<div class="meta v7nt">' + yDong(['Bổ sung ảnh: mở tab CCCD → chọn 2 mặt thẻ → Lưu kho.', 'Xong quay lại đây bấm Kiểm tra lại.']) + '</div><button class="btn ghost" id="ckxCC">Mở tab CCCD</button>';
+      var bs = CKX.bs[cty] || {};
+      if (o.thieu.length) h += '<div class="grp">' + o.thieu.map(function (x, i) {
+        var d = bs[ckxKhoa(x)], dang = CKX.bsDang === ckxKhoa(x);
+        return '<div class="it" style="display:block"><div class="nm">' + esc(hoaDau(x.ten)) + (x.so ? ' · ' + esc(x.so) : '') + '</div>' +
+          (d ? '<div class="sub" style="color:var(--good,#2e7d32);font-weight:600">✓ Đã bổ sung, lưu vào kho' + (d.co ? ' (kho đã có số này)' : '') + ' · ' + esc(d.so) + '</div>' + (d.ds ? '<div class="sub">' + esc(d.ds) + '</div>' : '') :
+            '<div class="sub">' + esc(x.ly) + '</div>' + (x.goiY ? '<div class="sub">' + esc(x.goiY) + '</div>' : '') +
+            '<button class="btn ghost" data-bs="' + i + '" style="margin-top:8px;padding:10px 12px;font-size:15px"' + (CKX.bsDang ? ' disabled' : '') + '>' + (dang ? esc(CKX.bsTT || 'Đang xử lý…') : 'Bổ sung ảnh') + '</button>') + '</div>';
+      }).join('') + '</div>' +
+        '<div class="meta v7nt">' + yDong(['Bấm Bổ sung ảnh → chọn 2 ảnh 2 mặt thẻ (hoặc 1 ảnh VNeID đủ 2 mặt).', 'Máy tự cắt, ghép, đọc số kiểm đúng người rồi lưu vào kho CCCD.', 'DANH_SACH còn trống số CCCD / ngày sinh thì máy tự điền.']) + '</div>';
       h += '<div class="meta v7nt">' + yDong(['Kiểm lúc ' + esc(ngayGio(kt.luc)) + '.']) + '</div>';
     } else h += '<div class="meta v7nt">' + yDong(['Bấm Kiểm tra để xem ai đã có ảnh, ai còn thiếu.', 'Có thể bỏ qua, bấm Tạo PDF luôn.']) + '</div>';
     if (kt && kt.loi) h += '<div class="note warn">' + esc(kt.loi) + '</div>';
-    var nThieu = kt && kt.o ? kt.o.thieu.length : 0;
+    var nThieu = kt && kt.o ? kt.o.thieu.filter(function (x) { return !(CKX.bs[cty] || {})[ckxKhoa(x)]; }).length : 0, nDu = kt && kt.o ? kt.o.co + kt.o.thieu.length - nThieu : 0;
     h += '<button class="btn ghost" id="ckxKT"' + (kt && kt.dang ? ' disabled' : '') + '>' + (kt && kt.o ? 'Kiểm tra lại' : 'Kiểm tra danh sách') + '</button>' +
-      '<button class="btn" id="ckxTao"' + (t.dang || (kt && kt.dang) ? ' disabled' : '') + '>' + (t.dang ? 'Đang tạo PDF…' : nThieu ? 'Vẫn tạo PDF (thiếu ' + nThieu + ' người)' : 'Tạo PDF') + '</button>' +
+      '<button class="btn" id="ckxTao"' + (t.dang || (kt && kt.dang) ? ' disabled' : '') + '>' + (t.dang ? 'Đang tạo PDF…' : nThieu ? 'Vẫn tạo PDF (thiếu ' + nThieu + ' người)' : kt && kt.o ? 'Tạo PDF đủ ' + nDu + ' người' : 'Tạo PDF') + '</button>' +
       '<div class="meta v7nt">' + yDong(['Bấm Tạo PDF xong có thể thoát app.', 'Bản PDF cũ cùng tháng tự vào Thùng rác.']) + '</div>';
     nd.innerHTML = h;
     var b;
-    if ((b = document.getElementById('ckxCC'))) b.onclick = function () { if (CKX.sh) CKX.sh.remove(); CKX.sh = null; moTab('cc'); };
+    nd.querySelectorAll('button[data-bs]').forEach(function (bt) { bt.onclick = function () { if (!CKX.bsDang) ckxBoSung(cty, kt.o.thieu[Number(bt.getAttribute('data-bs'))]); }; });
     if ((b = document.getElementById('ckxKT'))) b.onclick = function () { ckxKiem(cty); };
     if ((b = document.getElementById('ckxTao'))) b.onclick = function () { ckxTao(cty, this); };
+  }
+  function ckxKhoa(x) { return kd(x.ten) + '|' + (x.so || ''); }
+  function ckxCv(f) {   // file ảnh -> canvas (cạnh dài tối đa 2600 px cho nhẹ bộ nhớ iPhone)
+    return new Promise(function (ok, hong) {
+      var u = URL.createObjectURL(f), im = new Image();
+      im.onload = function () { var r = Math.min(1, 2600 / Math.max(im.naturalWidth, im.naturalHeight)), c = document.createElement('canvas'); c.width = Math.round(im.naturalWidth * r); c.height = Math.round(im.naturalHeight * r); c.getContext('2d').drawImage(im, 0, 0, c.width, c.height); URL.revokeObjectURL(u); ok(c); };
+      im.onerror = function () { URL.revokeObjectURL(u); hong(new Error('Không mở được ảnh ' + (f.name || ''))); };
+      im.src = u;
+    });
+  }
+  function ckxBsTT(t) { CKX.bsTT = t; ckxVeSh(); }
+  function ckxXem(tieuDe, anh, dong, nut) {   // xem ảnh ghép trước khi lưu -> Promise tên nút bấm | null
+    return new Promise(function (ok) {
+      var sh = moSheet('<h3>' + esc(tieuDe) + '</h3><div class="meta v7nt">' + yDong(dong.map(esc)) + '</div><img src="' + anh + '" alt="" style="width:100%;border:1px solid var(--line);border-radius:10px;margin:8px 0">' +
+        nut.map(function (n, i) { return '<button class="btn' + (i ? ' ghost' : '') + '" data-n="' + esc(n) + '">' + esc(n) + '</button>'; }).join('') + '<button class="btn lk" data-n="">Thôi</button>');
+      sh.querySelectorAll('button[data-n]').forEach(function (b) { b.onclick = function () { sh.remove(); ok(b.getAttribute('data-n') || null); }; });
+    });
+  }
+  function ckxBoSung(cty, x) {
+    var inp = document.createElement('input'); inp.type = 'file'; inp.accept = 'image/*'; inp.multiple = true; inp.style.display = 'none'; document.body.appendChild(inp);
+    inp.onchange = function () {
+      var fs = [].slice.call(inp.files || []); inp.remove();
+      if (!fs.length) return;
+      if (fs.length > 2) { toastLoi('Chọn tối đa 2 ảnh (2 mặt thẻ, hoặc 1 ảnh VNeID đủ 2 mặt).'); return; }
+      var k = ckxKhoa(x), mat;
+      CKX.bsDang = k; ckxBsTT('Đang cắt, ghép ảnh…');
+      Promise.all(fs.map(ckxCv)).then(function (cvs) {
+        var ds = [];
+        cvs.forEach(function (cv) {
+          var vn = null; if (cvs.length === 1) { try { vn = CC.tachVN(cv); } catch (e) { vn = null; } }
+          if (vn && vn.length === 2) vn.forEach(function (q) { var r = CC.xuLy(cv, q); r.cv = cv; ds.push(r); });
+          else { var r = CC.xuLy(cv); r.cv = cv; ds.push(r); }
+        });
+        if (ds.length !== 2) throw new Error(ds.length < 2 ? 'Mới có 1 mặt thẻ – chọn cùng lúc 2 ảnh 2 mặt (hoặc 1 ảnh VNeID đủ 2 mặt).' : 'Chọn ra ' + ds.length + ' mặt thẻ – chỉ chọn 2 mặt của 1 người.');
+        if (ds[0].mat === 'sau' && ds[1].mat !== 'sau') ds.reverse();
+        mat = ds; var i = 0;
+        function tiep() {   // mặt máy cắt chưa chuẩn -> kéo 4 góc
+          if (i >= mat.length) return Promise.resolve();
+          var f = mat[i++]; if (!f.kem || !f.kem.length) return tiep();
+          return ccKeoGoc(f.cv, f.q, 'Khung cắt chưa chuẩn: ' + f.kem.join(', ')).then(function (q) {
+            if (!q) throw new Error('bỏ');
+            var r = CC.xuLy(f.cv, q); r.cv = f.cv; mat[i - 1] = r; return tiep();
+          });
+        }
+        return tiep();
+      }).then(function () {
+        var dao = mat[0].mat === mat[1].mat;   // máy chưa phân biệt được mặt trước / sau -> cho xem, đảo nếu cần
+        if (!dao) return;
+        return ckxXem('Kiểm tra thứ tự 2 mặt', CC.ghep(mat[0].the, mat[1].the, CC.CHINH_MD, 560).toDataURL('image/jpeg', 0.8), ['Mặt trước phải nằm trên, mặt sau nằm dưới.'], ['Đúng rồi', 'Đảo 2 mặt']).then(function (n) {
+          if (!n) throw new Error('bỏ'); if (n === 'Đảo 2 mặt') mat.reverse();
+        });
+      }).then(function () {
+        ckxBsTT('Đang đọc số trên thẻ…');
+        var q = { v: 'ckxBoSung', cty: cty, lang: 1, anh: ccJpg277(CC.ghep(mat[0].the, mat[1].the, CC.CHINH_MD)), mt: mat[0].the.toDataURL('image/jpeg', 0.88), ms: mat[1].the.toDataURL('image/jpeg', 0.88), ten: x.ten, so: x.so || '', ngoai: /chưa có trong DANH_SACH/.test(x.ly) ? 1 : 0 };
+        function gui() {
+          return apiT(q).then(function (o) {
+            if (o.loi) throw new Error(o.loi);
+            if (o.canXn) {
+              return ckxXem('Đúng người không?', CC.ghep(mat[0].the, mat[1].the, CC.CHINH_MD, 560).toDataURL('image/jpeg', 0.8),
+                ['Cần bổ sung: ' + hoaDau(x.ten), 'Trên thẻ: ' + (o.tenThe ? hoaDau(o.tenThe) + ' · ' : '') + 'số ' + o.so, 'DANH_SACH chưa có số CCCD nên máy không tự so được.'], ['Đúng người – Lưu']).then(function (n) {
+                if (!n) throw new Error('bỏ'); q.xn = 1; ckxBsTT('Đang lưu vào kho…'); return gui();
+              });
+            }
+            return o;
+          });
+        }
+        return gui();
+      }).then(function (o) {
+        (CKX.bs[cty] = CKX.bs[cty] || {})[k] = { so: o.so, co: o.co, ds: o.ds };
+        CKX.bsDang = ''; ckxVeSh();
+        toast('Đã lưu CCCD ' + hoaDau(x.ten) + ' vào kho' + (o.ds && /^đã điền/.test(o.ds) ? ', ' + o.ds : '') + '.');
+      }, function (e) { CKX.bsDang = ''; ckxVeSh(); if (e && e.message !== 'bỏ') toastLoi(hoaDau(x.ten) + ': ' + e.message); });
+    };
+    inp.click();
   }
   function ckxKiem(cty) {
     CKX.kiem[cty] = { dang: 1 }; ckxVeSh();
     apiT({ v: 'ckxKiem', cty: cty, lang: 1 }).then(function (o) {
-      CKX.kiem[cty] = o.loi ? { loi: o.loi } : { o: o, luc: Date.now() }; ckxVeSh();
+      CKX.kiem[cty] = o.loi ? { loi: o.loi } : { o: o, luc: Date.now() }; if (!o.loi) CKX.bs[cty] = {}; ckxVeSh();
     }, function (e) { CKX.kiem[cty] = { loi: e.message }; ckxVeSh(); });
   }
   function ckxTao(cty, b) {
