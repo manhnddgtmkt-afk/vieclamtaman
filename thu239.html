@@ -13,7 +13,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
 <script src="config.js"></script>
-<script>window.PB = { so: 239, luc: "26/11 11:48" };</script>
+<script>window.PB = { so: 239, luc: "26/11 11:55" };</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap">
 <style>
@@ -11182,9 +11182,12 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
       gan = !ct.ketThuc && nl > 0 && con <= Math.max(tb, 3) * 10 * 1.2;
       if (ct.ketThuc) { heroCau = 'Kỳ đã kết thúc'; heroPhu = tnGio(g) + ' / ' + tnGio(toi.g) + ' giờ · chốt lương ngày ' + ngTra; }
       else if (gan) { heroCau = 'Còn ' + tnGio(con) + ' giờ <span>là lên ' + esc(tenDich(toi)) + '</span>'; heroPhu = '<span class="nw">khoảng ' + Math.max(1, Math.ceil(con / 10)) + ' người làm 1 ngày</span> là đủ'; }
-      else if (them > 0) { heroCau = '+' + them + ' người <span>để lên ' + esc(tenDich(toi)) + '</span>'; heroPhu = 'mỗi ngày, <span class="nw">từ nay đến ' + denNg + '</span>' + (tb ? ' · <span class="nw">đang có ~' + tb + ' người/ngày</span>' : ''); }
-      else { heroCau = 'Đủ nhịp <span>lên ' + esc(tenDich(toi)) + ' ✓</span>'; heroPhu = 'giữ ' + can + ' người mỗi ngày <span class="nw">đến ' + denNg + '</span>'; }
-      if (!ct.ketThuc && tangG > 0) heroPhu += ' · <b class="tn-hq">+' + tnGio(tangG) + ' giờ hôm qua</b>';
+      else {   // b239 (26/11 anh): ghi theo số người đi làm đều cả tháng
+        var canT = tnNguoiDeu(toi.g, tnNgLamKy(ct.kyTu, ct.kyDen));
+        if (g && tb >= canT) { heroCau = 'Đủ nhịp <span>lên ' + esc(tenDich(toi)) + ' ✓</span>'; heroPhu = 'cần ' + canT + ' người đi làm đều/tháng, <span class="nw">đang có ~' + tb + ' người</span>'; }
+        else { heroCau = canT + ' người <span>đi làm đều/tháng <span class="nw">để lên ' + esc(tenDich(toi)) + '</span></span>'; heroPhu = ''; }
+      }
+      if (!ct.ketThuc && tangG > 0) heroPhu += (heroPhu ? ' · ' : '') + '<b class="tn-hq">+' + tnGio(tangG) + ' giờ hôm qua</b>';
     } else { f = 1; fh = 1; heroCau = 'Đã đạt mọi mốc'; heroPhu = tnGio(g) + ' giờ quản lý kỳ này'; }
     // b239: thiết kế lại – 1 khối chính (khung hạng + tổng tiền + nhiệm vụ), chi tiết dạng bảng, lộ trình 6 hạng
     function t9K(v) { return v >= 1000000 ? (v % 1000000 ? String(v / 1000000).replace('.', ',') : v / 1000000) + ' tr' : Math.round(v / 1000) + 'k'; }
@@ -11193,7 +11196,7 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
       (toi && !ct.ketThuc ? '<span class="t9Gq">' + (toi.L >= 0 ? '<img src="' + VM_IMG + 'km_' + VM_H[toi.L].im + '.webp" alt="">' : '<i class="t9Gc">🪙</i>') + '<small>lên tới</small><em>' + t9K(lenToi) + '</em></span>' : '') + '</button>';
     var heroHtml = '<div class="card tn-h3 t9H' + (gan ? ' gan' : '') + '" style="--vc:' + H.c + ';--vs:' + H.ts + ';--vd:' + H.td + '">' +
       vmKhung({ L: L, anh: anhHien, ch: chH, f: f, fh: fh, R: 62 }) +
-      '<div class="tn-nh t9Nh"><span>SALE ' + H.t + '</span></div>' +
+      '<div class="tn-nh t9Nh"><span>SALE HẠNG ' + H.t + '</span></div>' +
       '<div class="t9L">' + (ct.ketThuc ? 'Lương tạm tính · chờ chốt giờ' : 'Thu nhập kỳ này · ' + tnNgay(ct.kyTu) + ' – ' + tnNgay(ct.kyDen)) + '</div>' +
       '<div class="t9T num" id="tnTong">' + tnD(tong) + '</div>' +
       (tangT > 0 && !ct.ketThuc ? '<div class="t9Up">↑ ' + tnD(tangT) + ' từ hôm qua</div>' : '') +
@@ -11211,14 +11214,14 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
     // lộ trình 6 hạng
     var sauHtml = '', vt = L + (toi && toi.L === L + 1 ? Math.min(1, (g - H.g) / (toi.g - H.g)) : (L === VM_H.length - 1 ? 0 : 1));
     sauHtml = '<div class="card t9P" style="--vc:' + H.c + '">' + '<div class="t9Hd">Lộ trình phần thưởng</div>' + '<div class="t9Tr"><i class="t9Ln"><i style="width:' + (vt / (VM_H.length - 1) * 100).toFixed(1) + '%"></i></i>' + VM_H.map(function (h, i) {
-      var nn = !ct.ketThuc && nl > 0 && i > L ? Math.ceil((h.g - g) / (nl * 10)) - tb : 0;
+      var nn = i > L ? tnNguoiDeu(h.g, tnNgLamKy(ct.kyTu, ct.kyDen)) : 0;
       return '<button class="t9N' + (i < L ? ' ok' : i === L ? ' cur' : '') + '" data-l="' + i + '"' + (i > L ? '' : ' disabled') + ' style="--nc:' + h.c + '"><span class="t9Ni"><img src="' + VM_IMG + 'km_' + h.im + '.webp" alt=""></span>' +
-        (i < L ? '<b>✓</b><i>đã đạt</i>' : i === L ? '<b>Hiện tại</b><i>&nbsp;</i>' : ct.ketThuc ? '<b>' + tnGio(h.g) + '</b><i>giờ</i>' : nn > 0 ? '<b>+' + nn + '</b><i>người</i>' : '<b>✓</b><i>đủ nhịp</i>') + '<small>' + t9K(tnLenToi(c, h.g, pc, vd)) + '</small></button>';
+        (i < L ? '<b>✓</b><i>đã đạt</i>' : i === L ? '<b>Hiện tại</b><i>&nbsp;</i>' : '<b>' + nn + '</b><i>người</i>') + '<small>' + t9K(tnLenToi(c, h.g, pc, vd)) + '</small></button>';
     }).join('') + '</div>';
     var nkKy = tnNgLamKy(ct.kyTu, ct.kyDen);
     var sauMoc = c.moc.filter(function (m) { return m[0] > VM_H[VM_H.length - 1].g; });
     sauHtml += '<div class="meta t9Pm">' + (sauMoc.length ? '<div class="t9Pk"><div>Sau Kim cương:</div>' + sauMoc.map(function (m) { return '<div class="t9Pi"><span class="t9Pn">Mốc ' + tnGio(m[0]) + ' giờ · lên tới <b>' + t9K(tnLenToi(c, m[0], pc, vd)) + '</b></span><br>đạt khi có ' + tnNguoiDeu(m[0], nkKy) + ' người đi làm đều/tháng</div>'; }).join('') + '</div>' : '') +
-      '<div class="t9Pg">Số tiền dưới mỗi hạng là thu nhập lên tới: lương giờ, thưởng mốc, <span class="nw">phụ cấp phụ trách</span> và <span class="nw">truyền thông đủ ' + (vd.so || 30) + ' video.</span></div></div>';
+      '<div class="t9Pg">Dưới mỗi hạng: số người đi làm đều/tháng để đạt hạng và thu nhập lên tới (gồm lương giờ, thưởng mốc, <span class="nw">phụ cấp phụ trách</span> và <span class="nw">truyền thông đủ ' + (vd.so || 30) + ' video).</span></div></div>';
     sauHtml += '</div>';
     // chi tiết cách tính (gập lại) – b239: chia 3 nhóm, bậc lương đang ở được tô, mốc đã đạt có dấu ✓
     var bac = g > c.b2 ? 2 : g > c.b1 ? 1 : 0;
