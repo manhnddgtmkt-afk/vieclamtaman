@@ -13,7 +13,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
 <script src="config.js"></script>
-<script>window.PB = { so: 268, luc: "26/11 18:26" };</script>
+<script>window.PB = { so: 268, luc: "26/11 18:29" };</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap">
 <style>
@@ -2623,7 +2623,8 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
       var so = function (t) { return t.xs && t.xs.length ? t.ds.filter(function (x) { return t.xs.indexOf(x.so) >= 0; }).length : t.ds.length; }, na = so(a), nb = so(b);
       if (na + nb) h = '<div class="dlm" id="dlm"><div class="dlmT"><b class="num">' + (na + nb) + '</b><span>Người đi làm hôm nay</span></div><div class="dlmP">Ca ngày ' + na + ' · Ca đêm ' + nb + '</div><div class="dlmP">Theo danh sách đi làm, chưa có bảng công kỳ mới</div></div>';
     }
-    taT.innerHTML = h ? '<div class="taTop">' + h + '</div>' : '';
+    if (!h) { var d0 = S.data[S.cty]; h = '<div class="dlm" id="dlm"><div class="dlmT"><span>Người đi làm</span></div><div class="dlmP">' + yDong(['Kỳ mới' + (d0 && d0.ky ? ' ' + esc(String(d0.ky).replace(/\/\d{4}/g, '')) : '') + ' chưa có bảng công.', 'Số người đi làm sẽ hiện khi có giờ ngày đầu kỳ.']) + '</div></div>'; }
+    taT.innerHTML = '<div class="taTop">' + h + '</div>';
   }
   function diLamHtml(d, cty) {
     var v = dlVT(cty || S.cty);
