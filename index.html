@@ -13,7 +13,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
 <script src="config.js"></script>
-<script>window.PB = { so: 246, luc: "26/11 13:22" };</script>
+<script>window.PB = { so: 247, luc: "26/11 13:24" };</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap">
 <style>
@@ -231,7 +231,7 @@ textarea.inp{font-size:15px;resize:vertical}
 .bars i.in{background:var(--good)}.bars i.out{background:var(--bad)}
 /* tài khoản */
 .avw{position:relative;cursor:pointer;flex:0 0 auto}
-.avw>span{position:absolute;right:-4px;bottom:-4px;font-size:15px;background:var(--card);border-radius:50%;width:24px;height:24px;display:grid;place-items:center;box-shadow:0 1px 3px rgba(0,0,0,.3)}
+.avw>span:not(.vm){position:absolute;right:-4px;bottom:-4px;font-size:15px;background:var(--card);border-radius:50%;width:24px;height:24px;display:grid;place-items:center;box-shadow:0 1px 3px rgba(0,0,0,.3)}
 .av.img{object-fit:cover;padding:0}
 .meBtn{overflow:hidden;padding:0}
 .meBtn img{width:100%;height:100%;object-fit:cover;display:block}
@@ -405,7 +405,7 @@ body .tch b{font-size:clamp(11.5px,3.4vw,13px)}.gcL span{overflow-wrap:anywhere}
 .inp{border:1.5px solid var(--edge);border-radius:12px}
 .tkh{display:flex;flex-direction:column;align-items:center;gap:4px;padding:4px 0 8px}
 .tkh .avw .av{width:88px;height:88px;font-size:32px}
-.tkh .avw>span{width:30px;height:30px;right:-2px;bottom:-2px;background:var(--cta);color:#fff;border:3px solid var(--bg);font-size:13px}
+.tkh .avw>span:not(.vm){width:30px;height:30px;right:-2px;bottom:-2px;background:var(--cta);color:#fff;border:3px solid var(--bg);font-size:13px}
 .tkh b{font-size:22px;font-weight:700;margin-top:6px}
 .tkh .meta{font-size:14px}
 .set{background:var(--card);border-radius:16px;overflow:hidden}
@@ -7574,7 +7574,7 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
     }, function (er) { ccTd(''); toastLoi(er.message); });
   }
   var BAN_MOI = [
-    { so: 246, ds: [{ i: '👑', t: 'Trang Thu nhập mới', m: 'Trang Thu nhập ghi rõ cần bao nhiêu người đi làm đều mỗi tháng để lên hạng, thu nhập tăng lên bao nhiêu và thưởng vượt kỳ trước.' }] },
+    { so: 247, ds: [{ i: '👑', t: 'Trang Thu nhập mới', m: 'Trang Thu nhập ghi rõ cần bao nhiêu người đi làm đều mỗi tháng để lên hạng, thu nhập tăng lên bao nhiêu và thưởng vượt kỳ trước.' }] },
     { so: 241, ds: [{ i: '✅', t: 'Tự vào bảng công', m: 'Xuất danh sách xong, người trong danh sách tự vào bảng công, ai không đi làm thì bỏ khỏi tờ đăng ký là tự xoá khỏi bảng công.' }] },
     { so: 238, ds: ['Trang Thu nhập: mục Cách tính lương ghi thưởng mốc giờ thành từng dòng, không còn bị dồn chữ dọc.'] },
     { so: 233, ds: [{ i: '💎', t: 'Trang Thu nhập mới', m: 'Khung hạng mới có cánh cho 6 hạng (thêm Lục bảo ở 4.000 giờ). Vòng tiến độ ôm ảnh đại diện, ghi rõ cần thêm bao nhiêu người mỗi ngày để lên hạng. Lên Bạc thưởng 100.000 đ, lên Vàng thưởng 200.000 đ.' }] },
