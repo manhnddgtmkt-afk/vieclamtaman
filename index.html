@@ -13,7 +13,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
 <script src="config.js"></script>
-<script>window.PB = { so: 235, luc: "26/11 08:55" };</script>
+<script>window.PB = { so: 236, luc: "26/11 09:05" };</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap">
 <style>
@@ -1231,6 +1231,7 @@ textarea.inp{font-family:inherit}
 .tn-phao i{position:absolute;top:-14px;width:7px;height:11px;border-radius:2px;animation:tnRoi 2.6s linear forwards}
 @keyframes tnRoi{to{transform:translateY(110vh) rotate(540deg)}}
 @media (prefers-reduced-motion:reduce){.tn-phao{display:none}.tn-trk .f,.tn-bar>i{transition:none}}
+.tn-kcN{display:flex;justify-content:space-between;align-items:center;gap:8px;width:100%;margin:-4px 0 10px;padding:0 0 10px;border:0;border-bottom:1px solid var(--line);background:none;text-align:left;font-size:13px;color:var(--fg)}.tn-kcN>span{min-width:0;flex:1}.tn-kcN .nw{white-space:nowrap}.tn-kcN i{font-style:normal;color:var(--warn);font-weight:600}.tn-kcN b{white-space:nowrap;font-size:14px;color:var(--blue)}
 /* b233 (26/11): trang Thu nhập mới – khung hạng liền khối, vòng tiến độ màu hạng */
 .vm .vmP{box-shadow:none}.vm .vmP::after{display:none}.vm .vmK{position:absolute;left:50%;transform:translateX(-50%);z-index:3;pointer-events:none;filter:drop-shadow(0 2px 2px rgba(0,0,0,.3))}
 .tn-dk{display:flex;justify-content:space-between;align-items:baseline;gap:8px;font-size:13px;color:var(--muted);padding:0 2px}.tn-dk b{color:var(--fg)}
@@ -11126,11 +11127,12 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
       '<div class="tn-nh"><span>SALE ' + H.t + '</span></div>' +
       vmKhung({ L: L, anh: anhHien, ch: chH, f: f, fh: fh }) +
       '<div class="tn-hc">' + heroCau + '</div><div class="tn-hp cau">' + heroPhu + '</div>' + quaHtml + '</div>';
-    var tienHtml = '<div class="card tn-ti"><div class="tn-ti1"><div><span class="meta">' + (ct.ketThuc ? 'Lương tạm tính, chờ chốt giờ' : 'Thu nhập đã có') + '</span><div class="tn-big num" id="tnTong">' + tnD(tong) + '</div></div>' +
+    var kcG = !o._cu && ct.kyCu && !ct.kyCu.daTra ? ct.kyCu : null;
+    var tienHtml = '<div class="card tn-ti">' + (kcG ? '<button class="tn-kcN" id="tnKc"><span>Kỳ trước <span class="nw">' + tnNgay(kcG.tu) + ' – ' + tnNgay(kcG.den) + '</span> · <i>chờ chốt</i></span><b class="num">' + tnD(kcG.cu ? kcG.tong : (kcG.ct ? tnTongCt(kcG.ct) : 0)) + ' ›</b></button>' : '') + '<div class="tn-ti1"><div><span class="meta">' + (ct.ketThuc ? 'Lương tạm tính, chờ chốt giờ' : 'Thu nhập đã có · kỳ ' + tnNgay(ct.kyTu) + ' – ' + tnNgay(ct.kyDen)) + '</span><div class="tn-big num" id="tnTong">' + tnD(tong) + '</div></div>' +
       (tangT > 0 && !ct.ketThuc ? '<span class="tn-up">↑ ' + tnD(tangT) + '<small>từ hôm qua</small></span>' : '') + '</div>' +
       '<div class="meta num tn-ti2">' + ['Giờ ' + tnD(lg), mc ? 'Mốc ' + tnD(mc) : '', 'Phụ trách ' + tnD(pc), 'Video ' + tnD(vd.tien || 0)].filter(Boolean).map(function (z) { return '<span>' + z + '</span>'; }).join('<i> · </i>') + '</div>' +
-      (!ct.ketThuc && !g ? '<div class="meta cau">' + yDong(['Chưa có vân tay kỳ này từ công ty.', 'Có vân tay là lương theo giờ tự cộng.']) + '</div>' : '') + '</div>';
-    var o2Html = '<div class="tn-o2"><div class="card"><span class="meta">Giờ quản lý</span><b class="num">' + tnGio(g) + ' giờ</b><span class="meta">' + (tb ? 'trung bình ~' + tb + ' người/ngày' : 'kỳ ' + tnNgay(ct.kyTu) + ' – ' + tnNgay(ct.kyDen)) + '</span></div>' +
+      (!ct.ketThuc && !g ? '<div class="meta">Chưa có vân tay kỳ này, có là lương giờ tự cộng.</div>' : '') + '</div>';
+    var o2Html = '<div class="tn-o2"><div class="card"><span class="meta">Giờ quản lý</span><b class="num">' + tnGio(g) + ' giờ</b><span class="meta">' + (tb ? 'trung bình ~' + tb + ' người/ngày' : nl ? 'còn ' + nl + ' ngày làm' : 'kỳ ' + tnNgay(ct.kyTu) + ' – ' + tnNgay(ct.kyDen)) + '</span></div>' +
       '<div class="card"><span class="meta">Video kỳ này</span><b class="num">' + vd.n + ' <small>/ ' + vd.so + '</small></b><div class="tn-bar"><i data-w="' + Math.min(100, vd.n / vd.so * 100) + '"></i></div><span class="meta">+' + tnD(moiVd) + ' mỗi video</span></div></div>';
     var sauHtml = '';
     if (toi && ds.length > 1) {
@@ -11155,8 +11157,8 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
       traHtml = q2H('Lương kỳ trước') + '<div class="grp"><div class="it"><div style="flex:1;min-width:0"><div class="nm">Lương ' + esc(tt.thang) + '</div><div class="sub">' + (tt.qua ? 'Chưa trả · quá hạn ' + esc(tt.ng) : 'Nhận ngày ' + esc(tt.ng)) + '</div></div><b class="num' + (tt.qua ? ' v8do' : '') + '">' + tnD(soTien(phai)) + '</b></div></div>';
     }
     var chips = chuX && ct.sales && ct.sales.length ? '<div class="tn-chips">' + ct.sales.map(function (s) { return '<button data-s="' + esc(s) + '"' + (s === (S.tnSale || ct.ten) ? ' class="on"' : '') + '>' + esc(s) + '</button>'; }).join('') + '</div>' : '';
-    var kc = !o._cu && ct.kyCu ? ct.kyCu : null, kcTren = kc && !kc.daTra ? tnKcThe(kc, false) : '', kcDuoi = kc && kc.daTra ? tnKcThe(kc, true) : '';
-    t.innerHTML = '<div class="tn-k v8col">' + chips + '<div class="tn-dk"><span>' + (o._cu ? 'Kỳ ' : 'Kỳ ') + tnNgay(ct.kyTu) + ' – ' + tnNgay(ct.kyDen) + (ct.ketThuc || !nl ? '' : ' · còn ' + nl + ' ngày làm') + '</span>' + (chuX ? '<b>' + esc(tenHien) + '</b>' : '') + '</div>' +
+    var kc = !o._cu && ct.kyCu ? ct.kyCu : null, kcTren = '', kcDuoi = kc && kc.daTra ? tnKcThe(kc, true) : '';
+    t.innerHTML = '<div class="tn-k v8col">' + chips + (chuX || o._cu ? '<div class="tn-dk"><span>Kỳ ' + tnNgay(ct.kyTu) + ' – ' + tnNgay(ct.kyDen) + '</span>' + (chuX ? '<b>' + esc(tenHien) + '</b>' : '') + '</div>' : '') +
       kcTren + tienHtml + heroHtml + o2Html + sauHtml + traHtml + kcDuoi + ctHtml +
       '<div class="meta v8cn">' + (x && x.capNhat ? 'Giờ cập nhật ' + esc(x.capNhat) + ' · ' : '') + '<a href="#" id="tnMoi">Làm mới</a></div></div>';
     document.getElementById('tnMoi').onclick = function (e) { e.preventDefault(); this.textContent = 'Đang tải…'; taiTN(true); };
