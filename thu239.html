@@ -13,7 +13,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
 <script src="config.js"></script>
-<script>window.PB = { so: 241, luc: "26/11 12:24" };</script>
+<script>window.PB = { so: 241, luc: "26/11 12:26" };</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap">
 <style>
@@ -11217,7 +11217,7 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
     var pcTen = x && x.pc && x.pc.length ? x.pc.map(function (p) { return p.cty; }).join(', ') : '';
     var dongCt = [
       ['Lương giờ quản lý', g ? tnGio(g) + ' giờ' + (tb ? ' · ~' + tb + ' người/ngày' : '') : 'Chưa có vân tay kỳ này', lg],
-      ['Thưởng mốc giờ', mc ? 'Đã đạt mốc ' + tnGio(c.moc.filter(function (m) { return g >= m[0]; }).pop()[0]) + ' giờ' : 'Mốc đầu ' + tnGio(c.moc[0][0]) + ' giờ', mc],
+      ['Thưởng mốc', mc ? 'Đã đạt mốc ' + tnNguoiDeu(c.moc.filter(function (m) { return g >= m[0]; }).pop()[0], tnNgLamKy(ct.kyTu, ct.kyDen)) + ' người đi làm đều/tháng' : 'Mốc đầu: ' + tnNguoiDeu(c.moc[0][0], tnNgLamKy(ct.kyTu, ct.kyDen)) + ' người đi làm đều/tháng', mc],
       tv ? ['Thưởng vượt kỳ trước', tv ? 'Đã vượt ' + tnGio(TN_GT) + ' giờ của kỳ trước' : 'Còn thiếu ' + tnGio(Math.max(1, Math.floor(TN_GT) + 1 - g)) + ' giờ là vượt kỳ trước (' + tnGio(TN_GT) + ' giờ)', tv] : null,
       ['Phụ trách công ty', pcTen || 'Chưa phụ trách công ty nào', pc],
       ['Video', vd.n + ' / ' + vd.so + ' video · +' + t9K(moiVd) + ' mỗi video', vd.tien || 0]];
