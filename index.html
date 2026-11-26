@@ -13,7 +13,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
 <script src="config.js"></script>
-<script>window.PB = { so: 252, luc: "26/11 13:56" };</script>
+<script>window.PB = { so: 253, luc: "26/11 13:59" };</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap">
 <style>
@@ -1216,6 +1216,7 @@ textarea.inp{font-family:inherit}
 .meBtn.vmB{background:none;padding:0;overflow:visible}
 .tkh .avw>.vm{margin-top:22px}
 .dtc-pt{display:flex;flex-wrap:wrap;align-items:center;gap:6px 14px;margin-top:12px;font-size:14px;line-height:20px;color:var(--fg)}.dtc-pt em{font-style:normal;font-size:13px;color:var(--muted);font-weight:600}.dtc-pn{display:inline-flex;align-items:center;gap:6px}.dtc-pn b{font-weight:700}
+.kbvAi{display:flex;align-items:center;gap:8px;overflow:visible}.kbvAi .vm{flex:none}
 .cg-ic.cg-av{background:none;overflow:visible}.seg .vm{margin-right:6px;flex:none}.hmP{margin-top:6px;font-size:15px;color:var(--muted);text-align:center}
 .vm img.vmK{height:auto!important;max-height:none!important;object-fit:contain!important;border-radius:0!important;display:block}
 .dkxNh .vm{margin:0 8px 0 2px}
@@ -7598,7 +7599,7 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
     }, function (er) { ccTd(''); toastLoi(er.message); });
   }
   var BAN_MOI = [
-    { so: 252, ds: [{ i: '👑', t: 'Vương miện cho mọi người cùng thấy', m: 'Ai lên hạng thì cả app hiện màn chúc mừng. Thẻ công ty có ảnh sale phụ trách đội vương miện; thông báo, phiếu chờ, danh sách đã xuất, Content và màn đăng nhập cũng có.' }, { i: '👑', t: 'Trang Thu nhập mới', m: 'Trang Thu nhập ghi rõ cần bao nhiêu người đi làm đều mỗi tháng để lên hạng, thu nhập tăng lên bao nhiêu và thưởng vượt kỳ trước.' }] },
+    { so: 253, ds: [{ i: '👑', t: 'Vương miện cho mọi người cùng thấy', m: 'Ai lên hạng thì cả app hiện màn chúc mừng. Thẻ công ty có ảnh sale phụ trách đội vương miện; thông báo, phiếu chờ, danh sách đã xuất, Content và màn đăng nhập cũng có.' }, { i: '👑', t: 'Trang Thu nhập mới', m: 'Trang Thu nhập ghi rõ cần bao nhiêu người đi làm đều mỗi tháng để lên hạng, thu nhập tăng lên bao nhiêu và thưởng vượt kỳ trước.' }] },
     { so: 249, ds: [{ i: '💼', v: 'gv', t: 'Giá vendor', m: 'Bảng lương công nhân của từng công ty có thêm mục Giá vendor, ghi rõ vendor ở công ty đó nhận bao nhiêu tiền mỗi giờ.' }] },
     { so: 241, ds: [{ i: '✅', t: 'Tự vào bảng công', m: 'Xuất danh sách xong, người trong danh sách tự vào bảng công, ai không đi làm thì bỏ khỏi tờ đăng ký là tự xoá khỏi bảng công.' }] },
     { so: 238, ds: ['Trang Thu nhập: mục Cách tính lương ghi thưởng mốc giờ thành từng dòng, không còn bị dồn chữ dọc.'] },
@@ -8327,7 +8328,7 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
     }); });
     if (!ks.length) return '';
     return q2H('Tình hình quay video') + '<div class="card kbvTom"><div class="kbvTg"><span></span><small>Đã quay<br>7 ngày</small><small>Đã đăng<br>7 ngày</small><small>Chưa quay<br>còn tồn</small>' +
-      ks.map(function (k) { var x = m[k]; return '<b class="ell">' + esc(x.ten) + '</b><b class="num">' + x.q + '</b><b class="num">' + x.d + '</b><b class="num' + (x.c ? ' c' : '') + '">' + x.c + '</b>'; }).join('') + '</div></div>';
+      ks.map(function (k) { var x = m[k]; return '<b class="ell kbvAi">' + vmNho(x.ten, 24) + '<span class="ell">' + esc(x.ten) + '</span></b><b class="num">' + x.q + '</b><b class="num">' + x.d + '</b><b class="num' + (x.c ? ' c' : '') + '">' + x.c + '</b>'; }).join('') + '</div></div>';
   }
   function kbvDong(t) { return esc(t).replace(/\n/g, '<br>'); }
   function kbvLoi(t) {   // lời thoại: dòng "HÒA (mặt nghiêm): ..." -> tên vai đậm + lời dặn nghiêng + lời nói; dòng khác = mô tả cảnh (chữ nghiêng xám)
@@ -8937,7 +8938,7 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
     var doc = t.doc && chu ? '<div class="meta lyTd">' + 'Đọc lưu ý gần nhất: ' + esc(t.doc.v) + ' lúc ' + vdoLuc(t.doc.luc) + ' · xem ' + Math.round((t.doc.xem || 0) * 100) + '% video · ' + (t.doc.giay || 0) + ' giây · sai ' + (t.doc.sai || 0) + ' lần</div>' : '';
     if (chu) {   // chủ: mỗi sale 1 dòng gập (người cần tránh lỗi là sale), mở ra xem đủ
       var nl = t.ds.filter(function (y) { return y.lap >= 2; }).length;
-      return '<details class="v8g"><summary><span class="v8s"><span class="nm">Lỗi cần tránh · ' + esc(t.ten || t.ai) + '</span>' + (nl ? '<span class="sub v8cam">' + nl + ' lỗi lặp lại</span>' : '') + '</span><span class="v7n">' + t.ds.length + ' lỗi</span></summary>' +
+      return '<details class="v8g"><summary><span class="v8s"><span class="nm kbvAi">' + vmNho(t.ten || t.ai, 22) + '<span>Lỗi cần tránh · ' + esc(t.ten || t.ai) + '</span></span>' + (nl ? '<span class="sub v8cam">' + nl + ' lỗi lặp lại</span>' : '') + '</span><span class="v7n">' + t.ds.length + ' lỗi</span></summary>' +
         '<div class="v8ly">' + t.ds.map(the).join('') + (doc ? '<div class="lyTi">' + doc + '</div>' : '') + '</div></details>';
     }
     var dau = t.ds.slice(0, 3), sau = t.ds.slice(3);
