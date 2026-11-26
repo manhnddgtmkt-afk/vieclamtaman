@@ -13,7 +13,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
 <script src="config.js"></script>
-<script>window.PB = { so: 238, luc: "26/11 09:23" };</script>
+<script>window.PB = { so: 238, luc: "26/11 09:27" };</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap">
 <style>
@@ -11236,8 +11236,10 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
       return { ky: 'THU-' + g, ct: { ky: 'THU-' + g, kyTu: tu, kyDen: tu + 29 * D, ten: 'HÒA', tenHien: 'Hòa', x: { gio: g, cfg: cfg, pcTien: 1200000, pc: [{ cty: 'BEST', loai: 'chinh', tien: 500000 }, { cty: 'MINGJIE', loai: 'chinh', tien: 500000 }, { cty: 'CHUNQIU', loai: 'dong', tien: 200000 }] },
         video: { n: vdn, tien: Math.round(vdn * 1000000 / 30), so: 30, toiDa: 1000000, ds: [] }, kyCu: { cu: 1, tu: tu - 30 * D, den: tu - D, traNgay: tu + 9 * D, tong: 7645750, daTra: ngay > 10 ? 1 : 0 } } };
     }
-    var M = { dong: mau(0, 0, 0), bac: mau(1350, 13, 7), vang: mau(2920, 20, 15), kc: mau(5300, 22, 24) }, chon = 'that';
-    window.__THUBAR = function () {
+    var M = { dong: mau(0, 0, 0), bac: mau(1350, 13, 7), vang: mau(2920, 20, 15), kc: mau(5300, 22, 24) }, chon = (/[?&]mau=([a-z]+)/.exec(location.search) || [])[1] || 'that';
+    window.__MAU = M[chon] || null;
+    window.__THUBAR = function () { return ''; };
+    window.__THUBAR0 = function () {
       return '<div class="thuBar"><b>Bản thử giao diện mới</b><div>' + [['that', 'Số thật'], ['dong', 'Đồng 0 giờ'], ['bac', 'Bạc'], ['vang', 'Vàng sắp lên'], ['kc', 'Kim cương']].map(function (z) { return '<button data-m="' + z[0] + '"' + (z[0] === chon ? ' class="on"' : '') + '>' + z[1] + '</button>'; }).join('') + '</div></div>';
     };
     document.addEventListener('click', function (e) {
