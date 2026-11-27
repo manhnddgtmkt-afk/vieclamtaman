@@ -858,7 +858,7 @@ textarea.inp{font-family:inherit}
 .cckl{display:flex;flex-direction:column;gap:12px;padding:16px}.ckTimW{padding:8px;gap:8px}.ckTimH{display:flex;gap:8px;align-items:center}.ckTimH .inp{flex:1;margin:0;min-width:0}.ckLocB{flex:none;width:auto;padding:10px 14px;font-size:15px}.ckLocB.on{background:var(--tint);border-color:var(--blue)}.ckLocP{display:flex;flex-direction:column;gap:12px;padding:4px 2px 2px}.ckLocP[hidden]{display:none}
 .ckn{display:flex;align-items:center;gap:8px}.ckn label{flex:none;width:104px;font-size:14px;color:var(--muted)}.ckn .inp{flex:1;min-width:0;margin:0;text-align:center}.ckn span{color:var(--faint)}
 .ckh{padding:0 2px 2px;font-size:15px}
-.ckCty #ckLai{flex:none;width:auto;padding-left:14px;padding-right:14px}.ckCty .ckA{flex:1;padding:8px 6px;line-height:1.15;text-wrap:balance}.ckA:disabled{opacity:.45}.ckGoi{text-align:center;font-size:14px;color:var(--muted);margin-top:8px}
+.dkCu{color:var(--good);font-weight:400;font-size:12.5px}.ckCty #ckLai{flex:none;width:auto;padding-left:14px;padding-right:14px}.ckCty .ckA{flex:1;padding:8px 6px;line-height:1.15;text-wrap:balance}.ckA:disabled{opacity:.45}.ckGoi{text-align:center;font-size:14px;color:var(--muted);margin-top:8px}
 .ckg{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
 .ckg .ckt{background:var(--card);border-radius:12px;overflow:hidden;border:2px solid transparent;display:flex;flex-direction:column}
 .ckg .ckt.on{border-color:var(--cta);box-shadow:0 0 0 3px var(--tint)}
@@ -7401,8 +7401,8 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
         return '<div class="dkxNh">' + vmNho(s, 28) + esc(s) + ' · ' + mN[s].length + '</div>' + mN[s].map(function (e) {
           var x = e.dk, sub = [], canh = '', dang = '', kiem = 0, khoT = x && (CCS.khoTT || {})[x.so];   // b284: dang = bước đang chạy (có vòng quay)
           if (x) {
-            if (x.ma) sub.push('Mã ' + x.ma + (HJ && dkmMoi(x) ? ' · Mới cấp' : '')); else if (HJ && !(tt.xuat && (!tt.xs.length || tt.xs.indexOf(x.so) >= 0))) dang = 'Đang cấp mã thẻ…';   // b268
-            if (trung[kd(e.ten || '')] > 1 && x.so) sub.push('CCCD …' + String(x.so).slice(-4)); if (x.ghi) sub.push(x.ghi);
+            if (x.ma) sub.push(esc('Mã ' + x.ma) + (HJ && dkmMoi(x) ? ' <span class="dkCu">· Mới cấp</span>' : '')); else if (HJ && !(tt.xuat && (!tt.xs.length || tt.xs.indexOf(x.so) >= 0))) dang = 'Đang cấp mã thẻ…';   // b268
+            if (trung[kd(e.ten || '')] > 1 && x.so) sub.push(esc('CCCD …' + String(x.so).slice(-4))); if (x.ghi) sub.push('<span class="dkCu">' + esc(x.ghi) + '</span>');   // b291: ghi chú chữ xanh lá, nét mảnh
           }
           else if ((e.p && e.p.doc) || (!String(e.ten || '').trim() && (!e.choTen || Date.now() - e.choTen < 60000) && ccCap().some(function (p) { return p.doc; }))) dang = 'Đang đọc CCCD…';
           else if (!/^\d{12}$/.test(String(e.so || ''))) canh = 'Chưa có số CCCD nên chưa đăng ký được. Gõ số ở mục In CCCD hoặc bỏ người này.';
@@ -7413,7 +7413,8 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
           else dang = 'Đã đọc xong · Đang lưu lên tờ đăng ký…';
           var tuoi = dkxTuoi(e.dk || e, L.ngay), go = !x && ((e.dkLoi && /họ tên/.test(e.dkLoi)) || e.suaTen);
           return '<div class="dkxDong">' + (HJ ? dkAvHtml(e) : '') + '<div class="dkxTen" data-dkm="' + esc(e.k) + '"><div class="nm">' + esc(e.ten ? hoaDau(e.ten) : 'Chưa đọc được tên') + '</div>' +
-            (sub.length || (tuoi && tuoi < 18) ? '<div class="sub cau">' + (tuoi && tuoi < 18 ? '<span class="pill warn dkxTuoi">' + tuoi + ' tuổi</span>' : '') + esc(sub.join(' · ')) + '</div>' : '') + (canh ? '<div class="sub dsdw cau">' + esc(canh) + '</div>' : '') +
+            (sub.length || (tuoi && tuoi < 18) ? '<div class="sub cau">' + (tuoi && tuoi < 18 ? '<span class="pill warn dkxTuoi">' + tuoi + ' tuổi</span>' : '') + sub.join(' · ') + (x && x.cu ? ' <span class="dkCu">· Người cũ, nghỉ từ ' + esc(x.cu) + '</span>' : '') + '</div>' : '') + (canh ? '<div class="sub dsdw cau">' + esc(canh) + '</div>' : '') +
+            (x && x.nhac && x.nhac.length ? '<div class="sub dsdw cau dkNhac">' + x.nhac.map(function (c) { return '⚠ ' + esc(c); }).join('<br>') + '</div>' : '') +   // b291 / PB170: chỉ nhắc
             (dang ? '<div class="sub dkxTT cau"><i class="dkxTTq"></i>' + esc(dang) + '</div>' : '') +
             (kiem && !e.suaTen ? '<div class="sub dsdw cau">' + yDong(['Không đọc được mã QR trên thẻ.', 'Nhìn thẻ, kiểm dấu tên rồi bấm Đúng hoặc Sửa.']) + '</div><div class="dkxKt"><button class="btn" data-ktd="' + esc(e.k) + '">Đúng</button><button class="btn ghost" data-kts="' + esc(e.k) + '">Sửa tên</button></div>' : '') +
             (khoT && khoT.dang ? '<div class="sub dkxTT cau"><i class="dkxTTq"></i>Đã đọc xong · Đang lưu CCCD vào kho…</div>' : khoT && khoT.ok && khoT.luc && Date.now() - khoT.luc < 6000 ? '<div class="sub dkxTT ok cau">Đã lưu CCCD vào kho ✓</div>' : '') +
@@ -8279,6 +8280,7 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
     }, function (er) { ccTd(''); toastLoi(er.message); });
   }
   var BAN_MOI = [
+    { so: 291, ds: [{ i: '⚠️', t: 'Nhắc khi đăng ký người đang làm chỗ khác', m: 'Dưới tên người vừa đăng ký có dòng nhắc màu vàng nếu người đó đang đi làm ở công ty khác (có giờ trong 7 ngày) hoặc đã đăng ký ca khác cùng ngày. Người cũ quay lại ghi chữ xanh nhỏ cạnh mã thẻ: Người cũ, nghỉ từ ngày nào. Chỉ nhắc, vẫn đăng ký bình thường.' }] },
     { so: 290, ds: [{ i: '🗂️', t: 'Tìm CCCD trong kho gọn hơn', m: 'Ô tìm còn 1 hàng, bộ lọc nằm trong nút Lọc, ảnh CCCD hiện rộng hơn. Mở kho từ Đăng ký đi làm chỉ có nút Thêm vào danh sách; từ màn Tạo thẻ chỉ có nút Làm thẻ.' }] },
     { so: 287, ds: [{ i: '🔎', t: 'Tên trên CCCD đọc theo mã QR', m: 'App đọc mã QR trên thẻ để lấy họ tên có dấu đúng như thẻ. Thẻ không đọc được mã QR thì nhìn thẻ, bấm Đúng hoặc Sửa tên trước khi lên tờ đăng ký.' }] },
     { so: 285, ds: [{ i: '🛠️', t: 'Sửa lỗi nhỏ', m: 'Danh sách đăng ký không còn đứng chờ mãi ở "Đang đọc CCCD" hay "Đang chờ cấp mã" khi máy chủ không trả lời.' }] },
