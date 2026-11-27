@@ -13,7 +13,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
 <script src="config.js"></script>
-<script>window.PB = { so: 275, luc: "27/11 14:45" };</script>
+<script>window.PB = { so: 276, luc: "27/11 15:43" };</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap">
 <style>
@@ -2041,7 +2041,7 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
   // 03/11: iPhone khoá màn hình / thoát ra app khác thì trang bị dừng, lệnh đang gửi máy chủ hỏng hoặc treo.
   // Các lệnh CCCD dưới đây gửi lại không sinh trùng (đọc ảnh, tải ảnh, lưu: kho đã có số thì không lưu lại, chuyển ảnh gốc)
   // -> bị ngắt thì chờ mở lại app rồi tự gửi lại; mở lại 45 giây vẫn chưa có trả lời thì gửi lại (trả lời nào về trước thì nhận)
-  var BEN_V = { cccdTamSoat: 1, cccdTamDs: 1, cccdTamAnh: 1, cccdDocNhieu: 1, cccdDoc: 1, cccdLuu: 1, cccdTamXong: 1 };
+  var BEN_V = { bxXem: 1, bxNho: 1, bxAnh2: 1, bxAnhXn: 1, bxAnhChep: 1, bxTT: 1, cccdTamSoat: 1, cccdTamDs: 1, cccdTamAnh: 1, cccdDocNhieu: 1, cccdDoc: 1, cccdLuu: 1, cccdTamXong: 1 };
   var NGAT = { lan: 0, cho: [], treo: [], tiep: 0 };
   document.addEventListener('visibilitychange', function () {
     if (document.hidden) { NGAT.lan++; return; }
@@ -8107,6 +8107,7 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
     }, function (er) { ccTd(''); toastLoi(er.message); });
   }
   var BAN_MOI = [
+    { so: 276, ds: [{ i: '⚡', t: 'Mở bảng ảnh BEST nhanh hơn', m: 'Bảng công chưa ai sửa thì danh sách hiện ngay, ảnh nhỏ tải sau.' }, { i: '↩️', t: 'Thoát ra vẫn chạy tiếp', m: 'Đang đọc bảng công, tải ảnh hay tạo file mà thoát ra làm việc khác, quay lại app tự chạy tiếp.' }] },
     { so: 275, ds: [{ i: '⚡', t: 'Chọn ảnh không phải chờ', m: 'Chọn ảnh cho người này xong chọn tiếp người khác ngay, ảnh tải ngầm.' }, { i: '🖼️', t: 'Chọn 2 ảnh một lượt', m: 'Mỗi người 1 nút Chọn ảnh check in – out, chọn luôn 2 ảnh, máy tự xếp ảnh nào vào, ảnh nào ra.' }, { i: '👥', t: 'Ảnh chụp chung', m: 'Lúc chọn ảnh, tích luôn người đi cùng (gợi ý theo giờ chấm công), ô của người đó tự điền.' }, { i: '✋', t: 'Ảnh không đọc được giờ', m: 'Máy hỏi lại, sale xác nhận đúng thì vẫn gắn.' }, { i: '🕒', t: 'Đọc dấu giờ ảnh chắc hơn', m: 'Chữ ngày đè lên vật màu sáng vẫn đọc được.' }] },
     { so: 274, ds: [{ i: '📤', t: 'Xuất bảng công gửi BEST', m: 'Từ ngày 25 đến mùng 5, trang BEST có nút xuất bảng công gửi BEST, chọn ảnh check in-out trong album và gửi file qua Zalo ngay trên điện thoại.' }, { i: '📨', t: 'Gửi Đại Thành', m: 'Xuất bảng công và xuất file CCCD gửi Đại Thành nay nằm chung trong mục Gửi Đại Thành ở trang BEST.' }] },
     { so: 273, ds: [{ i: '🪪', t: 'Đọc được CCCD chụp sát mép', m: 'Ảnh CCCD chụp sát mép, bị ngón tay che góc nay app vẫn cắt đúng thẻ và đọc được số.' }, { i: '🏠', t: 'CHUNQIU ghi địa chỉ mới', m: 'Danh sách CHUNQIU tự đổi quê quán, thường trú sang địa chỉ mới như VNeID, Bắc Ninh ghi là thành phố.' }, { i: '✅', t: 'Báo đã lưu khi sửa địa chỉ', m: 'Sửa tay địa chỉ xong, dưới tên người hiện rõ đã lưu hay chưa.' }] },
@@ -13273,7 +13274,7 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
   }
   // ===== b274 (27/11/2026): CUỐI KỲ BEST – Xuất bảng công gửi BEST (kèm ảnh check in-out chọn từ album) + Gửi Đại Thành (Xuất bảng công, Xuất file CCCD)
   //   Chỉ hiện từ ngày 25 đến mùng 5 (máy chủ cũng chặn). Ảnh gắn chặt với NGÀY + NGƯỜI: máy đọc dấu ngày giờ trên ảnh, sai ngày thì không gắn.
-  var BX = { tt: null, luc: 0, xem: null, xemDang: 0, xemLoi: '', sh: null, shDt: null, dt: null, dtDang: 0, dtLoi: '', file: {}, fileDang: {}, anhDang: {}, xuatDang: '', job: {}, hang: [], chay: 0, xnDang: {}, choXuat: 0 };
+  var BX = { tt: null, luc: 0, xem: null, xemDang: 0, xemLoi: '', sh: null, shDt: null, dt: null, dtDang: 0, dtLoi: '', file: {}, fileDang: {}, anhDang: {}, xuatDang: '', job: {}, hang: [], chay: 0, xnDang: {}, choXuat: 0, nho: {}, nhoDang: 0, capNhat: 0 };
   var BX_THU = ['Chủ nhật', 'Thứ 2', 'Thứ 3', 'Thứ 4', 'Thứ 5', 'Thứ 6', 'Thứ 7'];
   var ICON_BX = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="3" width="16" height="18" rx="2.5"/><path d="M8 8h8M8 12h8M8 16h5"/></svg>';
   var ICON_BXDT = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12l16-8-6 16-2.5-6.5z"/><path d="M11.5 13.5L20 4"/></svg>';
@@ -13342,13 +13343,45 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
     BX.sh = moSheet('<h3>Xuất bảng công gửi BEST</h3><div class="meta">Kỳ T' + dot.thang + '</div><div id="bxNd"></div><input type="file" accept="image/*" id="bxF" hidden>');
     bxVeSh(); bxXemTai(); bxTai(1);
   }
-  function bxXemTai() {
-    BX.xemDang = 1; BX.xemLoi = ''; bxVeSh();
-    return apiT({ v: 'bxXem', cty: 'BEST', lang: 1 }).then(function (o) {
-      BX.xemDang = 0;
-      if (!o || o.loi) { BX.xemLoi = (o && o.loi) || 'Không đọc được bảng công.'; bxVeSh(); return; }
-      BX.xem = o.xem; bxVeSh();
-    }, function (e) { BX.xemDang = 0; BX.xemLoi = e.message; bxVeSh(); });
+  function bxXemTai(lai) {   // b276: lần đầu lấy bản máy chủ giữ sẵn (nhanh); bản đó cũ (file đã sửa) thì hiện trước rồi đọc lại ngầm
+    BX.xemDang = 1; BX.xemLoi = ''; if (lai) BX.capNhat = 1; bxVeSh();
+    return apiT({ v: 'bxXem', cty: 'BEST', lang: 1, nhanh: lai ? 0 : 1 }).then(function (o) {
+      BX.xemDang = 0; BX.capNhat = 0;
+      if (!o || o.loi) { if (!BX.xem) BX.xemLoi = (o && o.loi) || 'Không đọc được bảng công.'; else toastLoi((o && o.loi) || 'Chưa cập nhật được bảng công.'); bxVeSh(); return; }
+      BX.xem = bxGop(o.xem); bxVeSh(); bxTaiNho();
+      if (!lai && o.moi === 0) bxXemTai(1);
+    }, function (e) { BX.xemDang = 0; BX.capNhat = 0; if (!BX.xem) BX.xemLoi = e.message; bxVeSh(); });
+  }
+  function bxGop(moi) {   // bảng mới thay bảng cũ: giữ ảnh vừa gắn trên máy (máy chủ chưa kịp có) và câu hỏi chờ xác nhận
+    var cu = {}; ((BX.xem && BX.xem.anh) || []).forEach(function (a) { cu[bxRk(a)] = a; });
+    (moi.anh || []).forEach(function (a) {
+      var c = cu[bxRk(a)]; a.co = a.co || {}; a.cho = a.cho || {};
+      if (!c) return;
+      ['IN', 'OUT'].forEach(function (ch) {
+        if (c.co && c.co[ch] && !a.co[ch]) a.co[ch] = c.co[ch];
+        if (c.cho && c.cho[ch] && !a.cho[ch] && !a.co[ch]) a.cho[ch] = c.cho[ch];
+        if (a.co[ch] && !a.co[ch].nho && c.co && c.co[ch] && c.co[ch].nho) a.co[ch].nho = c.co[ch].nho;
+      });
+    });
+    return moi;
+  }
+  function bxLai(a) { return bxTim(bxRk(a)) || a; }   // dòng hiện tại (bảng có thể vừa được đọc lại)
+  function bxKN(a, ch, cho) { return a.ngay + '_' + a.khoa + '_' + ch + (cho ? '_CHO' : ''); }
+  function bxNhoCua(a, ch, cho) { var o = cho ? a.cho && a.cho[ch] : a.co && a.co[ch]; return (o && o.nho) || BX.nho[bxKN(a, ch, cho)] || ''; }
+  function bxTaiNho() {   // ảnh nhỏ tải sau, 6 ảnh một lượt, lần lượt
+    if (BX.nhoDang || !BX.xem) return;
+    var can = [];
+    (BX.xem.anh || []).forEach(function (a) { ['IN', 'OUT'].forEach(function (ch) {
+      if (a.co && a.co[ch] && !bxNhoCua(a, ch)) can.push(bxKN(a, ch));
+      else if (a.cho && a.cho[ch] && !bxNhoCua(a, ch, 1)) can.push(bxKN(a, ch, 1));
+    }); });
+    can = can.filter(function (k) { return BX.nho[k] !== 0; }).slice(0, 6); if (!can.length) return;
+    BX.nhoDang = 1;
+    apiT({ v: 'bxNho', cty: 'BEST', ds: can, im: 1 }).then(function (o) {
+      BX.nhoDang = 0;
+      can.forEach(function (k) { BX.nho[k] = (o && o.nho && o.nho[k]) || 0; });
+      bxVeSh(); bxTaiNho();
+    }, function () { BX.nhoDang = 0; });
   }
   function bxChoHtml(t, phu) {   // khung chờ to, có vòng quay – không để sale tưởng đã xong
     return '<div class="card bxW"><span class="bxQ"></span><div><b>' + esc(t) + '…</b><div class="meta v7nt">' + yDong(phu.map(esc)) + '</div></div></div>';
@@ -13356,8 +13389,8 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
   function bxVeSh() {
     var nd = document.getElementById('bxNd'); if (!nd || !BX.sh || !document.body.contains(BX.sh)) return;
     var x = BX.xem, h = '';   // b275: file đã xuất chỉ hiện ở cuối, khi file còn mới (không có ảnh chọn sau lúc xuất) và không đang đọc / đang xuất
-    if (BX.xuatDang === 'BEST') h = bxChoHtml('Đang tạo file gửi BEST', ['Thường mất 30–60 giây.', 'Giữ app mở cho tới khi xong.']) + h;
-    if (BX.xemDang && !x) { nd.innerHTML = bxChoHtml('Đang đọc bảng công BEST', ['Có thể mất khoảng 1 phút.', 'Đọc xong mới hiện danh sách cần ảnh.']); return; }
+    if (BX.xuatDang === 'BEST') h = bxChoHtml('Đang tạo file gửi BEST', ['Thường mất 30–60 giây.', 'Thoát ra làm việc khác được, quay lại file sẽ có.']) + h;
+    if (BX.xemDang && !x) { nd.innerHTML = bxChoHtml('Đang đọc bảng công BEST', ['Có thể mất khoảng 1 phút.', 'Thoát ra làm việc khác được, quay lại app tự đọc tiếp.']); return; }
     if (BX.xemLoi && !x) { nd.innerHTML = h + '<div class="note warn">' + yDong([esc(BX.xemLoi)]) + '</div><button class="btn ghost" id="bxLai">Thử lại</button>'; bxNoiNut(nd); document.getElementById('bxLai').onclick = bxXemTai; return; }
     if (!x) { nd.innerHTML = h; bxNoiNut(nd); return; }
     var thieu = bxThieu(x), canh = [];
@@ -13371,6 +13404,7 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
       var nhom = {}, thuTu = [];
       x.anh.forEach(function (a, i) { if (!nhom[a.ngay]) { nhom[a.ngay] = []; thuTu.push(a.ngay); } nhom[a.ngay].push(i); });
       h += q2H('Ảnh check in-out', thieu ? 'Còn thiếu ' + thieu + ' ảnh' : 'Đủ ảnh');
+      if (BX.capNhat) h += '<div class="note bxDT" style="display:flex;gap:10px;align-items:center"><span class="bxQ" style="flex:none"></span><span>' + yDong(['Đang cập nhật bảng công mới nhất…', 'Vẫn chọn ảnh được.']) + '</span></div>';
       var nTai = bxDangTai(); if (nTai) h += '<div class="note warn bxDT">' + yDong(['Còn ' + nTai + ' ảnh đang tải – đừng thoát app.', 'Vẫn chọn tiếp ảnh người khác được.']) + '</div>';
       thuTu.forEach(function (ng) {
         h += '<div class="grp bxG"><div class="gh">' + esc(bxThu(ng) + ', ' + bxDm(ng)) + ' · ' + nhom[ng].length + ' người</div>' + nhom[ng].map(function (i) {
@@ -13409,8 +13443,8 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
     var xoa = BX.anhDang[a.ngay + a.khoa + ch], can = bxCan(a, ch), nhan = 'Check ' + (ch === 'IN' ? 'in' : 'out') + ' ' + bxDm(a.ngay), t = '', vang = false, anh = '', cls = '';
     if (xoa) { t = xoa; anh = '<span class="bxQ"></span>'; }
     else if (tai) { var u = j.xem[ch] || j.xem.ds[0]; t = j.chay ? 'Đang đọc ảnh…' : 'Chờ tải…'; anh = (u ? '<img src="' + u + '" alt="">' : '') + '<span class="bxQ ov"></span>'; cls = ' co mo'; }
-    else if (c) { vang = Math.abs(c.lech || 0) > 30; t = (c.xn ? 'Sale xác nhận' : 'Ảnh lúc ' + c.gio) + (vang ? ', giờ ' + (ch === 'IN' ? 'vào' : 'ra') + ' trên bảng công ' + (ch === 'IN' ? a.vao : a.ra) : ''); anh = c.nho ? '<img src="' + c.nho + '" alt="">' : ''; cls = ' co'; }
-    else if (cho) { t = 'Chờ xác nhận'; vang = true; anh = '<img src="' + cho.nho + '" alt="">'; cls = ' co mo'; }
+    else if (c) { var n1 = bxNhoCua(a, ch); vang = Math.abs(c.lech || 0) > 30; t = (c.xn ? 'Sale xác nhận' : 'Ảnh lúc ' + c.gio) + (vang ? ', giờ ' + (ch === 'IN' ? 'vào' : 'ra') + ' trên bảng công ' + (ch === 'IN' ? a.vao : a.ra) : ''); anh = n1 ? '<img src="' + n1 + '" alt="">' : '<span class="bxQ"></span>'; cls = n1 ? ' co' : ''; }
+    else if (cho) { var n2 = bxNhoCua(a, ch, 1); t = 'Chờ xác nhận'; vang = true; anh = n2 ? '<img src="' + n2 + '" alt="">' : '<span class="bxQ"></span>'; cls = n2 ? ' co mo' : ''; }
     else if (ng && can) { var u2 = ng.j.xem.IN || ng.j.xem.OUT || ng.j.xem.ds[0]; t = 'Chờ ảnh của ' + hoaDau(ng.a.ten) + '…'; anh = (u2 ? '<img src="' + u2 + '" alt="">' : '') + (ng.j.dang ? '<span class="bxQ ov"></span>' : ''); cls = ' co mo'; }
     else { t = can ? 'Chưa có ảnh' : 'Không bắt buộc'; anh = '<span class="bxP">+</span><span>Chọn ảnh</span>'; cls = can ? ' can' : ''; }
     return '<div class="bxC"><div class="bxL">' + esc(nhan) + '</div><button class="bxO' + cls + '" data-bxo="' + i + '|' + ch + '">' + anh + '</button><div class="bxT' + (vang ? ' v' : '') + '">' + esc(t) + '</div></div>';
@@ -13429,7 +13463,7 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
     ['IN', 'OUT'].forEach(function (ch) {
       if (!cho[ch] || (j && j.dang && j.chi.indexOf(ch) >= 0)) return;
       var hai = cho.IN && cho.OUT, dg = BX.xnDang[k + ch];
-      h += '<div class="note warn bxN"><div class="bxH"><img src="' + cho[ch].nho + '" alt=""><div>' + yDong([esc(cho[ch].ly || 'Máy không đọc được ngày giờ trên ảnh.'), 'Đúng là ảnh check ' + (ch === 'IN' ? 'in' : 'out') + ' ngày ' + esc(bxDm(a.ngay)) + ' của ' + esc(hoaDau(a.ten)) + '?']) + '</div></div>' +
+      h += '<div class="note warn bxN"><div class="bxH"><img src="' + (bxNhoCua(a, ch, 1) || 'data:,') + '" alt=""><div>' + yDong([esc(cho[ch].ly || 'Máy không đọc được ngày giờ trên ảnh.'), 'Đúng là ảnh check ' + (ch === 'IN' ? 'in' : 'out') + ' ngày ' + esc(bxDm(a.ngay)) + ' của ' + esc(hoaDau(a.ten)) + '?']) + '</div></div>' +
         '<div class="bxB"><button class="btn sm" data-bxk="xn|' + i + '|' + ch + '"' + (dg ? ' disabled' : '') + '>' + (dg ? 'Đang gắn…' : 'Đúng, vẫn gắn') + '</button><button class="btn sm ghost" data-bxk="lai|' + i + '|' + ch + '"' + (dg ? ' disabled' : '') + '>Chọn lại</button>' +
         (hai && ch === 'IN' ? '<button class="btn sm ghost" data-bxk="dao|' + i + '"' + (dg ? ' disabled' : '') + '>Đảo vào – ra</button>' : '') + '</div></div>';
     });
@@ -13517,7 +13551,7 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
       return apiT({ v: 'bxAnh2', cty: 'BEST', ngay: a.ngay, khoa: a.khoa, ten: a.ten, vao: a.vao, ra: a.ra, chi: j.chi, lang: 1, ds: ds });
     }).then(function (o) {
       if (!o || (o.loi && !o.ok)) { j.loi = String((o && o.loi) || 'Chưa gắn được ảnh.'); xong(); return; }
-      a.co = a.co || {}; a.cho = a.cho || {};
+      a = bxLai(a); a.co = a.co || {}; a.cho = a.cho || {};
       Object.keys(o.co || {}).forEach(function (ch) { a.co[ch] = o.co[ch]; delete a.cho[ch]; BX.doiLuc = Date.now(); });
       Object.keys(o.hoi || {}).forEach(function (ch) { a.cho[ch] = o.hoi[ch]; });
       j.loi = (o.loi || []).join('\n');
@@ -13542,9 +13576,9 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
     if (BX.job[bxRk(a)] === j && !j.choXn && !j.loi && !j.dang) { delete BX.job[bxRk(a)]; bxVeSh(); }
   }
   function bxGanChung(a, ch, ds, xong) {
-    var g = a.co[ch], ten = [];
+    var g = a.co[ch], ten = [], gNho = bxNhoCua(a, ch);
     if (xong.length) BX.doiLuc = Date.now();
-    ds.forEach(function (p) { if (xong.indexOf(p.khoa) < 0) return; var pB = bxPh(ch === 'IN' ? p.vao : p.ra), pA = bxPh(g.gio); p.co = p.co || {}; p.co[ch] = { gio: g.gio, nho: g.nho, xn: g.xn, lech: pA !== null && pB !== null ? pA - pB : 0 }; ten.push(hoaDau(p.ten)); });
+    ds.forEach(function (p) { if (xong.indexOf(p.khoa) < 0) return; var pB = bxPh(ch === 'IN' ? p.vao : p.ra), pA = bxPh(g.gio); p.co = p.co || {}; p = bxLai(p); p.co = p.co || {}; p.co[ch] = { gio: g.gio, nho: gNho, xn: g.xn, lech: pA !== null && pB !== null ? pA - pB : 0 }; ten.push(hoaDau(p.ten)); });
     bxVeSh();
     if (ten.length) toast('Đã dùng chung ảnh check ' + (ch === 'IN' ? 'in' : 'out') + ' cho ' + ten.join(', ') + '.');
   }
@@ -13554,7 +13588,7 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
     apiT({ v: 'bxAnhXn', cty: 'BEST', ngay: a.ngay, khoa: a.khoa, ten: a.ten, ch: ch, gioBang: ch === 'IN' ? a.vao : a.ra, ds: ds.map(function (p) { return { khoa: p.khoa, ten: p.ten, gioBang: ch === 'IN' ? p.vao : p.ra }; }) }).then(function (o) {
       delete BX.xnDang[k + ch];
       if (!o || o.loi) { bxVeSh(); bxBao((o && o.loi) || 'Chưa gắn được ảnh.'); return; }
-      a.co = a.co || {}; a.co[ch] = { gio: o.gio, lech: o.lech, nho: o.nho, xn: 1 }; delete a.cho[ch]; BX.doiLuc = Date.now();
+      a = bxLai(a); a.cho = a.cho || {}; a.co = a.co || {}; a.co[ch] = { gio: o.gio, lech: o.lech, nho: o.nho, xn: 1 }; delete a.cho[ch]; BX.doiLuc = Date.now();
       bxGanChung(a, ch, ds, o.chung || []);
       if (j) { j.choXn = Object.keys(a.cho).length; if (!j.choXn && !j.loi && !j.dang) delete BX.job[k]; }
       bxVeSh();
@@ -13564,7 +13598,7 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
     var k = bxRk(a); BX.xnDang[k + 'IN'] = BX.xnDang[k + 'OUT'] = 1; bxVeSh();
     apiT({ v: 'bxAnhXn', cty: 'BEST', ngay: a.ngay, khoa: a.khoa, ten: a.ten, dao: 1 }).then(function (o) {
       delete BX.xnDang[k + 'IN']; delete BX.xnDang[k + 'OUT'];
-      if (o && !o.loi) { var t = a.cho.IN; a.cho.IN = a.cho.OUT; a.cho.OUT = t; } else toastLoi((o && o.loi) || 'Chưa đảo được.');
+      if (o && !o.loi) { a = bxLai(a); var t = a.cho.IN; a.cho.IN = a.cho.OUT; a.cho.OUT = t; var kI = bxKN(a, 'IN', 1), kO = bxKN(a, 'OUT', 1), nI = BX.nho[kI]; BX.nho[kI] = BX.nho[kO]; BX.nho[kO] = nI; } else toastLoi((o && o.loi) || 'Chưa đảo được.');
       bxVeSh();
     }, function (e) { delete BX.xnDang[k + 'IN']; delete BX.xnDang[k + 'OUT']; bxVeSh(); toastLoi(e.message); });
   }
@@ -13601,7 +13635,7 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
   }
   function bxXemAnh(a, ch) {
     var c = a.co[ch];
-    var sh = moSheet('<h3>' + esc(hoaDau(a.ten)) + '</h3><div class="meta">Check ' + (ch === 'IN' ? 'in' : 'out') + ' ' + bxDm(a.ngay) + ' · ảnh lúc ' + esc(c.gio) + '</div><img src="' + c.nho + '" alt="" style="display:block;width:100%;border-radius:14px;margin-top:12px">');
+    var sh = moSheet('<h3>' + esc(hoaDau(a.ten)) + '</h3><div class="meta">Check ' + (ch === 'IN' ? 'in' : 'out') + ' ' + bxDm(a.ngay) + ' · ' + (c.xn ? 'sale xác nhận' : 'ảnh lúc ' + esc(c.gio)) + '</div><img src="' + bxNhoCua(a, ch) + '" alt="" style="display:block;width:100%;border-radius:14px;margin-top:12px">');
     return sh;
   }
   function bxMenuAnh(a, ch) {   // giữ ngón tay trên ảnh: Đổi ảnh / Xoá ảnh
@@ -13623,6 +13657,7 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
     if (BX.xuatDang) return;
     if (viec === 'BEST' && bxDangTai()) { BX.choXuat = 1; bxVeSh(); toast('Chờ ảnh tải xong, máy tự xuất file.'); return; }
     BX.xuatDang = viec; bxVeSh(); bxDtVe();
+    var batDau = Date.now();
     apiT({ v: 'bxXuat', cty: 'BEST', viec: viec, lang: 1 }).then(function (o) {
       BX.xuatDang = '';
       if (!o || o.loi) { bxVeSh(); bxDtVe(); var sh = moSheet('<h3>Chưa xuất được file</h3><div class="meta v7nt">' + yDong(String((o && o.loi) || 'Lỗi không rõ.').split('\n').map(esc)) + '</div><button class="btn" id="bxLoiOk">Đã hiểu</button>'); sh.querySelector('#bxLoiOk').onclick = function () { sh.remove(); }; return; }
@@ -13630,7 +13665,19 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
       bxFileSan(viec); bxVe(); bxVeSh(); bxDtVe();
       toast(viec === 'DT' ? 'Đã xuất bảng công gửi Đại Thành.' : 'Đã xuất bảng công gửi BEST' + (o.kq.canAnh ? ', gắn ' + o.kq.soAnh + '/' + o.kq.canAnh + ' ảnh.' : '.'));
       var nd = document.getElementById(viec === 'DT' ? 'bxDtNd' : 'bxNd'); if (nd) nd.scrollIntoView({ block: 'start', behavior: 'smooth' });
-    }, function (e) { BX.xuatDang = ''; bxVeSh(); bxDtVe(); toastLoi(e.message); });
+    }, function (e) { bxXuatDoi(viec, batDau, e); });
+  }
+  function bxXuatDoi(viec, batDau, e, lan) {   // b276: mạng bị cắt (thoát app) lúc đang tạo file -> máy chủ vẫn tạo tiếp; hỏi máy chủ tới khi có file mới
+    lan = lan || 0;
+    apiT({ v: 'bxTT', cty: 'BEST', im: 1 }).then(function (t) {
+      var k = t && (viec === 'DT' ? t.kqDt : t.kq);
+      if (k && k.luc >= batDau - 5000) {
+        BX.xuatDang = ''; BX.tt = t; if (viec !== 'DT') { BX.xuatPhien = k.id; BX.doiLuc = 0; }
+        bxFileSan(viec); bxVe(); bxVeSh(); bxDtVe(); toast(viec === 'DT' ? 'Đã xuất bảng công gửi Đại Thành.' : 'Đã xuất bảng công gửi BEST.'); return;
+      }
+      if (((t && t.dang) || lan < 3) && lan < 60) { setTimeout(function () { bxXuatDoi(viec, batDau, e, lan + 1); }, 5000); return; }
+      BX.xuatDang = ''; bxVeSh(); bxDtVe(); toastLoi(e.message);
+    }, function () { if (lan < 60) setTimeout(function () { bxXuatDoi(viec, batDau, e, lan + 1); }, 5000); else { BX.xuatDang = ''; bxVeSh(); bxDtVe(); toastLoi(e.message); } });
   }
   // ---- Gửi Đại Thành: Xuất bảng công (chủ + kế toán) + Xuất file CCCD (hộp có sẵn)
   function bxDtMo() {
