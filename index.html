@@ -13,7 +13,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
 <script src="config.js"></script>
-<script>window.PB = { so: 279, luc: "27/11 18:17" };</script>
+<script>window.PB = { so: 280, luc: "27/11 18:26" };</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap">
 <style>
@@ -2477,9 +2477,11 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
     var t = (/[?&]tab=([a-z]+)/.exec(location.search) || [])[1] || doc('vlta_tab'); if (!cacTab().some(function (x) { return x[0] === t; })) t = 'ld';   // bản 140: mở từ thông báo (?tab=vdo)
     if (/[?&]tab=vdo/.test(location.search)) KBV.phan = /[?&]p=kb/.test(location.search) ? 'kb' : 'vdo';   // bản 145: thông báo kịch bản mở phần Kịch bản, thông báo video mở phần Video
     var uDk = /[?&]dk=(\d{4}-\d{2}-\d{2})\.([ND])/.exec(location.search);   // b227: thông báo đăng ký đi làm -> mở tờ đăng ký của ca đó
+    var uBk = /[?&]bk=1/.test(location.search);   // b278: nút trên Sheet QUẢN LÝ LAO ĐỘNG TREND CT (?tab=ld&cty=TREND&bk=1) -> mở thẳng màn bảng kê
     if (/[?&]tab=/.test(location.search)) try { history.replaceState(null, '', location.pathname); } catch (e) { }
     moTab(t);
     if (uDk && uCty && S.cty === uCty && t === 'ld') setTimeout(function () { dkMoCa(uCty, uDk[1], uDk[2] === 'D' ? 'Đêm' : 'Ngày'); }, 350);
+    if (uBk && uCty === 'TREND' && S.cty === 'TREND') setTimeout(function () { tbkMo(''); }, 500);
     if (XNHU) xnhuThanh(); else { setTimeout(xemMoi, 600); setTimeout(wpTuDong, 900); }   // bản 142: bắt bật thông báo; b219: đang xem như sale thì thôi
     if (t !== 'ld') taiDs(false, !!S.data[S.cty]);
   }
@@ -8112,6 +8114,7 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
     }, function (er) { ccTd(''); toastLoi(er.message); });
   }
   var BAN_MOI = [
+    { so: 280, ds: [{ i: '💻', t: 'Xuất bảng kê trên máy tính', m: 'File Quản lý lao động Trend CT (tên mới của file Danh sách nhận việc) có nút Xuất bảng kê gửi Trend ở đầu trang GIO_TREND, bấm là mở thẳng màn bảng kê trên trình duyệt.', c: [['Xuất', 'Mở file trên máy tính → trang GIO_TREND → bấm [[🧾 Xuất bảng kê gửi Trend]] → [[Xuất Excel và PDF]] → [[Tải file PDF]], file nằm trong thư mục Tải xuống.']], v: 'chu,ketoan' }] },
     { so: 279, ds: [{ i: '📌', t: 'Khổ giấy ghim đầu màn Tạo thẻ', m: 'Chọn khổ giấy ngay trên cùng màn Tạo thẻ ra vào, máy nhớ cho lần sau. Bấm In là in luôn, không phải chọn lại.' }, { i: '✂️', t: 'Thẻ cách nhau dễ cắt', m: 'Khổ 5 × 7 inch: 4 thẻ cách nhau 5 mm, cắt từng thẻ không lẹm sang thẻ bên cạnh.' }] },
     { so: 278, ds: [{ i: '🖨️', t: 'Chọn khổ giấy ngay lúc in thẻ', m: 'Bấm In thẻ, hộp in hiện luôn nút chọn khổ giấy. Mặc định 5 × 7 inch, 4 thẻ một tờ, máy nào cũng vậy.', c: [['In', 'Tạo thẻ ra vào → [[In thẻ]] → kiểm tra khổ [[5 × 7 inch · 4 thẻ/tờ]] → [[In]].']] }] },
     { so: 277, ds: [{ i: '🧾', t: 'Xuất bảng kê gửi Trend', m: 'Bảng kê theo mẫu Trend, Bên B là Job Smart, VAT 8%, tự điền giờ từng loại, bằng chữ, kèm trang chi tiết từng người. Người quá 3 tháng tính phí tự được bỏ giờ.', c: [['Xuất', 'Trang TREND → chạm dòng [[Bảng công kỳ …]] → [[Xuất bảng kê gửi Trend]] → xem trước → [[Xuất Excel và PDF]] → [[Gửi file PDF]].']], v: 'chu,ketoan' }] },
@@ -11286,7 +11289,7 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
     if (o.bot > 0) h += '<div class="meta cau" style="margin-top:10px">Trend chấm ' + esc(tbcG(o.gioTrend)) + ', bỏ ' + esc(tbcG(o.bot)) + ' của người đã quá 3 tháng tính phí theo hợp đồng.</div>';
     (o.chan || []).forEach(function (s) { h += '<div class="meta cau c-do" style="margin-top:10px">⛔ ' + esc(s) + '</div>'; });
     (o.canh || []).forEach(function (s) { h += '<div class="meta cau" style="margin-top:8px">' + esc(s) + '</div>'; });
-    h += '<div class="meta cau" style="margin-top:10px">File gồm trang bảng kê theo mẫu và trang chi tiết giờ từng người, lưu vào thư mục Bảng kê Trend cạnh danh sách nhận việc.</div>';
+    h += '<div class="meta cau" style="margin-top:10px">File gồm trang bảng kê theo mẫu và trang chi tiết giờ từng người, lưu vào thư mục Bảng kê Trend cạnh file Quản lý lao động Trend CT.</div>';
     h += (o.chan || []).length ? '<button class="btn ghost" id="tbkBc" style="margin-top:14px">Cập nhật bảng công mới</button>' : '<button class="btn" id="tbkX" style="margin-top:14px">Xuất Excel và PDF</button>';
     box.innerHTML = h;
     var sel = box.querySelector('#tbkKy'); if (sel) sel.onchange = function () { TBK.ky = sel.value; TBK.o = null; box.innerHTML = '<div class="meta">Đang tính bảng kê…</div>'; tbkTai(); };
@@ -11302,10 +11305,11 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
       TBK.id = '';
       var fl = function (b64, ten, loai) { var b = atob(b64), a = new Uint8Array(b.length); for (var i = 0; i < b.length; i++) a[i] = b.charCodeAt(i); var bl = new Blob([a], { type: loai }), f = null; try { f = new File([bl], ten, { type: loai }); } catch (e) { } return { bl: bl, f: f, ten: ten }; };
       var P = fl(r.pdf, r.ten + '.pdf', 'application/pdf'), X = fl(r.xlsx, r.ten + '.xlsx', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-      var gui = function (F) { if (F.f && navigator.canShare && navigator.canShare({ files: [F.f] })) { navigator.share({ files: [F.f], title: F.ten }).catch(function () { }); return; } var u = URL.createObjectURL(F.bl), l = document.createElement('a'); l.href = u; l.download = F.ten; document.body.appendChild(l); l.click(); l.remove(); setTimeout(function () { URL.revokeObjectURL(u); }, 60000); };
+      var mayTinh = false; try { mayTinh = matchMedia('(pointer:fine)').matches && !matchMedia('(pointer:coarse)').matches; } catch (e) { }   // b278: máy tính tải thẳng về máy, điện thoại mở bảng chia sẻ
+      var gui = function (F) { if (!mayTinh && F.f && navigator.canShare && navigator.canShare({ files: [F.f] })) { navigator.share({ files: [F.f], title: F.ten }).catch(function () { }); return; } var u = URL.createObjectURL(F.bl), l = document.createElement('a'); l.href = u; l.download = F.ten; document.body.appendChild(l); l.click(); l.remove(); setTimeout(function () { URL.revokeObjectURL(u); }, 60000); };
       var box = TBK.sh.querySelector('#tbkBox');
       box.innerHTML = '<h3 style="margin:0 40px 0 0">Bảng kê đã sẵn sàng</h3><div class="meta cau">' + yDong(['Bảng kê ' + esc(tbkTh(r.ky)) + ': ' + r.n + ' người · ' + esc(tbcG(r.gio)) + ' · tổng ' + vnd0(r.tien.tong) + ' đ gồm VAT.', 'Đã lưu vào thư mục Bảng kê Trend.']) + '</div>' +
-        '<button class="btn" id="tbkP" style="margin-top:14px">Gửi file PDF</button><button class="btn ghost" id="tbkE">Gửi file Excel</button><button class="btn ghost" id="tbkG">Mở trên Google Sheet</button><button class="btn ghost" id="tbkXong">Xong</button>';
+        '<button class="btn" id="tbkP" style="margin-top:14px">' + (mayTinh ? 'Tải file PDF' : 'Gửi file PDF') + '</button><button class="btn ghost" id="tbkE">' + (mayTinh ? 'Tải file Excel' : 'Gửi file Excel') + '</button><button class="btn ghost" id="tbkG">Mở trên Google Sheet</button><button class="btn ghost" id="tbkXong">Xong</button>';
       box.querySelector('#tbkP').onclick = function () { gui(P); };
       box.querySelector('#tbkE').onclick = function () { gui(X); };
       box.querySelector('#tbkG').onclick = function () { window.open(r.url, '_blank'); };
