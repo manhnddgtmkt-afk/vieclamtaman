@@ -13,7 +13,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
 <script src="config.js"></script>
-<script>window.PB = { so: 282, luc: "27/11 22:30" };</script>
+<script>window.PB = { so: 283, luc: "27/11 22:49" };</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap">
 <style>
@@ -6525,7 +6525,8 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
     return ds.map(function (e) {
       var ma = String(e.ma), cu = m[ma], d = D[ma], tr = lu[ma]; lu[ma] = e;
       if (tr && tr !== e) return { e: e, cu: { ten: tr.ten, mo: 'cũng trong lượt in này' } };
-      if (cu && theTenC(cu.ten) !== theTenC(e.ten)) return { e: e, cu: cu };
+      if (d && d.t && /^(chấm công|có trong bảng công)/.test(d.n || '') && theTenC(d.t) === theTenC(e.ten)) return null;   // b283: HOJEONG đã ghi mã này cho đúng người (vân tay / bảng công) -> thẻ in cũ cho người khác (không đi làm) không tính
+      if (cu && !(cu.so && e.so && String(cu.so) === String(e.so)) && theTenC(cu.ten) !== theTenC(e.ten)) return { e: e, cu: cu };   // b283: cùng số CCCD là cùng 1 người
       if (d && d.t && theTenC(d.t) !== theTenC(e.ten)) return { e: e, cu: { ten: d.t, mo: d.n } };
       return null;
     }).filter(Boolean);
@@ -6541,6 +6542,11 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
       if (S.tab === 'cc' && CCS.theMo && !document.querySelector('.sheet') && !(ae && /INPUT|TEXTAREA/.test(ae.tagName))) ccVe();
     }, function () { CCS.maDang = 0; });
   }
+  function theMaDk(so) {   // b283: mã thẻ HOJEONG đã cấp trên tờ đăng ký đi làm cho số CCCD này -> { ma, co } (co: người này có trên tờ HOJEONG)
+    var r = { ma: '', co: 0 }; so = String(so || ''); if (!/^\d{12}$/.test(so) || !DK || !DK.d) return r;
+    (DK.d.ds || []).forEach(function (x) { if (x.cty !== 'HOJEONG' || String(x.so) !== so) return; r.co = 1; if (String(x.ma || '').trim() && (!r.ngay || x.ngay >= r.ngay)) { r.ma = String(x.ma).trim(); r.ngay = x.ngay; } });
+    return r;
+  }
   function theGanMa(ds) {   // người đã tích mà chưa có mã: điền mã đề xuất (kho trước, rồi lớn nhất + 1); bỏ tích thì trả mã đề xuất lại
     var M = CCS.maThe; if (!M) return;
     var dang = {}, D = M.dung || {}, kho0 = M.kho || [];
@@ -6548,7 +6554,11 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
     (CCS.thLs || []).forEach(function (x) { dang[x.ma] = 1; });
     var kho = kho0.filter(function (m) { return !dang[m]; }), nx = (Number(M.max) || 44000) + 1;
     ds.forEach(function (e) {
+      if (e.choMa && !e.ma) { var g0 = theMaDk(e.so); if (g0.ma) { e.ma = g0.ma; e.maTay = 1; delete e.choMa; dang[e.ma] = 1; } }
       if (!e.chon || e.ma || e.maTay) return;
+      var g = theMaDk(e.so);   // b283: người có trên tờ đăng ký HOJEONG -> dùng đúng mã máy chủ đã cấp, không tự sinh số mới (lỗi Vũ Việt Quang 27/11: tờ 44157, thẻ in 44158)
+      if (g.ma) { e.ma = g.ma; e.maTay = 1; dang[e.ma] = 1; return; }
+      if (g.co) { e.choMa = 1; return; }   // máy chủ đang cấp mã -> chờ, không đoán số
       var m = kho.shift();
       if (!m) { while (dang[String(nx)] || D[String(nx)]) nx++; m = String(nx++); }
       e.ma = m; e.maGY = kho0.indexOf(m) >= 0 ? 'kho' : 'moi'; dang[m] = 1;
@@ -6556,6 +6566,8 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
   }
   function theMaGhiChu(e) {   // dòng nhỏ dưới ô mã
     var D = (CCS.maThe && CCS.maThe.dung) || {}, d = e.ma ? D[e.ma] : null;
+    if (e.choMa && !e.ma) return '<span class="warn">Đang chờ máy cấp mã theo tờ đăng ký đi làm</span>';   // b283
+    var g = theMaDk(e.so); if (g.ma && e.ma && g.ma !== String(e.ma)) return '<span class="warn">Tờ đăng ký đi làm ghi mã ' + esc(g.ma) + '</span>';
     if (d && d.t && theTenC(d.t) !== theTenC(e.ten)) return '<span class="warn">Mã ' + esc(e.ma) + ' đang là của ' + esc(d.t) + (d.n ? ' (' + esc(d.n) + ')' : '') + '</span>';
     if (e.maGY) return 'Mã đề xuất' + (e.maGY === 'kho' ? ' – mã cũ in thẻ nhưng người đó không đi làm' : ' – số tiếp theo') + ', sửa được';
     return '';
@@ -6624,13 +6636,16 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
   function theChon() { return theDs().filter(function (e) { return e.chon; }); }
   function theKiem(ds, tiep) {   // thiếu tên / mã thì báo; mã dài ngắn khác nhau thì hỏi lại
     if (!ds.length) { toast('Tích chọn người cần làm thẻ.'); return; }
+    var cho = ds.filter(function (e) { return e.choMa && !String(e.ma || '').trim(); });   // b283
+    if (cho.length) { toast('Đang chờ máy cấp mã thẻ cho ' + cho.map(function (e) { return hoaDau(e.ten || e.so); }).join(', ') + '. Thử lại sau ít giây.'); dkTai(1, ccVe); if (typeof dkCapMaGoi === 'function') dkCapMaGoi('HOJEONG'); return; }
     var thieu = ds.filter(function (e) { return !String(e.ten || '').trim() || !String(e.ma || '').trim() || !theAnhNguon(e); });
     if (thieu.length) { toast(thieu.length + ' người còn thiếu ' + (thieu.some(function (e) { return !theAnhNguon(e); }) ? 'ảnh, ' : '') + 'họ tên hoặc mã thẻ.'); ccVe(); return; }
+    var lech = ds.map(function (e) { var g = theMaDk(e.so); return g.ma && g.ma !== String(e.ma) ? { e: e, cu: { ten: e.ten, mo: 'tờ đăng ký đi làm ghi mã ' + g.ma + ', thẻ đang là ' + e.ma } } : null; }).filter(Boolean);   // b283
     var dem = {}; ds.forEach(function (e) { var l = String(e.ma).length; dem[l] = (dem[l] || 0) + 1; });
     var hay = Object.keys(dem).sort(function (a, b) { return dem[b] - dem[a]; })[0], la = ds.filter(function (e) { return String(e.ma).length !== Number(hay); });
-    var tr = theTrung(ds);
-    if (!la.length && !tr.length) { tiep(); return; }
-    var sh = moSheet('<h3>Kiểm tra mã thẻ</h3><div class="meta">' + tr.map(function (x) { return 'Mã <b>' + esc(x.e.ma) + '</b> đã cấp cho <b>' + esc(x.cu.ten) + '</b> (' + esc(x.cu.mo || ('in ' + x.cu.gan)) + '), nay gõ cho ' + esc(x.e.ten) + '.'; }).join('<br>') + (tr.length && la.length ? '<br>' : '') + la.map(function (e) { return '<b>' + esc(e.ma) + '</b> (' + esc(e.ten) + ') có ' + String(e.ma).length + ' số'; }).join('<br>') + (la.length ? '<br>Các mã khác có ' + hay + ' số.' : '') + ' Có gõ nhầm không?</div><button class="btn" id="tkS">Sửa lại</button><button class="btn ghost" id="tkV">Vẫn làm thẻ</button>');
+    var tr = theTrung(ds).filter(function (x) { return !lech.some(function (y) { return y.e === x.e; }); });
+    if (!la.length && !tr.length && !lech.length) { tiep(); return; }
+    var sh = moSheet('<h3>Kiểm tra mã thẻ</h3><div class="meta">' + lech.map(function (x) { return '<b>' + esc(x.e.ten) + '</b>: ' + esc(x.cu.mo) + '.'; }).concat(tr.map(function (x) { return 'Mã <b>' + esc(x.e.ma) + '</b> đã cấp cho <b>' + esc(x.cu.ten) + '</b> (' + esc(x.cu.mo || ('in ' + x.cu.gan)) + '), nay gõ cho ' + esc(x.e.ten) + '.'; })).join('<br>') + ((tr.length || lech.length) && la.length ? '<br>' : '') + la.map(function (e) { return '<b>' + esc(e.ma) + '</b> (' + esc(e.ten) + ') có ' + String(e.ma).length + ' số'; }).join('<br>') + (la.length ? '<br>Các mã khác có ' + hay + ' số.' : '') + ' Có gõ nhầm không?</div><button class="btn" id="tkS">Sửa lại</button><button class="btn ghost" id="tkV">Vẫn làm thẻ</button>');
     sh.querySelector('#tkS').onclick = function () { sh.remove(); };
     sh.querySelector('#tkV').onclick = function () { sh.remove(); tiep(); };
   }
@@ -7684,6 +7699,8 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
     Object.keys(CCS.the).forEach(function (k) { CCS.the[k].chon = false; });   // chỉ in đúng những người vừa chọn
     function moMan() { CCS.kho = null; CCS.dslMo = false; CCS.theMo = true; CCS.theTuDk = { cty: CCS.dsl.cty, ngay: CCS.dsl.ngay, ca: CCS.dsl.ca }; theMaTai(); var lg = theLogoNap(); if (!lg.complete) lg.onload = function () { ccVe(); }; ccVe(); setTimeout(function () { window.scrollTo(0, 0); if (sau) sau(); }, 60); }
     if (!n) { moMan(); return; }
+    ds.forEach(function (x) { if (!String(x.ma || '').trim()) { var g = theMaDk(x.so); if (g.ma) x = Object.assign(x, { ma: g.ma }); } });   // b283
+    if (ds.some(function (x) { return !String(x.ma || '').trim(); })) dkTai(1, function () { ccVe(); });   // có người chưa có mã: tải lại tờ đăng ký (máy chủ có thể vừa cấp)
     var canAnh = ds.filter(function (x) { return x.anh && !CCS.dkAnh[x.so]; }).map(function (x) { return x.so; });
     ccTd('Đang lấy ảnh 0/' + n + '…');
     var truoc = canAnh.length ? apiT({ v: 'dkAnhLay', ds: canAnh.slice(0, 12), im: 1 }).then(function (o) { Object.keys((o && o.ds) || {}).forEach(function (s) { CCS.dkAnh[s] = o.ds[s]; }); }, function () { }) : Promise.resolve();
@@ -8172,6 +8189,7 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
     }, function (er) { ccTd(''); toastLoi(er.message); });
   }
   var BAN_MOI = [
+    { so: 283, ds: [{ i: '🪪', t: 'Thẻ lấy đúng mã đã cấp', m: 'Màn Tạo thẻ lấy đúng mã thẻ máy đã cấp trên tờ đăng ký đi làm, không tự điền số khác.' }, { i: '✅', t: 'Bớt cảnh báo trùng mã thẻ', m: 'Mã đã ghi đúng cho người đang đi làm HOJEONG thì không còn bị báo trùng với thẻ in cũ của người khác.' }] },
     { so: 282, ds: [{ i: '🪪', t: 'Tự cắt thẻ CCCD tốt hơn', m: 'Thẻ đặt trên nền gần cùng màu (chăn, vải) giờ máy tự cắt được, không phải kéo 4 góc bằng tay.' }, { i: '⏳', t: 'Báo đang xử lý ảnh', m: 'Chọn ảnh CCCD xong, màn hình hiện ngay khung báo đang xử lý thay vì đứng im.' }, { i: '✅', t: 'Đăng ký không còn báo nhầm', m: 'Đăng ký đi làm chờ đọc xong họ tên mới gửi, không còn báo nhầm "Chưa đọc được tên" khi tên đã có.' }] },
     { so: 281, ds: [{ i: '📊', t: 'Bảng kê Trend chỉ xuất file Excel', m: 'Bảng kê gửi Trend giờ chỉ ra 1 file Excel, lưu trong thư mục Trend bên Quản lý, nhân viên không xem được.', c: [['Xuất', 'Trang TREND → chạm dòng [[Bảng công kỳ …]] → [[Xuất bảng kê gửi Trend]] → [[Xuất file Excel]] → [[Gửi file Excel]].']], v: 'chu,ketoan' }] },
     { so: 280, ds: [{ i: '💻', t: 'Xuất bảng kê trên máy tính', m: 'File Quản lý lao động Trend CT (tên mới của file Danh sách nhận việc) có nút Xuất bảng kê gửi Trend ở đầu trang GIO_TREND, bấm là mở thẳng màn bảng kê trên trình duyệt.', c: [['Xuất', 'Mở file trên máy tính → trang GIO_TREND → bấm [[🧾 Xuất bảng kê gửi Trend]] → [[Xuất file Excel]] → [[Tải file Excel]], file nằm trong thư mục Tải xuống.']], v: 'chu,ketoan' }] },
