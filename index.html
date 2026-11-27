@@ -13,7 +13,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
 <script src="config.js"></script>
-<script>window.PB = { so: 284, luc: "27/11 23:04" };</script>
+<script>window.PB = { so: 285, luc: "27/11 23:13" };</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap">
 <style>
@@ -5942,7 +5942,7 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
   function ccChay() {
     if (CCS.chay || !CCS.hang.length) return;
     var h = CCS.hang.shift(), p = ccCap().filter(function (x) { return x.k === h.k; })[0];
-    if (!p || !p.t || !p.s) { delete CCS.tt[h.k]; ccChay(); return; }
+    if (!p || !p.t || !p.s) { delete CCS.tt[h.k]; if (CCS.khoTT && h.so && CCS.khoTT[h.so] && CCS.khoTT[h.so].dang) CCS.khoTT[h.so] = { loi: 'không còn đủ 2 mặt ảnh trên máy' }; ccChay(); return; }   // b285
     CCS.chay = 1;
     apiT({ v: 'cccdLuu', anh: ccJpg(p), so: h.so || '', ten: p.ten || '', ngs: p.ngs || (p.t && p.t.ngs) || (p.s && p.s.ngs) || '', nguon: h.ng || '', lang: 1 }).then(function (o) {
       CCS.chay = 0;
@@ -6562,7 +6562,8 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
       if (!e.chon || e.ma || e.maTay) return;
       var g = theMaDk(e.so);   // b283: người có trên tờ đăng ký HOJEONG -> dùng đúng mã máy chủ đã cấp, không tự sinh số mới (lỗi Vũ Việt Quang 27/11: tờ 44157, thẻ in 44158)
       if (g.ma) { e.ma = g.ma; e.maTay = 1; dang[e.ma] = 1; return; }
-      if (g.co) { e.choMa = 1; return; }   // máy chủ đang cấp mã -> chờ, không đoán số
+      if (g.co && Date.now() - (e.choMa || (e.choMa = Date.now())) < 90000) return;   // máy chủ đang cấp mã -> chờ, không đoán số; b285: quá 90 giây (ca đã xuất từ trước, máy chủ không cấp) thì điền số như cũ
+      delete e.choMa;
       var m = kho.shift();
       if (!m) { while (dang[String(nx)] || D[String(nx)]) nx++; m = String(nx++); }
       e.ma = m; e.maGY = kho0.indexOf(m) >= 0 ? 'kho' : 'moi'; dang[m] = 1;
@@ -6570,7 +6571,7 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
   }
   function theMaGhiChu(e) {   // dòng nhỏ dưới ô mã
     var D = (CCS.maThe && CCS.maThe.dung) || {}, d = e.ma ? D[e.ma] : null;
-    if (e.choMa && !e.ma) return '<span class="warn">Đang chờ máy cấp mã theo tờ đăng ký đi làm</span>';   // b283
+    if (e.choMa && !e.ma && Date.now() - e.choMa < 90000) return '<span class="warn">Đang chờ máy cấp mã theo tờ đăng ký đi làm</span>';   // b283
     var g = theMaDk(e.so); if (g.ma && e.ma && g.ma !== String(e.ma)) return '<span class="warn">Tờ đăng ký đi làm ghi mã ' + esc(g.ma) + '</span>';
     if (d && d.t && theTenC(d.t) !== theTenC(e.ten)) return '<span class="warn">Mã ' + esc(e.ma) + ' đang là của ' + esc(d.t) + (d.n ? ' (' + esc(d.n) + ')' : '') + '</span>';
     if (e.maGY) return 'Mã đề xuất' + (e.maGY === 'kho' ? ' – mã cũ in thẻ nhưng người đó không đi làm' : ' – số tiếp theo') + ', sửa được';
@@ -6640,7 +6641,7 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
   function theChon() { return theDs().filter(function (e) { return e.chon; }); }
   function theKiem(ds, tiep) {   // thiếu tên / mã thì báo; mã dài ngắn khác nhau thì hỏi lại
     if (!ds.length) { toast('Tích chọn người cần làm thẻ.'); return; }
-    var cho = ds.filter(function (e) { return e.choMa && !String(e.ma || '').trim(); });   // b283
+    var cho = ds.filter(function (e) { return e.choMa && !String(e.ma || '').trim() && Date.now() - e.choMa < 90000; });   // b283
     if (cho.length) { toast('Đang chờ máy cấp mã thẻ cho ' + cho.map(function (e) { return hoaDau(e.ten || e.so); }).join(', ') + '. Thử lại sau ít giây.'); dkTai(1, ccVe); if (typeof dkCapMaGoi === 'function') dkCapMaGoi('HOJEONG'); return; }
     var thieu = ds.filter(function (e) { return !String(e.ten || '').trim() || !String(e.ma || '').trim() || !theAnhNguon(e); });
     if (thieu.length) { toast(thieu.length + ' người còn thiếu ' + (thieu.some(function (e) { return !theAnhNguon(e); }) ? 'ảnh, ' : '') + 'họ tên hoặc mã thẻ.'); ccVe(); return; }
@@ -7201,7 +7202,7 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
     var nhom = {}, dangDoc = ccCap().some(function (p) { return p.doc; });
     dkMoi().forEach(function (e) {
       if (e.dkLoi || e.dkGui || (e.p && e.p.doc) || !/^\d{12}$/.test(String(e.so || ''))) return;
-      if (!String(e.ten || '').trim() && dangDoc) return;   // b282: mặt sau đọc ra số trước, mặt trước (họ tên) còn đang đọc -> chờ đọc xong mới gửi
+      if (!String(e.ten || '').trim() && dangDoc && Date.now() - (e.choTen || (e.choTen = Date.now())) < 60000) return;   // b285: chờ tối đa 60 giây (ảnh khác kẹt đang đọc thì vẫn gửi để sale gõ tên); b282: mặt sau đọc ra số trước, mặt trước (họ tên) còn đang đọc -> chờ đọc xong mới gửi
       (nhom[e.dkCa] = nhom[e.dkCa] || []).push(e);
     });
     var kc = Object.keys(nhom)[0]; if (!kc) return;
@@ -7350,7 +7351,7 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
             if (x.ma) sub.push('Mã ' + x.ma + (HJ && dkmMoi(x) ? ' · Mới cấp' : '')); else if (HJ && !(tt.xuat && (!tt.xs.length || tt.xs.indexOf(x.so) >= 0))) dang = 'Đang cấp mã thẻ…';   // b268
             if (trung[kd(e.ten || '')] > 1 && x.so) sub.push('CCCD …' + String(x.so).slice(-4)); if (x.ghi) sub.push(x.ghi);
           }
-          else if ((e.p && e.p.doc) || (!String(e.ten || '').trim() && ccCap().some(function (p) { return p.doc; }))) dang = 'Đang đọc CCCD…';
+          else if ((e.p && e.p.doc) || (!String(e.ten || '').trim() && (!e.choTen || Date.now() - e.choTen < 60000) && ccCap().some(function (p) { return p.doc; }))) dang = 'Đang đọc CCCD…';
           else if (!/^\d{12}$/.test(String(e.so || ''))) canh = 'Chưa có số CCCD nên chưa đăng ký được. Gõ số ở mục In CCCD hoặc bỏ người này.';
           else if (e.dkLoi && /họ tên/.test(e.dkLoi)) canh = 'Chưa đọc được tên trên ảnh CCCD. Gõ họ tên để đăng ký.';
           else if (e.dkLoi) canh = e.dkLoi;
@@ -7514,7 +7515,7 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
   }
   function dkAnhTamTai(ds) {   // b284: người chưa có ảnh chân dung -> ảnh tạm cắt từ CCCD (ảnh vừa chọn trên máy này, không có thì lấy ảnh kho)
     CCS.dkTam = CCS.dkTam || {}; CCS.dkTamHoi = CCS.dkTamHoi || {};
-    var can = ds.filter(function (x) { return x && x.so && !x.anh && !CCS.dkAnh[x.so] && !CCS.dkTam[x.so] && !CCS.dkTamHoi[x.so]; });
+    var can = ds.filter(function (x) { return x && x.so && dkmMoi(x) && !x.anh && !CCS.dkAnh[x.so] && !CCS.dkTam[x.so] && !CCS.dkTamHoi[x.so]; });   // b285: chỉ người mới (người cũ có ảnh thẻ in trước đây)
     if (!can.length) return;
     var cap = {}; ccCap().forEach(function (p) { if (p.so && p.t && p.t.the) cap[p.so] = p.t.the; });
     var ve = 0, kho = [];
@@ -8220,6 +8221,7 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
     }, function (er) { ccTd(''); toastLoi(er.message); });
   }
   var BAN_MOI = [
+    { so: 285, ds: [{ i: '🛠️', t: 'Sửa lỗi nhỏ', m: 'Danh sách đăng ký không còn đứng chờ mãi ở "Đang đọc CCCD" hay "Đang chờ cấp mã" khi máy chủ không trả lời.' }] },
     { so: 284, ds: [{ i: '⏳', t: 'Báo rõ đang làm bước nào', m: 'Mỗi người trong danh sách hiện đang đọc CCCD, đang lưu vào kho hay đang cấp mã thẻ, xong thì báo đã lưu.' }, { i: '🖼️', t: 'Ảnh tạm từ CCCD', m: 'Người chưa có ảnh chân dung được lấy tạm ảnh trên CCCD, chạm ảnh để thay ảnh đẹp.' }, { i: '⚡', t: 'Cấp mã thẻ nhanh hơn', m: 'Thêm người vào danh sách HOJEONG có mã thẻ sau vài giây thay vì gần 1 phút.' }] },
     { so: 283, ds: [{ i: '🪪', t: 'Thẻ lấy đúng mã đã cấp', m: 'Màn Tạo thẻ lấy đúng mã thẻ máy đã cấp trên tờ đăng ký đi làm, không tự điền số khác.' }, { i: '✅', t: 'Bớt cảnh báo trùng mã thẻ', m: 'Mã đã ghi đúng cho người đang đi làm HOJEONG thì không còn bị báo trùng với thẻ in cũ của người khác.' }] },
     { so: 282, ds: [{ i: '🪪', t: 'Tự cắt thẻ CCCD tốt hơn', m: 'Thẻ đặt trên nền gần cùng màu (chăn, vải) giờ máy tự cắt được, không phải kéo 4 góc bằng tay.' }, { i: '⏳', t: 'Báo đang xử lý ảnh', m: 'Chọn ảnh CCCD xong, màn hình hiện ngay khung báo đang xử lý thay vì đứng im.' }, { i: '✅', t: 'Đăng ký không còn báo nhầm', m: 'Đăng ký đi làm chờ đọc xong họ tên mới gửi, không còn báo nhầm "Chưa đọc được tên" khi tên đã có.' }] },
