@@ -13,7 +13,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
 <script src="config.js"></script>
-<script>window.PB = { so: 272, luc: "27/11 10:34" };</script>
+<script>window.PB = { so: 273, luc: "27/11 13:25" };</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap">
 <style>
@@ -852,7 +852,7 @@ textarea.inp{font-family:inherit}
 .tha{flex:none;width:40px;height:60px;border-radius:6px;object-fit:cover;background:var(--soft)}
 .thx{border:1px dashed var(--edge);font-size:11px;color:var(--muted);padding:0}
 .dsd1{display:flex;flex-direction:column;gap:10px}.dsdh{font-size:16px}.dsdn{gap:10px;align-items:center}.dsdn .meta{flex:none}.dsdn .inp{flex:1;margin:0;min-width:0}.dsd1 .seg button{white-space:normal;overflow-wrap:break-word}
-.dsdt{padding:0 4px;margin:4px 0 6px;gap:10px}.dsdt .meta{min-width:0;white-space:normal;overflow-wrap:break-word}.dsdt .btn{flex:none;width:auto}.dsdg .dsdi{gap:10px;align-items:center}.dsdg .dsdi.on .thc{background:var(--cta);border-color:var(--cta)}.dsdc{min-width:0;flex:1}.dsdw{color:var(--warn);margin-top:2px}.dsdg .dsdc .sub.cau{white-space:normal;overflow:visible;text-overflow:clip}.dsda{margin-top:2px;color:var(--fg)}.dsda span{color:var(--muted)}.dsdd{margin-top:2px;color:var(--bad);font-weight:600}.dsds{display:block;padding:6px 0 2px;font-size:13.5px;text-align:left;white-space:normal}
+.dsdt{padding:0 4px;margin:4px 0 6px;gap:10px}.dsdt .meta{min-width:0;white-space:normal;overflow-wrap:break-word}.dsdt .btn{flex:none;width:auto}.dsdg .dsdi{gap:10px;align-items:center}.dsdg .dsdi.on .thc{background:var(--cta);border-color:var(--cta)}.dsdc{min-width:0;flex:1}.dsdw{color:var(--warn);margin-top:2px}.dsdg .dsdc .sub.cau{white-space:normal;overflow:visible;text-overflow:clip}.dsda{margin-top:2px;color:var(--fg)}.dsda span{color:var(--muted)}.dsdd{margin-top:2px;color:var(--bad);font-weight:600}.dsdok{margin-top:2px;color:var(--good);font-weight:600}.dsds{display:block;padding:6px 0 2px;font-size:13.5px;text-align:left;white-space:normal}
 .dscu .dsct{gap:2px 10px;margin-top:2px;flex-wrap:wrap}.dscu .dsct .meta{white-space:nowrap;flex:none;font-weight:600}.dscu .dsct .btn{flex:none;width:auto}
 .dscl{display:flex;flex-direction:column}.dscui{display:flex;align-items:center;gap:10px;width:100%;background:none;border:0;border-top:1px solid var(--line);padding:10px 2px;text-align:left;color:inherit;font:inherit;cursor:pointer}.dscl .dscui:first-child{border-top:0}
 .dscui[hidden]{display:none}.dscp{flex:none;width:28px;height:28px;border-radius:50%;border:2px solid var(--cta);color:var(--cta);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:18px;line-height:1}.dscui.tat .dscp{border-color:var(--edge);color:var(--muted)}.dscui.tat .nm{color:var(--muted)}
@@ -4448,7 +4448,12 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
         }
         if (!tot) {   // vẫn hỏng: rà cả ảnh tìm chỗ giống thẻ mẫu (thẻ nhỏ, dựng đứng, nền sọc)
           var ds2 = []; try { ds2 = timTheMau(cv); } catch (e) { ds2 = []; }
-          ds2.forEach(function (g1) { if (tot) return; var c1 = [g1]; try { var b1 = lemVao(xep(bamMep(cv, xep(g1)))); c1.unshift(b1); c1 = c1.concat(baGoc(b1)); } catch (e) { } c1.forEach(function (g2) { if (!tot) thu(ngangKhung(xep(g2)), true); }); });
+          ds2.forEach(function (g1) { if (tot) return; var c1 = [g1]; try { var b1 = lemVao(xep(bamMep(cv, xep(g1)))); c1.unshift(b1); c1 = c1.concat(baGoc(b1)); } catch (e) { } c1.forEach(function (g2) { if (!tot) thu(ngangKhung(xep(g2)), true); });
+            if (!tot) try {   // 27/11: thẻ phủ hết bề ngang ảnh, mép thẻ trùng mép ảnh / ngón tay che góc -> bcSua bỏ vì khung ra ngoài ảnh; tinh chỉnh từng góc theo thẻ mẫu
+              var gk = ngangKhung(xep(g1)), rk = xuLyTinh(cv, gk, true);
+              if (rk.bc) { var ok = tinhGoc(cv, gk, rk.pl.xoay, bcMau()[rk.bc.mau]); if (ok.v > 0.5) thu(ngangKhung(xep(ok.q)), false); }
+            } catch (e) { }
+          });
           if (tot) { r = tot.r; g = tot.g; kem = []; sua = 'tìm thẻ theo thẻ mẫu'; }
         } else { r = tot.r; g = tot.g; kem = []; sua = 'tự chỉnh khung theo thẻ mẫu'; }
       }
@@ -5003,6 +5008,15 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
     if (!o || o.loi) { x.doc = 'loi'; ccQrDoc(x); return; }
     x.doc = 'xong'; x.so = o.so || (x.qr ? x.so : ''); x.ten = o.ten || o.tenMrz || (x.qr ? x.ten : ''); x.co = o.co || ''; x.coId = o.id || ''; x.day = o.day || '';
     x.ngs = o.ngs || x.ngs || ''; x.hh = o.hh || '';
+    if (!x.so && x.gocDoc && !x.gocThu) {   // 27/11: ảnh cắt sai khung (thẻ sát mép ảnh, ngón tay che góc…) không ra số -> đọc lại trên ảnh gốc nguyên tấm
+      x.gocThu = 1; x.doc = 'dang';
+      var xongGoc = function (d) { if (d && d.so) { ccNhanSo(x, d); x.gocDoc = ''; } else { x.doc = 'xong'; ccQrDoc(x); } ccVe(); };
+      apiT({ v: 'cccdDocNhieu', ds: [x.gocDoc], lang: 1 }).then(function (o2) {
+        if (o2 && o2.drive) apiT({ v: 'cccdDoc', anh: x.gocDoc, lang: 1 }).then(xongGoc, function () { xongGoc(null); });
+        else xongGoc(o2 && !o2.loi ? (o2.kq || [])[0] : null);
+      }, function () { xongGoc(null); });
+      return;
+    }
     if (!x.so) ccQrDoc(x);
     var m = o.mat || (o.so ? (o.sau ? 'sau' : 'truoc') : '');   // máy chủ nhận mặt theo dòng mã IDVNM / chữ in sẵn trên thẻ
     if (m && !x.tay) { if (m !== x.mat) { x.mat = m; x.v++; } x.ro = true; }
@@ -5070,6 +5084,13 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
       im.src = u;
     });
   }
+  function ccGocDoc(cv) {   // 27/11: ảnh gốc nguyên tấm, cạnh dài 1600 px, đen trắng – chỉ để đọc số khi khung cắt hỏng
+    var k = Math.min(1, 1600 / Math.max(cv.width, cv.height)), c = document.createElement('canvas'); c.width = Math.round(cv.width * k); c.height = Math.round(cv.height * k);
+    var g = c.getContext('2d'); g.drawImage(cv, 0, 0, c.width, c.height);
+    var im = g.getImageData(0, 0, c.width, c.height), d = im.data;
+    for (var i = 0; i < d.length; i += 4) { var y = 0.299 * d[i] + 0.587 * d[i + 1] + 0.114 * d[i + 2]; d[i] = d[i + 1] = d[i + 2] = y; }
+    g.putImageData(im, 0, 0); return c.toDataURL('image/jpeg', 0.8);
+  }
   function ccNho(cv, w) { var c = document.createElement('canvas'); c.width = w; c.height = Math.round(w * cv.height / cv.width); c.getContext('2d').drawImage(cv, 0, 0, c.width, c.height); return c.toDataURL('image/jpeg', 0.8); }
   function ccTachVN(cv) {   // 03/11: ảnh chụp màn hình VNeID -> từng mặt (cắt đúng khung thẻ); ảnh thường -> [xuLy cả ảnh]
     var q = null; try { q = CC.tachVN(cv); } catch (e) { q = null; }
@@ -5088,7 +5109,7 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
       CCS.dang.i = i; ccVeTien();
       setTimeout(function () {
         ccMo(files[i]).then(function (cv) {
-          var ds0 = ccTachVN(cv), xs = ds0.map(function (r, j) { var x = { id: ++ccId, v: 0, file: files[i], doc: 'cho', tam: j ? '' : files[i].tamId || '', docSan: files[i].docSan && files[i].docSan.so ? files[i].docSan : null }; ccDat(x, r); if (r.vn) x.chinh = { sang: 50, tp: 50, net: 50, nguyen: 1 }; return x; });
+          var ds0 = ccTachVN(cv), xs = ds0.map(function (r, j) { var x = { id: ++ccId, v: 0, file: files[i], doc: 'cho', tam: j ? '' : files[i].tamId || '', docSan: files[i].docSan && files[i].docSan.so ? files[i].docSan : null }; ccDat(x, r); if (r.vn) x.chinh = { sang: 50, tp: 50, net: 50, nguyen: 1 }; if (r.kem && r.kem.length && ds0.length === 1) x.gocDoc = ccGocDoc(cv); return x; });   // 27/11: khung cắt chưa chuẩn -> giữ bản nhẹ ảnh gốc để đọc lại số khi ảnh cắt không ra số
           if (xs.length === 2) { xs[0].cap = xs[1].id; xs[1].cap = xs[0].id; xs.forEach(function (x) { x.tay = 1; x.ro = true; }); if (xs[0].mat === xs[1].mat) { xs[0].mat = 'truoc'; xs[1].mat = 'sau'; } }   // 2 mặt cùng 1 ảnh VNeID = 1 người
           xs.forEach(function (x) { CCS.ds.push(x); moi.push(x); }); buoc(i + 1);
         }, function () { loi++; buoc(i + 1); });
@@ -6764,28 +6785,35 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
     if ((!d.co && d.cho) || (!e.dcS && dslDcCho(e.so))) return '<div class="sub cau">Đang cắt, làm nét ảnh CCCD rồi đọc quê quán, thường trú…</div>';
     if (!d.co) return '';
     var dong = function (nhan, v, thieu) { return v ? '<div class="sub cau dsda"><span>' + nhan + ':</span> ' + esc(v) + '</div>' : '<div class="sub cau dsdd">' + esc(thieu) + '</div>'; };
-    h += dong('Quê quán', d.qq, d.khongAnh ? 'Chưa có ảnh CCCD trong kho – bấm Sửa, điền quê quán theo CCCD' : 'Chưa có quê quán – bấm Sửa, điền theo CCCD');
-    h += dong('Thường trú', d.tt, 'Chưa có thường trú – bấm Sửa, điền theo CCCD');
+    h += dong('Quê quán', d.qq, d.khongAnh ? 'Chưa có ảnh CCCD trong kho – bấm Sửa, điền quê quán theo CCCD' : 'Chưa có quê quán – bấm Sửa, điền theo VNeID');
+    h += dong('Thường trú', d.tt, 'Chưa có thường trú – bấm Sửa, điền theo VNeID');
     if (d.sdt) h += '<div class="sub cau dsda"><span>SĐT:</span> ' + esc(d.sdt) + '</div>';
+    var tl = { dang: 'Đã sửa tay, đang lưu…', ok: 'Đã sửa tay, đã lưu.', loi: 'Đã sửa tay, chưa lưu được lên máy chủ.', khongSo: 'Đã sửa tay, chỉ dùng cho danh sách này.' }[e.dcLuu];   // 27/11: trạng thái sau khi sửa tay
+    if (tl) h += '<div class="sub cau ' + (e.dcLuu === 'loi' ? 'dsdd' : 'dsdok') + '">' + tl + '</div>';
     if (d.canh && d.qq && d.tt) h += '<div class="sub dsdw cau">' + esc(d.canh) + '.</div>';
     return h;
   }
   function dslDcSua(e) {   // sửa quê quán / thường trú / SĐT của 1 người theo VNeID
     var d = dslDcCua(e), o_ = function (nhan, id, v, kieu, goi) { return '<label class="lb">' + nhan + '</label><textarea class="inp" id="' + id + '" rows="2"' + (kieu ? ' inputmode="' + kieu + '"' : '') + ' placeholder="' + esc(goi || '') + '">' + esc(v || '') + '</textarea>'; };
-    var sh = moSheet('<h3>Địa chỉ theo CCCD</h3><div class="meta cau">' + esc(e.ten ? hoaDau(e.ten) : '') + (e.so ? ' · ' + esc(e.so) : '') + '</div>' +
-      o_('Quê quán (huyện, tỉnh hoặc xã, tỉnh)', 'ddQ', d.qq, '', 'Ví dụ: Hiệp Hòa, Bắc Giang') + (d.qqT ? '<div class="meta cau">Trên thẻ: ' + esc(d.qqT) + '</div>' : '') +
-      o_('Thường trú (như trên CCCD)', 'ddT', d.tt, '', 'Ví dụ: Cẩm Trang, Mai Trung, Hiệp Hòa, Bắc Giang') + (d.ttT ? '<div class="meta cau">Trên thẻ: ' + esc(d.ttT) + '</div>' : '') +
+    var sh = moSheet('<h3>Địa chỉ theo VNeID</h3><div class="meta cau">' + esc(e.ten ? hoaDau(e.ten) : '') + (e.so ? ' · ' + esc(e.so) : '') + '</div>' +
+      o_('Quê quán (xã, tỉnh mới)', 'ddQ', d.qq, '', 'Ví dụ: Hiệp Hòa, Thành phố Bắc Ninh') + (d.qqT ? '<div class="meta cau">Trên thẻ: ' + esc(d.qqT) + '</div>' : '') +
+      o_('Thường trú (thôn, xã, tỉnh mới)', 'ddT', d.tt, '', 'Ví dụ: Cẩm Trang, Hợp Thịnh, Thành phố Bắc Ninh') + (d.ttT ? '<div class="meta cau">Trên thẻ: ' + esc(d.ttT) + '</div>' : '') +
       '<label class="lb">Số điện thoại</label><input class="inp" id="ddS" inputmode="tel" value="' + esc(d.sdt || '') + '">' +
-      '<div class="meta cau">Ghi đúng như trên CCCD. Quê quán thẻ cũ có huyện thì ghi huyện, tỉnh. App nhớ lại cho các lần sau.</div>' +
+      '<div class="meta cau">Ghi theo địa chỉ mới trên VNeID, đến cấp xã.</div><div class="meta cau">Bắc Ninh, Quảng Ninh nay là thành phố, không ghi tỉnh.</div><div class="meta cau">App nhớ lại cho các lần sau.</div>' +
       '<button class="btn" id="ddOk">Lưu</button><button class="btn lk" id="ddK">Thôi</button>');
     sh.querySelector('#ddK').onclick = function () { sh.remove(); };
     sh.querySelector('#ddOk').onclick = function () {
       var v = function (id) { return sh.querySelector('#' + id).value.replace(/\s+/g, ' ').trim(); };
       var m = { qq: v('ddQ'), tt: v('ddT'), sdt: v('ddS') };
-      e.dcS = m; sh.remove(); ccVe();
-      if (/^\d{12}$/.test(String(e.so || ''))) apiT({ v: 'dcSua', so: e.so, qq: m.qq, tt: m.tt, sdt: m.sdt }).then(function (o) {
-        if (o && o.m) CCS.dsl.dc[e.so] = o.m; else toastLoi((o && o.loi) || 'Chưa lưu được địa chỉ lên máy chủ, vẫn dùng cho danh sách này.');
-      }, function (er) { toastLoi('Chưa lưu được địa chỉ lên máy chủ: ' + er.message); });
+      e.dcS = m; sh.remove();
+      var ten = e.ten ? hoaDau(e.ten) : 'người này';
+      if (!/^\d{12}$/.test(String(e.so || ''))) { e.dcLuu = 'khongSo'; ccVe(); toast('Đã ghi địa chỉ của ' + ten + ' vào danh sách này. Chưa có số CCCD nên app chưa nhớ cho lần sau.'); return; }   // 27/11: báo rõ trạng thái sau khi sửa tay
+      e.dcLuu = 'dang'; ccVe();
+      apiT({ v: 'dcSua', so: e.so, qq: m.qq, tt: m.tt, sdt: m.sdt }).then(function (o) {
+        if (o && o.m) { CCS.dsl.dc[e.so] = o.m; e.dcLuu = 'ok'; toast('Đã lưu địa chỉ của ' + ten + '.'); }
+        else { e.dcLuu = 'loi'; toastLoi((o && o.loi) || 'Chưa lưu được địa chỉ lên máy chủ, vẫn dùng cho danh sách này.'); }
+        ccVe();
+      }, function (er) { e.dcLuu = 'loi'; ccVe(); toastLoi('Chưa lưu được địa chỉ lên máy chủ: ' + er.message); });
     };
   }
   function dslToIn(o) {   // tờ thông tin ứng tuyển: máy chủ điền sẵn mỗi người 1 tờ -> PDF -> In (bảng chia sẻ / hộp in)
@@ -8074,6 +8102,7 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
     }, function (er) { ccTd(''); toastLoi(er.message); });
   }
   var BAN_MOI = [
+    { so: 273, ds: [{ i: '🪪', t: 'Đọc được CCCD chụp sát mép', m: 'Ảnh CCCD chụp sát mép, bị ngón tay che góc nay app vẫn cắt đúng thẻ và đọc được số.' }, { i: '🏠', t: 'CHUNQIU ghi địa chỉ mới', m: 'Danh sách CHUNQIU tự đổi quê quán, thường trú sang địa chỉ mới như VNeID, Bắc Ninh ghi là thành phố.' }, { i: '✅', t: 'Báo đã lưu khi sửa địa chỉ', m: 'Sửa tay địa chỉ xong, dưới tên người hiện rõ đã lưu hay chưa.' }] },
     { so: 272, ds: [{ i: '🏆', t: 'Bảng xếp hạng sale', m: 'Trang Thu nhập có nút Bảng xếp hạng kỳ này: xem ai dẫn đầu, mình đứng thứ mấy, còn bao nhiêu giờ là vượt người trên. Bị vượt sẽ có thông báo.' }, { i: '🎉', t: 'Chúc mừng gọn hơn', m: 'Bỏ băng vinh danh trên đầu app. Nhiều người lên hạng cùng lúc thì gộp thành một màn Bảng vàng.' }] },
     { so: 271, ds: [{ i: '👑', t: 'Vương miện theo công kỳ trước', m: 'Hạng đeo trong tháng tính bằng giờ công kỳ trước, chốt ngày 05. Lên hạng là cả nhà cùng nhận màn chúc mừng và băng vinh danh trên đầu app 3 ngày.' }, { i: '🪽', t: 'Tài khoản có khung hạng', m: 'Ảnh ở Tài khoản đội khung hạng có cánh và hiệu ứng, nút đổi ảnh không còn bị che.' }] },
     { so: 270, ds: [{ i: '👷', t: 'Số người trên thẻ công ty', m: 'Thẻ công ty ở Đối tác nay ghi cùng số người đi làm với đầu trang công ty, kể cả những ngày đầu kỳ.' }, { i: '🗂️', t: 'Trang TREND gọn hơn', m: 'Thẻ đầu trang cho biết số người đang làm, đã nghỉ, chờ nhận việc. Các việc phải làm gom vào một khung, danh sách chia 3 tab và xếp theo người tuyển.', c: [['Xem', 'Trang TREND → khung [[Việc cần làm]] → chạm từng việc để làm ngay. Chuyển tab [[Đang làm]], [[Phỏng vấn]], [[Đã nghỉ]] để xem danh sách.']] }] },
