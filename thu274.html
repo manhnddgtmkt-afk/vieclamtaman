@@ -13,7 +13,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
 <script src="config.js"></script>
-<script>window.PB = { so: 273, luc: "27/11 13:40" };</script>
+<script>window.PB = { so: 273, luc: "27/11 13:42" };</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap">
 <style>
@@ -13330,7 +13330,6 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
     if (viec === 'DT') { d.push(['Cộng', vnd(k.cong)]); d.push(['Thuế GTGT', vnd(k.thue)]); d.push(['Tổng thanh toán', vnd(k.tong)]); }
     else if (k.canAnh) d.push(['Ảnh check in-out đã gắn', k.soAnh + '/' + k.canAnh + ' ảnh']);
     return q2H('File vừa xuất', '') + '<div class="grp v8kq">' + d.map(function (r) { var th = r[0] === 'Ảnh check in-out đã gắn' && k.soAnh < k.canAnh; return '<div class="it"><span class="nm" style="flex:1;min-width:0">' + esc(r[0]) + '</span><b class="num' + (th ? ' v8cam' : '') + '">' + esc(r[1]) + '</b></div>'; }).join('') + '</div>' +
-      '<div class="meta v7nt">' + yDong([esc(k.ten || '')]) + '</div>' +
       '<button class="btn" data-bxgui="' + viec + '">Gửi file (Zalo, Mail)</button>' +
       '<a class="btn ghost" style="display:block;text-align:center;text-decoration:none" href="' + esc(k.link) + '" target="_blank" rel="noopener">Mở file</a>';
   }
@@ -13354,7 +13353,7 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
     var nd = document.getElementById('bxNd'); if (!nd || !BX.sh || !document.body.contains(BX.sh)) return;
     var x = BX.xem, h = bxKqHtml('BEST');
     if (BX.xuatDang === 'BEST') h = '<div class="card"><b>Đang tạo file gửi BEST…</b><div class="meta v7nt">' + yDong(['Thường mất 30–60 giây.', 'Giữ app mở cho tới khi xong.']) + '</div></div>' + h;
-    if (BX.xemDang && !x) { nd.innerHTML = h + '<div class="meta" style="margin-top:12px">Đang đọc bảng công BEST…</div>'; bxNoiNut(nd); return; }
+    if (BX.xemDang && !x) { nd.innerHTML = h + '<div class="meta v7nt" style="margin-top:12px">' + yDong(['Đang đọc bảng công BEST…', 'Có thể mất khoảng 1 phút.']) + '</div>'; bxNoiNut(nd); return; }
     if (BX.xemLoi && !x) { nd.innerHTML = h + '<div class="note warn">' + yDong([esc(BX.xemLoi)]) + '</div><button class="btn ghost" id="bxLai">Thử lại</button>'; bxNoiNut(nd); document.getElementById('bxLai').onclick = bxXemTai; return; }
     if (!x) { nd.innerHTML = h; bxNoiNut(nd); return; }
     var thieu = bxThieu(x), canh = [];
@@ -13497,7 +13496,7 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
       h += '<div class="bxPh">' + q2H('Xuất bảng công', '');
       if (dang) h += '<div class="card"><b>Đang tạo file…</b><div class="meta v7nt">' + yDong(['Thường mất 30–60 giây.', 'Giữ app mở cho tới khi xong.']) + '</div></div>';
       h += bxKqHtml('DT');
-      if (BX.dtDang && !x) h += '<div class="meta" style="margin:10px 6px">Đang đọc bảng công BEST…</div>';
+      if (BX.dtDang && !x) h += '<div class="meta v7nt" style="margin:10px 6px">' + yDong(['Đang đọc bảng công BEST…', 'Có thể mất khoảng 1 phút.']) + '</div>';
       else if (BX.dtLoi && !x) h += '<div class="note warn">' + yDong(String(BX.dtLoi).split('\n').map(esc)) + '</div><button class="btn ghost" id="bxDtLai">Thử lại</button>';
       else if (x) {
         h += '<div class="grp v8kq">' + [['Người có giờ công', x.nP + ' người'], ['Cộng', vnd(x.cong)], ['Thuế GTGT ' + x.thuePt + '%', vnd(x.thue)], ['Tổng thanh toán', vnd(x.tong)]].map(function (r) { return '<div class="it"><span class="nm" style="flex:1;min-width:0">' + esc(r[0]) + '</span><b class="num">' + esc(r[1]) + '</b></div>'; }).join('') + '</div>';
