@@ -13,7 +13,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
 <script src="config.js"></script>
-<script>window.PB = { so: 277, luc: "27/11 17:58" };</script>
+<script>window.PB = { so: 278, luc: "27/11 18:11" };</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap">
 <style>
@@ -843,7 +843,7 @@ textarea.inp{font-family:inherit}
 .ccdem{height:80px;flex:none}
 .ccmay{font-size:12px;line-height:1.3;color:var(--muted);text-align:center;white-space:nowrap}.ccday .ccmay{position:absolute;left:0;right:0;bottom:100%;padding:6px 10px;background:var(--card);border-top:1px solid var(--line)}.ccmay b{color:var(--fg)}.ccmay i{display:inline-block;width:8px;height:8px;border-radius:4px;margin:0 6px 1px 0;background:#475467;vertical-align:middle}.ccmay.mau i{background:linear-gradient(135deg,#E3262C,#F59E0B 50%,#0EA5E9)}.ccxl+.ccmay,.sheet .ccmay{margin:2px 0 8px}
 #ccChe{margin-bottom:-2px}
-.thk{gap:10px;align-items:center}.thk .seg{flex:1}.thk .seg button{padding:6px 4px;font-size:13.5px;white-space:nowrap}
+.thk{gap:10px;align-items:center}.ikho{margin:4px 0 10px}.thk .seg{flex:1}.thk .seg button{padding:6px 4px;font-size:13.5px;white-space:nowrap}
 .tht{padding:12px 14px;display:flex;flex-direction:column;gap:10px}.tht.on{box-shadow:0 0 0 2px var(--cta)}
 .thr{align-items:center;gap:12px}
 .thc{flex:none;width:28px;height:28px;border-radius:8px;border:2px solid var(--edge);background:var(--card);color:#fff;font-weight:700;font-size:16px;line-height:1;padding:0}
@@ -5522,7 +5522,8 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
   function inSan(urls, kieu, k, n) {   // trang in chưa dựng sẵn: dựng xong hiện nút In để chạm (cú chạm mới)
     if (KHONG_IN) { inPdf(urls, kieu); return; }
     inDung(urls, kieu, k).then(function () {
-      var sh = moSheet('<h3>Đã sẵn sàng in</h3><div class="meta">' + n + ' tờ ' + (INS.kieu === 'the5' ? 'A5 (khổ 5 × 7 inch)' : 'A4') + '. Bấm In để mở hộp in' + (INS.kieu === 'dsl' ? ', kiểm tra tên máy in là máy đen trắng' : '') + '.</div>' + ccMay(INS.kieu === 'the' || INS.kieu === 'the5') + '<button class="btn" id="isI">In ' + n + ' tờ</button><button class="btn lk" id="isK">Thôi</button>');
+      var sh = moSheet('<h3>Đã sẵn sàng in</h3>' + (INS.kieu === 'the' || INS.kieu === 'the5' ? theKhoSeg() : '') + '<div class="meta">' + n + ' tờ ' + (INS.kieu === 'the5' ? 'khổ 5 × 7 inch' : 'A4') + '. Bấm In để mở hộp in' + (INS.kieu === 'dsl' ? ', kiểm tra tên máy in là máy đen trắng' : '') + '.</div>' + ccMay(INS.kieu === 'the' || INS.kieu === 'the5') + '<button class="btn" id="isI">In ' + n + ' tờ</button><button class="btn lk" id="isK">Thôi</button>');
+      theKhoGan(sh);
       sh.querySelector('#isI').onclick = function () { sh.remove(); inGoi(); };
       sh.querySelector('#isK').onclick = function () { sh.remove(); };
     });
@@ -5915,7 +5916,7 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
   var MAY_IN = { mau: 'Màu HP Smart Tank 210', den: 'Đen trắng Brother' };
   function ccMay(the) {
     var may = the ? MAY_IN.mau : MAY_IN.den; may = may.charAt(0).toLowerCase() + may.slice(1);   // b220: "Khi in chọn máy màu HP…"
-    return '<div class="ccmay' + (the ? ' mau' : '') + '"><i></i>Khi in chọn máy <b>' + esc(may) + '</b> · ' + (the ? (theKho() === 'A5' ? 'giấy A5' : 'khổ A4 · 100%') : 'khổ A4') + '</div>';
+    return '<div class="ccmay' + (the ? ' mau' : '') + '"><i></i>Khi in chọn máy <b>' + esc(may) + '</b> · ' + (the ? (theKho() === 'A5' ? 'khổ 5 × 7 inch' : 'khổ A4') : 'khổ A4') + '</div>';
   }
   function ccDayDat(t) {   // đặt thanh nút ngay trên thanh tab dưới cùng
     var d = t.querySelector('.ccday'), nv = document.querySelector('.nav');
@@ -5991,7 +5992,7 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
       var mb = o.bl.size / 1048576, f = null;
       try { f = new File([o.bl], ten, { type: 'application/pdf' }); } catch (e) { }
       var cl = o.n + ' trang · ' + (mb < 1 ? Math.max(1, Math.round(mb * 1024)) + ' KB' : mb.toFixed(1).replace('.', ',') + ' MB');
-      var sh = inK ? moSheet('<h3>' + (inK === 'cc' ? 'In CCCD' : inK === 'dsl' ? 'In danh sách đi làm' : 'In thẻ HOJEONG') + '</h3><div class="meta">' + cl + '</div>' + ccMay(inK === 'the' || inK === 'the5') +
+      var sh = inK ? moSheet('<h3>' + (inK === 'cc' ? 'In CCCD' : inK === 'dsl' ? 'In danh sách đi làm' : 'In thẻ HOJEONG') + '</h3>' + (inK === 'the' || inK === 'the5' ? theKhoSeg() : '') + '<div class="meta">' + cl + '</div>' + ccMay(inK === 'the' || inK === 'the5') +
         '<div class="meta">Bấm In, trong bảng hiện ra chọn <b>In</b>, rồi chọn đúng máy in và khổ giấy như dòng trên.</div><button class="btn" id="gP">In</button><button class="btn lk" id="gK">Thôi</button>') :
         moSheet('<h3>PDF sẵn sàng</h3><div class="meta">' + esc(ten) + ' · ' + cl + '</div>' +
         (mb > 20 ? '<div class="note warn">File lớn, gửi email có thể bị chặn (thường giới hạn 25 MB). Nên chia làm nhiều lượt ít người hơn.</div>' : '') +
@@ -6001,6 +6002,7 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
         var u = URL.createObjectURL(o.bl), a = document.createElement('a'); a.href = u; a.target = '_blank'; a.download = ten; document.body.appendChild(a); a.click(); a.remove();
         setTimeout(function () { URL.revokeObjectURL(u); }, 120000);
       }
+      if (inK === 'the' || inK === 'the5') theKhoGan(sh);
       sh.querySelector('#gK').onclick = function () { sh.remove(); };
       sh.querySelector('#gP').onclick = function () {
         sh.remove();
@@ -6440,7 +6442,11 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
   // 31/10: khổ A5: 4 thẻ / tờ, thẻ xoay đứng (5,3 × 8,1 cm), 2 cột × 2 hàng, khe 6 mm; khối 112 × 168 mm.
   // Máy HP chỉ báo khổ 5 × 7 inch cho iPhone (không có A5) -> trang PDF / trang in đúng 5 × 7 inch (127 × 177,8 mm) để in 100%, giấy A5 vẫn đặt trong khay.
   var THE_TR5 = { tren: 8.9, rong: 110, cao: 160 };   // 13/11: thẻ 8,0 × 5,5 đứng, 2 × 2 sát nhau (chung đường cắt), căn giữa trang 5 × 7 inch, lề ~6,5–6,9 mm
-  function theKho() { return doc('vlta_theKho') === 'A5' ? 'A5' : 'A4'; }
+  var THE_KHO = 'A5';   // b278: máy HP 210 chỉ có khổ 5 × 7 inch -> mặc định 5 × 7 trên mọi máy, không lưu theo máy; A4 chỉ chọn ở hộp in cho lượt đó
+  function theKho() { return THE_KHO === 'A4' ? 'A4' : 'A5'; }
+  function theKhoSeg() { return '<div class="row thk ikho"><span class="meta">Khổ giấy</span><div class="seg">' + [['A5', '5 × 7 inch · 4 thẻ/tờ'], ['A4', 'A4 · 8 thẻ/tờ']].map(function (g) { return '<button data-ik="' + g[0] + '"' + (theKho() === g[0] ? ' class="on"' : '') + '>' + g[1] + '</button>'; }).join('') + '</div></div>'; }
+  function theKhoGan(sh) { sh.querySelectorAll('[data-ik]').forEach(function (b) { b.onclick = function () { var g = b.getAttribute('data-ik'); if (g === theKho()) return; THE_KHO = g; sh.remove(); theInLai(); }; }); }
+  function theInLai() { var ds = theChon(); if (!ds.length) return; ccTd('Đang dựng thẻ…'); setTimeout(function () { var u = theTrang(ds); ccTd(''); ccTrang(u, theKho() === 'A5' ? 'the5' : 'the'); }, 30); }
   function theBo() { return theKho() === 'A5' ? { rong: THE_TR5.rong, tren: THE_TR5.tren, kho: 'A5' } : { rong: THE_TR.rong, tren: THE_TR.tren }; }
   function theTrang5(ds) {
     var k = 300 / 25.4, out = [];
@@ -6647,9 +6653,9 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
     theMaTai(); theGanMa(ds);
     var caiDat = '';   // b220: người làm thẻ trước, Cài đặt in sau (bản vẽ L2.3)
     if (!ds.length) h += '<div class="card v8h"><b class="v8t">Thẻ ra vào HOJEONG</b><ol class="ySt"><li>Bấm Thêm người.</li><li>Chọn trong kho CCCD, chọn ảnh CCCD hoặc tự nhập.</li><li>Kiểm tra tên, mã thẻ rồi bấm In thẻ.</li></ol><button class="btn" id="thKho">Thêm người</button></div>';   // b268
-    else caiDat = q2H('Cài đặt in') + '<div class="card v8cd"><div class="row thk"><span class="meta">Khổ giấy</span><div class="seg" id="thKho">' + ['A4', 'A5'].map(function (g) { return '<button data-tk="' + g + '"' + (theKho() === g ? ' class="on"' : '') + '>' + g + (g === 'A4' ? ' · 8 thẻ/tờ' : ' · 4 thẻ/tờ') + '</button>'; }).join('') + '</div></div>' +
+    else caiDat = q2H('Cài đặt in') + '<div class="card v8cd">' +
       '<div class="row thk"><span class="meta">Sáng ảnh</span><input type="range" id="thSang" min="0" max="100" step="5" value="' + theSangMuc() + '" style="flex:1"><span class="meta num" id="thSangV" style="min-width:64px;text-align:right">' + theSangChu() + '</span></div>' +
-      '<div class="meta cau">' + yDong(['Mỗi thẻ 8,0 × 5,5 cm, cần in màu.', theKho() === 'A5' ? 'Đặt giấy A5 vào khay; hộp in hiện khổ 5 × 7 inch là đúng.' : '']) + '</div></div>';
+      '<div class="meta cau">' + yDong(['Mỗi thẻ 8,0 × 5,5 cm, cần in màu.', 'Khổ giấy chọn ở hộp in khi bấm In thẻ.']) + '</div></div>';
     if (ds.length) h += q2H('Người làm thẻ', 'Đã chọn ' + n + '/' + ds.length) + '<div class="meta v8dd">Tích người cần làm thẻ, gõ mã thẻ.</div>';
     h += ds.map(function (e) {
       var n0 = theAnhNguon(e), dd = e.chon;
@@ -6688,7 +6694,6 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
     document.getElementById('thThem').onclick = theThemMenu;   // b268: 4 cách thêm người
     document.getElementById('thGui').onclick = theGui;
     document.getElementById('thLs').onclick = function () { if (!CCS.thLs) { toast('Đang tải danh sách thẻ đã in…'); theLsTai(); return; } theLsMo(); };
-    t.querySelectorAll('[data-tk]').forEach(function (b) { b.onclick = function () { luu('vlta_theKho', b.getAttribute('data-tk')); ccVe(); }; });
     document.getElementById('thIn').onclick = theIn;
     var bd = document.getElementById('thDsl'); if (bd) bd.onclick = function () { dslTuThe(theChon()); };
   }
@@ -8107,6 +8112,7 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
     }, function (er) { ccTd(''); toastLoi(er.message); });
   }
   var BAN_MOI = [
+    { so: 278, ds: [{ i: '🖨️', t: 'Chọn khổ giấy ngay lúc in thẻ', m: 'Bấm In thẻ, hộp in hiện luôn nút chọn khổ giấy. Mặc định 5 × 7 inch, 4 thẻ một tờ, máy nào cũng vậy.', c: [['In', 'Tạo thẻ ra vào → [[In thẻ]] → kiểm tra khổ [[5 × 7 inch · 4 thẻ/tờ]] → [[In]].']] }] },
     { so: 277, ds: [{ i: '🧾', t: 'Xuất bảng kê gửi Trend', m: 'Bảng kê theo mẫu Trend, Bên B là Job Smart, VAT 8%, tự điền giờ từng loại, bằng chữ, kèm trang chi tiết từng người. Người quá 3 tháng tính phí tự được bỏ giờ.', c: [['Xuất', 'Trang TREND → chạm dòng [[Bảng công kỳ …]] → [[Xuất bảng kê gửi Trend]] → xem trước → [[Xuất Excel và PDF]] → [[Gửi file PDF]].']], v: 'chu,ketoan' }] },
     { so: 276, ds: [{ i: '⚡', t: 'Mở bảng ảnh BEST nhanh hơn', m: 'Bảng công chưa ai sửa thì danh sách hiện ngay, ảnh nhỏ tải sau.' }, { i: '↩️', t: 'Thoát ra vẫn chạy tiếp', m: 'Đang đọc bảng công, tải ảnh hay tạo file mà thoát ra làm việc khác, quay lại app tự chạy tiếp.' }] },
     { so: 275, ds: [{ i: '⚡', t: 'Chọn ảnh không phải chờ', m: 'Chọn ảnh cho người này xong chọn tiếp người khác ngay, ảnh tải ngầm.' }, { i: '🖼️', t: 'Chọn 2 ảnh một lượt', m: 'Mỗi người 1 nút Chọn ảnh check in – out, chọn luôn 2 ảnh, máy tự xếp ảnh nào vào, ảnh nào ra.' }, { i: '👥', t: 'Ảnh chụp chung', m: 'Lúc chọn ảnh, tích luôn người đi cùng (gợi ý theo giờ chấm công), ô của người đó tự điền.' }, { i: '✋', t: 'Ảnh không đọc được giờ', m: 'Máy hỏi lại, sale xác nhận đúng thì vẫn gắn.' }, { i: '🕒', t: 'Đọc dấu giờ ảnh chắc hơn', m: 'Chữ ngày đè lên vật màu sáng vẫn đọc được.' }] },
