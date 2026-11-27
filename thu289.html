@@ -13,7 +13,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
 <script src="config.js"></script>
-<script>window.PB = { so: 287, luc: "28/11 00:39" };</script>
+<script>window.PB = { so: 287, luc: "28/11 00:41" };</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap">
 <style>
@@ -6341,7 +6341,7 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
       '<div class="ckn"><label>Số cuối CCCD</label><input class="inp" id="ckDuoi" inputmode="numeric" maxlength="12" placeholder="Không bắt buộc" value="' + esc(k.duoi) + '"></div>' +
       '<button class="btn" id="ckTim"' + (k.dang ? ' disabled' : '') + '>' + (k.dang === 1 ? 'Đang tìm…' : 'Tìm theo bộ lọc') + '</button></div></details></div>';
     h += '<div id="ckKq">' + ckKqHtml(k) + '</div>';
-    if (S.tab !== 'cc') h += '<div class="ccday ckCty"><button class="btn ghost" id="ckLai">Quay lại</button><button class="btn ghost ckA" id="ckDsl">Thêm vào danh sách</button><button class="btn ckA" id="ckThe">Làm thẻ</button></div><div class="ccdem"></div>';   // b289: mở kho từ trang công ty
+    if (S.dtGt || S.tab !== 'cc') h += '<div class="ccday ckCty"><button class="btn ghost" id="ckLai">Quay lại</button><button class="btn ghost ckA" id="ckDsl">Thêm vào danh sách</button><button class="btn ckA" id="ckThe">Làm thẻ</button></div><div class="ccdem"></div>';   // b289: mở kho từ trang công ty
     else h += '<div class="ccday">' + ccMay(0) + '<button class="btn ghost" id="ckLai">Quay lại</button><button class="btn ghost ccgui ccg2" id="ckGui" aria-label="Chia sẻ PDF">' + ICON_GUI + '<small>PDF</small></button><button class="btn ghost ccgui ccg2" id="ckAnh" aria-label="Lưu ảnh về máy">' + ICON_ANH + '<small>Ảnh</small></button><button class="btn" id="ckIn"></button></div><div class="ccdem"></div>';
     t.innerHTML = h;
     ccDayDat(t); ckBar();
