@@ -3294,6 +3294,7 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
     var le = raw.le ? raw.le.reduce(function (a, x) { return a + x; }, 0) : 0;
     // 26/11: trả công lẻ / điền giờ ngày máy chấm thiếu giờ – công ty đồng ý trả thì bắt buộc ghi lý do (đưa vào file gửi công ty)
     var gcS = String(gc || ''), choLy = !best && /CHƯA CÓ LÝ DO/.test(gcS), thieuVT = !best && /(^|\n)(THIẾU GIỜ|CHƯA TÍNH ĐƯỢC GIỜ)/.test(gcS);
+    var coKt = !best && !!le && !raw.xn && /(^|\n)(CÔNG LẺ – CHƯA TÍNH TIỀN|KHÔNG TRẢ CÔNG LẺ)/.test(gcS), daKt = coKt && /(^|\n)KHÔNG TRẢ CÔNG LẺ/.test(gcS);   // b294: công lẻ HOJEONG – chọn Không trả (không cần lý do)
     var nhanLy = 'Lý do ' + S.cty + ' đồng ý trả', goiYLy = 'Ví dụ: Tổ trưởng Lan cho về sớm vì bị sốt';
     var nhanLy0 = choLy ? nhanLy : (thieuVT ? 'Lý do ' + S.cty + ' xác nhận ngày này' : 'Thêm ghi chú'), goiY0 = choLy || thieuVT ? goiYLy : 'Ví dụ: ' + S.cty + ' đồng ý trả';
     function oSo(k, nhan) { var x = raw.v[k]; return '<div><label class="lb">' + nhan + '</label><input class="inp" id="og' + k + '" inputmode="decimal" value="' + (x === '' || x === 0 ? '' : esc(String(x))) + '" placeholder="' + (raw.le && raw.le[k] ? 'lẻ ' + esc(String(raw.le[k])) + 'h' : '–') + '"></div>'; }
@@ -3309,20 +3310,26 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
           : '<div class="g2">' + oSo(0, 'Ca ngày · HC') + oSo(1, 'Ca ngày · TC') + '</div><div class="g2">' + oSo(2, 'Ca đêm · HC') + oSo(3, 'Ca đêm · TC') + '</div>') +
         (best && raw.xn ? '<div class="note">Công lẻ đã xác nhận trả: <b>' + esc(String(raw.hcXn || '')) + ' giờ</b> (' + esc(S.cty) + ' đồng ý trả).</div>' : '') +
         (best && le && !raw.xn ? '<div class="note warn">Về sớm – công lẻ ' + esc(String(le)) + ' giờ, chưa tính lương. ' + esc(S.cty) + ' đồng ý trả thì bấm "Trả công lẻ".</div>' : '') +
-        '<div class="g2 ogN">' + (le && !raw.xn ? '<button class="btn ghost" id="ogXn">Trả công lẻ</button>' : '') + (best && raw.xn ? '<button class="btn ghost" id="ogBoLe">Bỏ trả công lẻ</button>' : '') + '<button class="btn ghost" id="ogBo"' + ((le && !raw.xn) || (best && raw.xn) ? '' : ' style="grid-column:1/-1"') + '>Không tính ngày</button></div>' : '') +
+        (coKt && !daKt && sv >= 46352 ? '<div class="note warn">Công lẻ chưa xác nhận.<br>' + esc(S.cty) + ' đồng ý trả: bấm <b>Trả công lẻ</b> và ghi lý do.<br>Không trả: bấm <b>Không trả</b>.<br>Chưa chọn thì chưa xuất được phiếu lương.</div>' : '') +
+        '<div class="g2 ogN">' + (le && !raw.xn ? '<button class="btn ghost" id="ogXn">Trả công lẻ</button>' : '') +
+        (coKt ? '<button class="btn ghost' + (daKt ? ' on' : '') + '" id="ogKt">' + (daKt ? '✓ Đã chọn không trả' : 'Không trả') + '</button>' : '') +   // b294
+        (best && raw.xn ? '<button class="btn ghost" id="ogBoLe">Bỏ trả công lẻ</button>' : '') + '<button class="btn ghost" id="ogBo"' + (((le && !raw.xn) && !coKt) || (best && raw.xn) ? '' : ' style="grid-column:1/-1"') + '>Không tính ngày</button></div>' : '') +
       // 24/10: bỏ "Báo sai giờ" – người không phụ trách công ty chỉ xem; người phụ trách sửa thẳng (chủ được báo tự động)
       (sua ? '<label class="lb" id="bsLb">' + esc(nhanLy0) + '</label><textarea class="inp" id="bsNd" rows="2" placeholder="' + esc(goiY0) + '"></textarea>' +
         '<div class="msg" id="bsM"></div><button class="btn" id="bsOk">Lưu</button>' : '') + '<button class="btn ghost" id="bsHuy">Đóng</button>');
     var n0 = best ? 2 : 4, kieu = '';
     function oDoc() { var a = []; for (var k = 0; k < n0; k++) a.push(document.getElementById('og' + k).value.trim()); return a; }
     if (sua) {
+      var rsKt = function () { var e = document.getElementById('ogKt'); if (e && !daKt) { e.classList.remove('on'); e.textContent = 'Không trả'; } };
       var xn = document.getElementById('ogXn');
-      if (xn) xn.onclick = function () { if (!best) for (var k = 0; k < 4; k++) document.getElementById('og' + k).value = raw.le && raw.le[k] ? raw.le[k] : ''; xn.classList.add('on'); xn.textContent = '✓ Trả công lẻ'; document.getElementById('ogBo').classList.remove('on'); kieu = 'le'; if (!best) datNhanLy(nhanLy, goiYLy, true); };
+      if (xn) xn.onclick = function () { rsKt(); if (!best) for (var k = 0; k < 4; k++) document.getElementById('og' + k).value = raw.le && raw.le[k] ? raw.le[k] : ''; xn.classList.add('on'); xn.textContent = '✓ Trả công lẻ'; document.getElementById('ogBo').classList.remove('on'); kieu = 'le'; if (!best) datNhanLy(nhanLy, goiYLy, true); };
       // 26/11: đổi nhãn ô ghi chú thành ô lý do (bắt buộc) khi trả công lẻ
       var datNhanLy = function (nh, gy, tro) { var lb = document.getElementById('bsLb'), ta = document.getElementById('bsNd'); if (lb) lb.textContent = nh; if (ta) { ta.placeholder = gy; if (tro) ta.focus(); } };
+      var kt = document.getElementById('ogKt');   // b294: Không trả công lẻ (không cần lý do)
+      if (kt && !daKt) kt.onclick = function () { kt.classList.add('on'); kt.textContent = '✓ Không trả'; if (xn) { xn.classList.remove('on'); xn.textContent = 'Trả công lẻ'; } document.getElementById('ogBo').classList.remove('on'); document.getElementById('ogBo').textContent = 'Không tính ngày'; kieu = 'khongLe'; for (var k = 0; k < 4; k++) { var x0 = raw.v[k]; document.getElementById('og' + k).value = x0 === '' || x0 === 0 ? '' : String(x0); } datNhanLy('Ghi chú (không bắt buộc)', goiY0); };
       var boLe = document.getElementById('ogBoLe');   // 02/11: BEST bỏ xác nhận công lẻ
       if (boLe) boLe.onclick = function () { boLe.classList.add('on'); boLe.textContent = '✓ Bỏ trả công lẻ'; document.getElementById('ogBo').classList.remove('on'); kieu = 'boLe'; };
-      document.getElementById('ogBo').onclick = function () { for (var k = 0; k < n0; k++) document.getElementById('og' + k).value = ''; this.classList.add('on'); this.textContent = '✓ Không tính ngày'; kieu = 'bo'; if (xn) { xn.classList.remove('on'); xn.textContent = 'Trả công lẻ'; } if (boLe) { boLe.classList.remove('on'); boLe.textContent = 'Bỏ trả công lẻ'; } if (!best) datNhanLy(nhanLy0, goiY0); };
+      document.getElementById('ogBo').onclick = function () { rsKt(); for (var k = 0; k < n0; k++) document.getElementById('og' + k).value = ''; this.classList.add('on'); this.textContent = '✓ Không tính ngày'; kieu = 'bo'; if (xn) { xn.classList.remove('on'); xn.textContent = 'Trả công lẻ'; } if (boLe) { boLe.classList.remove('on'); boLe.textContent = 'Bỏ trả công lẻ'; } if (!best) datNhanLy(nhanLy0, goiY0); };
     }
     document.getElementById('bsHuy').onclick = function () { sh.remove(); };
     if (!sua) return;
@@ -3349,6 +3356,16 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
           if (o.loi) { traLai1(o.loi); return; }
           delete h.dongBo[sv]; veLich(h, T); lamMoiHs(h);
         }, function (e) { traLai1(e.message); });
+        return;
+      }
+      if (kieu === 'khongLe') {   // b294: công lẻ HOJEONG – sale chọn Không trả (giữ xám, không tính tiền, hết chặn phiếu)
+        m.textContent = 'Đang lưu…'; document.getElementById('bsOk').disabled = true;
+        apiT({ v: 'suaNgay', cty: S.cty, r: h.p.r, s: sv, cu: raw.v, moi: raw.v, kieu: 'khongLe' }).then(function (o) {
+          if (o.loi) { document.getElementById('bsOk').disabled = false; m.textContent = o.loi; return; }
+          sh.remove(); toast('Đã ghi không trả công lẻ ' + ddmm(serialDate(sv)) + '.');
+          if (nd) apiT({ v: 'baoSai', cty: S.cty, r: h.p.r, s: sv, nd: nd, loai: 'gc' }).then(function () { lamMoiHs(h); }, function () { });
+          lamMoiHs(h);
+        }, function (e) { document.getElementById('bsOk').disabled = false; m.textContent = e.message; });
         return;
       }
       if (!doiGio && !nd) { if (sua) { sh.remove(); return; } m.textContent = 'Ghi rõ giờ đúng hoặc lý do.'; return; }
@@ -3450,7 +3467,9 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
     var cb = String(o.canhBao || '').trim(), x = '', coTC = S.cty === 'BEST' && (o.tcD || o.tc);
     if (coTC) cb = cb.split('\n').filter(function (s) { return !/^(Tuần này mới \d+ công|Đã xác nhận thanh toán tăng cường)/.test(s.trim()); }).join('\n').trim();   // 28/10: đã có khối tăng cường riêng
     if (coTC) x += veTCNote(o);
-    if (o.chan) x += '<div class="note bad">Phiếu tháng lệch với cột "Còn phải trả" trên BCC – chưa gửi cho công nhân, báo kế toán kiểm tra.</div>';
+    var leC = o.chanLe || [];   // b294: còn công lẻ chưa chọn Trả / Không trả -> chưa cho xuất phiếu
+    if (leC.length) { cb = cb.split('\n').filter(function (s) { return !/^CHƯA XUẤT ĐƯỢC PHIẾU/.test(s.trim()); }).join('\n').trim(); x += '<div class="note bad"><b>Chưa xuất được phiếu</b><div>Còn công lẻ ngày ' + esc(leC.join(', ')) + ' chưa xác nhận.</div><div>Mở <b>Bảng công</b>, bấm vào ngày đó, chọn <b>Trả công lẻ</b> (ghi lý do) hoặc <b>Không trả</b>.</div></div>'; }
+    else if (o.chan) x += '<div class="note bad">Phiếu tháng lệch với cột "Còn phải trả" trên BCC – chưa gửi cho công nhân, báo kế toán kiểm tra.</div>';
     if (cb) x += '<div class="note warn"><b>Lưu ý cho sale (không in lên phiếu):</b>' + cb.split('\n').map(function (s) { return '<div>• ' + esc(s) + '</div>'; }).join('') + '</div>';
     document.getElementById('pcb').innerHTML = x;
     if (coTC) ganTC(h, o);
@@ -3522,8 +3541,8 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
   function ganXuat(o) {
     var bc = document.getElementById('xCopy'), bl = document.getElementById('xLuu');
     if (!bc || !bl) return;
-    if (o.chan) { bc.disabled = bl.disabled = true; bl.textContent = 'Phiếu lệch – chưa xuất'; return; }
-    bc.disabled = bl.disabled = false;
+    if (o.chan) { bc.disabled = bl.disabled = true; bl.textContent = (o.chanLe || []).length ? 'Còn công lẻ chưa xác nhận' : 'Phiếu lệch – chưa xuất'; return; }
+    bc.disabled = bl.disabled = false; bl.textContent = 'Lưu / Gửi';
     var pX = S.hs && S.hs.p;   // 04/11: chưa có nguồn tuyển -> bấm nút là mở hộp chọn nguồn, chọn xong bấm lại để xuất
     if (pX && pX.r > 0 && pX.ng === '') {
       bc.onclick = bl.onclick = function () { ntMo(pX, 'xuất phiếu lương', function () { ganXuat(o); }); };
@@ -8280,6 +8299,7 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
     }, function (er) { ccTd(''); toastLoi(er.message); });
   }
   var BAN_MOI = [
+    { so: 294, ds: [{ i: '✅', t: 'Công lẻ: Trả hoặc Không trả', m: 'Từ kỳ 26/11, mỗi công lẻ HOJEONG phải chọn Trả công lẻ (bắt buộc ghi lý do) hoặc Không trả. Còn công lẻ chưa chọn thì chưa xuất được phiếu tuần, phiếu tháng của người đó.' }] },
     { so: 293, ds: [{ i: '📤', v: 'chu', t: 'Xuất BCC gửi HOJEONG', m: 'Thẻ Xuất file chốt công của HOJEONG có nút Xuất BCC gửi HOJEONG với 2 lựa chọn: Chưa có linh kiện (bảng công và bảng kê để HOJEONG đối chiếu) và Có linh kiện (bản hoàn chỉnh).' }] },
     { so: 291, ds: [{ i: '⚠️', t: 'Nhắc khi đăng ký người đang làm chỗ khác', m: 'Dưới tên người vừa đăng ký có dòng nhắc màu vàng nếu người đó đang đi làm ở công ty khác (có giờ trong 7 ngày) hoặc đã đăng ký ca khác cùng ngày. Người cũ quay lại ghi chữ xanh nhỏ cạnh mã thẻ: Người cũ, nghỉ từ ngày nào. Chỉ nhắc, vẫn đăng ký bình thường.' }] },
     { so: 290, ds: [{ i: '🗂️', t: 'Tìm CCCD trong kho gọn hơn', m: 'Ô tìm còn 1 hàng, bộ lọc nằm trong nút Lọc, ảnh CCCD hiện rộng hơn. Mở kho từ Đăng ký đi làm chỉ có nút Thêm vào danh sách; từ màn Tạo thẻ chỉ có nút Làm thẻ.' }] },
