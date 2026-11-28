@@ -13,7 +13,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
 <script src="config.js"></script>
-<script>window.PB = { so: 295, luc: "28/11 15:44" };</script>
+<script>window.PB = { so: 296, luc: "28/11 15:56" };</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap">
 <style>
@@ -6530,7 +6530,8 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
   // 31/10: thẻ 8,5 × 6 cm (trước 8,1 × 5,3): giữ bố cục cũ, phóng ngang SX, dọc SY; ô ảnh giữ tỉ lệ cũ (29,6 : 44,6) nên ảnh đã lưu dùng lại được
   // 05/11: sale nhét bao thẻ khó -> giảm mỗi chiều 3 mm: 8,2 × 5,7 cm
   // 13/11: vẫn chật bao thẻ -> 8,0 × 5,5 cm
-  var THE_W = 80, THE_H = 55, THE_SX = 80 / 81, THE_SY = 55 / 53;
+  // 28/11 (b296): mẫu thẻ mới HOJEONG – dải vàng chữ "TV" (thời vụ) ở đáy thẻ, cao 6 mm, nằm trong thẻ 8,0 × 5,5 (vẫn vừa bao); phần trên dồn vào 49 mm
+  var THE_TV = 6, THE_W = 80, THE_H = 55, THE_SX = 80 / 81, THE_SY = (55 - THE_TV) / 53;
   function theVe(e, rong) {   // 1 thẻ -> canvas; rong = bề rộng px (1004 = 300 dpi)
     var W = rong || 1004, u = W / THE_W, c = document.createElement('canvas'); c.width = W; c.height = Math.round(THE_H * u);
     var x = c.getContext('2d'), F = '"Times New Roman", Times, serif';
@@ -6563,8 +6564,13 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
     x.textAlign = 'right'; x.font = 'bold ' + pt(4.5) + 'px Arial, Helvetica, sans-serif'; x.fillText('HOJEONG Co.LTD', c.width - mm(2.4), my(50.4));
     // viền: trên đỏ, phải xám đậm, dưới xanh; ngoài cùng viền xám nhạt làm đường cắt
     x.fillStyle = '#E3262C'; x.fillRect(0, 0, c.width, mm(0.8));
-    x.fillStyle = '#404040'; x.fillRect(c.width - mm(0.8), 0, mm(0.8), c.height);
-    x.fillStyle = '#2F5597'; x.fillRect(bx + bw, c.height - mm(0.8), c.width - bx - bw, mm(0.8));
+    x.fillStyle = '#404040'; x.fillRect(c.width - mm(0.8), 0, mm(0.8), c.height - mm(THE_TV));
+    // b296: dải vàng "TV" chạy hết ngang đáy thẻ, viền đen mảnh (thay đường viền xanh dưới)
+    var tvY = c.height - mm(THE_TV), lw = Math.max(1, mm(0.25));
+    x.fillStyle = '#FFFF00'; x.fillRect(0, tvY, c.width, c.height - tvY);
+    x.strokeStyle = '#000'; x.lineWidth = lw; x.strokeRect(lw / 2, tvY + lw / 2, c.width - lw, c.height - tvY - lw);
+    x.fillStyle = '#000'; x.textAlign = 'center'; x.textBaseline = 'middle'; x.font = pt(11) + 'px ' + F; x.fillText('TV', c.width / 2, tvY + (c.height - tvY) / 2 + mm(0.2));
+    x.textBaseline = 'alphabetic';
     x.strokeStyle = '#B8BEC8'; x.lineWidth = Math.max(1, mm(0.15)); x.strokeRect(x.lineWidth / 2, x.lineWidth / 2, c.width - x.lineWidth, c.height - x.lineWidth);
     return c;
   }
@@ -8313,6 +8319,7 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
     }, function (er) { ccTd(''); toastLoi(er.message); });
   }
   var BAN_MOI = [
+    { so: 296, ds: [{ i: '🪪', t: 'Thẻ HOJEONG theo mẫu mới', m: 'Thẻ ra vào HOJEONG in ra có thêm dải vàng chữ "TV" ở cuối thẻ, cỡ thẻ giữ nguyên nên vẫn vừa bao.' }] },
     { so: 295, ds: [{ i: '✅', t: 'Công lẻ của người đã có từ 2 công', m: 'Người có từ 2 công trong kỳ (không cần liền nhau) thì bấm Trả công lẻ không cần ghi lý do. Người cả kỳ chỉ có 1 công vẫn bắt buộc ghi lý do.' }, { i: '📅', t: 'Ngày đi làm cuối kỳ được tính lương', m: 'Từ kỳ T11, ngày đi làm cuối cùng của kỳ được tính lương như ngày thường. Không trả thì bấm vào ngày đó, chọn Không trả.' }] },
     { so: 294, ds: [{ i: '✅', t: 'Công lẻ: Trả hoặc Không trả', m: 'Từ kỳ 26/11, mỗi công lẻ HOJEONG phải chọn Trả công lẻ (bắt buộc ghi lý do) hoặc Không trả. Còn công lẻ chưa chọn thì chưa xuất được phiếu tuần, phiếu tháng của người đó.' }] },
     { so: 293, ds: [{ i: '📤', v: 'chu', t: 'Xuất BCC gửi HOJEONG', m: 'Thẻ Xuất file chốt công của HOJEONG có nút Xuất BCC gửi HOJEONG với 2 lựa chọn: Chưa có linh kiện (bảng công và bảng kê để HOJEONG đối chiếu) và Có linh kiện (bản hoàn chỉnh).' }] },
