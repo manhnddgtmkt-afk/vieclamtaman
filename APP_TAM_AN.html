@@ -3295,7 +3295,9 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
     // 26/11: trả công lẻ / điền giờ ngày máy chấm thiếu giờ – công ty đồng ý trả thì bắt buộc ghi lý do (đưa vào file gửi công ty)
     var gcS = String(gc || ''), choLy = !best && /CHƯA CÓ LÝ DO/.test(gcS), thieuVT = !best && /(^|\n)(THIẾU GIỜ|CHƯA TÍNH ĐƯỢC GIỜ)/.test(gcS);
     var coKt = !best && !!le && !raw.xn && /(^|\n)(CÔNG LẺ – CHƯA TÍNH TIỀN|KHÔNG TRẢ CÔNG LẺ)/.test(gcS), daKt = coKt && /(^|\n)KHÔNG TRẢ CÔNG LẺ/.test(gcS);   // b294: công lẻ HOJEONG – chọn Không trả (không cần lý do)
-    var nhanLy = 'Lý do ' + S.cty + ' đồng ý trả', goiYLy = 'Ví dụ: Tổ trưởng Lan cho về sớm vì bị sốt';
+    // b295 (28/11 anh chốt): người có từ 2 công trong kỳ (không cần liên tiếp, tính cả ngày lẻ) -> trả công lẻ không cần lý do
+    var du2 = !best && Object.keys(T.raw || {}).filter(function (k) { var y = T.raw[k] || {}; return (y.v || []).some(function (x) { return Number(x) > 0; }) || (y.le && y.le.some(function (x) { return x > 0; })); }).length >= 2;
+    var nhanLy = 'Lý do ' + S.cty + ' đồng ý trả' + (du2 ? ' (không bắt buộc)' : ''), goiYLy = 'Ví dụ: Tổ trưởng Lan cho về sớm vì bị sốt';
     var nhanLy0 = choLy ? nhanLy : (thieuVT ? 'Lý do ' + S.cty + ' xác nhận ngày này' : 'Thêm ghi chú'), goiY0 = choLy || thieuVT ? goiYLy : 'Ví dụ: ' + S.cty + ' đồng ý trả';
     function oSo(k, nhan) { var x = raw.v[k]; return '<div><label class="lb">' + nhan + '</label><input class="inp" id="og' + k + '" inputmode="decimal" value="' + (x === '' || x === 0 ? '' : esc(String(x))) + '" placeholder="' + (raw.le && raw.le[k] ? 'lẻ ' + esc(String(raw.le[k])) + 'h' : '–') + '"></div>'; }
     function oGio(k, nhan) { var x = raw.v[k]; return '<div><label class="lb">' + nhan + '</label><input class="inp" id="og' + k + '" type="time" value="' + esc(/^\d{1,2}:\d{2}$/.test(x) ? ('0' + x).slice(-5) : '') + '"></div>'; }
@@ -3310,7 +3312,7 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
           : '<div class="g2">' + oSo(0, 'Ca ngày · HC') + oSo(1, 'Ca ngày · TC') + '</div><div class="g2">' + oSo(2, 'Ca đêm · HC') + oSo(3, 'Ca đêm · TC') + '</div>') +
         (best && raw.xn ? '<div class="note">Công lẻ đã xác nhận trả: <b>' + esc(String(raw.hcXn || '')) + ' giờ</b> (' + esc(S.cty) + ' đồng ý trả).</div>' : '') +
         (best && le && !raw.xn ? '<div class="note warn">Về sớm – công lẻ ' + esc(String(le)) + ' giờ, chưa tính lương. ' + esc(S.cty) + ' đồng ý trả thì bấm "Trả công lẻ".</div>' : '') +
-        (coKt && !daKt && sv >= 46352 ? '<div class="note warn">Công lẻ chưa xác nhận.<br>' + esc(S.cty) + ' đồng ý trả: bấm <b>Trả công lẻ</b> và ghi lý do.<br>Không trả: bấm <b>Không trả</b>.<br>Chưa chọn thì chưa xuất được phiếu lương.</div>' : '') +
+        (coKt && !daKt && sv >= 46352 ? '<div class="note warn">Công lẻ chưa xác nhận.<br>' + esc(S.cty) + ' đồng ý trả: bấm <b>Trả công lẻ</b>' + (du2 ? ' (đã có từ 2 công trong kỳ, không cần lý do)' : ' và ghi lý do') + '.<br>Không trả: bấm <b>Không trả</b>.<br>Chưa chọn thì chưa xuất được phiếu lương.</div>' : '') +
         '<div class="g2 ogN">' + (le && !raw.xn ? '<button class="btn ghost" id="ogXn">Trả công lẻ</button>' : '') +
         (coKt ? '<button class="btn ghost' + (daKt ? ' on' : '') + '" id="ogKt">' + (daKt ? '✓ Đã chọn không trả' : 'Không trả') + '</button>' : '') +   // b294
         (best && raw.xn ? '<button class="btn ghost" id="ogBoLe">Bỏ trả công lẻ</button>' : '') + '<button class="btn ghost" id="ogBo"' + (((le && !raw.xn) && !coKt) || (best && raw.xn) ? '' : ' style="grid-column:1/-1"') + '>Không tính ngày</button></div>' : '') +
@@ -3341,7 +3343,7 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
       var doiGio = sua && moi.some(function (x, k) { return chuan(x) !== chuan(cu[k]); });
       // 26/11: trả công lẻ / điền giờ ngày máy chấm thiếu giờ -> lý do bắt buộc, gửi kèm lệnh sửa giờ (không ghi thành ghi chú riêng)
       var coSoMoi = sua && moi.some(function (x) { return soGio(x) > 0; }), coSoCu = raw.v.some(function (x) { return soGio(x) > 0; });
-      var canLy = !best && (kieu === 'le' || (thieuVT && kieu !== 'bo' && doiGio && coSoMoi && !coSoCu)), ghiLy = choLy && !doiGio && !!nd;
+      var canLy = !best && ((kieu === 'le' && !du2) || (thieuVT && kieu !== 'bo' && doiGio && coSoMoi && !coSoCu)), ghiLy = choLy && !doiGio && !!nd;
       if ((canLy || ghiLy) && nd.length < 5) { m.textContent = 'Ghi lý do cụ thể: ai bên ' + S.cty + ' đồng ý, vì sao.'; document.getElementById('bsNd').focus(); return; }
       if (best && sua && (kieu === 'le' || kieu === 'boLe') && !doiGio) {   // 02/11: BEST trả / bỏ trả công lẻ – giờ vào/ra giữ nguyên, máy chủ ghi ô HC + sổ CONG_LE
         // b228: hiện ngay trên app, máy chủ ghi ngầm; lỗi thì trả lại như cũ
@@ -3371,7 +3373,7 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
       if (!doiGio && !nd) { if (sua) { sh.remove(); return; } m.textContent = 'Ghi rõ giờ đúng hoặc lý do.'; return; }
       if (!sua && nd.length < 3) { m.textContent = 'Ghi rõ giờ đúng hoặc lý do.'; return; }
       sh.remove();
-      if (nd && !canLy) apiT({ v: 'baoSai', cty: S.cty, r: h.p.r, s: sv, nd: nd, loai: ghiLy ? 'ly' : (sua ? 'gc' : '') }).then(function (o) { if (o.loi) toastLoi(o.loi); else if (!doiGio) { toast(ghiLy ? 'Đã ghi lý do' : (sua ? 'Đã thêm ghi chú' : 'Đã gửi báo sai giờ')); lamMoiHs(h); } }, function (e) { toast(e.message); });
+      if (nd && !canLy && kieu !== 'le') apiT({ v: 'baoSai', cty: S.cty, r: h.p.r, s: sv, nd: nd, loai: ghiLy ? 'ly' : (sua ? 'gc' : '') }).then(function (o) { if (o.loi) toastLoi(o.loi); else if (!doiGio) { toast(ghiLy ? 'Đã ghi lý do' : (sua ? 'Đã thêm ghi chú' : 'Đã gửi báo sai giờ')); lamMoiHs(h); } }, function (e) { toast(e.message); });
       if (!doiGio) return;
       // hiện ngay trên app, đồng bộ với sheet chạy ngầm
       var cuN = JSON.parse(JSON.stringify(n)), cuR = JSON.parse(JSON.stringify(raw)), so = function (x) { return Number(String(x).replace(',', '.')) || 0; };
@@ -3379,7 +3381,7 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
       else { n.hc = so(moi[0]) + so(moi[2]); n.tc = so(moi[1]) + so(moi[3]); n.co = n.hc + n.tc > 0; n.ca = so(moi[2]) + so(moi[3]) > 0 ? 'Đêm' : n.co ? 'Ngày' : ''; }
       raw.v = moi.map(function (x) { return best || x === '' ? x : so(x); }); raw.le = 0; n.tienCho = 1; if (!T.raw) T.raw = {}; T.raw[sv] = raw;
       h.dongBo[sv] = 1; veLich(h, T);
-      apiT({ v: 'suaNgay', cty: S.cty, r: h.p.r, s: sv, cu: cuR.v, moi: moi, kieu: kieu, lyDo: canLy ? nd : '' }).then(function (o) {
+      apiT({ v: 'suaNgay', cty: S.cty, r: h.p.r, s: sv, cu: cuR.v, moi: moi, kieu: kieu, lyDo: canLy || kieu === 'le' ? nd : '' }).then(function (o) {
         delete h.dongBo[sv];
         if (o.loi) { for (var k in cuN) n[k] = cuN[k]; T.raw[sv] = cuR; veLich(h, T); toastLoi('Chưa lưu được ' + ddmm(serialDate(sv)) + ': ' + o.loi); return; }
         lamMoiHs(h);
@@ -8299,6 +8301,7 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
     }, function (er) { ccTd(''); toastLoi(er.message); });
   }
   var BAN_MOI = [
+    { so: 295, ds: [{ i: '✅', t: 'Công lẻ của người đã có từ 2 công', m: 'Người có từ 2 công trong kỳ (không cần liền nhau) thì bấm Trả công lẻ không cần ghi lý do. Người cả kỳ chỉ có 1 công vẫn bắt buộc ghi lý do.' }] },
     { so: 294, ds: [{ i: '✅', t: 'Công lẻ: Trả hoặc Không trả', m: 'Từ kỳ 26/11, mỗi công lẻ HOJEONG phải chọn Trả công lẻ (bắt buộc ghi lý do) hoặc Không trả. Còn công lẻ chưa chọn thì chưa xuất được phiếu tuần, phiếu tháng của người đó.' }] },
     { so: 293, ds: [{ i: '📤', v: 'chu', t: 'Xuất BCC gửi HOJEONG', m: 'Thẻ Xuất file chốt công của HOJEONG có nút Xuất BCC gửi HOJEONG với 2 lựa chọn: Chưa có linh kiện (bảng công và bảng kê để HOJEONG đối chiếu) và Có linh kiện (bản hoàn chỉnh).' }] },
     { so: 291, ds: [{ i: '⚠️', t: 'Nhắc khi đăng ký người đang làm chỗ khác', m: 'Dưới tên người vừa đăng ký có dòng nhắc màu vàng nếu người đó đang đi làm ở công ty khác (có giờ trong 7 ngày) hoặc đã đăng ký ca khác cùng ngày. Người cũ quay lại ghi chữ xanh nhỏ cạnh mã thẻ: Người cũ, nghỉ từ ngày nào. Chỉ nhắc, vẫn đăng ký bình thường.' }] },
