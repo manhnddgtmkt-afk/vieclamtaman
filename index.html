@@ -13,7 +13,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
 <script src="config.js"></script>
-<script>window.PB = { so: 295, luc: "28/11 15:35" };</script>
+<script>window.PB = { so: 295, luc: "28/11 15:44" };</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap">
 <style>
@@ -3305,7 +3305,8 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
     var le = raw.le ? raw.le.reduce(function (a, x) { return a + x; }, 0) : 0;
     // 26/11: trả công lẻ / điền giờ ngày máy chấm thiếu giờ – công ty đồng ý trả thì bắt buộc ghi lý do (đưa vào file gửi công ty)
     var gcS = String(gc || ''), choLy = !best && /CHƯA CÓ LÝ DO/.test(gcS), thieuVT = !best && /(^|\n)(THIẾU GIỜ|CHƯA TÍNH ĐƯỢC GIỜ)/.test(gcS);
-    var coKt = !best && !!le && !raw.xn && /(^|\n)(CÔNG LẺ – CHƯA TÍNH TIỀN|KHÔNG TRẢ CÔNG LẺ)/.test(gcS), daKt = coKt && /(^|\n)KHÔNG TRẢ CÔNG LẺ/.test(gcS);   // b294: công lẻ HOJEONG – chọn Không trả (không cần lý do)
+    var cuoiT = !best && !le && /(^|\n)NGÀY ĐI LÀM CUỐI KỲ/.test(gcS);   // b295: ngày đi làm cuối kỳ máy đã tính lương -> cho chọn Không trả
+    var coKt = (!best && !!le && !raw.xn && /(^|\n)(CÔNG LẺ – CHƯA TÍNH TIỀN|CÔNG LẺ CUỐI KỲ|KHÔNG TRẢ CÔNG LẺ)/.test(gcS)) || cuoiT, daKt = coKt && /(^|\n)KHÔNG TRẢ CÔNG LẺ/.test(gcS);   // b294: công lẻ HOJEONG – chọn Không trả (không cần lý do)
     // b295 (28/11 anh chốt): người có từ 2 công trong kỳ (không cần liên tiếp, tính cả ngày lẻ) -> trả công lẻ không cần lý do
     var du2 = !best && Object.keys(T.raw || {}).filter(function (k) { var y = T.raw[k] || {}; return (y.v || []).some(function (x) { return Number(x) > 0; }) || (y.le && y.le.some(function (x) { return x > 0; })); }).length >= 2;
     var nhanLy = 'Lý do ' + S.cty + ' đồng ý trả' + (du2 ? ' (không bắt buộc)' : ''), goiYLy = 'Ví dụ: Tổ trưởng Lan cho về sớm vì bị sốt';
@@ -3325,7 +3326,7 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
         (best && le && !raw.xn ? '<div class="note warn">Về sớm – công lẻ ' + esc(String(le)) + ' giờ, chưa tính lương. ' + esc(S.cty) + ' đồng ý trả thì bấm "Trả công lẻ".</div>' : '') +
         (coKt && !daKt && sv >= 46352 ? '<div class="note warn">Công lẻ chưa xác nhận.<br>' + esc(S.cty) + ' đồng ý trả: bấm <b>Trả công lẻ</b>' + (du2 ? ' (đã có từ 2 công trong kỳ, không cần lý do)' : ' và ghi lý do') + '.<br>Không trả: bấm <b>Không trả</b>.<br>Chưa chọn thì chưa xuất được phiếu lương.</div>' : '') +
         '<div class="g2 ogN">' + (le && !raw.xn ? '<button class="btn ghost" id="ogXn">Trả công lẻ</button>' : '') +
-        (coKt ? '<button class="btn ghost' + (daKt ? ' on' : '') + '" id="ogKt">' + (daKt ? '✓ Đã chọn không trả' : 'Không trả') + '</button>' : '') +   // b294
+        (coKt ? '<button class="btn ghost' + (daKt ? ' on' : '') + '" id="ogKt"' + (cuoiT ? ' style="grid-column:1/-1"' : '') + '>' + (daKt ? '✓ Đã chọn không trả' : 'Không trả') + '</button>' : '') +   // b294
         (best && raw.xn ? '<button class="btn ghost" id="ogBoLe">Bỏ trả công lẻ</button>' : '') + '<button class="btn ghost" id="ogBo"' + (((le && !raw.xn) && !coKt) || (best && raw.xn) ? '' : ' style="grid-column:1/-1"') + '>Không tính ngày</button></div>' : '') +
       // 24/10: bỏ "Báo sai giờ" – người không phụ trách công ty chỉ xem; người phụ trách sửa thẳng (chủ được báo tự động)
       (sua ? '<label class="lb" id="bsLb">' + esc(nhanLy0) + '</label><textarea class="inp" id="bsNd" rows="2" placeholder="' + esc(goiY0) + '"></textarea>' +
@@ -8312,7 +8313,7 @@ html.xnMo #ptr{top:calc(var(--xnh,34px) + 8px)}
     }, function (er) { ccTd(''); toastLoi(er.message); });
   }
   var BAN_MOI = [
-    { so: 295, ds: [{ i: '✅', t: 'Công lẻ của người đã có từ 2 công', m: 'Người có từ 2 công trong kỳ (không cần liền nhau) thì bấm Trả công lẻ không cần ghi lý do. Người cả kỳ chỉ có 1 công vẫn bắt buộc ghi lý do.' }] },
+    { so: 295, ds: [{ i: '✅', t: 'Công lẻ của người đã có từ 2 công', m: 'Người có từ 2 công trong kỳ (không cần liền nhau) thì bấm Trả công lẻ không cần ghi lý do. Người cả kỳ chỉ có 1 công vẫn bắt buộc ghi lý do.' }, { i: '📅', t: 'Ngày đi làm cuối kỳ được tính lương', m: 'Từ kỳ T11, ngày đi làm cuối cùng của kỳ được tính lương như ngày thường. Không trả thì bấm vào ngày đó, chọn Không trả.' }] },
     { so: 294, ds: [{ i: '✅', t: 'Công lẻ: Trả hoặc Không trả', m: 'Từ kỳ 26/11, mỗi công lẻ HOJEONG phải chọn Trả công lẻ (bắt buộc ghi lý do) hoặc Không trả. Còn công lẻ chưa chọn thì chưa xuất được phiếu tuần, phiếu tháng của người đó.' }] },
     { so: 293, ds: [{ i: '📤', v: 'chu', t: 'Xuất BCC gửi HOJEONG', m: 'Thẻ Xuất file chốt công của HOJEONG có nút Xuất BCC gửi HOJEONG với 2 lựa chọn: Chưa có linh kiện (bảng công và bảng kê để HOJEONG đối chiếu) và Có linh kiện (bản hoàn chỉnh).' }] },
     { so: 291, ds: [{ i: '⚠️', t: 'Nhắc khi đăng ký người đang làm chỗ khác', m: 'Dưới tên người vừa đăng ký có dòng nhắc màu vàng nếu người đó đang đi làm ở công ty khác (có giờ trong 7 ngày) hoặc đã đăng ký ca khác cùng ngày. Người cũ quay lại ghi chữ xanh nhỏ cạnh mã thẻ: Người cũ, nghỉ từ ngày nào. Chỉ nhắc, vẫn đăng ký bình thường.' }] },
